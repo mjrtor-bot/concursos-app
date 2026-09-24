@@ -111,6 +111,7 @@ function QuestoesContent() {
       params.set("pageSize", "100");
 
       let lista: Questao[] = [];
+      let apiSucesso = false;
 
       try {
         const response = await fetch(`/api/questoes?${params.toString()}`);
@@ -118,18 +119,20 @@ function QuestoesContent() {
           const data = await response.json();
           if (data.success && Array.isArray(data.questoes)) {
             lista = data.questoes;
+            apiSucesso = true;
           }
         }
       } catch (e) {
-        // Fallback para DataService em caso de erro na requisição
+        console.warn("[QuestoesPage] Falha na requisição da API de questões:", e);
+      }
+
+      // Se a API não respondeu (erro de rede/offline puro), recorre ao DataService local
+      if (!apiSucesso) {
         lista = DataService.getQuestoes(filtro);
       }
 
-      if (lista.length === 0) {
-        // Se a API não retornou ou estamos no modo mock local puro
-        lista = DataService.getQuestoes(filtro);
-      } else if (filtro.status && filtro.status !== "todas") {
-        // Aplica filtro de status de resposta do usuário local
+      // Aplica filtro de status do usuário (resolvidas, acertadas, etc.)
+      if (filtro.status && filtro.status !== "todas") {
         lista = lista.filter((q) => {
           const resp = DataService.getRespostaByQuestaoId(q.id);
           const isFav = DataService.isFavorita(q.id);
@@ -157,9 +160,8 @@ function QuestoesContent() {
 
       setCurrentIndex(0);
     } catch (error) {
-      console.error("[QuestoesPage] Erro ao carregar questões:", error);
-      const fallbackList = DataService.getQuestoes(filtro);
-      setQuestoes(fallbackList);
+      console.error("[QuestoesPage] Erro ao processar questões:", error);
+      setQuestoes([]);
       setCurrentIndex(0);
     } finally {
       setIsLoading(false);

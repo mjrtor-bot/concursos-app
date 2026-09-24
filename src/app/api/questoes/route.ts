@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ success: false, error: "Supabase indisponível" }, { status: 503 });
       }
 
-      // Consulta principal com joins das alternativas
+      // Consulta principal desacoplada da tabela questoes (evita erro 500 de PostgREST schema cache)
       let query = supabase
         .from("questoes")
         .select(
@@ -40,10 +40,7 @@ export async function GET(request: NextRequest) {
           is_autoral_ia, modelo_ia, prompt_versao, revisada_por_especialista,
           anulada, desatualizada, motivo_desatualizacao, versao,
           fingerprint_hash, total_respostas, total_acertos, taxa_acerto,
-          created_at, updated_at,
-          questoes_alternativas (
-            id, letra, texto, correta, ordem, explicacao_especifica
-          )
+          created_at, updated_at
         `,
           { count: "exact" }
         )
@@ -112,8 +109,40 @@ export async function GET(request: NextRequest) {
         );
       }
 
+      const rows = data ?? [];
+      const questaoIds = rows.map((r: any) => r.id);
+
+      // Consulta em lote para alternativas (desacoplada, rápida e 100% segura)
+      const alternativasMap = new Map<string, any[]>();
+      if (questaoIds.length > 0) {
+        const { data: altsData, error: altsError } = await supabase
+          .from("questoes_alternativas")
+          .select("id, questao_id, letra, texto, correta, ordem, explicacao_especifica")
+          .in("questao_id", questaoIds)
+          .order("ordem", { ascending: true });
+
+        if (altsError) {
+          console.warn("[API /questoes] Aviso ao carregar alternativas:", altsError.message);
+        } else if (altsData) {
+          for (const alt of altsData) {
+            if (!alternativasMap.has(alt.questao_id)) {
+              alternativasMap.set(alt.questao_id, []);
+            }
+            alternativasMap.get(alt.questao_id)!.push({
+              id: alt.id,
+              questao_id: alt.questao_id,
+              letra: alt.letra,
+              texto: alt.texto,
+              correta: alt.correta,
+              ordem: alt.ordem,
+              explicacao_especifica: alt.explicacao_especifica ?? undefined,
+            });
+          }
+        }
+      }
+
       // Remapeia para o formato do tipo Questao do frontend
-      const questoes: Questao[] = (data ?? []).map((row: any) => ({
+      const questoes: Questao[] = rows.map((row: any) => ({
         id: row.id,
         disciplina_id: row.disciplina_id,
         assunto_id: row.assunto_id,
@@ -141,17 +170,8 @@ export async function GET(request: NextRequest) {
         fingerprint_hash: row.fingerprint_hash,
         created_at: row.created_at,
         updated_at: row.updated_at,
-        alternativas: (row.questoes_alternativas ?? [])
-          .sort((a: any, b: any) => a.ordem - b.ordem)
-          .map((alt: any) => ({
-            id: alt.id,
-            questao_id: row.id,
-            letra: alt.letra,
-            texto: alt.texto,
-            correta: alt.correta,
-            ordem: alt.ordem,
-            explicacao_especifica: alt.explicacao_especifica ?? undefined,
-          })),
+        alternativas: (alternativasMap.get(row.id) ?? [])
+          .sort((a: any, b: any) => a.ordem - b.ordem),
       }));
 
       const total = count ?? 0;

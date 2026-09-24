@@ -420,7 +420,7 @@ export const MOCK_DISCIPLINAS: Disciplina[] = [
   },
   {
     id: "disc-etica",
-    nome: "�0tica no Serviço Público",
+    nome: "Ética no Serviço Público",
     slug: "etica-servico-publico",
     descricao: "Decreto nº 1.171/1994, deveres e vedações do servidor público civil, comissões de ética e integridade pública.",
     icone: "Users",
@@ -613,13 +613,13 @@ export const MOCK_ASSUNTOS: Assunto[] = [
     created_at: "2024-01-01T00:00:00Z",
   },
 
-  // �0tica
+  // Ética
   {
     id: "assunto-etica-decreto-1171",
     disciplina_id: "disc-etica",
-    nome: "Código de �0tica Profissional (Decreto nº 1.171/1994)",
+    nome: "Código de Ética Profissional (Decreto nº 1.171/1994)",
     slug: "decreto-1171-etica",
-    descricao: "Regras deontológicas, principais deveres, vedações e penalidade da Comissão de �0tica.",
+    descricao: "Regras deontológicas, principais deveres, vedações e penalidade da Comissão de Ética.",
     ordem: 1,
     questoes_count: 5,
     created_at: "2024-01-01T00:00:00Z",
@@ -646,7 +646,7 @@ export const MOCK_QUESTOES: Questao[] = [
     alternativas: [
       { id: "alt-001-a", questao_id: "q-001", letra: "A", texto: "O novo regulamento da alfândega entrará em vigor à partir do próximo mês.", correta: false, ordem: 1 },
       { id: "alt-001-b", questao_id: "q-001", letra: "B", texto: "O auditor realizou o relatório de fiscalização à lápis antes de digitalizá-lo.", correta: false, ordem: 2 },
-      { id: "alt-001-c", questao_id: "q-001", letra: "C", texto: "ì medida que os documentos eram analisados, as fraudes tributárias ficavam mais evidentes.", correta: true, ordem: 3 },
+      { id: "alt-001-c", questao_id: "q-001", letra: "C", texto: "À medida que os documentos eram analisados, as fraudes tributárias ficavam mais evidentes.", correta: true, ordem: 3 },
       { id: "alt-001-d", questao_id: "q-001", letra: "D", texto: "A autoridade fiscal não concedeu isenção à pessoas jurídicas sem regularidade fiscal.", correta: false, ordem: 4 },
       { id: "alt-001-e", questao_id: "q-001", letra: "E", texto: "Encaminhamos o parecer técnico à Vossa Excelência para homologação definitiva.", correta: false, ordem: 5 },
     ],
@@ -666,7 +666,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Polícia Federal",
     cargo: "Agente de Polícia Federal",
     enunciado: "A revogação de um ato administrativo possui efeitos retroativos (ex tunc), desfazendo todos os efeitos já produzidos pelo ato desde a sua edição originária.",
-    explicacao: "Gabarito: ERRADO.\n\nA revogação é a extinção de um ato administrativo válido, discricionário e legítimo por razões de conveniência e oportunidade da Administração Pública. Portanto, opera efeitos prospectivos ou NÒO-retroativos (EX NUNC � dali para frente).\n\nQuem possui efeito retroativo (ex tunc) é a ANULA�!ÒO, que incide sobre atos ilegais.",
+    explicacao: "Gabarito: ERRADO.\n\nA revogação é a extinção de um ato administrativo válido, discricionário e legítimo por razões de conveniência e oportunidade da Administração Pública. Portanto, opera efeitos prospectivos ou NÃO-retroativos (EX NUNC  dali para frente).\n\nQuem possui efeito retroativo (ex tunc) é a ANULA!ÒO, que incide sobre atos ilegais.",
     taxa_acerto_comunidade: 84,
     total_respostas_comunidade: 5120,
     alternativas: [
@@ -689,7 +689,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Ministério da Gestão e Inovação",
     cargo: "Concurso Nacional Unificado",
     enunciado: "De acordo com o art. 5º da Constituição Federal de 1988, a casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo em determinadas situações taxativas. Assinale a alternativa que apresenta hipótese em que se admite a entrada sem consentimento do morador DURANTE A NOITE:",
-    explicacao: "Gabarito: Letra B.\n\nConforme o Art. 5º, XI da CF/88:\n'a casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo:\n1) Em caso de flagrante delito (dia ou noite);\n2) Desastre (dia ou noite);\n3) Para prestar socorro (dia ou noite);\n4) Durante o dia, por determinação judicial.'\n\nPortanto, por determinação judicial S� é permitido durante o dia. Durante a noite, somente flagrante delito, desastre ou socorro.",
+    explicacao: "Gabarito: Letra B.\n\nConforme o Art. 5º, XI da CF/88:\n'a casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo:\n1) Em caso de flagrante delito (dia ou noite);\n2) Desastre (dia ou noite);\n3) Para prestar socorro (dia ou noite);\n4) Durante o dia, por determinação judicial.'\n\nPortanto, por determinação judicial S é permitido durante o dia. Durante a noite, somente flagrante delito, desastre ou socorro.",
     taxa_acerto_comunidade: 72,
     total_respostas_comunidade: 4310,
     alternativas: [
@@ -741,7 +741,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Polícia Federal",
     cargo: "Escrivão de Polícia Federal",
     enunciado: "Considere a proposição P: 'Se o agente investiga com rigor, então a prova é obtida ou o suspeito é inocentado'. A negação lógica dessa proposição P pode ser expressa por: 'O agente investiga com rigor e a prova não é obtida e o suspeito não é inocentado'.",
-    explicacao: "Gabarito: CERTO.\n\nPara negar uma condicional do tipo P �  Q (regra do 'MAN�0'): Mantém a primeira e Nega a segunda [P �Ƨ ~Q].\n\nAqui temos:\nPrimeira parte: 'O agente investiga com rigor' (mantém-se).\nSegunda parte (Q): '(A prova é obtida) OU (o suspeito é inocentado)'.\n\nNegando a segunda parte pelas Leis de De Morgan: ~(A �ƨ B) = ~A �Ƨ ~B:\n'A prova NÒO é obtida E o suspeito NÒO é inocentado'.\n\nJuntando tudo com a conjunção 'e':\n'O agente investiga com rigor E a prova não é obtida E o suspeito não é inocentado'. O item está perfeito.",
+    explicacao: "Gabarito: CERTO.\n\nPara negar uma condicional do tipo P   Q (regra do 'MAN0'): Mantém a primeira e Nega a segunda [P Ƨ ~Q].\n\nAqui temos:\nPrimeira parte: 'O agente investiga com rigor' (mantém-se).\nSegunda parte (Q): '(A prova é obtida) OU (o suspeito é inocentado)'.\n\nNegando a segunda parte pelas Leis de De Morgan: ~(A ƨ B) = ~A Ƨ ~B:\n'A prova NÃO é obtida E o suspeito NÃO é inocentado'.\n\nJuntando tudo com a conjunção 'e':\n'O agente investiga com rigor E a prova não é obtida E o suspeito não é inocentado'. O item está perfeito.",
     taxa_acerto_comunidade: 79,
     total_respostas_comunidade: 3780,
     alternativas: [
@@ -826,7 +826,7 @@ export const MOCK_QUESTOES: Questao[] = [
     created_at: "2024-03-10T00:00:00Z",
   },
 
-  // 9. �0tica - Decreto 1.171/94 (FCC)
+  // 9. Ética - Decreto 1.171/94 (FCC)
   {
     id: "q-009",
     disciplina_id: "disc-etica",
@@ -838,8 +838,8 @@ export const MOCK_QUESTOES: Questao[] = [
     ano: 2024,
     orgao: "Tribunal Regional do Trabalho",
     cargo: "Analista Judiciário",
-    enunciado: "De acordo com o Código de �0tica Profissional do Servidor Público Civil do Poder Executivo Federal (Decreto nº 1.171/1994), a única pena que pode ser aplicada pela Comissão de �0tica ao servidor público infrator é:",
-    explicacao: "Gabarito: Letra C - Censura.\n\nConforme o Capítulo II, item XXII do Decreto nº 1.171/1994:\n'A pena aplicável ao servidor público pela Comissão de �0tica é a de CENSURA e sua fundamentação constará do respectivo parecer, assinado por todos os seus integrantes, com ciência do faltoso'.\n\nAs penalidades como demissão, suspensão e advertência são do regime disciplinar da Lei 8.112/90, aplicadas pela autoridade julgadora competente em Processo Administrativo Disciplinar (PAD), e NÒO pela Comissão de �0tica.",
+    enunciado: "De acordo com o Código de Ética Profissional do Servidor Público Civil do Poder Executivo Federal (Decreto nº 1.171/1994), a única pena que pode ser aplicada pela Comissão de Ética ao servidor público infrator é:",
+    explicacao: "Gabarito: Letra C - Censura.\n\nConforme o Capítulo II, item XXII do Decreto nº 1.171/1994:\n'A pena aplicável ao servidor público pela Comissão de Ética é a de CENSURA e sua fundamentação constará do respectivo parecer, assinado por todos os seus integrantes, com ciência do faltoso'.\n\nAs penalidades como demissão, suspensão e advertência são do regime disciplinar da Lei 8.112/90, aplicadas pela autoridade julgadora competente em Processo Administrativo Disciplinar (PAD), e NÃO pela Comissão de Ética.",
     taxa_acerto_comunidade: 82,
     total_respostas_comunidade: 3600,
     alternativas: [
@@ -888,7 +888,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Receita Federal",
     cargo: "Analista-Tributário",
     enunciado: "Uma comissão de fiscalização composta por 3 auditores e 2 analistas deve ser formada a partir de um grupo de 6 auditores e 5 analistas disponíveis. O número total de comissões distintas que podem ser formadas é igual a:",
-    explicacao: "Gabarito: Letra E - 200.\n\nResolução passo a passo:\n1) Escolha dos 3 auditores dentre os 6 disponíveis:\nC(6, 3) = 6! / (3! � (6 - 3)!) = (6 � 5 � 4) / (3 � 2 � 1) = 20 maneiras.\n\n2) Escolha dos 2 analistas dentre os 5 disponíveis:\nC(5, 2) = 5! / (2! � (5 - 2)!) = (5 � 4) / (2 � 1) = 10 maneiras.\n\n3) Pelo Princípio Multiplicativo (PFC):\nTotal de comissões = 20 � 10 = 200 comissões distintas.",
+    explicacao: "Gabarito: Letra E - 200.\n\nResolução passo a passo:\n1) Escolha dos 3 auditores dentre os 6 disponíveis:\nC(6, 3) = 6! / (3!  (6 - 3)!) = (6  5  4) / (3  2  1) = 20 maneiras.\n\n2) Escolha dos 2 analistas dentre os 5 disponíveis:\nC(5, 2) = 5! / (2!  (5 - 2)!) = (5  4) / (2  1) = 10 maneiras.\n\n3) Pelo Princípio Multiplicativo (PFC):\nTotal de comissões = 20  10 = 200 comissões distintas.",
     taxa_acerto_comunidade: 73,
     total_respostas_comunidade: 2950,
     alternativas: [
@@ -927,7 +927,7 @@ export const MOCK_QUESTOES: Questao[] = [
     created_at: "2024-03-25T00:00:00Z",
   },
 
-  // QUEST�"ES ADICIONADAS EM 2025-2026 - ATUALIZADAS PARA CONCURSOS RECENTES
+  // QUEST"ES ADICIONADAS EM 2025-2026 - ATUALIZADAS PARA CONCURSOS RECENTES
 
   // 13. Informática - Inteligência Artificial (FGV 2025)
   {
@@ -994,7 +994,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Polícia Federal",
     cargo: "Agente de Polícia Federal",
     enunciado: "De acordo com a Lei nº 14.133/2021 (Nova Lei de Licitações), a modalidade de leilão é exclusivamente eletrônica e destina-se à alienação de bens imóveis ou à venda de bens móveis inservíveis para a administração.",
-    explicacao: "Gabarito: ERRADO.\n\nAnálise: A modalidade LEILÒO na Nova Lei de Licitações:\n1) Não é exclusivamente eletrônica - pode ser presencial ou eletrônico (Art. 71, § 1º).\n2) Destina-se à alienação de bens móveis ou imóveis, bem como à venda de bens apreendidos ou penhorados (Art. 71, caput).\n3) A frase está incorreta em ambas as afirmações: não é exclusivamente eletrônica e não se restringe à venda de bens inservíveis.",
+    explicacao: "Gabarito: ERRADO.\n\nAnálise: A modalidade LEILÃO na Nova Lei de Licitações:\n1) Não é exclusivamente eletrônica - pode ser presencial ou eletrônico (Art. 71, § 1º).\n2) Destina-se à alienação de bens móveis ou imóveis, bem como à venda de bens apreendidos ou penhorados (Art. 71, caput).\n3) A frase está incorreta em ambas as afirmações: não é exclusivamente eletrônica e não se restringe à venda de bens inservíveis.",
     taxa_acerto_comunidade: 68,
     total_respostas_comunidade: 4800,
     alternativas: [
@@ -1043,7 +1043,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Banco do Brasil",
     cargo: "Escriturário - Agente Comercial",
     enunciado: "Em um banco, há 5 caixas disponíveis para atendimento, numerados de 1 a 5. Dois clientes chegam simultaneamente e escolhem aleatoriamente caixas distintos para serem atendidos. A probabilidade de que a soma dos números dos caixas escolhidos seja par é igual a:",
-    explicacao: "Gabarito: Letra B - 2/5.\n\nResolução passo a passo:\n1) Total de pares de caixas distintos: C(5,2) = 10 pares possíveis.\n2) Soma será par quando ambos os números forem pares ou ambos ímpares.\n3) Caixas pares: {2, 4} �  C(2,2) = 1 par.\n4) Caixas ímpares: {1, 3, 5} �  C(3,2) = 3 pares.\n5) Total de pares com soma par: 1 + 3 = 4 pares.\n6) Probabilidade = 4/10 = 2/5.\n\nAlternativamente: Probabilidade = (C(2,2) + C(3,2)) / C(5,2) = (1+3)/10 = 4/10 = 2/5.",
+    explicacao: "Gabarito: Letra B - 2/5.\n\nResolução passo a passo:\n1) Total de pares de caixas distintos: C(5,2) = 10 pares possíveis.\n2) Soma será par quando ambos os números forem pares ou ambos ímpares.\n3) Caixas pares: {2, 4}   C(2,2) = 1 par.\n4) Caixas ímpares: {1, 3, 5}   C(3,2) = 3 pares.\n5) Total de pares com soma par: 1 + 3 = 4 pares.\n6) Probabilidade = 4/10 = 2/5.\n\nAlternativamente: Probabilidade = (C(2,2) + C(3,2)) / C(5,2) = (1+3)/10 = 4/10 = 2/5.",
     taxa_acerto_comunidade: 65,
     total_respostas_comunidade: 4200,
     alternativas: [
@@ -1056,7 +1056,7 @@ export const MOCK_QUESTOES: Questao[] = [
     created_at: "2025-03-15T00:00:00Z",
   },
 
-  // 18. �0tica - Vedações (FGV 2025)
+  // 18. Ética - Vedações (FGV 2025)
   {
     id: "q-018",
     disciplina_id: "disc-etica",
@@ -1068,8 +1068,8 @@ export const MOCK_QUESTOES: Questao[] = [
     ano: 2025,
     orgao: "Receita Federal do Brasil",
     cargo: "Auditor-Fiscal da Receita Federal",
-    enunciado: "Conforme o Código de �0tica Profissional do Servidor Público Civil (Decreto nº 1.171/1994), é vedado ao servidor público:",
-    explicacao: "Gabarito: Letra C - Retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material.\n\nAnálise das alternativas:\n⬢ A) ERRADO: �0 PERMITIDO usar de urbanidade no atendimento ao público, não é vedado.\n⬢ B) ERRADO: �0 DEVER proteger os bens públicos, não é vedado.\n⬢ C) CORRETO: Item X do Decreto: 'X - retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material'.\n⬢ D) ERRADO: �0 DEVER comunicar irregularidades, não é vedado.\n⬢ E) ERRADO: �0 DEVER ser cortês, não é vedado.",
+    enunciado: "Conforme o Código de Ética Profissional do Servidor Público Civil (Decreto nº 1.171/1994), é vedado ao servidor público:",
+    explicacao: "Gabarito: Letra C - Retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material.\n\nAnálise das alternativas:\n⬢ A) ERRADO: É PERMITIDO usar de urbanidade no atendimento ao público, não é vedado.\n⬢ B) ERRADO: É DEVER proteger os bens públicos, não é vedado.\n⬢ C) CORRETO: Item X do Decreto: 'X - retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material'.\n⬢ D) ERRADO: É DEVER comunicar irregularidades, não é vedado.\n⬢ E) ERRADO: É DEVER ser cortês, não é vedado.",
     taxa_acerto_comunidade: 85,
     total_respostas_comunidade: 3200,
     alternativas: [
@@ -1118,7 +1118,7 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "SERPRO",
     cargo: "Analista de Segurança da Informação",
     enunciado: "Em relação ao modelo Zero Trust de segurança, assinale a afirmativa correta:",
-    explicacao: "Gabarito: Letra D - Baseia-se no princípio 'nunca confie, sempre verifique', exigindo autenticação contínua e autorização granular.\n\nAnálise do modelo Zero Trust:\n⬢ A) ERRADO: Zero Trust NÒO pressupõe que tudo dentro da rede corporativa é confiável - é exatamente o oposto.\n⬢ B) ERRADO: Zero Trust NÒO dispensa autenticação multifator - geralmente a exige.\n⬢ C) ERRADO: Zero Trust NÒO considera que dispositivos na rede interna são inerentemente seguros.\n⬢ D) CORRETO: O princípio fundamental é 'never trust, always verify', com autenticação contínua, microssegmentação e controle de acesso baseado em contexto.\n⬢ E) ERRADO: Zero Trust NÒO recomenda confiar plenamente em qualquer usuário ou dispositivo, independentemente da localização.",
+    explicacao: "Gabarito: Letra D - Baseia-se no princípio 'nunca confie, sempre verifique', exigindo autenticação contínua e autorização granular.\n\nAnálise do modelo Zero Trust:\n⬢ A) ERRADO: Zero Trust NÃO pressupõe que tudo dentro da rede corporativa é confiável - é exatamente o oposto.\n⬢ B) ERRADO: Zero Trust NÃO dispensa autenticação multifator - geralmente a exige.\n⬢ C) ERRADO: Zero Trust NÃO considera que dispositivos na rede interna são inerentemente seguros.\n⬢ D) CORRETO: O princípio fundamental é 'never trust, always verify', com autenticação contínua, microssegmentação e controle de acesso baseado em contexto.\n⬢ E) ERRADO: Zero Trust NÃO recomenda confiar plenamente em qualquer usuário ou dispositivo, independentemente da localização.",
     taxa_acerto_comunidade: 70,
     total_respostas_comunidade: 2900,
     alternativas: [
@@ -1170,15 +1170,15 @@ export const MOCK_QUESTOES: Questao[] = [
     orgao: "Instituto Nacional do Seguro Social",
     cargo: "Técnico do Seguro Social",
     enunciado: "Considere as proposições simples:\nP: 'O benefício foi concedido'\nQ: 'O segurado possui os requisitos legais'\n\nA proposição 'O benefício não foi concedido se, e somente se, o segurado não possui os requisitos legais' pode ser representada simbolicamente por:",
-    explicacao: "Gabarito: Letra B - ~P �  ~Q\n\nAnálise:\n'Se, e somente se' representa a bicondicional (� ).\n'O benefício não foi concedido' = negação de P = ~P\n'O segurado não possui os requisitos legais' = negação de Q = ~Q\n\nPortanto: ~P �  ~Q\n\nDica: A bicondicional estabelece equivalência entre as duas partes. A proposição afirma que a não concessão do benefício é equivalente à não posse dos requisitos legais.",
+    explicacao: "Gabarito: Letra B - ~P   ~Q\n\nAnálise:\n'Se, e somente se' representa a bicondicional ( ).\n'O benefício não foi concedido' = negação de P = ~P\n'O segurado não possui os requisitos legais' = negação de Q = ~Q\n\nPortanto: ~P   ~Q\n\nDica: A bicondicional estabelece equivalência entre as duas partes. A proposição afirma que a não concessão do benefício é equivalente à não posse dos requisitos legais.",
     taxa_acerto_comunidade: 75,
     total_respostas_comunidade: 2800,
     alternativas: [
-      { id: "alt-022-a", questao_id: "q-022", letra: "A", texto: "P �  ~Q", correta: false, ordem: 1 },
-      { id: "alt-022-b", questao_id: "q-022", letra: "B", texto: "~P �  ~Q", correta: true, ordem: 2 },
-      { id: "alt-022-c", questao_id: "q-022", letra: "C", texto: "~P �  Q", correta: false, ordem: 3 },
-      { id: "alt-022-d", questao_id: "q-022", letra: "D", texto: "P �  Q", correta: false, ordem: 4 },
-      { id: "alt-022-e", questao_id: "q-022", letra: "E", texto: "~P �ƨ ~Q", correta: false, ordem: 5 },
+      { id: "alt-022-a", questao_id: "q-022", letra: "A", texto: "P   ~Q", correta: false, ordem: 1 },
+      { id: "alt-022-b", questao_id: "q-022", letra: "B", texto: "~P   ~Q", correta: true, ordem: 2 },
+      { id: "alt-022-c", questao_id: "q-022", letra: "C", texto: "~P   Q", correta: false, ordem: 3 },
+      { id: "alt-022-d", questao_id: "q-022", letra: "D", texto: "P   Q", correta: false, ordem: 4 },
+      { id: "alt-022-e", questao_id: "q-022", letra: "E", texto: "~P ƨ ~Q", correta: false, ordem: 5 },
     ],
     created_at: "2026-02-15T00:00:00Z",
   },
@@ -1223,7 +1223,7 @@ export const MOCK_SIMULADOS: Simulado[] = [
   },
 ];
 
-// QUEST�"ES ADICIONADAS EM 2025-2026 - ATUALIZADAS PARA CONCURSOS RECENTES
+// QUEST"ES ADICIONADAS EM 2025-2026 - ATUALIZADAS PARA CONCURSOS RECENTES
 
 // 13. Informática - Inteligência Artificial (FGV 2025)
 export const MOCK_QUESTOES_2025: Questao[] = [
@@ -1291,7 +1291,7 @@ export const MOCK_QUESTOES_2025: Questao[] = [
     orgao: "Polícia Federal",
     cargo: "Agente de Polícia Federal",
     enunciado: "De acordo com a Lei nº 14.133/2021 (Nova Lei de Licitações), a modalidade de leilão é exclusivamente eletrônica e destina-se à alienação de bens imóveis ou à venda de bens móveis inservíveis para a administração.",
-    explicacao: "Gabarito: ERRADO.\n\nAnálise: A modalidade LEILÒO na Nova Lei de Licitações:\n1) Não é exclusivamente eletrônica - pode ser presencial ou eletrônico (Art. 71, § 1º).\n2) Destina-se à alienação de bens móveis ou imóveis, bem como à venda de bens apreendidos ou penhorados (Art. 71, caput).\n3) A frase está incorreta em ambas as afirmações: não é exclusivamente eletrônica e não se restringe à venda de bens inservíveis.",
+    explicacao: "Gabarito: ERRADO.\n\nAnálise: A modalidade LEILÃO na Nova Lei de Licitações:\n1) Não é exclusivamente eletrônica - pode ser presencial ou eletrônico (Art. 71, § 1º).\n2) Destina-se à alienação de bens móveis ou imóveis, bem como à venda de bens apreendidos ou penhorados (Art. 71, caput).\n3) A frase está incorreta em ambas as afirmações: não é exclusivamente eletrônica e não se restringe à venda de bens inservíveis.",
     taxa_acerto_comunidade: 68,
     total_respostas_comunidade: 4800,
     alternativas: [
@@ -1340,7 +1340,7 @@ export const MOCK_QUESTOES_2025: Questao[] = [
     orgao: "Banco do Brasil",
     cargo: "Escriturário - Agente Comercial",
     enunciado: "Em um banco, há 5 caixas disponíveis para atendimento, numerados de 1 a 5. Dois clientes chegam simultaneamente e escolhem aleatoriamente caixas distintos para serem atendidos. A probabilidade de que a soma dos números dos caixas escolhidos seja par é igual a:",
-    explicacao: "Gabarito: Letra B - 2/5.\n\nResolução passo a passo:\n1) Total de pares de caixas distintos: C(5,2) = 10 pares possíveis.\n2) Soma será par quando ambos os números forem pares ou ambos ímpares.\n3) Caixas pares: {2, 4} �  C(2,2) = 1 par.\n4) Caixas ímpares: {1, 3, 5} �  C(3,2) = 3 pares.\n5) Total de pares com soma par: 1 + 3 = 4 pares.\n6) Probabilidade = 4/10 = 2/5.\n\nAlternativamente: Probabilidade = (C(2,2) + C(3,2)) / C(5,2) = (1+3)/10 = 4/10 = 2/5.",
+    explicacao: "Gabarito: Letra B - 2/5.\n\nResolução passo a passo:\n1) Total de pares de caixas distintos: C(5,2) = 10 pares possíveis.\n2) Soma será par quando ambos os números forem pares ou ambos ímpares.\n3) Caixas pares: {2, 4}   C(2,2) = 1 par.\n4) Caixas ímpares: {1, 3, 5}   C(3,2) = 3 pares.\n5) Total de pares com soma par: 1 + 3 = 4 pares.\n6) Probabilidade = 4/10 = 2/5.\n\nAlternativamente: Probabilidade = (C(2,2) + C(3,2)) / C(5,2) = (1+3)/10 = 4/10 = 2/5.",
     taxa_acerto_comunidade: 65,
     total_respostas_comunidade: 4200,
     alternativas: [
@@ -1353,7 +1353,7 @@ export const MOCK_QUESTOES_2025: Questao[] = [
     created_at: "2025-03-15T00:00:00Z",
   },
 
-  // 18. �0tica - Vedações (FGV 2025)
+  // 18. Ética - Vedações (FGV 2025)
   {
     id: "q-018",
     disciplina_id: "disc-etica",
@@ -1365,8 +1365,8 @@ export const MOCK_QUESTOES_2025: Questao[] = [
     ano: 2025,
     orgao: "Receita Federal do Brasil",
     cargo: "Auditor-Fiscal da Receita Federal",
-    enunciado: "Conforme o Código de �0tica Profissional do Servidor Público Civil (Decreto nº 1.171/1994), é vedado ao servidor público:",
-    explicacao: "Gabarito: Letra C - Retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material.\n\nAnálise das alternativas:\n⬢ A) ERRADO: �0 PERMITIDO usar de urbanidade no atendimento ao público, não é vedado.\n⬢ B) ERRADO: �0 DEVER proteger os bens públicos, não é vedado.\n⬢ C) CORRETO: Item X do Decreto: 'X - retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material'.\n⬢ D) ERRADO: �0 DEVER comunicar irregularidades, não é vedado.\n⬢ E) ERRADO: �0 DEVER ser cortês, não é vedado.",
+    enunciado: "Conforme o Código de Ética Profissional do Servidor Público Civil (Decreto nº 1.171/1994), é vedado ao servidor público:",
+    explicacao: "Gabarito: Letra C - Retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material.\n\nAnálise das alternativas:\n⬢ A) ERRADO: É PERMITIDO usar de urbanidade no atendimento ao público, não é vedado.\n⬢ B) ERRADO: É DEVER proteger os bens públicos, não é vedado.\n⬢ C) CORRETO: Item X do Decreto: 'X - retardar ou dificultar o exercício regular de direito por qualquer pessoa, causando-lhe dano moral ou material'.\n⬢ D) ERRADO: É DEVER comunicar irregularidades, não é vedado.\n⬢ E) ERRADO: É DEVER ser cortês, não é vedado.",
     taxa_acerto_comunidade: 85,
     total_respostas_comunidade: 3200,
     alternativas: [
@@ -1415,7 +1415,7 @@ export const MOCK_QUESTOES_2025: Questao[] = [
     orgao: "SERPRO",
     cargo: "Analista de Segurança da Informação",
     enunciado: "Em relação ao modelo Zero Trust de segurança, assinale a afirmativa correta:",
-    explicacao: "Gabarito: Letra D - Baseia-se no princípio 'nunca confie, sempre verifique', exigindo autenticação contínua e autorização granular.\n\nAnálise do modelo Zero Trust:\n⬢ A) ERRADO: Zero Trust NÒO pressupõe que tudo dentro da rede corporativa é confiável - é exatamente o oposto.\n⬢ B) ERRADO: Zero Trust NÒO dispensa autenticação multifator - geralmente a exige.\n⬢ C) ERRADO: Zero Trust NÒO considera que dispositivos na rede interna são inerentemente seguros.\n⬢ D) CORRETO: O princípio fundamental é 'never trust, always verify', com autenticação contínua, microssegmentação e controle de acesso baseado em contexto.\n⬢ E) ERRADO: Zero Trust NÒO recomenda confiar plenamente em qualquer usuário ou dispositivo, independentemente da localização.",
+    explicacao: "Gabarito: Letra D - Baseia-se no princípio 'nunca confie, sempre verifique', exigindo autenticação contínua e autorização granular.\n\nAnálise do modelo Zero Trust:\n⬢ A) ERRADO: Zero Trust NÃO pressupõe que tudo dentro da rede corporativa é confiável - é exatamente o oposto.\n⬢ B) ERRADO: Zero Trust NÃO dispensa autenticação multifator - geralmente a exige.\n⬢ C) ERRADO: Zero Trust NÃO considera que dispositivos na rede interna são inerentemente seguros.\n⬢ D) CORRETO: O princípio fundamental é 'never trust, always verify', com autenticação contínua, microssegmentação e controle de acesso baseado em contexto.\n⬢ E) ERRADO: Zero Trust NÃO recomenda confiar plenamente em qualquer usuário ou dispositivo, independentemente da localização.",
     taxa_acerto_comunidade: 70,
     total_respostas_comunidade: 2900,
     alternativas: [
@@ -1467,15 +1467,15 @@ export const MOCK_QUESTOES_2025: Questao[] = [
     orgao: "Instituto Nacional do Seguro Social",
     cargo: "Técnico do Seguro Social",
     enunciado: "Considere as proposições simples:\nP: 'O benefício foi concedido'\nQ: 'O segurado possui os requisitos legais'\n\nA proposição 'O benefício não foi concedido se, e somente se, o segurado não possui os requisitos legais' pode ser representada simbolicamente por:",
-    explicacao: "Gabarito: Letra B - ~P �  ~Q\n\nAnálise:\n'Se, e somente se' representa a bicondicional (� ).\n'O benefício não foi concedido' = negação de P = ~P\n'O segurado não possui os requisitos legais' = negação de Q = ~Q\n\nPortanto: ~P �  ~Q\n\nDica: A bicondicional estabelece equivalência entre as duas partes. A proposição afirma que a não concessão do benefício é equivalente à não posse dos requisitos legais.",
+    explicacao: "Gabarito: Letra B - ~P   ~Q\n\nAnálise:\n'Se, e somente se' representa a bicondicional ( ).\n'O benefício não foi concedido' = negação de P = ~P\n'O segurado não possui os requisitos legais' = negação de Q = ~Q\n\nPortanto: ~P   ~Q\n\nDica: A bicondicional estabelece equivalência entre as duas partes. A proposição afirma que a não concessão do benefício é equivalente à não posse dos requisitos legais.",
     taxa_acerto_comunidade: 75,
     total_respostas_comunidade: 2800,
     alternativas: [
-      { id: "alt-022-a", questao_id: "q-022", letra: "A", texto: "P �  ~Q", correta: false, ordem: 1 },
-      { id: "alt-022-b", questao_id: "q-022", letra: "B", texto: "~P �  ~Q", correta: true, ordem: 2 },
-      { id: "alt-022-c", questao_id: "q-022", letra: "C", texto: "~P �  Q", correta: false, ordem: 3 },
-      { id: "alt-022-d", questao_id: "q-022", letra: "D", texto: "P �  Q", correta: false, ordem: 4 },
-      { id: "alt-022-e", questao_id: "q-022", letra: "E", texto: "~P �ƨ ~Q", correta: false, ordem: 5 },
+      { id: "alt-022-a", questao_id: "q-022", letra: "A", texto: "P   ~Q", correta: false, ordem: 1 },
+      { id: "alt-022-b", questao_id: "q-022", letra: "B", texto: "~P   ~Q", correta: true, ordem: 2 },
+      { id: "alt-022-c", questao_id: "q-022", letra: "C", texto: "~P   Q", correta: false, ordem: 3 },
+      { id: "alt-022-d", questao_id: "q-022", letra: "D", texto: "P   Q", correta: false, ordem: 4 },
+      { id: "alt-022-e", questao_id: "q-022", letra: "E", texto: "~P ƨ ~Q", correta: false, ordem: 5 },
     ],
     created_at: "2026-02-15T00:00:00Z",
   },

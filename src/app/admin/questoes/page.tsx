@@ -150,7 +150,14 @@ export default function AdminQuestoesPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link href="/admin/usuarios">
+            <Button variant="outline" className="flex items-center gap-2 text-xs font-semibold">
+              <ShieldCheck className="w-4 h-4 text-purple-600" />
+              Usuários & Permissões
+            </Button>
+          </Link>
+
           <Link href="/admin/questoes/importar">
             <Button variant="outline" className="flex items-center gap-2 text-xs font-semibold">
               <Upload className="w-4 h-4" />
