@@ -8,6 +8,7 @@ export interface Profile {
   concurso_alvo_id?: string | null;
   cargo_alvo_id?: string | null;
   meta_diaria_questoes?: number;
+  role?: "user" | "admin" | "editor";
   created_at: string;
 }
 
@@ -61,6 +62,7 @@ export interface Edital {
   created_at: string;
 }
 
+// ── Taxonomia Hierárquica ──
 export interface Disciplina {
   id: string;
   nome: string;
@@ -83,23 +85,76 @@ export interface Assunto {
   created_at: string;
 }
 
+export interface Subassunto {
+  id: string;
+  assunto_id: string;
+  nome: string;
+  slug: string;
+  ordem: number;
+  created_at: string;
+}
+
+export interface Banca {
+  id: string;
+  nome: string;
+  sigla: string;
+  site_oficial?: string;
+  created_at?: string;
+}
+
+export interface Orgao {
+  id: string;
+  nome: string;
+  sigla: string;
+  esfera: ConcursoEsfera;
+  uf?: string | null;
+  created_at?: string;
+}
+
+export interface CargoBase {
+  id: string;
+  nome: string;
+  nivel_escolaridade: ConcursoNivel;
+  area_atuacao?: string;
+  created_at?: string;
+}
+
+export interface Prova {
+  id: string;
+  banca_id: string;
+  orgao_id: string;
+  cargo_base_id?: string;
+  ano: number;
+  nome_concurso: string;
+  caderno_tipo?: string;
+  edital_numero?: string;
+  data_aplicacao?: string;
+  fonte_url?: string;
+  licenca_tipo?: string;
+  created_at?: string;
+}
+
 export type QuestaoTipo = "multipla_escolha" | "certo_errado";
 export type QuestaoDificuldade = "facil" | "medio" | "dificil";
+export type OrigemQuestaoFiltro = "todas" | "oficiais" | "autorais_ia";
 
 export interface Alternativa {
   id: string;
-  questao_id: string;
+  questao_id?: string;
   letra?: "A" | "B" | "C" | "D" | "E";
   texto: string;
   correta: boolean;
   ordem: number;
+  explicacao_especifica?: string;
 }
 
 export interface Questao {
   id: string;
   disciplina_id: string;
   assunto_id: string;
+  subassunto_id?: string | null;
   concurso_id?: string | null;
+  prova_id?: string | null;
   enunciado: string;
   tipo: QuestaoTipo;
   dificuldade: QuestaoDificuldade;
@@ -112,7 +167,20 @@ export interface Questao {
   taxa_acerto_comunidade?: number;
   total_respostas_comunidade?: number;
   alternativas: Alternativa[];
+
+  // Metadados de Autoria, IA e Integridade
+  is_autoral_ia?: boolean;
+  modelo_ia?: string | null;
+  prompt_versao?: string | null;
+  revisada_por_especialista?: boolean;
+  anulada?: boolean;
+  desatualizada?: boolean;
+  motivo_desatualizacao?: string | null;
+  versao?: number;
+  fingerprint_hash?: string;
+
   created_at: string;
+  updated_at?: string;
 }
 
 export interface RespostaUsuario {
@@ -122,6 +190,7 @@ export interface RespostaUsuario {
   alternativa_id: string; // "certo" | "errado" for CE or id
   correta: boolean;
   tempo_resposta: number; // in seconds
+  questao_versao?: number;
   created_at: string;
 }
 
@@ -204,17 +273,61 @@ export interface EstatisticasGerais {
 export interface FiltroQuestoes {
   disciplina_id?: string;
   assunto_id?: string;
+  subassunto_id?: string;
   banca?: string;
   ano?: number | string;
   concurso_id?: string;
   tipo?: QuestaoTipo | "todos";
   dificuldade?: QuestaoDificuldade | "todos";
   status?: "todas" | "nao_resolvidas" | "acertadas" | "erradas" | "favoritas";
+  origem?: OrigemQuestaoFiltro;
   termo_busca?: string;
+  anulada?: boolean;
+  desatualizada?: boolean;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface ConcursoComDetalhes extends Concurso {
   cargos: Cargo[];
   editais: Edital[];
   disciplinas: Disciplina[];
+}
+
+// ── Tipos de Importação e Lote ──
+export interface ImportItemError {
+  linha: number;
+  campo?: string;
+  mensagem?: string;
+  motivo?: string;
+  dado?: unknown;
+}
+
+export interface ImportReport {
+  totalLidos: number;
+  totalLinhas?: number;
+  sucesso: boolean;
+  sucessos: number;
+  inseridas?: number;
+  duplicadasIgnoradas: number;
+  duplicadasAtualizadas: number;
+  invalidas: number;
+  erros: ImportItemError[];
+  tempoGastoMs: number;
+}
+
+export interface ImportOptions {
+  politicaDuplicatas: "ignorar" | "atualizar" | "rejeitar_tudo";
+  marcarComoIA?: boolean;
+  modeloIA?: string;
+  revisadaPorPadrao?: boolean;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasMore: boolean;
 }

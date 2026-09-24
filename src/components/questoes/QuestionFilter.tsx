@@ -3,7 +3,7 @@
 import React from "react";
 import { FiltroQuestoes, Disciplina, Assunto } from "@/types";
 import { Button } from "@/components/ui/Button";
-import { Search, Filter, RotateCcw, X } from "lucide-react";
+import { Search, Filter, RotateCcw, X, Sparkles } from "lucide-react";
 
 interface QuestionFilterProps {
   filtro: FiltroQuestoes;
@@ -28,9 +28,11 @@ export function QuestionFilter({
     "Fundação Cesgranrio",
     "Fundação Vunesp",
     "FCC - Fundação Carlos Chagas",
+    "Instituto AOCP",
+    "Quadrix",
   ];
 
-  const anos = [2025, 2024, 2023, 2022, 2021];
+  const anos = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018];
 
   const assuntosFiltrados = filtro.disciplina_id
     ? assuntos.filter((a) => a.disciplina_id === filtro.disciplina_id)
@@ -39,7 +41,7 @@ export function QuestionFilter({
   const handleChange = (campo: keyof FiltroQuestoes, valor: unknown) => {
     onFiltroChange({
       ...filtro,
-      [campo]: valor === "todos" || valor === "" ? undefined : valor,
+      [campo]: valor === "todos" || valor === "todas" || valor === "" ? undefined : valor,
       // Reset assunto if disciplina changes
       ...(campo === "disciplina_id" ? { assunto_id: undefined } : {}),
     });
@@ -53,6 +55,7 @@ export function QuestionFilter({
       filtro.tipo ||
       filtro.dificuldade ||
       filtro.status ||
+      (filtro.origem && filtro.origem !== "todas") ||
       filtro.termo_busca
   );
 
@@ -72,7 +75,7 @@ export function QuestionFilter({
         {temFiltrosAtivos && (
           <button
             onClick={onLimparFiltros}
-            className="text-xs text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1"
+            className="text-xs text-rose-600 dark:text-rose-400 hover:underline flex items-center gap-1 cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
             Limpar filtros
@@ -85,7 +88,7 @@ export function QuestionFilter({
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
         <input
           type="text"
-          placeholder="Pesquisar por palavra-chave no enunciado..."
+          placeholder="Pesquisar por palavra-chave no enunciado, explicação ou órgão..."
           value={filtro.termo_busca || ""}
           onChange={(e) => handleChange("termo_busca", e.target.value)}
           className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100"
@@ -101,7 +104,24 @@ export function QuestionFilter({
       </div>
 
       {/* Filter Selects Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 text-xs">
+        {/* Origem (Oficiais vs Autorais IA) */}
+        <div>
+          <label className="block font-medium text-slate-600 dark:text-slate-400 mb-1 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-purple-500" />
+            Origem
+          </label>
+          <select
+            value={filtro.origem || "todas"}
+            onChange={(e) => handleChange("origem", e.target.value)}
+            className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-purple-500 text-slate-900 dark:text-slate-100 font-medium"
+          >
+            <option value="todas">Todas as Questões</option>
+            <option value="oficiais">Provas Oficiais Anteriores</option>
+            <option value="autorais_ia">Autorais / Criadas por IA</option>
+          </select>
+        </div>
+
         {/* Status */}
         <div>
           <label className="block font-medium text-slate-600 dark:text-slate-400 mb-1">
@@ -178,7 +198,26 @@ export function QuestionFilter({
           </select>
         </div>
 
-        {/* Tipo / Modalidade */}
+        {/* Ano */}
+        <div>
+          <label className="block font-medium text-slate-600 dark:text-slate-400 mb-1">
+            Ano
+          </label>
+          <select
+            value={filtro.ano ? String(filtro.ano) : "todos"}
+            onChange={(e) => handleChange("ano", e.target.value)}
+            className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100"
+          >
+            <option value="todos">Todos os Anos</option>
+            {anos.map((a) => (
+              <option key={a} value={a}>
+                {a}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Modalidade */}
         <div>
           <label className="block font-medium text-slate-600 dark:text-slate-400 mb-1">
             Modalidade
@@ -191,23 +230,6 @@ export function QuestionFilter({
             <option value="todos">Todas</option>
             <option value="multipla_escolha">Múltipla Escolha</option>
             <option value="certo_errado">Certo ou Errado</option>
-          </select>
-        </div>
-
-        {/* Dificuldade */}
-        <div>
-          <label className="block font-medium text-slate-600 dark:text-slate-400 mb-1">
-            Dificuldade
-          </label>
-          <select
-            value={filtro.dificuldade || "todos"}
-            onChange={(e) => handleChange("dificuldade", e.target.value)}
-            className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100"
-          >
-            <option value="todos">Todas</option>
-            <option value="facil">Fácil</option>
-            <option value="medio">Média</option>
-            <option value="dificil">Difícil</option>
           </select>
         </div>
       </div>

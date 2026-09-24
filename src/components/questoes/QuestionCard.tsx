@@ -20,6 +20,9 @@ import {
   FileText,
   Save,
   Trash2,
+  ShieldCheck,
+  AlertTriangle,
+  Ban,
 } from "lucide-react";
 
 interface QuestionCardProps {
@@ -184,6 +187,63 @@ export function QuestionCard({
             </span>
           )}
           {getDificuldadeBadge()}
+
+          {/* Badge Visual Obrigatório: Questão Autoral / IA */}
+          {questao.is_autoral_ia && (
+            <span
+              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 px-2.5 py-0.5 rounded-md"
+              title={`Questão autoral gerada por IA (${questao.modelo_ia || "Claude 3.5 Sonnet"} - Prompt ${questao.prompt_versao || "v2.1"})`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+              Questão autoral/IA
+              {questao.modelo_ia && (
+                <span className="text-[10px] opacity-75 font-normal">
+                  ({questao.modelo_ia})
+                </span>
+              )}
+            </span>
+          )}
+
+          {/* Badge: Revisada por Especialista */}
+          {questao.revisada_por_especialista && (
+            <span
+              className="inline-flex items-center gap-1 text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-md"
+              title="Questão revisada e validada por professor especialista"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              Revisada
+            </span>
+          )}
+
+          {/* Badges de Status: Anulada e Desatualizada */}
+          {questao.anulada && (
+            <span
+              className="inline-flex items-center gap-1 text-xs font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 px-2 py-0.5 rounded-md"
+              title="Esta questão foi anulada pela banca examinadora."
+            >
+              <Ban className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
+              Anulada
+            </span>
+          )}
+          {questao.desatualizada && (
+            <span
+              className="inline-flex items-center gap-1 text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-md"
+              title={questao.motivo_desatualizacao || "Legislação ou entendimento alterado desde a aplicação da prova."}
+            >
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+              Desatualizada
+            </span>
+          )}
+
+          {/* Versionamento cadastral */}
+          {questao.versao && questao.versao > 1 && (
+            <span
+              className="text-[10px] text-slate-400 dark:text-slate-500 font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800"
+              title={`Versão cadastral ${questao.versao} (histórico preservado)`}
+            >
+              v{questao.versao}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-1.5">

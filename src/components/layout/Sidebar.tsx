@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   FileSpreadsheet,
   BarChart3,
+  Database,
   User,
   ChevronRight,
   Flame,
@@ -85,6 +86,12 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       href: "/perfil",
       label: "Meu Perfil",
       icon: User,
+    },
+    {
+      href: "/admin/questoes",
+      label: "Gestão do Catálogo",
+      icon: Database,
+      badge: "Admin",
     },
   ];
 

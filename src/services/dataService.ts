@@ -33,6 +33,7 @@ const STORAGE_KEYS = {
   CONCURSO_ATIVO: "concursos_app_concurso_ativo",
   ANOTACOES: "concursos_app_anotacoes",
   SIMULADOS_CUSTOM: "concursos_app_simulados_custom",
+  QUESTOES_CUSTOM: "concursos_app_questoes_custom",
 };
 
 // Helper for safe client localStorage
@@ -136,8 +137,109 @@ export const DataService = {
   },
 
   // ── Questões ──
+  getQuestoesCustom(): Questao[] {
+    return getFromStorage<Questao[]>(STORAGE_KEYS.QUESTOES_CUSTOM, []);
+  },
+
+  salvarQuestao(novaQuestao: Questao): Questao {
+    const custom = this.getQuestoesCustom();
+    const index = custom.findIndex(
+      (q) => q.id === novaQuestao.id || (q.fingerprint_hash && q.fingerprint_hash === novaQuestao.fingerprint_hash)
+    );
+
+    if (index >= 0) {
+      custom[index] = { ...custom[index], ...novaQuestao, updated_at: new Date().toISOString() };
+    } else {
+      custom.push(novaQuestao);
+    }
+
+    setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+    return novaQuestao;
+  },
+
+  salvarQuestoesLote(novasQuestoes: Questao[]): number {
+    const custom = this.getQuestoesCustom();
+    const customMap = new Map<string, number>();
+    custom.forEach((q, idx) => {
+      customMap.set(q.id, idx);
+      if (q.fingerprint_hash) {
+        customMap.set(q.fingerprint_hash, idx);
+      }
+    });
+
+    let inseridasOuAtualizadas = 0;
+    novasQuestoes.forEach((nq) => {
+      const idx = customMap.get(nq.id) ?? (nq.fingerprint_hash ? customMap.get(nq.fingerprint_hash) : undefined);
+      if (idx !== undefined) {
+        custom[idx] = { ...custom[idx], ...nq, updated_at: new Date().toISOString() };
+      } else {
+        custom.push(nq);
+        customMap.set(nq.id, custom.length - 1);
+        if (nq.fingerprint_hash) {
+          customMap.set(nq.fingerprint_hash, custom.length - 1);
+        }
+      }
+      inseridasOuAtualizadas++;
+    });
+
+    setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+    return inseridasOuAtualizadas;
+  },
+
+  salvarQuestoesEmLote(novasQuestoes: Questao[]): number {
+    return this.salvarQuestoesLote(novasQuestoes);
+  },
+
+  atualizarQuestao(id: string, updates: Partial<Questao>): Questao | undefined {
+    const custom = this.getQuestoesCustom();
+    const index = custom.findIndex((q) => q.id === id);
+    if (index >= 0) {
+      custom[index] = {
+        ...custom[index],
+        ...updates,
+        versao: (custom[index].versao || 1) + 1,
+        updated_at: new Date().toISOString(),
+      };
+      setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+      return custom[index];
+    }
+
+    // Se for uma mock_questao que está sendo editada pela primeira vez, cria cópia em custom
+    const mock = MOCK_QUESTOES.find((q) => q.id === id);
+    if (mock) {
+      const nova: Questao = {
+        ...mock,
+        ...updates,
+        versao: (mock.versao || 1) + 1,
+        updated_at: new Date().toISOString(),
+      };
+      custom.push(nova);
+      setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+      return nova;
+    }
+
+    return undefined;
+  },
+
+  removerQuestao(id: string): boolean {
+    const custom = this.getQuestoesCustom();
+    const filtrado = custom.filter((q) => q.id !== id);
+    if (filtrado.length !== custom.length) {
+      setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, filtrado);
+      return true;
+    }
+    return false;
+  },
+
+  getTodasQuestoes(): Questao[] {
+    const custom = this.getQuestoesCustom();
+    const customIds = new Set(custom.map((q) => q.id));
+    const mockRestantes = MOCK_QUESTOES.filter((m) => !customIds.has(m.id));
+    return [...custom, ...mockRestantes];
+  },
+
   getQuestoes(filtro?: FiltroQuestoes): Questao[] {
-    let result = [...MOCK_QUESTOES];
+    let result = this.getTodasQuestoes();
     const respostas = this.getRespostas();
     const favoritos = this.getFavoritos();
 
@@ -149,6 +251,10 @@ export const DataService = {
 
     if (filtro.assunto_id) {
       result = result.filter((q) => q.assunto_id === filtro.assunto_id);
+    }
+
+    if (filtro.subassunto_id) {
+      result = result.filter((q) => q.subassunto_id === filtro.subassunto_id);
     }
 
     if (filtro.banca && filtro.banca !== "todas") {
@@ -173,12 +279,30 @@ export const DataService = {
       result = result.filter((q) => q.dificuldade === filtro.dificuldade);
     }
 
+    // Filtro por Origem (Todas, Oficiais, Autorais IA)
+    if (filtro.origem && filtro.origem !== "todas") {
+      if (filtro.origem === "oficiais") {
+        result = result.filter((q) => !q.is_autoral_ia);
+      } else if (filtro.origem === "autorais_ia") {
+        result = result.filter((q) => Boolean(q.is_autoral_ia));
+      }
+    }
+
+    // Filtros de status anulada / desatualizada
+    if (filtro.anulada !== undefined) {
+      result = result.filter((q) => Boolean(q.anulada) === filtro.anulada);
+    }
+    if (filtro.desatualizada !== undefined) {
+      result = result.filter((q) => Boolean(q.desatualizada) === filtro.desatualizada);
+    }
+
     if (filtro.termo_busca && filtro.termo_busca.trim() !== "") {
       const termo = filtro.termo_busca.toLowerCase();
       result = result.filter(
         (q) =>
           q.enunciado.toLowerCase().includes(termo) ||
           q.orgao.toLowerCase().includes(termo) ||
+          q.banca.toLowerCase().includes(termo) ||
           (q.cargo && q.cargo.toLowerCase().includes(termo)) ||
           q.explicacao.toLowerCase().includes(termo)
       );
@@ -206,7 +330,7 @@ export const DataService = {
   },
 
   getQuestaoById(id: string): Questao | undefined {
-    return MOCK_QUESTOES.find((q) => q.id === id);
+    return this.getTodasQuestoes().find((q) => q.id === id);
   },
 
   // ── Respostas do Usuário ──

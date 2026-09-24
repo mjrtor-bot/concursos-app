@@ -1481,3 +1481,15 @@ export const MOCK_QUESTOES_2025: Questao[] = [
   },
 ];
 
+
+
+// Aliases para compatibilidade de importação
+export const mockProfile = MOCK_PROFILE;
+export const mockConcursos = MOCK_CONCURSOS;
+export const mockCargos = MOCK_CARGOS;
+export const mockEditais = MOCK_EDITAIS;
+export const mockDisciplinas = MOCK_DISCIPLINAS;
+export const mockAssuntos = MOCK_ASSUNTOS;
+export const mockQuestoes = MOCK_QUESTOES;
+export const mockSimulados = MOCK_SIMULADOS;
+export const mockQuestoes2025 = MOCK_QUESTOES_2025;
