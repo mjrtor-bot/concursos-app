@@ -111,7 +111,8 @@ export function QuestionCard({
     const resultado = DataService.registrarResposta(
       questao.id,
       selecionadaId,
-      tempoGastoSegundos
+      tempoGastoSegundos,
+      questao
     );
 
     setResposta(resultado.resposta);

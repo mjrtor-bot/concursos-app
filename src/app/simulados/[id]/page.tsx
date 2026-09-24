@@ -101,7 +101,8 @@ export default function SimuladoExecucaoPage({
         DataService.registrarResposta(
           q.id,
           resp.alternativa_selecionada_id,
-          resp.tempo_gasto || 60
+          resp.tempo_gasto || 60,
+          q
         );
       }
     });
@@ -113,7 +114,7 @@ export default function SimuladoExecucaoPage({
     const tentativa: SimuladoTentativa = {
       id: tentativaId,
       simulado_id: simulado.id,
-      usuario_id: user?.id || "user-demo-1",
+      usuario_id: user?.id || "",
       iniciado_em: new Date(Date.now() - tempoGasto * 1000).toISOString(),
       finalizado_em: new Date().toISOString(),
       tempo_total_segundos: tempoGasto,

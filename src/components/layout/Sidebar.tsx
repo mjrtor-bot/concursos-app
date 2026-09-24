@@ -20,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { useConcurso } from "@/contexts/ConcursoContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { ConcursoSelectorModal } from "@/components/concursos/ConcursoSelectorModal";
 import { DataService } from "@/services/dataService";
 
@@ -30,6 +31,7 @@ interface SidebarProps {
 
 export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
+  const { user } = useAuth();
   const { concursoAtivo, diasAteAProva } = useConcurso();
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [sequenciaDias, setSequenciaDias] = useState(1);
@@ -87,12 +89,16 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       label: "Meu Perfil",
       icon: User,
     },
-    {
-      href: "/admin/questoes",
-      label: "Gestão do Catálogo",
-      icon: Database,
-      badge: "Admin",
-    },
+    ...(user?.role === "admin"
+      ? [
+          {
+            href: "/admin/questoes",
+            label: "Gestão do Catálogo",
+            icon: Database,
+            badge: "Admin",
+          },
+        ]
+      : []),
   ];
 
   return (

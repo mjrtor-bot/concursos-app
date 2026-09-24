@@ -108,14 +108,14 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
               className="flex items-center gap-2 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
             >
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                {user?.nome ? user.nome.charAt(0).toUpperCase() : "A"}
+                {user?.nome ? user.nome.charAt(0).toUpperCase() : user?.email ? user.email.charAt(0).toUpperCase() : "U"}
               </div>
               <div className="hidden sm:block text-left text-xs">
                 <p className="font-semibold text-slate-900 dark:text-slate-100 leading-tight">
-                  {user?.nome || "Alexandre Silva"}
+                  {user?.nome || "Minha Conta"}
                 </p>
-                <p className="text-[10px] text-slate-400 leading-tight">
-                  {user?.email || "concurseiro@estudos.com"}
+                <p className="text-[10px] text-slate-400 leading-tight truncate max-w-[120px]">
+                  {user?.email || ""}
                 </p>
               </div>
               <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
@@ -131,10 +131,10 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
                 <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl z-30 py-1.5 animate-in zoom-in-95 duration-150">
                   <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800">
                     <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-                      {user?.nome || "Alexandre Silva"}
+                      {user?.nome || "Minha Conta"}
                     </p>
                     <p className="text-[11px] text-slate-400 truncate">
-                      {user?.email || "concurseiro@estudos.com"}
+                      {user?.email || ""}
                     </p>
                   </div>
 

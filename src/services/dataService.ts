@@ -23,6 +23,7 @@ import {
   MOCK_SIMULADOS,
   MOCK_PROFILE,
 } from "@/data/mockData";
+import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_KEYS = {
   PROFILE: "concursos_app_profile",
@@ -352,10 +353,14 @@ export const DataService = {
   registrarResposta(
     questaoId: string,
     alternativaId: string,
-    tempoRespostaSegundos: number = 0
+    tempoRespostaSegundos: number = 0,
+    questaoFallback?: Questao
   ): { resposta: RespostaUsuario; correta: boolean; questao: Questao } {
-    const questao = this.getQuestaoById(questaoId);
+    const questao = questaoFallback || this.getQuestaoById(questaoId);
     if (!questao) throw new Error(`Questão ${questaoId} não encontrada`);
+
+    // Salva a questão localmente para que o caderno de erros e histórico consigam recuperá-la
+    this.salvarQuestao(questao);
 
     let correta = false;
     if (questao.tipo === "multipla_escolha") {
@@ -390,7 +395,93 @@ export const DataService = {
       this.marcarErroComoRevisado(questaoId);
     }
 
+    // Persistência assíncrona no Supabase caso usuário autenticado
+    this.persistirRespostaSupabase(questao, alternativaId, correta, tempoRespostaSegundos).catch((err) => {
+      console.warn("[DataService] Falha ao persistir resposta no Supabase:", err);
+    });
+
     return { resposta: novaResposta, correta, questao };
+  },
+
+  async persistirRespostaSupabase(
+    questao: Questao,
+    alternativaId: string,
+    correta: boolean,
+    tempoRespostaSegundos: number
+  ): Promise<void> {
+    if (typeof window === "undefined") return;
+
+    const isUuid = (val?: string) =>
+      Boolean(val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val));
+
+    // Se o ID da questão não é um UUID (ex: questão mock/teste local), não envia para o banco
+    if (!isUuid(questao.id)) return;
+
+    const alt = questao.alternativas.find((a) => a.id === alternativaId);
+
+    // 1. Tenta rota de API segura do Next.js
+    try {
+      const res = await fetch("/api/questoes/resposta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questao_id: questao.id,
+          alternativa_id: isUuid(alternativaId) ? alternativaId : null,
+          correta,
+          tempo_resposta_segundos: tempoRespostaSegundos,
+          tipo: questao.tipo,
+          alternativa_texto: alt?.texto,
+          questao_versao: questao.versao || 1,
+        }),
+      });
+
+      if (res.ok) {
+        return;
+      }
+    } catch {
+      // Continua para fallback do cliente direto
+    }
+
+    // 2. Fallback direto via cliente Supabase se disponível
+    try {
+      const supabase = createClient();
+      if (!supabase) return;
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.user) return;
+
+      await supabase.from("respostas_usuarios").insert({
+        usuario_id: session.user.id,
+        questao_id: questao.id,
+        alternativa_id: isUuid(alternativaId) ? alternativaId : null,
+        resposta_certo_errado:
+          questao.tipo === "certo_errado"
+            ? alt?.texto?.toLowerCase() === "certo"
+              ? "certo"
+              : "errado"
+            : null,
+        correta,
+        tempo_resposta_segundos: tempoRespostaSegundos,
+        questao_versao: questao.versao || 1,
+      });
+
+      if (!correta) {
+        await supabase.from("caderno_erros").upsert(
+          {
+            usuario_id: session.user.id,
+            questao_id: questao.id,
+            revisado: false,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "usuario_id, questao_id" }
+        );
+      }
+    } catch (err) {
+      console.warn("[DataService] Erro ao gravar resposta via cliente Supabase:", err);
+    }
   },
 
   // ── Caderno de Erros ──

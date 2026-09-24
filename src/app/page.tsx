@@ -18,16 +18,16 @@ export default function HomePage() {
         </div>
         <div className="flex gap-4">
           <Link
-            href="/dashboard"
+            href="/login"
             className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400"
           >
             Entrar
           </Link>
           <Link
-            href="/dashboard"
+            href="/cadastro"
             className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 transition"
           >
-            Começar Grátis
+            Criar Conta
           </Link>
         </div>
       </header>
@@ -55,16 +55,16 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/dashboard"
+              href="/login"
               className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition shadow-lg shadow-blue-500/20"
             >
-              Explorar Dashboard
+              Acessar Plataforma
             </Link>
             <Link
-              href="/questoes"
+              href="/cadastro"
               className="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition"
             >
-              Ver Questões
+              Criar Conta Gratuita
             </Link>
           </div>
         </div>

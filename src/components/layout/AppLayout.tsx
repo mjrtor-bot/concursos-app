@@ -13,8 +13,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Rotas de fluxo limpo/autenticação/onboarding sem Sidebar padrão
+  // Rotas de fluxo limpo/autenticação/onboarding/landing sem Sidebar padrão
   const rotasSemSidebar = [
+    "/",
     "/login",
     "/cadastro",
     "/recuperar-senha",

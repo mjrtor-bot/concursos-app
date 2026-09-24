@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { Button } from "@/components/ui/Button";
@@ -11,50 +11,72 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Sparkles,
   ArrowRight,
-  ShieldCheck,
   CheckCircle2,
-  GraduationCap,
+  Loader2,
 } from "lucide-react";
 
-export default function LoginPage() {
+function sanitizeNext(nextParam: string | null): string {
+  if (!nextParam || !nextParam.startsWith("/") || nextParam.startsWith("//")) {
+    return "/dashboard";
+  }
+
+  if (nextParam.startsWith("/login") || nextParam.startsWith("/cadastro")) {
+    return "/dashboard";
+  }
+
+  return nextParam;
+}
+
+function LoginContent() {
   const router = useRouter();
-  const { login, isSupabaseConnected } = useAuth();
+  const searchParams = useSearchParams();
+  const { login, user, isLoading: isAuthLoading, isSupabaseConnected } = useAuth();
   const { success, error: showError } = useToast();
+
+  const nextUrl = useMemo(
+    () => sanitizeNext(searchParams.get("next")),
+    [searchParams]
+  );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [lembrarMe, setLembrarMe] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthLoading && user) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthLoading, router, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      showError("Por favor, preencha todos os campos obrigatórios.");
+      showError("Por favor, preencha e-mail e senha.");
       return;
     }
 
-    setIsLoading(true);
+    if (!isSupabaseConnected) {
+      showError("Autenticação indisponível. Verifique a configuração do Supabase.");
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       const ok = await login(email, password);
       if (ok) {
         success("Login realizado com sucesso! Bem-vindo(a) de volta.");
-        router.push("/dashboard");
+        router.replace(nextUrl);
       } else {
-        showError("E-mail ou senha inválidos. Verifique seus dados.");
+        showError("E-mail ou senha inválidos. Verifique seus dados e tente novamente.");
       }
     } catch {
       showError("Ocorreu um erro ao realizar login. Tente novamente.");
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
-  };
-
-  const handlePreencherDemo = (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword("123456");
   };
 
   return (
@@ -62,7 +84,7 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand Logo */}
         <div className="flex justify-center">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/25 font-bold text-2xl tracking-wider">
               C
             </div>
@@ -73,7 +95,7 @@ export default function LoginPage() {
           Acesse sua conta
         </h2>
         <p className="mt-1 text-center text-sm text-slate-500 dark:text-slate-400">
-          Prepare-se para o seu concurso dos sonhos com inteligência
+          Entre com seu e-mail e senha cadastrados para continuar seus estudos
         </p>
       </div>
 
@@ -171,63 +193,20 @@ export default function LoginPage() {
               type="submit"
               className="w-full mt-2 justify-center py-2.5"
               size="lg"
-              isLoading={isLoading}
+              isLoading={isSubmitting || isAuthLoading}
               rightIcon={<ArrowRight className="w-4 h-4" />}
             >
               Entrar na Plataforma
             </Button>
           </form>
 
-          {/* Quick Demo Credentials for Fast Testing */}
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              Contas de Acesso Rápido para Demonstração:
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() =>
-                  handlePreencherDemo("alexandre.silva@estudos.com")
-                }
-                className="p-2.5 bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-800 rounded-xl text-left transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                    Alexandre Silva
-                  </span>
-                  <GraduationCap className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-500" />
-                </div>
-                <span className="text-[10px] text-slate-500 block truncate">
-                  Foco: CNU / Bloco 7
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handlePreencherDemo("admin@concursos.com")}
-                className="p-2.5 bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 rounded-xl text-left transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                    Gestor / Admin
-                  </span>
-                  <ShieldCheck className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500" />
-                </div>
-                <span className="text-[10px] text-slate-500 block truncate">
-                  Acesso Total ao Catálogo
-                </span>
-              </button>
-            </div>
-          </div>
-
           {/* Status Indicator */}
           <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 pt-1">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
             <span>
               {isSupabaseConnected
-                ? "Conexão Segura Supabase SSL"
-                : "Modo de Demonstração Local Híbrido Ativo"}
+                ? "Conexão segura com Supabase Auth"
+                : "Supabase não configurado: login real indisponível"}
             </span>
           </div>
         </div>
@@ -244,5 +223,19 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-sm text-slate-500 gap-2">
+          <Loader2 className="w-4 h-4 animate-spin text-blue-600" /> Carregando login...
+        </div>
+      }
+    >
+      <LoginContent />
+    </Suspense>
   );
 }
