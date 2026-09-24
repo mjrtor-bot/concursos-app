@@ -1,7 +1,16 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+export function sanitizeSupabaseUrl(url?: string): string {
+  if (!url) return "";
+  let clean = url.trim();
+  clean = clean.replace(/\/rest\/v1\/?$/, "");
+  clean = clean.replace(/\/+$/, "");
+  return clean;
+}
+
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const supabaseUrl = sanitizeSupabaseUrl(rawUrl);
+const supabaseAnonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "").trim();
 
 export const isSupabaseConfigured = Boolean(
   supabaseUrl &&
@@ -17,3 +26,4 @@ export function createClient() {
   }
   return createBrowserClient(supabaseUrl, supabaseAnonKey);
 }
+

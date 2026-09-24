@@ -161,9 +161,9 @@ export interface Questao {
   banca: string;
   ano: number;
   orgao: string;
-  cargo?: string;
+  cargo?: string | null;
   explicacao: string;
-  texto_apoio?: string;
+  texto_apoio?: string | null;
   taxa_acerto_comunidade?: number;
   total_respostas_comunidade?: number;
   alternativas: Alternativa[];

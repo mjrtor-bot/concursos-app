@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { isSupabaseConfigured } from "./client";
+import { isSupabaseConfigured, sanitizeSupabaseUrl } from "./client";
 
 export async function updateSession(request: NextRequest) {
   if (!isSupabaseConfigured) {
@@ -15,9 +15,12 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  const url = sanitizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const anonKey = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "").trim();
+
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    anonKey,
     {
       cookies: {
         getAll() {
@@ -43,3 +46,4 @@ export async function updateSession(request: NextRequest) {
 
   return supabaseResponse;
 }
+
