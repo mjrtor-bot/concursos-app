@@ -18,9 +18,22 @@ import {
   Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { processarImportacaoQuestoes } from "@/services/questionImporter";
-import { DataService } from "@/services/dataService";
 import { ImportReport, ImportOptions, Questao } from "@/types";
+import { processarImportacaoQuestoes } from "@/services/questionImporter";
+
+// Persiste questões via API server-side (Supabase quando configurado, mock fallback)
+async function importarViaAPI(
+  conteudo: string,
+  formato: "csv" | "json",
+  options: ImportOptions
+): Promise<{ success: boolean; report?: ImportReport; questoesValidadas?: Questao[]; error?: string; details?: string[] }> {
+  const res = await fetch("/api/admin/questoes/import", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ conteudo, formato, options }),
+  });
+  return res.json();
+}
 
 export default function AdminImportarQuestoesPage() {
   const router = useRouter();
@@ -70,15 +83,21 @@ export default function AdminImportarQuestoesPage() {
     setErroImportacao(null);
 
     try {
-      const questoesAtuais = DataService.getTodasQuestoes();
       const options: ImportOptions = {
         politicaDuplicatas: politica,
         revisadaPorPadrao: true,
       };
 
-      const resultado = processarImportacaoQuestoes(conteudo, fmt, questoesAtuais, options);
-      setReport(resultado.report);
-      setQuestoesValidadas(resultado.questoesValidadas);
+      // Pré-validação local (dry-run) — não persiste nada no banco
+      const { questoesValidadas: validadas, report: relatorio } = processarImportacaoQuestoes(
+        conteudo,
+        fmt,
+        [], // sem dados existentes no pré-relatório: mostra o que seria inserido
+        options
+      );
+
+      setReport(relatorio);
+      setQuestoesValidadas(validadas);
     } catch (err: any) {
       setErroImportacao(err.message || "Erro ao processar o conteúdo do arquivo.");
     } finally {
@@ -86,19 +105,35 @@ export default function AdminImportarQuestoesPage() {
     }
   };
 
-  const handleConfirmarImportacao = () => {
+  const handleConfirmarImportacao = async () => {
     if (!questoesValidadas || questoesValidadas.length === 0) {
       setErroImportacao("Não há questões válidas para importar.");
       return;
     }
 
     setProcessando(true);
+    setErroImportacao(null);
+
     try {
-      DataService.salvarQuestoesEmLote(questoesValidadas);
-      setImportadoComSucesso(true);
-      setTimeout(() => {
-        router.push("/admin/questoes");
-      }, 2000);
+      const options: ImportOptions = {
+        politicaDuplicatas: politicaDuplicatas,
+        revisadaPorPadrao: true,
+      };
+
+      const resultado = await importarViaAPI(conteudoArquivo, formato, options);
+
+      if (resultado.success) {
+        setImportadoComSucesso(true);
+        setTimeout(() => {
+          router.push("/admin/questoes");
+        }, 2000);
+      } else {
+        const detalhe = resultado.details?.join("; ") ?? "";
+        setErroImportacao(
+          (resultado.error || "Erro ao persistir as questões.") + (detalhe ? ` Detalhes: ${detalhe}` : "")
+        );
+        setProcessando(false);
+      }
     } catch (err: any) {
       setErroImportacao(err.message || "Erro ao persistir as questões no catálogo.");
       setProcessando(false);

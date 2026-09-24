@@ -12,7 +12,21 @@ interface QuestionFilterProps {
   assuntos: Assunto[];
   onLimparFiltros: () => void;
   totalEncontradas?: number;
+  bancas?: string[];
+  anos?: number[];
 }
+
+const DEFAULT_BANCAS = [
+  "FGV",
+  "Cebraspe (CESPE)",
+  "Fundação Cesgranrio",
+  "Fundação Vunesp",
+  "FCC - Fundação Carlos Chagas",
+  "Instituto AOCP",
+  "Quadrix",
+];
+
+const DEFAULT_ANOS = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018];
 
 export function QuestionFilter({
   filtro,
@@ -21,18 +35,11 @@ export function QuestionFilter({
   assuntos,
   onLimparFiltros,
   totalEncontradas,
+  bancas = DEFAULT_BANCAS,
+  anos = DEFAULT_ANOS,
 }: QuestionFilterProps) {
-  const bancas = [
-    "FGV",
-    "Cebraspe (CESPE)",
-    "Fundação Cesgranrio",
-    "Fundação Vunesp",
-    "FCC - Fundação Carlos Chagas",
-    "Instituto AOCP",
-    "Quadrix",
-  ];
-
-  const anos = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018];
+  const listaBancas = bancas && bancas.length > 0 ? bancas : DEFAULT_BANCAS;
+  const listaAnos = anos && anos.length > 0 ? anos : DEFAULT_ANOS;
 
   const assuntosFiltrados = filtro.disciplina_id
     ? assuntos.filter((a) => a.disciplina_id === filtro.disciplina_id)
@@ -190,7 +197,7 @@ export function QuestionFilter({
             className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="todas">Todas as Bancas</option>
-            {bancas.map((b) => (
+            {listaBancas.map((b) => (
               <option key={b} value={b}>
                 {b}
               </option>
@@ -209,7 +216,7 @@ export function QuestionFilter({
             className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100"
           >
             <option value="todos">Todos os Anos</option>
-            {anos.map((a) => (
+            {listaAnos.map((a) => (
               <option key={a} value={a}>
                 {a}
               </option>

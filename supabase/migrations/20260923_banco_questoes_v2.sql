@@ -222,7 +222,7 @@ CREATE INDEX IF NOT EXISTS idx_respostas_usuario_questao ON public.respostas_usu
 CREATE INDEX IF NOT EXISTS idx_respostas_usuario_data ON public.respostas_usuarios(usuario_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_caderno_erros_usuario_revisado ON public.caderno_erros(usuario_id, revisado, ultimo_erro_em DESC);
 
--- 9. ROW LEVEL SECURITY (RLS)
+-- 9. ROW LEVEL SECURITY (RLS) - HABILITAÇÃO
 ALTER TABLE public.disciplinas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.assuntos ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subassuntos ENABLE ROW LEVEL SECURITY;
@@ -238,19 +238,71 @@ ALTER TABLE public.questoes_favoritas ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.questoes_anotacoes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.questoes_historico_alteracoes ENABLE ROW LEVEL SECURITY;
 
--- Políticas de Leitura Pública / Autenticada para o Catálogo
+-- 10. POLÍTICAS DE RLS (IDEMPOTENTES COM DROP POLICY IF EXISTS)
+
+-- Catálogo de Conteúdo: Leitura Pública
+DROP POLICY IF EXISTS "Leitura pública de disciplinas" ON public.disciplinas;
 CREATE POLICY "Leitura pública de disciplinas" ON public.disciplinas FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de assuntos" ON public.assuntos;
 CREATE POLICY "Leitura pública de assuntos" ON public.assuntos FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de subassuntos" ON public.subassuntos;
 CREATE POLICY "Leitura pública de subassuntos" ON public.subassuntos FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de bancas" ON public.bancas;
 CREATE POLICY "Leitura pública de bancas" ON public.bancas FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de orgaos" ON public.orgaos;
 CREATE POLICY "Leitura pública de orgaos" ON public.orgaos FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de cargos" ON public.cargos_base;
 CREATE POLICY "Leitura pública de cargos" ON public.cargos_base FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de provas" ON public.provas;
 CREATE POLICY "Leitura pública de provas" ON public.provas FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de questoes" ON public.questoes;
 CREATE POLICY "Leitura pública de questoes" ON public.questoes FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Leitura pública de alternativas" ON public.questoes_alternativas;
 CREATE POLICY "Leitura pública de alternativas" ON public.questoes_alternativas FOR SELECT USING (true);
 
--- Políticas de Dados de Usuário (Isolamento por auth.uid())
-CREATE POLICY "Acesso proprio a respostas" ON public.respostas_usuarios FOR ALL USING (auth.uid() = usuario_id);
-CREATE POLICY "Acesso proprio a caderno erros" ON public.caderno_erros FOR ALL USING (auth.uid() = usuario_id);
-CREATE POLICY "Acesso proprio a questoes favoritas" ON public.questoes_favoritas FOR ALL USING (auth.uid() = usuario_id);
-CREATE POLICY "Acesso proprio a anotacoes" ON public.questoes_anotacoes FOR ALL USING (auth.uid() = usuario_id);
+-- Dados do Usuário: Acesso Isolado e Seguro por auth.uid()
+DROP POLICY IF EXISTS "Acesso proprio a respostas" ON public.respostas_usuarios;
+CREATE POLICY "Acesso proprio a respostas" ON public.respostas_usuarios
+    FOR ALL
+    USING (auth.uid() = usuario_id)
+    WITH CHECK (auth.uid() = usuario_id);
+
+DROP POLICY IF EXISTS "Acesso proprio a caderno erros" ON public.caderno_erros;
+CREATE POLICY "Acesso proprio a caderno erros" ON public.caderno_erros
+    FOR ALL
+    USING (auth.uid() = usuario_id)
+    WITH CHECK (auth.uid() = usuario_id);
+
+DROP POLICY IF EXISTS "Acesso proprio a questoes favoritas" ON public.questoes_favoritas;
+CREATE POLICY "Acesso proprio a questoes favoritas" ON public.questoes_favoritas
+    FOR ALL
+    USING (auth.uid() = usuario_id)
+    WITH CHECK (auth.uid() = usuario_id);
+
+DROP POLICY IF EXISTS "Acesso proprio a anotacoes" ON public.questoes_anotacoes;
+CREATE POLICY "Acesso proprio a anotacoes" ON public.questoes_anotacoes
+    FOR ALL
+    USING (auth.uid() = usuario_id)
+    WITH CHECK (auth.uid() = usuario_id);
+
+-- Auditoria e Histórico de Alterações
+DROP POLICY IF EXISTS "Leitura de historico por autenticados" ON public.questoes_historico_alteracoes;
+CREATE POLICY "Leitura de historico por autenticados" ON public.questoes_historico_alteracoes
+    FOR SELECT
+    TO authenticated
+    USING (true);
+
+DROP POLICY IF EXISTS "Insercao de historico por autor autenticado" ON public.questoes_historico_alteracoes;
+CREATE POLICY "Insercao de historico por autor autenticado" ON public.questoes_historico_alteracoes
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (auth.uid() = autor_alteracao_id);
+
