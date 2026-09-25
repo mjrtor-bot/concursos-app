@@ -302,22 +302,29 @@ export class MentoriaCicloService {
   }
 
   /**
-   * 4. Determinação do Status da Sessão de Estudo.
+   * 4. Determinação do Status da Sessão de Estudo (Condição Dupla na Release 4).
    *
    * Regra:
-   * - >= 70% do tempo planejado concluído => 'concluida'
+   * - Teoria / Revisão: >= 70% do tempo planejado concluído => 'concluida'
+   * - Questões: >= 70% do tempo planejado E >= 1 questão respondida => 'concluida'
+   * - Se tempo >= 70% mas questoes < 1 em bloco de QUESTOES => 'parcial'
    * - > 0% e < 70% => 'parcial'
    * - 0% => 'abandonada'
    */
   static determinarStatusSessao(
     tempoPlanejadoMinutos: number,
-    tempoLiquidoSegundos: number
+    tempoLiquidoSegundos: number,
+    tipo?: MentoriaTarefaTipo,
+    questoesRespondidas?: number
   ): MentoriaCicloStatusSessao {
     const planejadoSegundos = Math.max(1, tempoPlanejadoMinutos * 60);
     const liquidoSegundos = Math.max(0, tempoLiquidoSegundos);
     const percentual = (liquidoSegundos / planejadoSegundos) * 100;
 
     if (percentual >= 70) {
+      if (tipo === "QUESTOES" && (!questoesRespondidas || questoesRespondidas < 1)) {
+        return "parcial";
+      }
       return "concluida";
     }
     if (liquidoSegundos > 0) {
@@ -675,7 +682,9 @@ export class MentoriaCicloService {
 
     const status = this.determinarStatusSessao(
       duracaoPlanejadaMinutos,
-      duracaoLiquidaSegundos
+      duracaoLiquidaSegundos,
+      input.tipo,
+      questoesRespondidas
     );
 
     const supabase = this.getClient();

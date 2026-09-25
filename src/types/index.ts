@@ -148,6 +148,8 @@ export interface Alternativa {
   explicacao_especifica?: string;
 }
 
+export type QuestaoAlternativa = Alternativa;
+
 export interface Questao {
   id: string;
   disciplina_id: string;
@@ -162,6 +164,8 @@ export interface Questao {
   ano: number;
   orgao: string;
   cargo?: string | null;
+  disciplina?: Disciplina | string;
+  assunto?: Assunto | string;
   explicacao: string;
   texto_apoio?: string | null;
   taxa_acerto_comunidade?: number;
@@ -351,6 +355,7 @@ export interface MentoriaPerfil {
   cargo_nome: string;
   data_prova?: string | null;
   nivel: MentoriaNivel;
+  nivel_calculado?: MentoriaNivelCalculado;
   meta_horas_semana: number;
   horario_preferido: MentoriaHorario;
   duracao_bloco_minutos: number;
@@ -644,6 +649,60 @@ export interface MentoriaRegistroSessaoInput {
   questoes_acertos?: number;
   questoes_acertadas?: number;
 }
+
+// ----------------------------------------------------
+// RELEASE 4 - ESTUDO GUIADO + BANCO DE QUESTÕES + ERROS
+// ----------------------------------------------------
+
+export interface MentoriaQuestoesSelecaoOpcoes {
+  usuarioId: string;
+  disciplinaId: string;
+  disciplinaNome?: string;
+  quantidade?: number;
+  nivelUsuario?: MentoriaNivelCalculado;
+  tipoBloco?: MentoriaTarefaTipo;
+  assuntoId?: string;
+  apenasErros?: boolean;
+}
+
+export interface MentoriaQuestoesSelecaoResultado {
+  questoes: Questao[];
+  totalDisponivel: number;
+  motivoSelecao: string;
+  topicosCobertos: string[];
+  estatisticasPool: {
+    totalNaoRespondidas: number;
+    totalErrosAnteriores: number;
+    totalAcertosAnteriores: number;
+  };
+}
+
+export interface MentoriaTopicoFraco {
+  assunto_id: string;
+  assunto_nome?: string;
+  disciplina_id: string;
+  total_respostas: number;
+  total_erros: number;
+  taxa_erro: number;
+  percentual_acerto: number;
+}
+
+export interface MentoriaRevisaoItem {
+  id: string;
+  usuario_id: string;
+  questao_id?: string;
+  disciplina_id?: string;
+  assunto_id?: string;
+  origem: "caderno_erros" | "sessao_estudo" | "diagnostico" | "manual";
+  etapa: number;
+  intervalo_dias: number;
+  proxima_revisao: string;
+  status: "pendente" | "concluida" | "atrasada";
+  questao?: Questao;
+  created_at?: string;
+  updated_at?: string;
+}
+
 
 
 

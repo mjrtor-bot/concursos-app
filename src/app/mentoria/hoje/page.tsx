@@ -21,19 +21,34 @@ import {
   ChevronRight,
   TrendingUp,
   Check,
+  FileText,
+  Save,
+  AlertTriangle,
+  Brain,
+  Target,
+  ListCheck,
+  ChevronLeft,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
+import { MentoriaQuestoesService } from "@/services/mentoriaQuestoesService";
+import { DataService } from "@/services/dataService";
 import {
   MentoriaPerfil,
   MentoriaCicloPlanoCompleto,
   MentoriaCicloItem,
   MentoriaCicloStatusSessao,
+  Questao,
+  MentoriaRevisaoItem,
+  MentoriaTopicoFraco,
+  MentoriaQuestoesSelecaoResultado,
+  Assunto,
 } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { QuestionCard } from "@/components/questoes/QuestionCard";
 
 export default function MentoriaHojePage() {
   const { user } = useAuth();
@@ -61,9 +76,31 @@ export default function MentoriaHojePage() {
     disciplina_nome: string;
   } | null>(null);
 
+  // ── ESTADOS DO ESTUDO GUIADO (RELEASE 4) ───────────────────────────────────
+  // Modo Questões
+  const [questoesPool, setQuestoesPool] = useState<Questao[]>([]);
+  const [indiceQuestaoAtual, setIndiceQuestaoAtual] = useState<number>(0);
+  const [loadingQuestoes, setLoadingQuestoes] = useState<boolean>(false);
+  const [selecaoResultado, setSelecaoResultado] = useState<MentoriaQuestoesSelecaoResultado | null>(null);
+  const [historicoRespostasSessao, setHistoricoRespostasSessao] = useState<
+    Map<string, { correta: boolean; alternativaId: string }>
+  >(new Map());
+
+  // Modo Revisão
+  const [revisoesPendentes, setRevisoesPendentes] = useState<MentoriaRevisaoItem[]>([]);
+  const [topicosFracos, setTopicosFracos] = useState<MentoriaTopicoFraco[]>([]);
+  const [loadingRevisoes, setLoadingRevisoes] = useState<boolean>(false);
+  const [revisaoQuestaoAtiva, setRevisaoQuestaoAtiva] = useState<Questao | null>(null);
+
+  // Modo Teoria
+  const [assuntosDisciplina, setAssuntosDisciplina] = useState<Assunto[]>([]);
+  const [anotacoesTeoria, setAnotacoesTeoria] = useState<string>("");
+  const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Carregamento inicial do perfil e ciclo
   useEffect(() => {
     async function carregar() {
       if (!user) {
@@ -85,6 +122,67 @@ export default function MentoriaHojePage() {
     }
     carregar();
   }, [user]);
+
+  // Carregamento dinâmico de dados baseado no bloco ativo
+  useEffect(() => {
+    async function carregarDadosBloco() {
+      if (!user || !planoCiclo?.bloco_atual) return;
+      const bloco = planoCiclo.bloco_atual;
+
+      if (bloco.tipo === "QUESTOES") {
+        setLoadingQuestoes(true);
+        try {
+          const resultado = await MentoriaQuestoesService.selecionarQuestoesParaBloco({
+            usuarioId: user.id,
+            disciplinaId: bloco.disciplina_id,
+            disciplinaNome: bloco.disciplina_nome,
+            quantidade: Math.max(10, bloco.quantidade_questoes_sugerida || 15),
+            nivelUsuario: perfil?.nivel_calculado || "intermediario",
+            tipoBloco: "QUESTOES",
+          });
+          setSelecaoResultado(resultado);
+          setQuestoesPool(resultado.questoes);
+          setIndiceQuestaoAtual(0);
+        } catch (err) {
+          console.error("Erro ao carregar questões para bloco ativo:", err);
+        } finally {
+          setLoadingQuestoes(false);
+        }
+      } else if (bloco.tipo === "REVISAO") {
+        setLoadingRevisoes(true);
+        try {
+          const [revisoes, fracos, resultadoQuestoes] = await Promise.all([
+            MentoriaQuestoesService.obterRevisoesPendentes(user.id, bloco.disciplina_id),
+            MentoriaQuestoesService.identificarTopicosFracos(user.id, bloco.disciplina_id),
+            MentoriaQuestoesService.selecionarQuestoesParaBloco({
+              usuarioId: user.id,
+              disciplinaId: bloco.disciplina_id,
+              disciplinaNome: bloco.disciplina_nome,
+              quantidade: 10,
+              nivelUsuario: perfil?.nivel_calculado || "intermediario",
+              tipoBloco: "REVISAO",
+              apenasErros: true,
+            }),
+          ]);
+          setRevisoesPendentes(revisoes);
+          setTopicosFracos(fracos);
+          setQuestoesPool(resultadoQuestoes.questoes);
+          if (resultadoQuestoes.questoes.length > 0) {
+            setRevisaoQuestaoAtiva(resultadoQuestoes.questoes[0]);
+          }
+        } catch (err) {
+          console.error("Erro ao carregar dados de revisão:", err);
+        } finally {
+          setLoadingRevisoes(false);
+        }
+      } else if (bloco.tipo === "TEORIA") {
+        const assuntos = DataService.getAssuntos(bloco.disciplina_id);
+        setAssuntosDisciplina(assuntos);
+      }
+    }
+
+    carregarDadosBloco();
+  }, [user, planoCiclo?.bloco_atual?.id, planoCiclo?.bloco_atual?.disciplina_id, perfil?.nivel_calculado]);
 
   // Cronômetro de tempo líquido ativo
   useEffect(() => {
@@ -134,8 +232,70 @@ export default function MentoriaHojePage() {
     setPausasContador(0);
     setSegundosPausaTotal(0);
     setTempoInicioSessao(null);
+    setHistoricoRespostasSessao(new Map());
   }
 
+  // Resolução de questão no bloco
+  async function handleRespostaQuestao(correta: boolean, questao: Questao, revisaoId?: string) {
+    if (!user) return;
+
+    // Se o cronômetro não estiver ativo, inicia automaticamente para contar tempo real
+    if (!cronometroIniciado) {
+      setCronometroIniciado(true);
+      setTempoInicioSessao(new Date().toISOString());
+      setCronometroAtivo(true);
+    }
+
+    // Atualiza contadores locais
+    setQuestoesRespondidas((prev) => prev + 1);
+    if (correta) {
+      setQuestoesAcertadas((prev) => prev + 1);
+    }
+
+    // Registra no mapa da sessão
+    setHistoricoRespostasSessao((prev) => {
+      const next = new Map(prev);
+      next.set(questao.id, { correta, alternativaId: "" });
+      return next;
+    });
+
+    // Se foi resposta de questão de revisão, atualiza a lista de pendentes
+    if (revisaoId && correta) {
+      setRevisoesPendentes((prev) => prev.filter((r) => r.id !== revisaoId));
+    }
+
+    // Registra no ciclo de mentoria e revisões espaçadas
+    try {
+      if (revisaoId) {
+        await MentoriaQuestoesService.processarProgressoRevisao(user.id, revisaoId, correta);
+      } else if (!correta) {
+        if (questao.disciplina_id && questao.assunto_id) {
+          await MentoriaQuestoesService.agendarRevisaoErro(
+            user.id,
+            questao.disciplina_id,
+            questao.assunto_id,
+            "caderno_erros"
+          );
+        }
+      }
+    } catch (err) {
+      console.warn("Erro ao sincronizar revisão espaçada:", err);
+    }
+  }
+
+  function handleProximaQuestao() {
+    if (indiceQuestaoAtual < questoesPool.length - 1) {
+      setIndiceQuestaoAtual((prev) => prev + 1);
+    }
+  }
+
+  function handleQuestaoAnterior() {
+    if (indiceQuestaoAtual > 0) {
+      setIndiceQuestaoAtual((prev) => prev - 1);
+    }
+  }
+
+  // Conclusão e Avanço do Bloco
   async function handleFinalizarSessao() {
     if (!user || !planoCiclo || !planoCiclo.bloco_atual) return;
 
@@ -156,7 +316,7 @@ export default function MentoriaHojePage() {
         questoes_acertadas: questoesAcertadas,
         pausas_quantidade: pausasContador,
         pausas_segundos_total: segundosPausaTotal,
-        observacoes: observacoesSessao,
+        observacoes: anotacoesTeoria ? `${observacoesSessao}\n[Anotações]: ${anotacoesTeoria}` : observacoesSessao,
       });
 
       if (res.success) {
@@ -173,11 +333,13 @@ export default function MentoriaHojePage() {
           setPlanoCiclo(planoAtualizado);
         }
 
-        // Reseta o cronômetro
+        // Reseta cronômetro e formulário
         handleZerar();
         setQuestoesRespondidas(0);
         setQuestoesAcertadas(0);
         setObservacoesSessao("");
+        setAnotacoesTeoria("");
+        setAnotacoesSalvas(false);
       }
     } catch (err) {
       console.error("Erro ao registrar sessão concluída:", err);
@@ -216,6 +378,11 @@ export default function MentoriaHojePage() {
     Math.round((segundosLiquidos / duracaoPlanejadaSegundos) * 100)
   );
 
+  // Validação pedagógica de dupla condição (tempo >= 70% E questões >= 1 para blocos de questões)
+  const atingiuTempoMinimo = percentualConcluido >= 70;
+  const blocoQuestoesSemResolucao =
+    blocoAtual?.tipo === "QUESTOES" && atingiuTempoMinimo && questoesRespondidas === 0;
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Topo / Voltar */}
@@ -247,10 +414,10 @@ export default function MentoriaHojePage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50">
-            Estudo de Hoje & Execução do Ciclo
+            Estudo Guiado & Execução do Ciclo
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            Foco direcionado: estude no seu ritmo. O ciclo continua exatamente de onde você parou.
+            Foco direcionado: estude no seu ritmo. O ciclo avança continuamente conforme sua execução real.
           </p>
         </div>
 
@@ -355,11 +522,10 @@ export default function MentoriaHojePage() {
                   </div>
                 </div>
 
-                {/* Ações diretas de estudo */}
                 <div className="flex items-center gap-2">
                   <Link href={`/questoes?busca=${encodeURIComponent(blocoAtual.disciplina_nome)}`}>
                     <Button variant="outline" size="sm" className="font-bold text-xs">
-                      Resolver Questões
+                      Abrir Banco Geral
                     </Button>
                   </Link>
                 </div>
@@ -425,36 +591,48 @@ export default function MentoriaHojePage() {
                 </div>
               </div>
 
-              {/* Informações adicionais da sessão em andamento */}
+              {/* Alerta de Validação Pedagógica Dupla */}
+              {blocoQuestoesSemResolucao && (
+                <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-xl flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="text-xs text-amber-900 dark:text-amber-200 space-y-1">
+                    <p className="font-bold">Atenção para Conclusão Integral do Bloco de Questões:</p>
+                    <p>
+                      Você atingiu a meta de tempo líquido ({percentualConcluido}%), mas ainda não resolveu nenhuma questão abaixo.
+                      Para que a sessão seja registrada com status <strong>Concluída</strong>, resolva pelo menos 1 questão. Caso finalize agora sem questões, o status será registrado como <strong>Parcial</strong>.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Métricas ao Vivo da Sessão */}
               {cronometroIniciado && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
-                  <div>
-                    <label className="block text-slate-500 font-bold mb-1">Questões Resolvidas</label>
-                    <input
-                      type="number"
-                      min={0}
-                      value={questoesRespondidas}
-                      onChange={(e) => setQuestoesRespondidas(Math.max(0, parseInt(e.target.value) || 0))}
-                      className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                      placeholder="Ex: 15"
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs">
+                  <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span className="block text-slate-500 font-bold mb-1">Questões Resolvidas</span>
+                    <span className="text-lg font-black text-slate-900 dark:text-slate-100">
+                      {questoesRespondidas}
+                    </span>
                   </div>
-                  <div>
-                    <label className="block text-slate-500 font-bold mb-1">Acertos</label>
-                    <input
-                      type="number"
-                      min={0}
-                      value={questoesAcertadas}
-                      onChange={(e) => setQuestoesAcertadas(Math.max(0, parseInt(e.target.value) || 0))}
-                      className="w-full p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                      placeholder="Ex: 12"
-                    />
+                  <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span className="block text-slate-500 font-bold mb-1">Acertos</span>
+                    <span className="text-lg font-black text-emerald-600">
+                      {questoesAcertadas}
+                    </span>
                   </div>
-                  <div>
-                    <label className="block text-slate-500 font-bold mb-1">Pausas Realizadas</label>
-                    <div className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 font-semibold">
-                      {pausasContador} pausas ({Math.round(segundosPausaTotal / 60)} min)
-                    </div>
+                  <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span className="block text-slate-500 font-bold mb-1">Taxa de Acerto</span>
+                    <span className="text-lg font-black text-blue-600">
+                      {questoesRespondidas > 0
+                        ? `${Math.round((questoesAcertadas / questoesRespondidas) * 100)}%`
+                        : "0%"}
+                    </span>
+                  </div>
+                  <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span className="block text-slate-500 font-bold mb-1">Pausas Realizadas</span>
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                      {pausasContador} ({Math.round(segundosPausaTotal / 60)} min)
+                    </span>
                   </div>
                 </div>
               )}
@@ -479,9 +657,329 @@ export default function MentoriaHojePage() {
             </CardContent>
           </Card>
 
+          {/* ══════════════════════════════════════════════════════════════════════ */}
+          {/* ── EXECUÇÃO GUIADA CONFORME O TIPO DO BLOCO ────────────────────────── */}
+          {/* ══════════════════════════════════════════════════════════════════════ */}
+
+          {/* ── 1. BLOCO DE QUESTÕES ── */}
+          {blocoAtual.tipo === "QUESTOES" && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CheckSquare2 className="w-5 h-5 text-emerald-600" />
+                  <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
+                    Banco de Questões Selecionadas para o Bloco
+                  </h3>
+                </div>
+
+                {selecaoResultado && (
+                  <Badge variant="outline" className="text-xs font-semibold">
+                    {questoesPool.length} questões disponíveis
+                  </Badge>
+                )}
+              </div>
+
+              {loadingQuestoes ? (
+                <Card className="border-slate-200 dark:border-slate-800">
+                  <CardContent className="p-8 text-center space-y-3">
+                    <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="text-xs text-slate-500 font-medium">
+                      Selecionando questões inteligentes para seu nível ({perfil?.nivel_calculado || "intermediario"})...
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : questoesPool.length > 0 ? (
+                <div className="space-y-4">
+                  {/* Seletor Rápido de Questões */}
+                  <div className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between gap-3 overflow-x-auto">
+                    <div className="flex items-center gap-1.5 flex-nowrap">
+                      {questoesPool.map((q, idx) => {
+                        const respondida = historicoRespostasSessao.has(q.id);
+                        const acerto = respondida ? historicoRespostasSessao.get(q.id)?.correta : null;
+                        const isAtiva = idx === indiceQuestaoAtual;
+
+                        return (
+                          <button
+                            key={q.id || idx}
+                            onClick={() => setIndiceQuestaoAtual(idx)}
+                            className={`w-8 h-8 rounded-lg text-xs font-bold transition-all shrink-0 flex items-center justify-center ${
+                              isAtiva
+                                ? "bg-emerald-600 text-white ring-2 ring-emerald-400"
+                                : respondida
+                                ? acerto
+                                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                                  : "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300"
+                                : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                            }`}
+                          >
+                            {idx + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleQuestaoAnterior}
+                        disabled={indiceQuestaoAtual === 0}
+                        className="p-1.5"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Button>
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                        {indiceQuestaoAtual + 1} / {questoesPool.length}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleProximaQuestao}
+                        disabled={indiceQuestaoAtual === questoesPool.length - 1}
+                        className="p-1.5"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Card da Questão Ativa Reutilizando QuestionCard */}
+                  <QuestionCard
+                    questao={questoesPool[indiceQuestaoAtual]}
+                    numeroQuestao={indiceQuestaoAtual + 1}
+                    totalQuestoes={questoesPool.length}
+                    onRespostaSalva={(correta) =>
+                      handleRespostaQuestao(correta, questoesPool[indiceQuestaoAtual])
+                    }
+                    onProxima={handleProximaQuestao}
+                  />
+                </div>
+              ) : (
+                <Card className="border-slate-200 dark:border-slate-800">
+                  <CardContent className="p-8 text-center space-y-3">
+                    <AlertCircle className="w-8 h-8 text-slate-400 mx-auto" />
+                    <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">
+                      Nenhuma questão encontrada para {blocoAtual.disciplina_nome}
+                    </h4>
+                    <p className="text-xs text-slate-500 max-w-md mx-auto">
+                      Não há questões cadastradas para esta disciplina no momento. Você pode realizar a leitura teórica e finalizar o bloco normalmente.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* ── 2. BLOCO DE REVISÃO ── */}
+          {blocoAtual.tipo === "REVISAO" && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <RotateCcw className="w-5 h-5 text-amber-600" />
+                <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
+                  Central de Revisão Espaçada (D+1, D+7, D+30) & Caderno de Erros
+                </h3>
+              </div>
+
+              {loadingRevisoes ? (
+                <Card className="border-slate-200 dark:border-slate-800">
+                  <CardContent className="p-8 text-center space-y-3">
+                    <div className="w-8 h-8 border-3 border-amber-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="text-xs text-slate-500 font-medium">Buscando tópicos de revisão pendentes...</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-6">
+                  {/* Tópicos com Revisões Pendentes */}
+                  {revisoesPendentes.length > 0 && (
+                    <Card className="border-amber-200 dark:border-amber-900/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm font-bold flex items-center justify-between">
+                          <span>Revisões Espaçadas Vencidas ou para Hoje ({revisoesPendentes.length})</span>
+                          <Badge variant="warning" size="sm">Atenção Prioritária</Badge>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {revisoesPendentes.map((rev) => (
+                          <div
+                            key={rev.id}
+                            className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between text-xs"
+                          >
+                            <div className="space-y-0.5">
+                              <span className="font-bold text-slate-900 dark:text-slate-100">
+                                Etapa {rev.etapa} (Intervalo {rev.intervalo_dias}d)
+                              </span>
+                              <p className="text-slate-500">
+                                Próxima revisão: {rev.proxima_revisao} • Origem: {rev.origem}
+                              </p>
+                            </div>
+                            <Badge variant="outline">
+                              Status: {rev.status}
+                            </Badge>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Tópicos Fracos Identificados */}
+                  {topicosFracos.length > 0 && (
+                    <Card className="border-rose-200 dark:border-rose-950/50">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-sm font-bold text-rose-950 dark:text-rose-200 flex items-center gap-2">
+                          <Brain className="w-4 h-4 text-rose-600" />
+                          Tópicos com Maior Taxa de Erro na Disciplina
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {topicosFracos.slice(0, 3).map((tf) => (
+                          <div
+                            key={tf.assunto_id}
+                            className="p-3 bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/60 rounded-xl flex items-center justify-between text-xs"
+                          >
+                            <div>
+                              <p className="font-bold text-slate-900 dark:text-slate-100">
+                                {tf.assunto_nome || `Tópico ${tf.assunto_id}`}
+                              </p>
+                              <p className="text-slate-500">
+                                {tf.total_erros} erros em {tf.total_respostas} resoluções ({tf.taxa_erro}% erro)
+                              </p>
+                            </div>
+                            <Badge variant="error">
+                              {tf.taxa_erro}% Erro
+                            </Badge>
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Questões de Erro para Refazer */}
+                  {questoesPool.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        <CheckSquare2 className="w-4 h-4 text-emerald-600" />
+                        Questões do Caderno de Erros para Fixação
+                      </h4>
+                      <QuestionCard
+                        questao={questoesPool[indiceQuestaoAtual]}
+                        numeroQuestao={indiceQuestaoAtual + 1}
+                        totalQuestoes={questoesPool.length}
+                        onRespostaSalva={(correta) =>
+                          handleRespostaQuestao(
+                            correta,
+                            questoesPool[indiceQuestaoAtual],
+                            revisoesPendentes[0]?.id
+                          )
+                        }
+                        onProxima={handleProximaQuestao}
+                      />
+                    </div>
+                  )}
+
+                  {revisoesPendentes.length === 0 && topicosFracos.length === 0 && questoesPool.length === 0 && (
+                    <Card className="border-slate-200 dark:border-slate-800">
+                      <CardContent className="p-8 text-center space-y-3">
+                        <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+                        <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">
+                          Nenhuma revisão pendente para {blocoAtual.disciplina_nome}
+                        </h4>
+                        <p className="text-xs text-slate-500 max-w-md mx-auto">
+                          Seu caderno de erros e revisões espaçadas estão em dia para esta matéria. Você pode aproveitar o tempo para revisar seus resumos e anotações teóricas.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── 3. BLOCO DE TEORIA ── */}
+          {blocoAtual.tipo === "TEORIA" && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-blue-600" />
+                <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
+                  Roteiro de Estudo Teórico & Resumo da Sessão
+                </h3>
+              </div>
+
+              {/* Tópicos da Disciplina */}
+              {assuntosDisciplina.length > 0 && (
+                <Card className="border-slate-200 dark:border-slate-800">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-bold flex items-center gap-2">
+                      <ListCheck className="w-4 h-4 text-blue-600" />
+                      Tópicos Recomendados para Esta Disciplina
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {assuntosDisciplina.slice(0, 6).map((assunto) => (
+                        <div
+                          key={assunto.id}
+                          className="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-lg border border-slate-200 dark:border-slate-800 text-xs flex items-center gap-2"
+                        >
+                          <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
+                          <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
+                            {assunto.nome}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Box de Anotações e Resumo Teórico */}
+              <Card className="border-slate-200 dark:border-slate-800">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-bold flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-blue-600" />
+                      Anotações de Estudo / Resumo Próprio
+                    </span>
+                    {anotacoesSalvas && (
+                      <Badge variant="success" size="sm" className="text-[10px]">
+                        Anotações Salvas
+                      </Badge>
+                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <textarea
+                    rows={6}
+                    value={anotacoesTeoria}
+                    onChange={(e) => {
+                      setAnotacoesTeoria(e.target.value);
+                      setAnotacoesSalvas(false);
+                    }}
+                    placeholder="Escreva seus principais pontos de atenção, mnemônicos, artigos de lei ou fórmulas estudadas neste bloco..."
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] text-slate-500">
+                      Suas anotações serão salvas junto com o histórico de conclusão deste bloco.
+                    </p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setAnotacoesSalvas(true)}
+                      disabled={!anotacoesTeoria.trim()}
+                      className="font-bold text-xs"
+                      leftIcon={<Save className="w-3.5 h-3.5" />}
+                    >
+                      Salvar Resumo
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* PRÓXIMOS BLOCOS NA FILA CONTÍNUA */}
           {planoCiclo.blocos.length > 1 && (
-            <div className="space-y-3">
+            <div className="space-y-3 pt-4">
               <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-indigo-600" />
                 Próximos Blocos do Ciclo
