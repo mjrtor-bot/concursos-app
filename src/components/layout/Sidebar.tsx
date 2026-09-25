@@ -17,6 +17,7 @@ import {
   Flame,
   Clock,
   Sparkles,
+  Compass,
   X,
 } from "lucide-react";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -52,6 +53,12 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       href: "/dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
+    },
+    {
+      href: "/mentoria",
+      label: "Mentoria",
+      icon: Compass,
+      badge: "Inteligente",
     },
     {
       href: "/concursos",

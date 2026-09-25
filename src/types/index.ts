@@ -331,3 +331,157 @@ export interface PaginatedResult<T> {
   totalPages: number;
   hasMore: boolean;
 }
+
+// ── Tipos de Mentoria Inteligente (Release 1 - Fundação) ──
+export type MentoriaNivel = "iniciante" | "intermediario" | "avancado";
+export type MentoriaHorario = "manha" | "tarde" | "noite" | "madrugada" | "flexivel";
+export type MentoriaPrioridade = "equilibrado" | "teoria" | "questoes" | "revisao";
+export type MentoriaTarefaTipo = "TEORIA" | "QUESTOES" | "REVISAO" | "SIMULADO" | "CADERNO_ERROS";
+export type MentoriaTarefaPrioridade = "baixa" | "media" | "alta" | "critica";
+export type MentoriaTarefaStatus = "pendente" | "em_andamento" | "concluida" | "adiada" | "cancelada";
+export type MentoriaRevisaoStatus = "pendente" | "concluida" | "atrasada" | "cancelada";
+export type MentoriaRevisaoRetencao = "baixo" | "medio" | "alto" | "excelente";
+
+export interface MentoriaPerfil {
+  id: string;
+  usuario_id: string;
+  concurso_id?: string | null;
+  concurso_nome: string;
+  cargo_id?: string | null;
+  cargo_nome: string;
+  data_prova?: string | null;
+  nivel: MentoriaNivel;
+  meta_horas_semana: number;
+  horario_preferido: MentoriaHorario;
+  duracao_bloco_minutos: number;
+  quantidade_questoes_bloco: number;
+  dias_descanso: string[];
+  prioridade_estudo: MentoriaPrioridade;
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MentoriaDisponibilidade {
+  id: string;
+  usuario_id: string;
+  dia_semana: number; // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+  minutos_disponiveis: number;
+  horario_preferido?: MentoriaHorario;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MentoriaEditalTopico {
+  id: string;
+  usuario_id: string;
+  disciplina_id: string;
+  assunto_id: string;
+  subassunto_id?: string | null;
+  peso: "baixo" | "medio" | "alto" | "critico";
+  incidencia: number;
+  prioridade_manual?: "baixa" | "media" | "alta" | "critica";
+  estudado: boolean;
+  percentual_dominio: number;
+  status: "nao_iniciado" | "estudando" | "revisando" | "dominado";
+  ultima_revisao?: string | null;
+  proxima_revisao?: string | null;
+  questoes_respondidas: number;
+  taxa_acerto: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MentoriaPlano {
+  id: string;
+  usuario_id: string;
+  data_inicio: string;
+  data_fim?: string | null;
+  status: "ativo" | "concluido" | "arquivado";
+  versao: number;
+  meta_semanal_minutos: number;
+  minutos_concluidos: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MentoriaTarefa {
+  id: string;
+  plano_id?: string | null;
+  usuario_id: string;
+  data: string; // YYYY-MM-DD
+  ordem: number;
+  tipo: MentoriaTarefaTipo;
+  disciplina_id?: string | null;
+  assunto_id?: string | null;
+  subassunto_id?: string | null;
+  titulo: string;
+  duracao_prevista_minutos: number;
+  duracao_real_segundos: number;
+  quantidade_questoes: number;
+  questoes_feitas: number;
+  questoes_acertos: number;
+  prioridade: MentoriaTarefaPrioridade;
+  motivo_recomendacao?: string | null;
+  status: MentoriaTarefaStatus;
+  iniciado_em?: string | null;
+  concluido_em?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MentoriaSessaoEstudo {
+  id: string;
+  usuario_id: string;
+  tarefa_id?: string | null;
+  inicio: string;
+  fim?: string | null;
+  segundos_liquidos: number;
+  pausas: number;
+  segundos_pausa: number;
+  observacoes?: string | null;
+  created_at: string;
+}
+
+export interface MentoriaRevisao {
+  id: string;
+  usuario_id: string;
+  disciplina_id: string;
+  assunto_id: string;
+  subassunto_id?: string | null;
+  origem: "estudo_diario" | "caderno_erros" | "simulado" | "manual";
+  data_estudo: string;
+  proxima_revisao: string;
+  intervalo_dias: number;
+  etapa: number;
+  status: MentoriaRevisaoStatus;
+  nivel_retencao?: MentoriaRevisaoRetencao;
+  concluida_em?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MentoriaDiaProgresso {
+  dia_semana: number; // 0=Dom..6=Sab
+  nome_curto: string; // "Seg", "Ter", etc.
+  minutos_meta: number;
+  minutos_estudados: number;
+  concluido: boolean;
+}
+
+export interface MentoriaDashboardStats {
+  tem_perfil: boolean;
+  perfil: MentoriaPerfil | null;
+  dias_restantes_prova: number | null;
+  meta_diaria_minutos: number;
+  meta_semanal_minutos: number;
+  minutos_estudados_semana: number;
+  questoes_resolvidas_semana: number;
+  taxa_acerto_semana: number;
+  revisoes_pendentes_count: number;
+  cobertura_edital_percentual: number;
+  topicos_estudados_count: number;
+  topicos_total_count: number;
+  progresso_semana: MentoriaDiaProgresso[];
+}
+
