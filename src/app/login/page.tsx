@@ -13,7 +13,11 @@ import {
   EyeOff,
   ArrowRight,
   CheckCircle2,
+  AlertCircle,
+  Clock,
+  Send,
   Loader2,
+  ShieldAlert,
 } from "lucide-react";
 
 function sanitizeNext(nextParam: string | null): string {
@@ -31,7 +35,7 @@ function sanitizeNext(nextParam: string | null): string {
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, user, isLoading: isAuthLoading, isSupabaseConnected } = useAuth();
+  const { login, resendConfirmationEmail, user, isLoading: isAuthLoading, isSupabaseConnected } = useAuth();
   const { success, error: showError } = useToast();
 
   const nextUrl = useMemo(
@@ -39,43 +43,108 @@ function LoginContent() {
     [searchParams]
   );
 
-  const [email, setEmail] = useState("");
+  const initialEmail = useMemo(
+    () => searchParams.get("email") || "",
+    [searchParams]
+  );
+
+  const isJustRegistered = useMemo(
+    () => searchParams.get("registered") === "true",
+    [searchParams]
+  );
+
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [lembrarMe, setLembrarMe] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Estados para Tratamento Específico de E-mail Não Confirmado & Rate Limit
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendError, setResendError] = useState<string | null>(null);
+  const [resendSuccess, setResendSuccess] = useState(false);
+
+  // Redireciona se usuário já estiver autenticado
   useEffect(() => {
     if (!isAuthLoading && user) {
       router.replace("/dashboard");
     }
   }, [isAuthLoading, router, user]);
 
+  // Temporizador de Cooldown para Reenvio de E-mail (evita 429 - rate limit)
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUnconfirmedEmail(null);
+    setResendError(null);
+    setResendSuccess(false);
+
     if (!email.trim() || !password.trim()) {
       showError("Por favor, preencha e-mail e senha.");
       return;
     }
 
     if (!isSupabaseConnected) {
-      showError("Autenticação indisponível. Verifique a configuração do Supabase.");
+      showError("Autenticação indisponível. Supabase não configurado.");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      const ok = await login(email, password);
-      if (ok) {
+      const result = await login(email, password);
+      if (result.success) {
         success("Login realizado com sucesso! Bem-vindo(a) de volta.");
         router.replace(nextUrl);
       } else {
-        showError("E-mail ou senha inválidos. Verifique seus dados e tente novamente.");
+        if (result.code === "email_not_confirmed") {
+          setUnconfirmedEmail(email.trim());
+          showError("Seu e-mail ainda não foi confirmado.");
+        } else {
+          showError(result.error || "E-mail ou senha inválidos.");
+        }
       }
     } catch {
       showError("Ocorreu um erro ao realizar login. Tente novamente.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    const targetEmail = unconfirmedEmail || email.trim();
+    if (!targetEmail) return;
+
+    setIsResending(true);
+    setResendError(null);
+    setResendSuccess(false);
+
+    try {
+      const result = await resendConfirmationEmail(targetEmail);
+      if (result.success) {
+        setResendSuccess(true);
+        setResendCooldown(60); // 60 segundos de cooldown
+        success("E-mail de confirmação reenviado com sucesso! Verifique sua caixa de entrada e spam.");
+      } else {
+        if (result.code === "over_email_send_rate_limit") {
+          setResendCooldown(120); // 2 minutos se atingiu limite
+          setResendError("Limite de disparos do servidor atingido. Aguarde alguns minutos antes de tentar novamente.");
+        } else {
+          setResendError(result.error || "Não foi possível reenviar o e-mail de confirmação.");
+        }
+      }
+    } catch {
+      setResendError("Erro inesperado ao solicitar reenvio.");
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -101,6 +170,75 @@ function LoginContent() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white dark:bg-slate-900 py-8 px-6 sm:px-8 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 rounded-3xl space-y-6">
+
+          {/* Banner de Cadastro Recente / E-mail de confirmação necessário */}
+          {isJustRegistered && !unconfirmedEmail && (
+            <div className="p-4 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 rounded-2xl text-xs text-blue-800 dark:text-blue-300 space-y-2">
+              <div className="flex items-center gap-2 font-bold text-sm">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                <span>Conta criada com sucesso!</span>
+              </div>
+              <p className="leading-relaxed">
+                Um e-mail com o link de ativação foi enviado para o seu endereço. Se o seu projeto exigir confirmação de e-mail, valide-o antes do primeiro login.
+              </p>
+            </div>
+          )}
+
+          {/* Alerta Destacado: E-mail Não Confirmado com Ação Direta de Reenvio */}
+          {unconfirmedEmail && (
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-2xl text-xs text-amber-900 dark:text-amber-200 space-y-3 animate-in fade-in duration-300">
+              <div className="flex items-start gap-2.5">
+                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <span className="font-bold text-sm block">Confirmação de E-mail Pendente</span>
+                  <p className="leading-relaxed text-amber-800 dark:text-amber-300">
+                    O e-mail <strong className="font-semibold text-amber-950 dark:text-amber-100">{unconfirmedEmail}</strong> ainda não foi ativado no Supabase. Verifique sua caixa de entrada e spam.
+                  </p>
+                </div>
+              </div>
+
+              {resendError && (
+                <div className="p-2.5 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900/60 rounded-xl text-red-700 dark:text-red-300 text-[11px] flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4 text-red-500 shrink-0" />
+                  <span>{resendError}</span>
+                </div>
+              )}
+
+              {resendSuccess && (
+                <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-900/60 rounded-xl text-emerald-700 dark:text-emerald-300 text-[11px] flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>E-mail reenviado! Verifique sua caixa de entrada agora.</span>
+                </div>
+              )}
+
+              <div className="pt-1 flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResendConfirmation}
+                  disabled={isResending || resendCooldown > 0}
+                  className="w-full justify-center bg-white dark:bg-slate-800 border-amber-300 dark:border-amber-800 hover:bg-amber-100/50 dark:hover:bg-amber-900/30 text-amber-900 dark:text-amber-100 text-xs font-semibold py-2"
+                  leftIcon={
+                    isResending ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : resendCooldown > 0 ? (
+                      <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5 text-amber-600" />
+                    )
+                  }
+                >
+                  {isResending
+                    ? "Reenviando confirmação..."
+                    : resendCooldown > 0
+                    ? `Aguarde ${resendCooldown}s para reenviar`
+                    : "Reenviar e-mail de confirmação"}
+                </Button>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Campo E-mail */}
             <div>

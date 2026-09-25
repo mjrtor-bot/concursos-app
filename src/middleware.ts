@@ -6,8 +6,11 @@ const PUBLIC_ROUTES = [
   "/login",
   "/cadastro",
   "/recuperar-senha",
+  "/redefinir-senha",
   "/onboarding",
   "/reset",
+  "/auth/callback",
+  "/auth/confirm",
   "/",
 ];
 
@@ -113,7 +116,7 @@ export async function middleware(request: NextRequest) {
       "user";
 
     if (role !== "admin") {
-      // Redireciona não-admins para o dashboard com mensagem implícita
+      // Redireciona não-admins para o dashboard
       const dashboardUrl = request.nextUrl.clone();
       dashboardUrl.pathname = "/dashboard";
       dashboardUrl.search = "";

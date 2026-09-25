@@ -5,19 +5,87 @@ import { useRouter } from "next/navigation";
 import { Profile } from "@/types";
 import { isSupabaseConfigured, createClient } from "@/lib/supabase/client";
 
-// ── Tipos ────────────────────────────────────────────────────────────────────
+// ── Tipos e Resultados Estruturados ─────────────────────────────────────────
+export interface AuthResult {
+  success: boolean;
+  error?: string;
+  code?: string;
+  requiresEmailConfirmation?: boolean;
+}
+
 interface AuthContextType {
   user: Profile | null;
   isLoading: boolean;
   isSupabaseConnected: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (nome: string, email: string, password: string, concursoAlvoId?: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  signup: (nome: string, email: string, password: string, concursoAlvoId?: string) => Promise<AuthResult>;
+  resendConfirmationEmail: (email: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
-  resetPassword: (email: string) => Promise<boolean>;
+  resetPassword: (email: string) => Promise<AuthResult>;
   updateUser: (updates: Partial<Profile>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// ── Parser de Erros do Supabase com Códigos Estruturados ─────────────────────
+function parseAuthError(error: any): { message: string; code: string } {
+  if (!error) return { message: "Erro desconhecido de autenticação.", code: "unknown_error" };
+  const rawMsg = (error.message || "").toLowerCase();
+  const rawCode = (error.code || error.status || "").toString().toLowerCase();
+
+  if (rawMsg.includes("email not confirmed") || rawCode === "email_not_confirmed") {
+    return {
+      message: "E-mail não confirmado. Por favor, verifique sua caixa de entrada e spam para ativar sua conta.",
+      code: "email_not_confirmed",
+    };
+  }
+
+  if (
+    rawMsg.includes("rate limit") ||
+    rawMsg.includes("too many requests") ||
+    rawCode === "over_email_send_rate_limit" ||
+    rawCode === "429"
+  ) {
+    return {
+      message: "Limite de tentativas de envio atingido pelo servidor. Aguarde alguns minutos antes de tentar novamente.",
+      code: "over_email_send_rate_limit",
+    };
+  }
+
+  if (
+    rawMsg.includes("invalid login credentials") ||
+    rawMsg.includes("invalid_credentials") ||
+    rawMsg.includes("invalid username or password")
+  ) {
+    return {
+      message: "E-mail ou senha inválidos. Verifique seus dados e tente novamente.",
+      code: "invalid_credentials",
+    };
+  }
+
+  if (
+    rawMsg.includes("user already registered") ||
+    rawMsg.includes("already registered") ||
+    rawMsg.includes("user_already_exists")
+  ) {
+    return {
+      message: "Já existe uma conta cadastrada com este endereço de e-mail.",
+      code: "user_already_exists",
+    };
+  }
+
+  if (rawMsg.includes("password should be at least")) {
+    return {
+      message: "A senha deve conter no mínimo 6 caracteres.",
+      code: "weak_password",
+    };
+  }
+
+  return {
+    message: error.message || "Ocorreu um erro durante a autenticação.",
+    code: error.code || "auth_error",
+  };
+}
 
 // ── Monta um Profile a partir do objeto User do Supabase ─────────────────────
 function buildProfileFromSupabaseUser(supabaseUser: {
@@ -100,14 +168,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── login ─────────────────────────────────────────────────────────────────
   const login = useCallback(
-    async (email: string, password: string): Promise<boolean> => {
+    async (email: string, password: string): Promise<AuthResult> => {
       if (!isSupabaseConfigured) {
-        // Sem Supabase configurado → autenticação impossível
-        return false;
+        return {
+          success: false,
+          error: "Autenticação indisponível. Supabase não configurado.",
+          code: "supabase_not_configured",
+        };
       }
 
       const supabase = createClient();
-      if (!supabase) return false;
+      if (!supabase) {
+        return {
+          success: false,
+          error: "Cliente Supabase indisponível.",
+          code: "supabase_unavailable",
+        };
+      }
 
       setIsLoading(true);
       try {
@@ -117,19 +194,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
 
         if (error) {
+          const parsed = parseAuthError(error);
           console.error("[Auth] Erro no login:", error.message);
-          return false;
+          return { success: false, error: parsed.message, code: parsed.code };
         }
 
         if (data.session?.user) {
           setUser(buildProfileFromSupabaseUser(data.session.user));
-          return true;
+          return { success: true };
         }
 
-        return false;
-      } catch (err) {
+        return {
+          success: false,
+          error: "Sessão não pôde ser estabelecida.",
+          code: "no_session",
+        };
+      } catch (err: any) {
+        const parsed = parseAuthError(err);
         console.error("[Auth] Exceção no login:", err);
-        return false;
+        return { success: false, error: parsed.message, code: parsed.code };
       } finally {
         setIsLoading(false);
       }
@@ -144,14 +227,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: string,
       password: string,
       concursoAlvoId?: string
-    ): Promise<boolean> => {
-      if (!isSupabaseConfigured) return false;
+    ): Promise<AuthResult> => {
+      if (!isSupabaseConfigured) {
+        return {
+          success: false,
+          error: "Cadastro indisponível. Supabase não configurado.",
+          code: "supabase_not_configured",
+        };
+      }
 
       const supabase = createClient();
-      if (!supabase) return false;
+      if (!supabase) {
+        return {
+          success: false,
+          error: "Cliente Supabase indisponível.",
+          code: "supabase_unavailable",
+        };
+      }
 
       setIsLoading(true);
       try {
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
@@ -160,30 +256,88 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               nome,
               concurso_alvo_id: concursoAlvoId ?? null,
             },
+            emailRedirectTo: `${origin}/auth/callback`,
           },
         });
 
         if (error) {
+          const parsed = parseAuthError(error);
           console.error("[Auth] Erro no cadastro:", error.message);
-          return false;
+          return { success: false, error: parsed.message, code: parsed.code };
         }
 
-        // Cadastro com confirmação de e-mail pendente
+        // Se o Supabase exige confirmação de e-mail (data.user existe mas data.session é null)
         if (data.user && !data.session) {
-          return true; // usuário criado, mas precisa confirmar e-mail
+          return {
+            success: true,
+            requiresEmailConfirmation: true,
+          };
         }
 
         if (data.session?.user) {
           setUser(buildProfileFromSupabaseUser(data.session.user));
-          return true;
+          return {
+            success: true,
+            requiresEmailConfirmation: false,
+          };
         }
 
-        return false;
-      } catch (err) {
+        return {
+          success: true,
+          requiresEmailConfirmation: true,
+        };
+      } catch (err: any) {
+        const parsed = parseAuthError(err);
         console.error("[Auth] Exceção no cadastro:", err);
-        return false;
+        return { success: false, error: parsed.message, code: parsed.code };
       } finally {
         setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  // ── resendConfirmationEmail ───────────────────────────────────────────────
+  const resendConfirmationEmail = useCallback(
+    async (email: string): Promise<AuthResult> => {
+      if (!isSupabaseConfigured) {
+        return {
+          success: false,
+          error: "Supabase não configurado.",
+          code: "supabase_not_configured",
+        };
+      }
+
+      const supabase = createClient();
+      if (!supabase) {
+        return {
+          success: false,
+          error: "Cliente Supabase indisponível.",
+          code: "supabase_unavailable",
+        };
+      }
+
+      try {
+        const origin = typeof window !== "undefined" ? window.location.origin : "";
+        const { error } = await supabase.auth.resend({
+          type: "signup",
+          email: email.trim(),
+          options: {
+            emailRedirectTo: `${origin}/auth/callback`,
+          },
+        });
+
+        if (error) {
+          const parsed = parseAuthError(error);
+          console.error("[Auth] Erro ao reenviar confirmação:", error.message);
+          return { success: false, error: parsed.message, code: parsed.code };
+        }
+
+        return { success: true };
+      } catch (err: any) {
+        const parsed = parseAuthError(err);
+        console.error("[Auth] Exceção ao reenviar confirmação:", err);
+        return { success: false, error: parsed.message, code: parsed.code };
       }
     },
     []
@@ -195,36 +349,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (supabase) {
       await supabase.auth.signOut();
     }
-    // Limpa o estado local — onAuthStateChange também vai acionar isso,
-    // mas garantimos a limpeza imediata
     setUser(null);
     router.push("/login");
   }, [router]);
 
   // ── resetPassword ─────────────────────────────────────────────────────────
-  const resetPassword = useCallback(async (email: string): Promise<boolean> => {
-    if (!isSupabaseConfigured) return false;
+  const resetPassword = useCallback(async (email: string): Promise<AuthResult> => {
+    if (!isSupabaseConfigured) {
+      return {
+        success: false,
+        error: "Supabase não configurado.",
+        code: "supabase_not_configured",
+      };
+    }
 
     const supabase = createClient();
-    if (!supabase) return false;
+    if (!supabase) {
+      return {
+        success: false,
+        error: "Cliente Supabase indisponível.",
+        code: "supabase_unavailable",
+      };
+    }
 
     try {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
       const { error } = await supabase.auth.resetPasswordForEmail(
         email.trim(),
         {
-          redirectTo: `${window.location.origin}/reset`,
+          redirectTo: `${origin}/redefinir-senha`,
         }
       );
 
       if (error) {
+        const parsed = parseAuthError(error);
         console.error("[Auth] Erro ao enviar redefinição de senha:", error.message);
-        return false;
+        return { success: false, error: parsed.message, code: parsed.code };
       }
 
-      return true;
-    } catch (err) {
+      return { success: true };
+    } catch (err: any) {
+      const parsed = parseAuthError(err);
       console.error("[Auth] Exceção ao redefinir senha:", err);
-      return false;
+      return { success: false, error: parsed.message, code: parsed.code };
     }
   }, []);
 
@@ -241,6 +408,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isSupabaseConnected: isSupabaseConfigured,
         login,
         signup,
+        resendConfirmationEmail,
         logout,
         resetPassword,
         updateUser,
