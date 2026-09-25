@@ -357,6 +357,10 @@ export interface MentoriaPerfil {
   quantidade_questoes_bloco: number;
   dias_descanso: string[];
   prioridade_estudo: MentoriaPrioridade;
+  diagnostico_concluido?: boolean;
+  diagnostico_data?: string | null;
+  diagnostico_id?: string | null;
+  score_geral?: number;
   ativo: boolean;
   created_at: string;
   updated_at: string;
@@ -484,4 +488,78 @@ export interface MentoriaDashboardStats {
   topicos_total_count: number;
   progresso_semana: MentoriaDiaProgresso[];
 }
+
+// ── Tipos de Mentoria Diagnóstico e Nivelamento (Release 2) ──
+export type MentoriaAutoavaliacao = "nunca_estudei" | "basico" | "intermediario" | "avancado";
+export type MentoriaNivelCalculado = "iniciante" | "basico" | "intermediario" | "avancado";
+export type MentoriaDiagnosticoStatus = "em_andamento" | "concluido" | "abandonado";
+
+export interface MentoriaDiagnosticoHistorico {
+  ja_estuda: boolean;
+  tempo_estudo?: string; // "menos_6_meses" | "6_12_meses" | "1_2_anos" | "mais_2_anos"
+  ja_aprovado: boolean;
+  horas_semanais_atuais: number;
+  preferencia_estudo: "teoria" | "questoes" | "equilibrado";
+  maiores_dificuldades: string[];
+  observacoes?: string;
+}
+
+export interface MentoriaDiagnosticoDisciplina {
+  id: string;
+  diagnostico_id: string;
+  usuario_id: string;
+  disciplina_id?: string | null;
+  disciplina_nome: string;
+  autoavaliacao: MentoriaAutoavaliacao;
+  questoes_ofertadas: number;
+  questoes_respondidas: number;
+  acertos: number;
+  percentual_acerto: number;
+  tempo_medio_segundos: number;
+  historico_previo_questoes: number;
+  historico_previo_acertos: number;
+  score_final: number;
+  nivel_calculado: MentoriaNivelCalculado;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface MentoriaDiagnosticoResposta {
+  id?: string;
+  diagnostico_id: string;
+  usuario_id: string;
+  disciplina_id?: string | null;
+  disciplina_nome: string;
+  questao_id: string;
+  alternativa_id: string;
+  correta: boolean;
+  tempo_segundos: number;
+  created_at?: string;
+}
+
+export interface MentoriaDiagnostico {
+  id: string;
+  usuario_id: string;
+  concurso_nome?: string | null;
+  cargo_nome?: string | null;
+  iniciado_em: string;
+  concluido_em?: string | null;
+  status: MentoriaDiagnosticoStatus;
+  historico_dados: MentoriaDiagnosticoHistorico;
+  score_geral: number;
+  nivel_geral: MentoriaNivelCalculado;
+  resumo_resultado?: {
+    total_questoes: number;
+    total_acertos: number;
+    taxa_acerto_geral: number;
+    tempo_medio_questao: number;
+    disciplinas_fortes: string[];
+    disciplinas_criticas: string[];
+    recomendacoes: string[];
+  };
+  disciplinas?: MentoriaDiagnosticoDisciplina[];
+  created_at?: string;
+  updated_at?: string;
+}
+
 

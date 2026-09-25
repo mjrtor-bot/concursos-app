@@ -21,6 +21,8 @@ import {
   History,
   Play,
   RotateCcw,
+  BrainCircuit,
+  Award,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -212,6 +214,56 @@ export default function MentoriaDashboardPage() {
         </div>
       </div>
 
+      {/* Banner / Card de Diagnóstico Inicial e Nivelamento (Release 2) */}
+      {!perfil.diagnostico_concluido ? (
+        <div className="p-6 bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 rounded-2xl border border-indigo-500/30 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/30 rounded-full text-indigo-200 text-xs font-bold uppercase tracking-wider border border-indigo-400/30">
+              <BrainCircuit className="w-3.5 h-3.5" />
+              Diagnóstico Pendente
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black">
+              Descubra seu nível exato com o Diagnóstico Inicial
+            </h2>
+            <p className="text-sm text-indigo-200/90 leading-relaxed">
+              Responda a uma bateria rápida de questões reais do banco para que o algoritmo calibre seus ciclos de estudo, identifique seus pontos cegos e priorize matérias críticas.
+            </p>
+          </div>
+
+          <Link href="/mentoria/diagnostico" className="shrink-0">
+            <Button
+              size="lg"
+              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-500/30 whitespace-nowrap"
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+            >
+              Fazer Diagnóstico Agora
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <div className="p-4 bg-gradient-to-r from-slate-900 to-indigo-950 rounded-2xl border border-indigo-900/60 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
+              <Award className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-indigo-300 uppercase tracking-wider">
+                Nivelamento Confirmado
+              </p>
+              <p className="text-sm font-semibold text-slate-200">
+                Score Global: <strong className="text-white font-black">{perfil.score_geral || 70}/100</strong> • Nível <strong className="capitalize text-indigo-300">{perfil.nivel}</strong>
+              </p>
+            </div>
+          </div>
+
+          <Link href="/mentoria/diagnostico">
+            <Button variant="outline" size="sm" className="text-indigo-200 border-indigo-800 hover:bg-indigo-900/50">
+              Ver Relatório Completo
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* Grid de Métricas Principais Reais (Zero-Mock) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Meta e Horas Semanais */}
@@ -383,6 +435,29 @@ export default function MentoriaDashboardPage() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link href="/mentoria/diagnostico" className="group">
+            <Card className="h-full border-slate-200 dark:border-slate-800 hover:border-indigo-500/50 hover:shadow-md transition-all">
+              <CardContent className="p-5 space-y-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
+                  <BrainCircuit className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      Diagnóstico & Nivelamento
+                    </h3>
+                    <Badge variant={perfil.diagnostico_concluido ? "success" : "warning"} className="text-[10px] py-0 px-1.5 font-bold">
+                      {perfil.diagnostico_concluido ? "Concluído" : "Pendente"}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                    Avaliação diagnóstica com bateria real de questões para calibrar seu nível de entrada.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
           <Link href="/mentoria/hoje" className="group">
             <Card className="h-full border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:shadow-md transition-all">
               <CardContent className="p-5 space-y-3">

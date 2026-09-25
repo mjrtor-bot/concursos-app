@@ -66,8 +66,11 @@ async function runTests() {
 
   // ── TESTE 2: Verificação do Schema da Migração ────────────────────────────────
   console.log("\n📌 [2/5] Verificação da Estrutura de Arquivos da Migração e Tipos...");
-  const migrationPath = resolve(process.cwd(), "supabase/migrations/20260925_mentoria_fundacao.sql");
-  assert(existsSync(migrationPath), "Arquivo de migração 20260925_mentoria_fundacao.sql existe em supabase/migrations/");
+  let migrationPath = resolve(process.cwd(), "supabase/migrations/20260925_mentoria_fundacao.sql");
+  if (!existsSync(migrationPath)) {
+    migrationPath = resolve(process.cwd(), "supabase/migrations/20260925110000_mentoria_fundacao.sql");
+  }
+  assert(existsSync(migrationPath), "Arquivo de migração mentoria_fundacao.sql existe em supabase/migrations/");
 
   if (existsSync(migrationPath)) {
     const migrationContent = readFileSync(migrationPath, "utf-8");
