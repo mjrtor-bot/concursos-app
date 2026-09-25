@@ -562,4 +562,88 @@ export interface MentoriaDiagnostico {
   updated_at?: string;
 }
 
+// ── Tipos de Ciclo de Estudos Adaptativo (Release 3) ──
+export type MentoriaCicloStatusSessao = "concluida" | "parcial" | "abandonada";
+
+export interface MentoriaCicloItem {
+  id: string;
+  ordem_bloco: number; // 1, 2, 3, ..., N
+  disciplina_id: string;
+  disciplina_nome: string;
+  tipo: MentoriaTarefaTipo; // "TEORIA" | "QUESTOES" | "REVISAO"
+  duracao_minutos: number;
+  quantidade_questoes_sugerida: number;
+  prioridade_score: number; // 0-100 normalizado e clamped
+  prioridade_nivel: MentoriaTarefaPrioridade; // "baixa" | "media" | "alta" | "critica"
+  motivo_explicabilidade: string[]; // Fatores matemáticos e diagnósticos
+  concluido?: boolean;
+}
+
+export interface MentoriaCicloDisciplinaPrioridade {
+  disciplina_id: string;
+  disciplina_nome: string;
+  score_diagnostico: number; // 0-100
+  nivel_diagnostico: MentoriaNivelCalculado;
+  peso_base: number; // peso do edital ou padrão (25..100)
+  prioridade_score: number; // 0..100
+  prioridade_nivel: MentoriaTarefaPrioridade;
+  minutos_semanais: number;
+  blocos_semanais: number;
+  porcentagem_tempo: number;
+  motivo_explicabilidade: string[];
+}
+
+export interface MentoriaCicloPlanoCompleto {
+  plano_id: string;
+  usuario_id: string;
+  versao: number;
+  data_inicio: string;
+  meta_semanal_minutos: number;
+  minutos_concluidos: number;
+  duracao_bloco_minutos: number;
+  total_blocos_ciclo: number;
+  posicao_atual_index: number; // 0 .. total_blocos_ciclo - 1
+  ciclo_concluidos_voltas: number;
+  disciplinas_prioridades: MentoriaCicloDisciplinaPrioridade[];
+  blocos: MentoriaCicloItem[];
+  bloco_atual: MentoriaCicloItem | null;
+  proximo_bloco: MentoriaCicloItem | null;
+  blocos_restantes_na_volta: number;
+}
+
+export interface MentoriaCicloCalculoInput {
+  usuario_id: string;
+  duracao_bloco_minutos: number;
+  quantidade_questoes_bloco: number;
+  prioridade_estudo?: MentoriaPrioridade; // "equilibrado" | "teoria" | "questoes" | "revisao"
+  disponibilidade: MentoriaDisponibilidade[];
+  diagnostico_disciplinas?: MentoriaDiagnosticoDisciplina[];
+  disciplinas_edital?: { id: string; nome: string; peso?: "baixo" | "medio" | "alto" | "critico" }[];
+}
+
+export interface MentoriaRegistroSessaoInput {
+  usuario_id: string;
+  plano_id: string;
+  tarefa_id?: string | null;
+  bloco_numero?: number;
+  bloco_ordem?: number;
+  disciplina_id: string;
+  disciplina_nome?: string;
+  tipo: MentoriaTarefaTipo;
+  segundos_liquidos?: number;
+  duracao_liquida_segundos?: number;
+  duracao_prevista_minutos?: number;
+  duracao_planejada_minutos?: number;
+  pausas?: number;
+  pausas_quantidade?: number;
+  segundos_pausa?: number;
+  pausas_segundos_total?: number;
+  observacoes?: string;
+  questoes_feitas?: number;
+  questoes_respondidas?: number;
+  questoes_acertos?: number;
+  questoes_acertadas?: number;
+}
+
+
 

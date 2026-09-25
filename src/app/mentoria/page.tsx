@@ -23,11 +23,14 @@ import {
   RotateCcw,
   BrainCircuit,
   Award,
+  RotateCw,
+  CheckSquare2,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { MentoriaService } from "@/services/mentoriaService";
-import { MentoriaDashboardStats } from "@/types";
+import { MentoriaCicloService } from "@/services/mentoriaCicloService";
+import { MentoriaDashboardStats, MentoriaCicloPlanoCompleto } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -36,6 +39,7 @@ export default function MentoriaDashboardPage() {
   const { user } = useAuth();
   const { concursoAtivo } = useConcurso();
   const [stats, setStats] = useState<MentoriaDashboardStats | null>(null);
+  const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,8 +49,12 @@ export default function MentoriaDashboardPage() {
         return;
       }
       try {
-        const dados = await MentoriaService.getDashboardStats(user.id);
+        const [dados, ciclo] = await Promise.all([
+          MentoriaService.getDashboardStats(user.id),
+          MentoriaCicloService.obterPlanoCiclo(user.id),
+        ]);
         setStats(dados);
+        setPlanoCiclo(ciclo);
       } catch (err) {
         console.error("Erro ao carregar estatísticas da mentoria:", err);
       } finally {
@@ -76,7 +84,7 @@ export default function MentoriaDashboardPage() {
           <div className="relative z-10 max-w-2xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-500/20 backdrop-blur-md rounded-full text-xs font-semibold text-blue-200 border border-blue-400/30">
               <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-              <span>Mentoria Inteligente — Release 1</span>
+              <span>Mentoria Inteligente — Release 3</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
@@ -84,7 +92,7 @@ export default function MentoriaDashboardPage() {
             </h1>
 
             <p className="text-sm sm:text-base text-blue-100/90 leading-relaxed">
-              Bem-vindo à Mentoria Inteligente do ConcursosApp. Aqui você não estuda no escuro: nós organizamos sua grade semanal, calculamos o tempo líquido ideal, estruturamos suas revisões espaçadas e verticalizamos o edital.
+              Bem-vindo à Mentoria Inteligente do ConcursosApp. Aqui você não estuda no escuro: nós organizamos sua grade semanal, calculamos o tempo líquido ideal, estruturamos seu ciclo contínuo adaptativo e verticalizamos o edital.
             </p>
 
             <div className="pt-4 flex flex-wrap items-center gap-4">
@@ -111,10 +119,10 @@ export default function MentoriaDashboardPage() {
                 <Target className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
-                1. Ciclos & Metas Reais
+                1. Ciclos Contínuos Adaptativos
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Defina sua carga horária por dia da semana e receba um plano adaptado aos seus horários livres.
+                Sem perder tarefas ou acumular atraso em dias perdidos. O ciclo avança exatamente conforme o seu ritmo real.
               </p>
             </CardContent>
           </Card>
@@ -125,10 +133,10 @@ export default function MentoriaDashboardPage() {
                 <Brain className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
-                2. Revisão Espaçada Ativa
+                2. Prioridade Matemática Explicável
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Nunca mais esqueça a matéria. O algoritmo agenda revisões inteligentes em D+1, D+7 e D+30 com base na sua curva de retenção.
+                A distribuição de blocos combina seu diagnóstico, histórico de taxa de acerto e o peso das matérias no edital.
               </p>
             </CardContent>
           </Card>
@@ -139,10 +147,10 @@ export default function MentoriaDashboardPage() {
                 <FileCheck className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
-                3. Edital Verticalizado
+                3. Cronômetro de Tempo Líquido
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Acompanhe o percentual de domínio em cada disciplina e priorize matérias com maior peso e incidência na sua banca.
+                Monitore suas pausas, tempo de foco e avanço do ciclo em tempo real com registro ponta a ponta.
               </p>
             </CardContent>
           </Card>
@@ -158,6 +166,8 @@ export default function MentoriaDashboardPage() {
   const percentualHoras = stats.meta_semanal_minutos > 0
     ? Math.min(100, Math.round((stats.minutos_estudados_semana / stats.meta_semanal_minutos) * 100))
     : 0;
+
+  const blocoAtivo = planoCiclo?.bloco_atual;
 
   return (
     <div className="space-y-8">
@@ -213,6 +223,60 @@ export default function MentoriaDashboardPage() {
           </Link>
         </div>
       </div>
+
+      {/* DESTAQUE: O QUE DEVO ESTUDAR AGORA? (Release 3 - Ciclo Contínuo) */}
+      {blocoAtivo && (
+        <Card className="border-2 border-blue-500/80 bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-white dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-slate-900 shadow-md">
+          <CardContent className="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="primary" className="bg-blue-600 text-white font-extrabold text-[11px] uppercase tracking-wider flex items-center gap-1">
+                  <Play className="w-3 h-3 fill-white" />
+                  O Que Devo Estudar Agora?
+                </Badge>
+                <span className="text-xs font-bold text-slate-500">
+                  Bloco {blocoAtivo.ordem_bloco} de {planoCiclo?.total_blocos_ciclo || 0} (Volta {(planoCiclo?.ciclo_concluidos_voltas || 0) + 1})
+                </span>
+              </div>
+
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100">
+                {blocoAtivo.disciplina_nome}
+              </h2>
+
+              <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 flex items-center gap-3">
+                <span>
+                  Tipo: <strong className="text-slate-900 dark:text-slate-200">{blocoAtivo.tipo}</strong>
+                </span>
+                <span>•</span>
+                <span>
+                  Duração: <strong className="text-slate-900 dark:text-slate-200">{blocoAtivo.duracao_minutos} minutos</strong>
+                </span>
+                <span>•</span>
+                <span>
+                  Prioridade: <strong className="capitalize text-blue-600 dark:text-blue-400">{blocoAtivo.prioridade_nivel} ({blocoAtivo.prioridade_score} pts)</strong>
+                </span>
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <Link href="/mentoria/plano">
+                <Button variant="outline" size="md" className="font-bold text-xs">
+                  Ver Ciclo
+                </Button>
+              </Link>
+              <Link href="/mentoria/hoje">
+                <Button
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-black shadow-lg shadow-blue-500/25"
+                  leftIcon={<Play className="w-4 h-4 fill-white" />}
+                >
+                  Iniciar Sessão Agora
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Banner / Card de Diagnóstico Inicial e Nivelamento (Release 2) */}
       {!perfil.diagnostico_concluido ? (
@@ -469,7 +533,7 @@ export default function MentoriaDashboardPage() {
                     Estudo de Hoje & Cronômetro
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Acesse as tarefas recomendadas para o dia e cronometre suas sessões com tempo líquido.
+                    Acesse o bloco ativo do ciclo e cronometre suas sessões com cálculo de tempo líquido.
                   </p>
                 </div>
               </CardContent>
@@ -487,7 +551,7 @@ export default function MentoriaDashboardPage() {
                     Plano de Estudos & Ciclos
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Cronograma semanal e ciclo adaptativo distribuído por matérias e pesos.
+                    Visão de fila contínua, matriz de prioridades determinísticas e recálculo adaptativo.
                   </p>
                 </div>
               </CardContent>
