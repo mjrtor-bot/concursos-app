@@ -109,11 +109,9 @@ export async function middleware(request: NextRequest) {
 
   // ── Verificação de papel admin para rotas /admin/* ───────────────────────
   if (isAdminRoute) {
-    // Checa o campo role nos metadados do usuário (definido no Supabase)
-    const role =
-      user.user_metadata?.role ||
-      user.app_metadata?.role ||
-      "user";
+    // Autorização restrita EXCLUSIVAMENTE ao app_metadata gerenciado pelo servidor (Service Role)
+    // Jamais confiar em user_metadata, que pode ser manipulado pelo cliente.
+    const role = user.app_metadata?.role || "user";
 
     if (role !== "admin") {
       // Redireciona não-admins para o dashboard

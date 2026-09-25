@@ -453,8 +453,69 @@ async function runIsolationSuite() {
         : "Inserção administrativa permitida"
     );
 
-    // 8. Integridade dos Dados Globais
-    console.log("\n[Fase 8] Verificação de Integridade das 1.260 Questões e 6.219 Alternativas:");
+    // 8. Teste Explícito de Tentativa de Autoelevação de Privilégio (Client-Side Exploit Simulation)
+    console.log("\n[Fase 8] Testando Tentativa de Autoelevação de Privilégio via user_metadata pelo Cliente:");
+
+    // Usuário A tenta se auto-promover para 'admin' via updateUser (SDK cliente)
+    const { data: updatedUserA, error: updateMetaErr } = await userA.client.auth.updateUser({
+      data: { role: "admin" },
+    });
+
+    assertTest(
+      "Usuário comum altera user_metadata.role para 'admin' no cliente (operação client-side padrão)",
+      !updateMetaErr && updatedUserA?.user?.user_metadata?.role === "admin",
+      `user_metadata.role no cliente = '${updatedUserA?.user?.user_metadata?.role}'`
+    );
+
+    // Tentativa 1: Inserir log administrativo após auto-promoção em user_metadata
+    const exploitLogId = crypto.randomUUID();
+    const { data: exploitIns, error: exploitInsErr } = await userA.client
+      .from("questoes_historico_alteracoes")
+      .insert({
+        id: exploitLogId,
+        questao_id: sampleQuestao.id,
+        autor_alteracao_id: userA.id,
+        versao_anterior: 1,
+        enunciado_anterior: "Exploit attempt",
+        motivo_alteracao: "Tentativa de injeção pós-elevação falsa",
+      })
+      .select();
+
+    assertTest(
+      "Usuário comum com user_metadata.role='admin' CONTINUA BLOQUEADO pelo RLS no banco",
+      Boolean(exploitInsErr) || !exploitIns || exploitIns.length === 0,
+      exploitInsErr ? `RLS Rejeitou categoricamente: ${exploitInsErr.message}` : "Bloqueado"
+    );
+
+    // Tentativa 2: Ler histórico administrativo após auto-promoção
+    const { data: exploitRead } = await userA.client
+      .from("questoes_historico_alteracoes")
+      .select("*");
+
+    assertTest(
+      "Usuário comum com user_metadata.role='admin' CONTINUA SEM ACESSO de leitura ao histórico",
+      !exploitRead || exploitRead.length === 0,
+      `Linhas retornadas: ${exploitRead?.length || 0}`
+    );
+
+    // Validação da Camada Middleware / Auth Server-Side
+    const fakeAdminRoleInAppMeta = updatedUserA?.user?.app_metadata?.role;
+    assertTest(
+      "app_metadata.role PERMANECE 'user' (protegido contra alteração via cliente)",
+      fakeAdminRoleInAppMeta === "user" || fakeAdminRoleInAppMeta === undefined,
+      `app_metadata.role = '${fakeAdminRoleInAppMeta || "undefined"}' (imutável pelo cliente)`
+    );
+
+    // Validação de Admin Legítimo
+    const legitimateAdminAppMeta = adminUser.user?.app_metadata?.role;
+    assertTest(
+      "Admin legítimo mantém app_metadata.role='admin' definido exclusivamente pelo servidor",
+      legitimateAdminAppMeta === "admin",
+      `Admin app_metadata.role = '${legitimateAdminAppMeta}'`
+    );
+
+    // 9. Integridade dos Dados Globais
+    console.log("\n[Fase 9] Verificação de Integridade das 1.260 Questões e 6.219 Alternativas:");
     const { count: countQ } = await adminClient.from("questoes").select("*", { count: "exact", head: true });
     const { count: countAlt } = await adminClient.from("questoes_alternativas").select("*", { count: "exact", head: true });
 

@@ -188,24 +188,21 @@ DROP POLICY IF EXISTS "Insercao de historico por autor autenticado" ON public.qu
 DROP POLICY IF EXISTS "questoes_historico_alteracoes_select_admin" ON public.questoes_historico_alteracoes;
 DROP POLICY IF EXISTS "questoes_historico_alteracoes_insert_admin" ON public.questoes_historico_alteracoes;
 
--- SELECT: Apenas administradores podem auditar o histórico de alterações
+-- SELECT: Apenas administradores autorizados via app_metadata (server-controlled) podem auditar o histórico de alterações
 CREATE POLICY "questoes_historico_alteracoes_select_admin"
 ON public.questoes_historico_alteracoes
 FOR SELECT
 TO authenticated
 USING (
-  coalesce((select auth.jwt() -> 'user_metadata' ->> 'role'), '') = 'admin' OR
   coalesce((select auth.jwt() -> 'app_metadata' ->> 'role'), '') = 'admin'
 );
 
--- INSERT: Apenas administradores autenticados podem registrar logs de alteração
+-- INSERT: Apenas administradores autenticados com app_metadata podem registrar logs de alteração
 CREATE POLICY "questoes_historico_alteracoes_insert_admin"
 ON public.questoes_historico_alteracoes
 FOR INSERT
 TO authenticated
 WITH CHECK (
-  (select auth.uid()) = autor_alteracao_id AND (
-    coalesce((select auth.jwt() -> 'user_metadata' ->> 'role'), '') = 'admin' OR
-    coalesce((select auth.jwt() -> 'app_metadata' ->> 'role'), '') = 'admin'
-  )
+  (select auth.uid()) = autor_alteracao_id AND
+  coalesce((select auth.jwt() -> 'app_metadata' ->> 'role'), '') = 'admin'
 );

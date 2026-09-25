@@ -109,7 +109,6 @@ function buildProfileFromSupabaseUser(supabaseUser: {
       (supabaseUser.user_metadata?.concurso_alvo_id as string | undefined) ||
       undefined,
     role:
-      (supabaseUser.user_metadata?.role as "user" | "admin" | "editor" | undefined) ||
       (supabaseUser.app_metadata?.role as "user" | "admin" | "editor" | undefined) ||
       "user",
     created_at: supabaseUser.created_at ?? new Date().toISOString(),
