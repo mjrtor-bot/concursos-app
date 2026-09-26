@@ -1,0 +1,1248 @@
+{
+  "lote": 4,
+  "prompt_versao": "v2.4-lote4",
+  "totalQuestoes": 500,
+  "totalAlternativas": 1732,
+  "idsUnicos": 500,
+  "fpsUnicos": 500,
+  "colisoesFpComDb": 0,
+  "colisoesIdComDb": 0,
+  "distDisciplina": {
+    "direito_penal": 70,
+    "direito_processual_penal": 70,
+    "legislacao_extravagante": 70,
+    "direito_constitucional": 60,
+    "direito_administrativo": 60,
+    "lingua_portuguesa": 60,
+    "direitos_humanos": 35,
+    "informatica_tecnologia": 30,
+    "criminologia": 25,
+    "raciocinio_logico": 20
+  },
+  "distModalidade": {
+    "certo_errado": 256,
+    "multipla_escolha": 244
+  },
+  "distDificuldade": {
+    "medio": 272,
+    "dificil": 189,
+    "facil": 39
+  },
+  "similaridade": {
+    "totalPares": 124750,
+    "pares80": 0,
+    "pares90": 0,
+    "pares95": 0,
+    "pct80": "0.0000",
+    "pct90": "0.0000",
+    "pct95": "0.0000"
+  },
+  "amostra50Count": 50,
+  "amostra50": [
+    {
+      "disciplina": "direito_penal",
+      "id": "a52c066e-1f02-5442-8ae6-33aca8e94537",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Considere que um cidadão brasileiro tenha praticado crime de homicídio doloso no exterior e que, sem ter sido julgado no país estrangeiro, tenha retornado ao Brasil. Nessa situação, incide o princípio da extraterritorialidade incondicionada da lei penal brasileira, sendo irrelevante se o fato também é punível no país em que foi cometido.",
+      "explicacao": "GABARITO: ERRADO. O art. 7º, II, 'b', do Código Penal estabelece que o crime praticado por brasileiro no exterior sujeita-se à extraterritorialidade CONDICIONADA (e não incondicionada). Para que a lei penal brasileira seja aplicada, devem concorrer cumulativamente as condições previstas no § 2º do art. 7º, entre as quais a de 'ser o fato punível também no país em que foi praticado' (dupla tipicidade). A extraterritorialidade incondicionada restringe-se às hipóteses taxativas do art. 7º, I, do CP.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "884486a3-bfb6-57c5-95c0-a4375f55563e",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O erro de proibição direto recai sobre a ilicitude do fato. Quando invencível (escusável), o erro de proibição isenta o agente de pena; quando vencível (inescusável), a pena pode ser diminuída de um sexto a um terço.",
+      "explicacao": "GABARITO: CERTO. Dispõe o art. 21, caput, do Código Penal: 'O desconhecimento da lei é inescusável. O erro sobre a ilicitude do fato, se inevitável, isenta de pena; se evitável, poderá diminuí-la de um sexto a um terço'. O erro de proibição exclui ou atenua a culpabilidade (potencial consciência da ilicitude).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "821919be-e665-5ea1-8e0b-e6fbe990f345",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "São reduzidos de metade os prazos de prescrição quando o criminoso era, ao tempo do crime, menor de 21 (vinte e um) anos, ou, na data da sentença, maior de 70 (setenta) anos.",
+      "explicacao": "GABARITO: CERTO. O art. 115 do Código Penal prevê expressamente a redução dos prazos prescricionais: 'São reduzidos de metade os prazos de prescrição quando o criminoso era, ao tempo do crime, menor de vinte e um anos, ou, na data da sentença, maior de setenta anos'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "222df210-e116-58f5-b283-8a8b4679b714",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O homicídio praticado contra autoridade ou agente integrante dos órgãos de segurança pública (art. 144 da CF) no exercício da função ou em decorrência dela, ou contra seu cônjuge, companheiro ou parente consanguíneo até terceiro grau, em razão dessa condição, configura homicídio qualificado (homicídio funcional).",
+      "explicacao": "GABARITO: CERTO. O art. 121, § 2º, VII, do Código Penal tipifica o chamado homicídio funcional (adicionado pela Lei nº 13.142/2015), qualificando o homicídio praticado contra agentes de segurança pública (ou militares/agentes penitenciários/força nacional) no exercício da função ou em decorrência dela, bem como contra seus cônjuges, companheiros ou parentes consanguíneos até o terceiro grau em razão dessa condição.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "0624c8ab-ddbb-597d-a5fc-533a27dacca9",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "No tocante ao crime de roubo (art. 157 do Código Penal), assinale a alternativa juridicamente correta conforme a legislação vigente e a jurisprudência do STJ e STF:",
+      "explicacao": "GABARITO: Letra B. O art. 157, § 2º-A, I, do CP (com redação dada pela Lei nº 13.654/2018) prevê causa de aumento de 2/3 se a violência ou ameaça é exercida com emprego de arma de fogo. Pela Lei nº 13.964/2019 (Pacote Anticrime), se a arma de fogo for de uso restrito ou proibido, a pena aumenta-se em dobro (§ 2º-B). Já a majorante pelo emprego de arma branca passou a constar no § 2º, VII (aumento de 1/3 até metade).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O emprego de arma de fogo de uso proibido ou restrito qualifica o crime com pena de reclusão de 15 a 30 anos sem cumulação de multa.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Aplica-se em dobro a pena privativa de liberdade prevista no caput se a violência ou ameaça é exercida com emprego de arma de fogo de uso restrito ou proibido.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A utilização de arma de brinquedo ou simulacro configura majorante expressa pelo emprego de arma de fogo.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A morte da vítima no roubo (latrocínio) é crime da competência do Tribunal do Júri se houver dolo eventual quanto ao resultado morte.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A restituição imediata e integral da coisa subtraída antes da denúncia desclassifica o roubo para constrangimento ilegal.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "99caae6a-8b1c-5b1c-bb6a-4965d77178b9",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O inquérito policial é um procedimento administrativo informativo, de caráter inquisitorial, instaurado pela polícia judiciária com a finalidade de apurar a materialidade e os indícios de autoria de infração penal, sendo suas peças hábeis para subsidiar medidas cautelares e a propositura da ação penal.",
+      "explicacao": "GABARITO: CERTO. O inquérito policial constitui procedimento administrativo pré-processual, inquisitivo, escrito, sigiloso, oficioso, oficial e indisponível, que tem como objetivo reunir elementos de informação acerca da materialidade e autoria do delito (justa causa) para o titular da ação penal (MP ou ofendido).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "10542cbd-341a-52ac-a360-2e1cc50b4867",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "O indiciamento é ato privativo da autoridade policial, que, por meio de despacho fundamentado e mediante análise técnico-jurídica do fato, imputa formalmente a determinada pessoa a autoria de uma infração penal.",
+      "explicacao": "GABARITO: CERTO. A Lei nº 12.830/2013 (art. 2º, § 6º) estabelece que 'o indiciamento, privativo do delegado de polícia, dar-se-á por ato fundamentado, mediante análise técnico-jurídica do fato, que deverá apontar a autoria, materialidade e suas circunstâncias'. Nem o MP nem o Juiz podem determinar que o delegado indicie alguém.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "0a2064ec-ce24-5617-ba06-39c5d8311554",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Na falta de perito oficial, o exame de corpo de delito será realizado por 2 (duas) pessoas idôneas, portadoras de diploma de curso superior preferencialmente na área específica, dentre as que tiverem habilitação técnica relacionada com a natureza do exame.",
+      "explicacao": "GABARITO: CERTO. Conforme o art. 159, § 1º, do CPP: 'Na falta de perito oficial, o exame será realizado por 2 (duas) pessoas idôneas, portadoras de diploma de curso superior preferencialmente na área específica, dentre as que tiverem habilitação técnica relacionada com a natureza do exame'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "5f4f4c7d-bd4f-58f5-9170-4fa8ab34cf11",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A audiência de custódia deve ser realizada no prazo máximo de 24 (vinte e quatro) horas após a realização da prisão, competindo ao magistrado avaliar a legalidade do flagrante, eventuais relatos de tortura e a necessidade de conversão em prisão preventiva ou concessão de liberdade provisória.",
+      "explicacao": "GABARITO: CERTO. O art. 310, caput, do CPP (redação da Lei nº 13.964/2019 e Resolução CNJ nº 213/2015) determina que o juiz deve promover a audiência de custódia no prazo de até 24 horas após a comunicação da prisão em flagrante, com a presença do acusado, seu advogado ou Defensor Público e o membro do Ministério Público.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "d73630da-2107-5ad6-8541-168e2b41cc51",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "Conforme a regra geral de fixação de competência ratione loci prevista no art. 70 do Código de Processo Penal, a competência será, de regra, determinada:",
+      "explicacao": "GABARITO: Letra A. O art. 70, caput, do CPP consagra a teoria do resultado: 'A competência será, de regra, determinada pelo lugar em que se consumar a infração, ou, no caso de tentativa, pelo lugar em que for praticado o último ato de execução'.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Pelo lugar em que se consumar a infração ou, no caso de tentativa, pelo lugar em que for praticado o último ato de execução.",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "Pelo domicílio ou residência do réu em qualquer hipótese infracional.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Pelo local da primeira apreensão policial dos instrumentos do delito.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Pela comarca da capital do respectivo Estado federado.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Pelo local onde a vítima tiver fixado sua residência habitual.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "f811c963-ab54-532b-8ff8-ce670fba18f8",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "No crime de posse ou porte de drogas para consumo pessoal (art. 28 da Lei nº 11.343/2006), não se impõe prisão em flagrante ao agente, devendo este ser conduzido à autoridade policial para lavratura de termo circunstanciado e imediata liberação se comprometer-se a comparecer ao Juizado Especial Criminal.",
+      "explicacao": "GABARITO: CERTO. O art. 48, § 2º, da Lei nº 11.343/2006 determina que 'tratando-se das condutas previstas no art. 28 desta Lei, não se imporá prisão em flagrante, devendo o autor do fato ser imediatamente encaminhado ao juízo competente ou, na falta deste, assumir o compromisso de a ele comparecer, lavrando-se termo circunstanciado e providenciando-se as requisições dos exames e perícias necessários'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "c16aea40-e456-5e5f-bbcd-c7196d6a1bd4",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "A posse de quantidade inexpressiva de munição desacompanhada de arma de fogo (munição desarmada), quando demonstrada a total ausência de perigo à segurança pública pelas circunstâncias do caso concreto, autoriza excepcionalmente a incidência do princípio da insignificância, segundo jurisprudência do STF e STJ.",
+      "explicacao": "GABARITO: CERTO. A jurisprudência consolidada do STF (RHC 143.449/MS) e do STJ (AgRg no HC 605.512/SP) admite, em situações excepcionais, a aplicação do princípio da insignificância (atipicidade material) na posse de ínfima quantidade de munição de uso permitido desacompanhada de arma de fogo capaz de deflagrá-la, desde que não haja outras circunstâncias de risco social.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "9b3a5e3e-5090-5b13-967b-0fbcd42bb096",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Aos crimes praticados com violência doméstica e familiar contra a mulher, independentemente da pena prevista, não se aplicam os institutos despenalizadores da Lei nº 9.099/1995, como a composição civil dos danos e a transação penal.",
+      "explicacao": "GABARITO: CERTO. O art. 41 da Lei nº 11.340/2006 determina expressamente: 'Aos crimes praticados com violência doméstica e familiar contra a mulher, independentemente da pena prevista, não se aplicam os dispositivos da Lei nº 9.099, de 26 de setembro de 1995'. A matéria também é objeto da Súmula 536 do STJ.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "f120fb04-532e-53b4-bdd2-d316cee09c26",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A ação controlada prevista na Lei nº 12.850/2013 consiste em retardar a intervenção policial ou administrativa relativa à ação praticada por organização criminosa, desde que mantida sob observação e acompanhamento, dependendo de prévia comunicação ao juiz competente, que, se for o caso, estabelecerá os seus limites e comunicará o Ministério Público.",
+      "explicacao": "GABARITO: CERTO. O art. 8º da Lei nº 12.850/2013 disciplina a ação controlada estabelecendo que o retardamento da intervenção policial independe de autorização judicial prévia, exigindo apenas prévia comunicação ao juiz competente (comunicação prévia), que fixará limites e ouvirá o MP. (Diferentemente da Lei de Drogas art. 53, II, que exige autorização judicial).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "3cd17f70-3467-5c19-9d54-39fadb87281b",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "Com o advento da Lei nº 13.964/2019 (Pacote Anticrime), qual das seguintes condutas passou a constar EXPRESSAMENTE no rol de crimes hediondos do art. 1º da Lei nº 8.072/1990?",
+      "explicacao": "GABARITO: Letra C. O Pacote Anticrime incluiu no art. 1º, IX, da Lei nº 8.072/1990 o crime de 'furto qualificado pelo emprego de explosivo ou de artefato análogo que cause perigo comum (art. 155, § 4º-A)'. O roubo com emprego de arma de fogo (art. 157, § 2º-A, I e § 2º-B) também foi catalogado expressamente.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Furto simples de semovente domesticável.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Estelionato eletrônico contra idoso.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Furto qualificado pelo emprego de explosivo ou de artefato análogo que cause perigo comum (art. 155, § 4º-A).",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Apropriação indébita previdenciária.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Desobediência a ordem de parada de fiscalização de trânsito.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "84f57361-2a20-553c-9dea-ba238b0c30e2",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A casa é asilo inviolável do indivíduo, ninguém nela podendo penetrar sem consentimento do morador, salvo em caso de flagrante delito ou desastre, ou para prestar socorro, ou, durante o dia, por determinação judicial.",
+      "explicacao": "GABARITO: CERTO. A literalidade do art. 5º, XI, da Constituição Federal de 1988 estabelece as quatro hipóteses de ingresso domiciliar: flagrante delito (dia/noite), desastre (dia/noite), socorro (dia/noite) e determinação judicial (exclusivamente durante o dia).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "e2ca41a8-b4b3-58d0-a7d9-00274e5ce3ca",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Ninguém será privado de direitos por motivo de crença religiosa ou de convicção filosófica ou política, salvo se as invocar para eximir-se de obrigação legal a todos imposta e recusar-se a cumprir prestação alternativa, fixada em lei.",
+      "explicacao": "GABARITO: CERTO. Trata-se da escusa de consciência prevista no art. 5º, VIII, da CF/88. A perda ou suspensão dos direitos políticos só ocorrerá se o indivíduo recusar tanto a obrigação geral quanto a prestação alternativa fixada em lei (art. 15, IV, da CF/88).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "ec27de27-d614-5dd3-bb22-98e1bbeb8ae0",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O Supremo Tribunal Federal, no julgamento da ADPF 995, assentou que as Guardas Municipais integram o Sistema de Segurança Pública (SUSP), reconhecendo a legitimidade constitucional de sua atuação na segurança urbana e na realização de patrulhamento preventivo e prisões em flagrante delito.",
+      "explicacao": "GABARITO: CERTO. O Plenário do STF, no julgamento da ADPF 995, reconheceu expressamente que as Guardas Municipais integram o Sistema Único de Segurança Pública (SUSP) e possuem atribuição constitucional para realizar policiamento preventivo comunitário e agir em flagrante delito.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "286bb5e6-f2eb-5402-9a8c-c08b9509a724",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "A remuneração dos servidores policiais integrantes dos órgãos previstos no art. 144 da CF/88 é fixada obrigatoriamente na forma de subsídio, estabelecido em parcela única, vedado o acréscimo de qualquer gratificação, adicional, abono, prêmio ou verba de representação, ressalvadas as parcelas de caráter indenizatório expressamente previstas em lei.",
+      "explicacao": "GABARITO: CERTO. O art. 144, § 9º, c/c art. 39, § 4º, da CF/88 determina que a remuneração dos servidores policiais seja estabelecida em subsídio em parcela única, sem prejuízo de verbas indenizatórias (diárias, auxílio-alimentação).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "ee23d749-7157-5b2a-9f2e-ff447c8f52d4",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Aos magistrados são asseguradas as garantias da vitaliciedade (que, no primeiro grau, só será adquirida após dois anos de exercício), da inamovibilidade (salvo por motivo de interesse público) e da irredutibilidade de subsídio.",
+      "explicacao": "GABARITO: CERTO. Trata-se das garantias constitucionais da magistratura previstas expressamente no art. 95, I, II e III, da Constituição Federal de 1988.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "4dd30831-7802-52bf-9a22-5902327e1d1b",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O princípio da impessoalidade veda a promoção pessoal de autoridades ou servidores públicos sobre suas realizações administrativas, exigindo que a publicidade dos atos, programas, obras, serviços e campanhas dos órgãos públicos tenha caráter estritamente educativo, informativo ou de orientação social, dela não podendo constar nomes, símbolos ou imagens que caracterizem promoção pessoal.",
+      "explicacao": "GABARITO: CERTO. Trata-se do desdobramento constitucional do princípio da impessoalidade estabelecido expressamente no art. 37, § 1º, da CF/88, vedando a vinculação de símbolos, nomes ou imagens individuais a realizações estatais.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "3175b94b-2e24-5f03-a651-088b76b6f888",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A autoexecutoriedade do poder de polícia não está presente em todos os atos administrativos de polícia, sendo afastada, por exemplo, na cobrança coercitiva de multas administrativas não pagas espontaneamente pelo infrator, a qual exige a propositura de execução fiscal perante o Poder Judiciário.",
+      "explicacao": "GABARITO: CERTO. A cobrança forçada de multa não possui autoexecutoriedade. Caso o administrado não pague voluntariamente a sanção pecuniária, o Poder Público não pode penhorar seus bens de ofício, necessitando inscrever o débito em dívida ativa e ajuizar Ação de Execução Fiscal perante o Judiciário (Lei nº 6.830/1980).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "e54531e0-47e1-5ca3-9bc0-c44548bea8b8",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A cassação é a forma de extinção do ato administrativo aplicável quando o beneficiário descumpre condições legais ou regulamentares que eram indispensáveis para a continuidade do exercício do direito ou benefício concedido.",
+      "explicacao": "GABARITO: CERTO. A cassação funciona como sanção administrativa decorrente de culpa do administrado que deixou de cumprir os requisitos legais ou regulamentares estabelecidos para a fruição da vantagem (ex.: cassação de licença de funcionamento de estabelecimento que passou a vender produtos ilícitos).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "45a3a1d3-1d52-5b58-b810-4415fd5b4ee2",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "As concessionárias e permissionárias de serviços públicos respondem objetivamente pelos danos que seus agentes causarem a terceiros usuários e a terceiros não usuários do serviço público, conforme tese fixada pelo STF no julgamento do RE 591.874 (Tema 130).",
+      "explicacao": "GABARITO: CERTO. No Tema 130 de Repercussão Geral (RE 591.874), o Plenário do STF consagrou que a responsabilidade civil das pessoas jurídicas de direito privado prestadoras de serviço público é objetiva mesmo em relação a terceiros não usuários do serviço.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "49f11632-31ee-5dac-851b-267fbfb7b496",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O Supremo Tribunal Federal, ao julgar as ADIs 7042 e 7043, declarou inconstitucional a exclusividade do Ministério Público para a propositura de ação por ato de improbidade administrativa, restabelecendo a legitimidade ativa concorrente da pessoa jurídica interessada (ente público lesado).",
+      "explicacao": "GABARITO: CERTO. O Pleno do STF (ADIs 7042 e 7043) julgou inconstitucional a exclusividade do MP conferida pela Lei nº 14.230/2021, assentando que a pessoa jurídica prejudicada também possui legitimidade ativa concorrente para propor a ação de improbidade administrativa e celebrar acordos de não persecução civil (ANPC).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "b0703108-9e45-5e4f-b659-273bfeb22450",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Considere o seguinte trecho: 'A atuação integrada dos órgãos de segurança pública e o investimento contínuo em inteligência artificial e análise preditiva de dados constituem fatores determinantes para a desarticulação de facções criminosas transnacionais.' No trecho, o termo 'fatores determinantes' funciona sintaticamente como predicativo do sujeito.",
+      "explicacao": "GABARITO: CERTO. O sujeito composto é 'A atuação integrada dos órgãos de segurança pública e o investimento contínuo em inteligência artificial e análise preditiva de dados'. O verbo 'constituem' atua como verbo de ligação/transitivo com valor atributivo, e 'fatores determinantes' qualifica o sujeito, funcionando como predicativo do sujeito.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "9c053cc7-a209-5aab-b3bf-938207be07b4",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Em 'Conquanto as condições climáticas fossem adversas na serra, os policiais concluíram o resgate com êxito', a conjunção 'Conquanto' pode ser substituída por 'Apesar de que' ou 'Embora', sem prejuízo da correção gramatical e do sentido original.",
+      "explicacao": "GABARITO: CERTO. 'Conquanto', 'embora', 'ainda que', 'se bem que' e 'apesar de que' são conjunções subordinativas concessivas equivalentes, que regem verbo no subjuntivo ('fossem').",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "15d79cb6-30d3-5dc4-81c7-09450699e80d",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "No trecho 'O perito assistiu à reconstituição do crime', o verbo 'assistir' foi empregado com o sentido de presenciar ou testemunhar, classificando-se como transitivo indireto com preposição 'a', sendo correto o uso do acento grave.",
+      "explicacao": "GABARITO: CERTO. O verbo 'assistir' no sentido de ver/presenciar é transitivo indireto (rege preposição 'a'). Como 'reconstituição' é substantivo feminino determinado pelo artigo 'a', ocorre a crase ('à reconstituição').",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "705bbd54-9347-5200-b3c5-49cdd33efc55",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Na oração 'A PRF prestou assistência a vítimas de acidentes graves', o emprego do acento grave na palavra 'a' acarretaria erro gramatical, pois a preposição 'a' no singular diante de substantivo feminino no plural não admite crase sem o artigo correspondente 'as'.",
+      "explicacao": "GABARITO: CERTO. Trata-se da regra clássica: 'A no singular diante de plural, crase nem a pau'. Ocorre apenas a preposição 'a' sem artigo definido plural. Se houvesse artigo, seria 'às vítimas'. Portanto, 'a vítimas' sem acento é a única forma correta.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "6a1d328a-9c72-5611-974b-4621e46de9b8",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "No período 'O delegado de polícia, autoridade com prerrogativa de conduzir o inquérito, determinou a prisão preventiva', o isolamento do segmento 'autoridade com prerrogativa de conduzir o inquérito' por vírgulas justifica-se por tratar-se de um aposto explicativo.",
+      "explicacao": "GABARITO: CERTO. O aposto explicativo fornece esclarecimento sobre o termo anterior ('delegado de polícia') e deve vir obrigatoriamente isolado por vírgulas, travessões ou parênteses.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "2546f432-a9df-59b6-8003-4ad0b779c111",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Os tratados e convenções internacionais sobre direitos humanos que forem aprovados em cada Casa do Congresso Nacional, em dois turnos, por três quintos dos votos dos respectivos membros, serão equivalentes às emendas constitucionais, nos termos do art. 5º, § 3º, da Constituição Federal.",
+      "explicacao": "GABARITO: CERTO. Trata-se da literalidade do art. 5º, § 3º, da CF/88, introduzido pela Emenda Constitucional nº 45/2004. O rito especial bicameral (dois turnos em cada casa) com quórum qualificado de 3/5 confere aos tratados de direitos humanos equivalência de emenda constitucional.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "0c37fce8-1294-58b3-a2e8-5b5d8cc4b68a",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "FCC",
+      "enunciado": "A respeito da Declaração Universal dos Direitos Humanos de 1948, assinale a afirmativa correta:",
+      "explicacao": "GABARITO: Letra C. A DUDH estabelece no art. 5º que 'Ninguém será submetido a tortura, nem a tratamento ou castigo cruel, desumano ou degradante'. Embora originariamente adotada como resolução da Assembleia Geral da ONU, adquiriu valor consuetudinário universal inderrogável.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "A DUDH admite expressamente a escravidão por dívida e a servidão em regimes de emergência.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O direito à liberdade de locomoção e residência não está previsto no texto da Declaração.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Ninguém será submetido a tortura, nem a tratamento ou castigo cruel, desumano ou degradante.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "A DUDH foi celebrada originariamente como um tratado com força executiva coercitiva imediata.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "O asilo político é garantido pela DUDH mesmo em casos de perseguição estritamente motivada por crimes comuns.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "754ba6c9-8058-5b13-926e-37e96c3d7fd6",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Convenção Americana sobre Direitos Humanos assegura o direito de resposta ou retificação a toda pessoa atingida por informações inexatas ou ofensivas emitidas em seu prejuízo por meios de difusão legalmente regulamentados.",
+      "explicacao": "GABARITO: CERTO. O art. 14, item 1, da CADH estabelece que toda pessoa afetada por informações inexatas ou agravantes emitidas em seu prejuízo através de meios de difusão legalmente regulamentados tem direito a resposta ou retificação.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "e9409286-5c87-5e6a-8f6c-f1fa8fb0ecfe",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "A Convenção Interamericana para Prevenir, Punir e Erradicar a Violência contra a Mulher (Convenção de Belém do Pará - Decreto nº 1.973/1996) define a violência contra a mulher como qualquer ação ou conduta, baseada no gênero, que cause morte, dano ou sofrimento físico, sexual ou psicológico à mulher, tanto no âmbito:",
+      "explicacao": "GABARITO: Letra B. O art. 1º da Convenção de Belém do Pará preconiza que a violência de gênero abrange tanto o espaço público quanto o espaço privado (doméstico, comunitário ou perpetrado/tolerado pelo Estado).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Exclusivamente matrimonial e sob coabitação formal.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Público quanto no privado.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Estritamente laboral em empresas de direito privado.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Patrimonial em disputas de inventário e sucessões.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Penitenciário entre pessoas sob custódia.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "af4b5e65-793e-5410-b27e-3dc459695d56",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A indivisibilidade e a interdependência dos direitos humanos significam que a realização plena dos direitos civis e políticos é indissociável da fruição dos direitos econômicos, sociais e culturais.",
+      "explicacao": "GABARITO: CERTO. A Declaração e Programa de Ação de Viena (1993) consolidou a premissa de que todos os direitos humanos são universais, indivisíveis, interdependentes e inter-relacionados.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "af937cf7-55f4-5f97-bb0f-e362187bf3ca",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O ransomware é um tipo de código malicioso que torna inacessíveis os dados armazenados em um dispositivo por meio de criptografia forte, exigindo da vítima o pagamento de um resgate para o fornecimento da respectiva chave de decifração.",
+      "explicacao": "GABARITO: CERTO. O ransomware é um malware extorsivo que sequestra dados ou sistemas cifrando arquivos críticos com algoritmos criptográficos robustos e exige resgate (geralmente em criptomoedas) para restauração do acesso.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "c7fd9fe5-cff1-5b4f-b201-b5be332ad3bc",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O ataque de Phishing consiste em uma técnica de engenharia social por meio da qual golpistas induzem a vítima a fornecer informações confidenciais (senhas, dados bancários) fingindo ser uma entidade confiável mediante e-mails, mensagens ou páginas fraudulentas.",
+      "explicacao": "GABARITO: CERTO. O phishing utiliza iscas falsas (e-mails fraudulentos, sites clones, mensagens de SMS) para enganar usuários e roubar credenciais de acesso ou dados financeiros sigilosos.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "20f0dd09-f0fa-5b20-a47f-e99386723938",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "O Trojan (cavalo de Troia) é um programa aparentemente inofensivo ou útil que esconde funcionalidades maliciosas, executando ações danosas em segundo plano sem o consentimento do usuário ao ser executado.",
+      "explicacao": "GABARITO: CERTO. O Trojan disfarça-se de software legítimo (jogos, utilitários, instaladores) para enganar o usuário, abrindo portas de comunicação (backdoors) e executando comandos maliciosos.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "a4070f90-b1e1-5f77-ab39-56859a4dde8c",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "No Linux, ao atribuir a permissão numérica 'chmod 755 arquivo.sh', o proprietário adquire permissões completas de leitura, escrita e execução (7), enquanto o grupo e outros usuários adquirem permissões apenas de leitura e execução (5).",
+      "explicacao": "GABARITO: CERTO. Em octal: 7 = rwx (4+2+1), 5 = r-x (4+0+1). Assim, 755 confere rwx ao dono (User), r-x ao grupo (Group) e r-x aos demais (Others).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "1ea83c8c-727b-5d60-a7cb-66d34af4839f",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Os bancos de dados NoSQL do tipo 'Document Store' (orientados a documentos), como o MongoDB, armazenam dados em documentos semiestruturados (como JSON ou BSON), oferecendo flexibilidade de esquema (schemaless) em contraste com o esquema rígido das tabelas relacionais.",
+      "explicacao": "GABARITO: CERTO. Bancos NoSQL orientados a documentos armazenam dados na forma de documentos semiestruturados flexíveis (JSON/BSON), permitindo que cada documento possua campos distintos sem a obrigatoriedade de tabelas relacionais pré-fixadas.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "615a82ca-8b09-5123-8108-1afe1b0861f1",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Teoria da Associação Diferencial, desenvolvida pelo criminólogo Edwin Sutherland, sustenta que o comportamento criminoso não é inato nem decorre unicamente de desvantagens socioeconômicas, mas é aprendido por meio de processos de comunicação e interação no interior de grupos íntimos.",
+      "explicacao": "GABARITO: CERTO. A Teoria da Associação Diferencial de Edwin Sutherland estabelece que o crime é uma conduta aprendida em interação social com outras pessoas, mediante assimilação de técnicas e orientações normativas favoráveis à transgressão da lei (inclusive explicando o 'crime de colarinho branco').",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "ee5503a8-a738-5ed5-b2a3-65a9fe32a4ae",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "A Teoria da Anomia, estruturada inicialmente por Émile Durkheim e aprofundada por Robert K. Merton na sociologia criminal norte-americana, sustenta que o crime decorre de:",
+      "explicacao": "GABARITO: Letra C. Para Merton, a anomia resulta da assimetria ou descompasso estrutural entre as metas culturais propostas pela sociedade (como sucesso material/financeiro) e os meios institucionais e legítimos disponibilizados aos indivíduos para atingi-las.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Patologias cromossômicas e anomalias endócrinas congênitas dos infratores.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Falta de iluminação pública e desordem urbana imediata.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Uma dissonância ou descompasso entre as metas culturais de sucesso impostas pela sociedade e os meios legítimos disponíveis para alcançá-las.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Influência nefasta do cinema e dos meios de comunicação de massa.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Contágio moral decorrente do encarceramento em regime aberto.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "47e1c56f-d9ba-553f-a5d0-9ca0fd4a1c89",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Escola de Chicago (ou Teoria Ecológica) destacou a influência do meio ambiente urbano na criminalidade, defendendo que a desorganização social presente em determinadas zonas urbanas em transição e deterioradas é o principal vetor criminógeno, e não traços biológicos individuais.",
+      "explicacao": "GABARITO: CERTO. Autores como Park, Burgess, Shaw e McKay demonstraram que certas áreas urbanas (zonas de transição marcadas por deterioração e rotatividade populacional) apresentavam altos índices de delinquência independentemente da etnia dos grupos que por ali passavam.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "3086316e-0a8b-56b9-a762-da5f55468bde",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "O modelo de resposta ao fenômeno criminal que prioriza a reparação do dano causado à vítima, a responsabilização ativa do ofensor e o restabelecimento da paz comunitária por meio do diálogo e do consenso é denominado:",
+      "explicacao": "GABARITO: Letra C. O Modelo Integrador (ou Restaurativo / Justiça Restaurativa) foca na composição do conflito, superando a lógica puramente retributiva/punitiva estatal para envolver autor, vítima e comunidade na reparação do dano.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Modelo Clássico Retributivo.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Modelo Dissuasório Tradicional.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Modelo Integrador ou Restaurativo.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Modelo Inquisitorial Eclético.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Modelo de Neutralização Seletiva.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "61efdaad-cb17-584c-8c38-e8ddc27ba1a1",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Criminologia Crítica (ou Radical), influenciada pelo materialismo histórico, concebe o sistema penal e as normas de incriminação como instrumentos ideológicos e de força utilizados pelas classes dominantes para proteger a propriedade privada e manter a estrutura capitalista de desigualdade social.",
+      "explicacao": "GABARITO: CERTO. A criminologia crítica desloca o foco do indivíduo criminoso para os mecanismos de criminalização e controle social, denunciando a seletividade punitiva em favor do capital e das classes hegemônicas.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "fe15851b-d012-5c89-a862-7c79429937ac",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A negação lógica da proposição condicional 'Se o mandado for expedido, então o agente cumprirá a diligência' é logicamente equivalente a 'O mandado foi expedido e o agente não cumpriu a diligência'.",
+      "explicacao": "GABARITO: CERTO. A negação de uma proposição condicional do tipo (P → Q) é dada formalmente por (P ∧ ¬Q), mantendo-se a antecedente e negando-se a consequente.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "652202cb-e971-565b-9e13-b56bb492f645",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Em um lote de 20 amostras biológicas colhidas em local de crime, sabe-se que 4 estão contaminadas. Se um perito selecionar aleatoriamente, sem reposição, 2 dessas amostras, a probabilidade de que ambas estejam contaminadas é inferior a 4%.",
+      "explicacao": "GABARITO: CERTO. Probabilidade = (4/20) * (3/19) = (1/5) * (3/19) = 3/95 ≈ 0,03157 (3,16%), que é de fato estritamente inferior a 4%.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "ec08612e-f079-5574-8c7e-724c9cb21f90",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "A proposição composta representada pela fórmula lógica (P ∧ ¬P) é uma contradição lógica, pois assume invariavelmente o valor lógico falso em todas as linhas de sua tabela-verdade, independentemente do valor de P.",
+      "explicacao": "GABARITO: CERTO. Uma proposição que é falsa para qualquer atribuição de valor de verdade de suas variáveis componentes é definida classicamente como uma contradição lógica.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "2285563d-a920-5aad-963c-70fa4ca4dc10",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O número de anagramas distintos que podem ser formados com as letras da palavra 'POLICIA' é estritamente superior a 2.000.",
+      "explicacao": "GABARITO: CERTO. A palavra POLICIA tem 7 letras no total, com a letra 'I' repetida 2 vezes. Trata-se de permutação com repetição: P_7^(2) = 7! / 2! = 5.040 / 2 = 2.520 anagramas, que é estritamente superior a 2.000.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "8bfbaae3-6807-5ad4-afea-282cb174ff59",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "A negação lógica da proposição categórica 'Nenhum criminoso escapa à justiça' é dada pela proposição 'Existe pelo menos um criminoso que escapa à justiça'.",
+      "explicacao": "GABARITO: CERTO. A negação de uma proposição universal negativa (Nenhum A é B) é a proposição existencial afirmativa (Algum A é B / Existe pelo menos um A que é B).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    }
+  ]
+}
