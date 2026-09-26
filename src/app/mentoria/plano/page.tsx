@@ -29,16 +29,19 @@ import {
   MentoriaDisponibilidade,
   MentoriaCicloPlanoCompleto,
   MentoriaCicloItem,
+  GradeSemanalDia,
 } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { WeeklyScheduleGrid } from "@/components/planejamento/WeeklyScheduleGrid";
 
 export default function MentoriaPlanoPage() {
   const { user } = useAuth();
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [disp, setDisp] = useState<MentoriaDisponibilidade[]>([]);
   const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
+  const [gradeSemanal, setGradeSemanal] = useState<GradeSemanalDia[]>([]);
   const [loading, setLoading] = useState(true);
   const [recalculando, setRecalculando] = useState(false);
   const [disciplinaExplicando, setDisciplinaExplicando] = useState<string | null>(null);
@@ -51,14 +54,16 @@ export default function MentoriaPlanoPage() {
         return;
       }
       try {
-        const [p, d, ciclo] = await Promise.all([
+        const [p, d, ciclo, grade] = await Promise.all([
           MentoriaService.getPerfil(user.id),
           MentoriaService.getDisponibilidade(user.id),
           MentoriaCicloService.obterPlanoCiclo(user.id),
+          MentoriaService.getGradeSemanalDistribuida(user.id),
         ]);
         setPerfil(p);
         setDisp(d);
         setPlanoCiclo(ciclo);
+        setGradeSemanal(grade);
       } catch (err) {
         console.error("Erro ao carregar plano de estudos adaptativo:", err);
       } finally {
@@ -76,6 +81,8 @@ export default function MentoriaPlanoPage() {
       const res = await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
       if (res.success && res.plano) {
         setPlanoCiclo(res.plano);
+        const novaGrade = await MentoriaService.getGradeSemanalDistribuida(user.id);
+        setGradeSemanal(novaGrade);
         setFeedbackMsg({
           tipo: "success",
           texto: `Ciclo recalculado com sucesso! Nova versão v${res.plano.versao} gerada com base no seu diagnóstico e disponibilidade.`,
@@ -555,15 +562,20 @@ export default function MentoriaPlanoPage() {
         </div>
       )}
 
+      {/* GRADE SEMANAL DISTRIBUÍDA (HAMILTON-HARE) */}
+      <div className="space-y-4">
+        <WeeklyScheduleGrid grade={gradeSemanal} loading={false} />
+      </div>
+
       {/* Grade de Disponibilidade Semanal de Referência */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            Estrutura da Grade Semanal ({totalHorasGrade}h disponíveis)
+            Configuração de Horários ({totalHorasGrade}h semanais)
           </h2>
           <Link href="/mentoria/configurar" className="text-xs text-blue-600 dark:text-blue-400 font-bold hover:underline">
-            Editar Horários
+            Editar Horários e Dias
           </Link>
         </div>
 

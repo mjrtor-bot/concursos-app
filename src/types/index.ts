@@ -401,6 +401,41 @@ export interface MentoriaEditalTopico {
   updated_at: string;
 }
 
+export interface EditalVerticalizadoItem {
+  id: string;
+  disciplina_id: string;
+  disciplina_nome: string;
+  assunto_id: string;
+  assunto_nome: string;
+  peso: "baixo" | "medio" | "alto" | "critico";
+  incidencia_percentual: number;
+  estudado: boolean;
+  status: "nao_iniciado" | "estudando" | "revisando" | "dominado";
+  percentual_dominio: number;
+  questoes_respondidas: number;
+  questoes_acertadas: number;
+  taxa_acerto: number;
+  ultima_atividade?: string | null;
+}
+
+export interface EditalVerticalizadoResumo {
+  total_topicos: number;
+  topicos_estudados: number;
+  topicos_dominados: number;
+  percentual_conclusao: number;
+  taxa_acerto_global: number;
+  disciplinas: {
+    disciplina_id: string;
+    disciplina_nome: string;
+    total_topicos: number;
+    topicos_estudados: number;
+    topicos_dominados: number;
+    percentual_conclusao: number;
+    taxa_acerto_media: number;
+    topicos: EditalVerticalizadoItem[];
+  }[];
+}
+
 export interface MentoriaPlano {
   id: string;
   usuario_id: string;
@@ -702,6 +737,72 @@ export interface MentoriaRevisaoItem {
   created_at?: string;
   updated_at?: string;
 }
+
+// ----------------------------------------------------
+// RELEASE: PLANEJAMENTO, MISSÕES E DESEMPENHO UNIFICADO
+// ----------------------------------------------------
+
+export interface ActivityHeatmapPoint {
+  data: string; // YYYY-MM-DD
+  minutos_estudados: number;
+  questoes_resolvidas: number;
+  intensidade: 0 | 1 | 2 | 3 | 4; // 0 = sem atividade, 4 = pico de estudo
+}
+
+export interface ConstanciaTelemetria {
+  sequencia_atual_dias: number;
+  melhor_sequencia_dias: number;
+  total_dias_estudados: number;
+  taxa_constancia_ultimos_30_dias: number; // 0..100
+  heatmap_90_dias: ActivityHeatmapPoint[];
+}
+
+export interface MetasEstudoConfig {
+  meta_diaria_questoes: number;
+  meta_diaria_minutos: number;
+  meta_semanal_questoes: number;
+  meta_semanal_minutos: number;
+  questoes_concluidas_hoje: number;
+  minutos_liquidos_hoje: number;
+  percentual_questoes_hoje: number;
+  percentual_minutos_hoje: number;
+  atingiu_meta_questoes_hoje: boolean;
+  atingiu_meta_horas_hoje: boolean;
+}
+
+export interface MissaoDiariaItem {
+  id: string;
+  plano_id?: string;
+  bloco_ordem: number;
+  tipo: MentoriaTarefaTipo;
+  disciplina_id: string;
+  disciplina_nome: string;
+  assunto_id?: string;
+  assunto_nome?: string;
+  duracao_minutos: number;
+  quantidade_questoes: number;
+  prioridade: MentoriaTarefaPrioridade;
+  status: MentoriaTarefaStatus;
+  motivo_explicabilidade: string[];
+  progresso_percentual: number;
+}
+
+export interface GradeSemanalDia {
+  dia_semana: number; // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
+  nome_dia: string; // "Segunda", "Terça", etc.
+  nome_curto: string; // "Seg", "Ter", etc.
+  minutos_disponiveis: number;
+  blocos: {
+    id: string;
+    ordem: number;
+    disciplina_id: string;
+    disciplina_nome: string;
+    tipo: MentoriaTarefaTipo;
+    duracao_minutos: number;
+    prioridade_nivel: MentoriaTarefaPrioridade;
+  }[];
+}
+
 
 
 
