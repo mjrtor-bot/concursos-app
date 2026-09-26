@@ -14,10 +14,14 @@ import {
   Database,
   User,
   ChevronRight,
+  ChevronDown,
   Flame,
   Clock,
   Sparkles,
   Compass,
+  Zap,
+  Calendar,
+  Layers,
   X,
 } from "lucide-react";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -37,6 +41,37 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [sequenciaDias, setSequenciaDias] = useState(1);
   const [questoesHoje, setQuestoesHoje] = useState(0);
+  const [isMentoriaOpen, setIsMentoriaOpen] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("mentoria_submenu_open");
+      if (saved !== null) return saved === "true";
+    }
+    return true;
+  });
+
+  // Auto-expand quando estiver em qualquer rota da mentoria
+  useEffect(() => {
+    if (pathname.startsWith("/mentoria")) {
+      setIsMentoriaOpen(true);
+      try {
+        localStorage.setItem("mentoria_submenu_open", "true");
+      } catch {
+        // Ignore storage errors
+      }
+    }
+  }, [pathname]);
+
+  const toggleMentoria = () => {
+    setIsMentoriaOpen((prev) => {
+      const nextState = !prev;
+      try {
+        localStorage.setItem("mentoria_submenu_open", String(nextState));
+      } catch {
+        // Ignore storage errors
+      }
+      return nextState;
+    });
+  };
 
   useEffect(() => {
     try {
@@ -48,18 +83,37 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
     }
   }, [pathname]);
 
-  const navItems = [
-    {
-      href: "/dashboard",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-    },
+  const mentoriaSubItems = [
     {
       href: "/mentoria",
-      label: "Mentoria",
+      label: "Visão Geral",
       icon: Compass,
-      badge: "Inteligente",
+      isExact: true,
     },
+    {
+      href: "/mentoria/hoje",
+      label: "Missão Diária",
+      icon: Zap,
+      badge: "Hoje",
+    },
+    {
+      href: "/mentoria/semanal",
+      label: "Planejamento Semanal",
+      icon: Calendar,
+    },
+    {
+      href: "/mentoria/plano",
+      label: "Meu Plano",
+      icon: Layers,
+    },
+    {
+      href: "/mentoria/edital",
+      label: "Edital Verticalizado",
+      icon: BookOpen,
+    },
+  ];
+
+  const otherNavItems = [
     {
       href: "/concursos",
       label: "Concursos & Cargos",
@@ -181,12 +235,124 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
 
         {/* Navigation items */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-          {navItems.map((item) => {
+          {/* 1. Dashboard */}
+          <Link
+            href="/dashboard"
+            onClick={onCloseMobile}
+            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+              pathname === "/dashboard"
+                ? "bg-blue-600 text-white shadow-sm shadow-blue-500/20 font-bold"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <LayoutDashboard
+                className={`w-4 h-4 ${
+                  pathname === "/dashboard"
+                    ? "text-white"
+                    : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"
+                }`}
+              />
+              <span>Dashboard</span>
+            </div>
+            {pathname === "/dashboard" && <ChevronRight className="w-4 h-4 opacity-70" />}
+          </Link>
+
+          {/* 2. Mentoria Inteligente (Submenu Expansível / Accordion) */}
+          <div className="space-y-1 pt-0.5">
+            <button
+              type="button"
+              onClick={toggleMentoria}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+                pathname.startsWith("/mentoria")
+                  ? "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200/50 dark:border-blue-900/40"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Compass
+                  className={`w-4 h-4 ${
+                    pathname.startsWith("/mentoria")
+                      ? "text-blue-600 dark:text-blue-400"
+                      : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"
+                  }`}
+                />
+                <span>Mentoria</span>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span
+                  className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                    pathname.startsWith("/mentoria")
+                      ? "bg-blue-600/10 text-blue-600 dark:text-blue-300 border border-blue-500/20"
+                      : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                  }`}
+                >
+                  Inteligente
+                </span>
+                {isMentoriaOpen ? (
+                  <ChevronDown className="w-4 h-4 text-slate-400 transition-transform duration-200" />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-slate-400 transition-transform duration-200" />
+                )}
+              </div>
+            </button>
+
+            {/* Submenu Itens da Mentoria */}
+            {isMentoriaOpen && (
+              <div className="pl-3 ml-3.5 space-y-1 border-l-2 border-slate-200/80 dark:border-slate-800 py-1 transition-all">
+                {mentoriaSubItems.map((sub) => {
+                  const SubIcon = sub.icon;
+                  const isSubActive = sub.isExact
+                    ? pathname === sub.href
+                    : pathname.startsWith(sub.href);
+
+                  return (
+                    <Link
+                      key={sub.href}
+                      href={sub.href}
+                      onClick={onCloseMobile}
+                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
+                        isSubActive
+                          ? "bg-blue-600 text-white font-bold shadow-xs shadow-blue-500/20"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <SubIcon
+                          className={`w-3.5 h-3.5 shrink-0 ${
+                            isSubActive
+                              ? "text-white"
+                              : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"
+                          }`}
+                        />
+                        <span className="truncate">{sub.label}</span>
+                      </div>
+
+                      {sub.badge ? (
+                        <span
+                          className={`text-[9px] font-bold px-1.5 py-0.2 rounded shrink-0 ${
+                            isSubActive
+                              ? "bg-white/20 text-white"
+                              : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
+                          }`}
+                        >
+                          {sub.badge}
+                        </span>
+                      ) : (
+                        isSubActive && <ChevronRight className="w-3.5 h-3.5 opacity-70 shrink-0" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* 3. Outros Módulos da Plataforma */}
+          {otherNavItems.map((item) => {
             const Icon = item.icon;
-            const isActive =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(item.href);
+            const isActive = pathname.startsWith(item.href);
 
             return (
               <Link
@@ -195,7 +361,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
                 onClick={onCloseMobile}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group ${
                   isActive
-                    ? "bg-blue-600 text-white shadow-sm shadow-blue-500/20"
+                    ? "bg-blue-600 text-white shadow-sm shadow-blue-500/20 font-bold"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60"
                 }`}
               >
