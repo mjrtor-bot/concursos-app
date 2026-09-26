@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-09-26T10:08:25.773Z",
+  "totalQuestoesBanco": 5260,
+  "totalAlternativasBanco": 20312,
+  "distribuicaoLotes": {
+    "v2.1": 1760,
+    "v2.3-lote3": 500,
+    "v2.2-lote2": 500,
+    "v2.7-lote7": 500,
+    "v2.6-lote6": 500,
+    "v2.5-lote5": 500,
+    "v2.4-lote4": 500,
+    "v2.8-lote8": 500
+  },
+  "lote8": {
+    "totalQuestoes": 500,
+    "distribuicaoOrgao": {
+      "Polícia Militar": 98,
+      "Corpo de Bombeiros Militar": 46,
+      "Polícia Federal": 40,
+      "Polícia Rodoviária Federal": 40,
+      "Guarda Municipal": 79,
+      "Polícia Civil": 126,
+      "Polícia Penal": 71
+    },
+    "distribuicaoDificuldade": {
+      "facil": 150,
+      "medio": 250,
+      "dificil": 100
+    },
+    "distribuicaoTipo": {
+      "multipla_escolha": 300,
+      "certo_errado": 200
+    },
+    "distribuicaoBanca": {
+      "Inédita / Estilo IBFC": 50,
+      "Inédita / Estilo VUNESP": 75,
+      "Inédita / Estilo CEBRASPE": 200,
+      "Inédita / Estilo AOCP": 55,
+      "Inédita / Estilo FGV": 120
+    },
+    "errosGabarito": 0,
+    "errosQtdAlternativas": 0,
+    "amostraAuditada": 100,
+    "amostraConformidade": 99
+  },
+  "alternativasOrfas": 0
+}

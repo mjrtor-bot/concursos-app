@@ -1,0 +1,97 @@
+{
+  "timestamp": "2026-09-26T10:02:29.121Z",
+  "totalQuestoesBancoAtual": 4760,
+  "totalAlternativasBancoAtual": 18412,
+  "totalQuestoesLote8": 500,
+  "colisoesUuidQuestoes": 0,
+  "colisoesUuidAlternativas": 0,
+  "colisoesFingerprint": 0,
+  "similaridadeJaccardMaximaInterna": 0.4375,
+  "maxInternalPair": {
+    "qA": "tran-01-017",
+    "qB": "tran-01-025",
+    "sim": 0.4375
+  },
+  "internalGte80": 0,
+  "similaridadeJaccardMaximaCruzada": 0.7441860465116279,
+  "maxCrossPar": {
+    "q8": "cst-02-001",
+    "qDb": "20de5d95-6e22-53eb-812a-cffa3983519c",
+    "prompt": "v2.6-lote6",
+    "sim": 0.7441860465116279
+  },
+  "paresGte80": 0,
+  "paresGte90": 0,
+  "paresGte95": 0,
+  "lotesContagem": {
+    "v2.1": 1760,
+    "v2.3-lote3": 500,
+    "v2.2-lote2": 500,
+    "v2.7-lote7": 500,
+    "v2.6-lote6": 500,
+    "v2.5-lote5": 500,
+    "v2.4-lote4": 500
+  },
+  "topPares": [
+    {
+      "q8": "cst-02-001",
+      "qDb": "20de5d95-6e22-53eb-812a-cffa3983519c",
+      "prompt": "v2.6-lote6",
+      "sim": 0.7441860465116279
+    },
+    {
+      "q8": "dh-crim-01-002",
+      "qDb": "2546f432-a9df-59b6-8003-4ad0b779c111",
+      "prompt": "v2.4-lote4",
+      "sim": 0.7045454545454546
+    },
+    {
+      "q8": "dh-crim-01-002",
+      "qDb": "b5b62068-2a4f-5b34-8042-a7ae62f7cd2d",
+      "prompt": "v2.7-lote7",
+      "sim": 0.7045454545454546
+    },
+    {
+      "q8": "pen-03-005",
+      "qDb": "bad33bb0-6c62-5f0c-b738-e7f9ce44961a",
+      "prompt": "v2.7-lote7",
+      "sim": 0.6666666666666666
+    },
+    {
+      "q8": "pen-03-001",
+      "qDb": "15fa4c3d-c2cf-5a7c-a404-bd35c07f01aa",
+      "prompt": "v2.7-lote7",
+      "sim": 0.6521739130434783
+    },
+    {
+      "q8": "pen-02-001",
+      "qDb": "fe79f33b-5db5-5b4c-8360-0b8ccd18216b",
+      "prompt": "v2.5-lote5",
+      "sim": 0.639344262295082
+    },
+    {
+      "q8": "cst-01-011",
+      "qDb": "1c0cb2c8-f2fd-555c-933e-7f0a9784a3dd",
+      "prompt": "v2.1",
+      "sim": 0.6296296296296297
+    },
+    {
+      "q8": "dh-crim-01-002",
+      "qDb": "12c97226-a5f4-5078-a073-c9ae728a96d2",
+      "prompt": "v2.5-lote5",
+      "sim": 0.6078431372549019
+    },
+    {
+      "q8": "proc-pen-02-001",
+      "qDb": "71ce0c31-fb51-54da-9499-4e807cb37283",
+      "prompt": "v2.6-lote6",
+      "sim": 0.6060606060606061
+    },
+    {
+      "q8": "pen-01-004",
+      "qDb": "96fa2342-1780-5ae6-ab94-ab0df3fe145b",
+      "prompt": "v2.1",
+      "sim": 0.6
+    }
+  ]
+}
