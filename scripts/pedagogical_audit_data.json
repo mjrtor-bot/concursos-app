@@ -1,0 +1,2994 @@
+{
+  "crossScores": [
+    {
+      "q9Slug": "b9-const-01-002",
+      "q9Enunciado": "Com a promulgação da Emenda Constitucional nº 104/2019, as polícias penais, vinculadas ao órgão administrador do sistema penal da unidade federativa a que pertencem, passaram a integrar expressamente o rol dos órgãos de segurança pública do Art. 144 da Constituição Federal.",
+      "dbId": "b8225c3d-a074-5c23-a44c-ffa470aabf89",
+      "dbPromptVersao": "v2.8-lote8",
+      "dbEnunciado": "Com o advento da Emenda Constitucional nº 104/2019, as polícias penais, vinculadas ao órgão administrador do sistema penal da unidade federativa a que pertencem, passaram a integrar expressamente o rol dos órgãos de segurança pública do art. 144 da CF/88, incumbindo-lhes a segurança dos estabelecimentos penais.",
+      "sim": 67.31
+    },
+    {
+      "q9Slug": "b9-penal-02-011",
+      "q9Enunciado": "O policial que, por indulgência, deixa de responsabilizar subordinado que cometeu infração no exercício do cargo ou, quando lhe falte competência, não leva o fato ao conhecimento da autoridade competente, pratica o crime de:",
+      "dbId": "4e776834-2f2a-5424-94df-6ccc16e5b19c",
+      "dbPromptVersao": "v2.8-lote8",
+      "dbEnunciado": "O funcionário público que deixa, por indulgência, de responsabilizar subordinado que cometeu infração no exercício do cargo ou, quando lhe falte competência, não leva o fato ao conhecimento da autoridade competente, pratica o crime de:",
+      "sim": 66.67
+    },
+    {
+      "q9Slug": "b9-port-02-012",
+      "q9Enunciado": "Assinale a frase em que o uso do acento grave indicativo de crase é facultativo:",
+      "dbId": "c35cf668-536c-53f4-a31b-026cdb34d92c",
+      "dbPromptVersao": "v2.1",
+      "dbEnunciado": "Assinale a frase em que o uso do acento indicativo de crase é facultativo:",
+      "sim": 66.67
+    },
+    {
+      "q9Slug": "b9-port-02-012",
+      "q9Enunciado": "Assinale a frase em que o uso do acento grave indicativo de crase é facultativo:",
+      "dbId": "356c88ae-c617-50b2-a98f-4d07e1e16ab5",
+      "dbPromptVersao": "v2.1",
+      "dbEnunciado": "Assinale a frase em que o uso do acento indicativo de crase é facultativo:",
+      "sim": 66.67
+    },
+    {
+      "q9Slug": "b9-port-02-012",
+      "q9Enunciado": "Assinale a frase em que o uso do acento grave indicativo de crase é facultativo:",
+      "dbId": "d10e9a83-b729-528f-bd09-dc99ddef3654",
+      "dbPromptVersao": "v2.1",
+      "dbEnunciado": "Assinale a frase em que o uso do acento indicativo de crase é facultativo:",
+      "sim": 66.67
+    },
+    {
+      "q9Slug": "b9-port-02-012",
+      "q9Enunciado": "Assinale a frase em que o uso do acento grave indicativo de crase é facultativo:",
+      "dbId": "3aa59bcc-0a38-5773-94d1-ff5f23eb4506",
+      "dbPromptVersao": "v2.1",
+      "dbEnunciado": "Assinale a frase em que o uso do acento indicativo de crase é facultativo:",
+      "sim": 66.67
+    },
+    {
+      "q9Slug": "b9-port-02-012",
+      "q9Enunciado": "Assinale a frase em que o uso do acento grave indicativo de crase é facultativo:",
+      "dbId": "6a9330cc-807c-5334-bdea-a0c37f86693b",
+      "dbPromptVersao": "v2.1",
+      "dbEnunciado": "Assinale a frase em que o uso do acento indicativo de crase é facultativo:",
+      "sim": 66.67
+    },
+    {
+      "q9Slug": "b9-penal-01-011",
+      "q9Enunciado": "Nos termos do Art. 17 do Código Penal, não se pune a tentativa quando, por ineficácia absoluta do meio ou por absoluta impropriedade do objeto, é impossível consumar-se o crime. Trata-se do denominado:",
+      "dbId": "b0091169-18b4-5cb7-9400-1c68a20097e6",
+      "dbPromptVersao": "v2.8-lote8",
+      "dbEnunciado": "Nos termos do art. 17 do Código Penal, não se pune a tentativa quando, por ineficácia absoluta do meio ou por absoluta impropriedade do objeto, é impossível consumar-se o crime. O ordenamento jurídico brasileiro adotou quanto ao crime impossível a teoria:",
+      "sim": 65.91
+    },
+    {
+      "q9Slug": "b9-penal-01-015",
+      "q9Enunciado": "Nos crimes omissivos impróprios (comissivos por omissão), o dever de agir incumbe a quem tenha por lei obrigação de cuidado, proteção ou vigilância, a quem de outra forma assumiu a responsabilidade de impedir o resultado, ou a quem:",
+      "dbId": "d4c44ea3-902e-55b8-938a-6aecc16697ac",
+      "dbPromptVersao": "v2.4-lote4",
+      "dbEnunciado": "Nos crimes omissivos impróprios (comissivos por omissão), o dever de agir para evitar o resultado incumbe a quem tenha por lei obrigação de cuidado, proteção ou vigilância; a quem, de outra forma, assumiu a responsabilidade de impedir o resultado; ou a quem, com seu comportamento anterior, criou o risco de sua ocorrência.",
+      "sim": 65.38
+    },
+    {
+      "q9Slug": "b9-const-02-021",
+      "q9Enunciado": "O Senado Federal compõe-se de representantes dos Estados e do Distrito Federal, eleitos segundo o princípio:",
+      "dbId": "618b041d-50a0-5b7c-afa4-e905800707d8",
+      "dbPromptVersao": "v2.8-lote8",
+      "dbEnunciado": "O Senado Federal compõe-se de representantes dos Estados e do Distrito Federal, eleitos segundo o princípio majoritário. Cada Estado e o Distrito Federal elegerão:",
+      "sim": 65.22
+    },
+    {
+      "q9Slug": "b9-port-02-016",
+      "q9Enunciado": "Assinale a alternativa em que todas as palavras estão grafadas corretamente segundo as normas ortográficas vigentes:",
+      "dbId": "4a9c2fc4-882d-553a-af6a-7e6d25b696be",
+      "dbPromptVersao": "v2.8-lote8",
+      "dbEnunciado": "Assinale a alternativa em que todas as palavras estão grafadas CORRETAMENTE segundo as regras ortográficas vigentes:",
+      "sim": 64.71
+    },
+    {
+      "q9Slug": "b9-penal-02-014",
+      "q9Enunciado": "Para os efeitos penais, considera-se funcionário público quem, embora transitoriamente ou sem remuneração, exerce cargo, emprego ou função pública (Art. 327, caput, do CP). Equipara-se a funcionário público quem:",
+      "dbId": "15fa4c3d-c2cf-5a7c-a404-bd35c07f01aa",
+      "dbPromptVersao": "v2.7-lote7",
+      "dbEnunciado": "Para os efeitos penais, considera-se funcionário público quem, embora transitoriamente ou sem remuneração, exerce cargo, emprego ou função pública.",
+      "sim": 64.29
+    },
+    {
+      "q9Slug": "b9-port-02-016",
+      "q9Enunciado": "Assinale a alternativa em que todas as palavras estão grafadas corretamente segundo as normas ortográficas vigentes:",
+      "dbId": "31e9115f-fcec-529f-80ab-4114cddb3fc8",
+      "dbPromptVersao": "v2.3-lote3",
+      "dbEnunciado": "Assinale a alternativa em que todas as palavras estão grafadas corretamente.",
+      "sim": 64.29
+    },
+    {
+      "q9Slug": "b9-penal-01-011",
+      "q9Enunciado": "Nos termos do Art. 17 do Código Penal, não se pune a tentativa quando, por ineficácia absoluta do meio ou por absoluta impropriedade do objeto, é impossível consumar-se o crime. Trata-se do denominado:",
+      "dbId": "176150b4-2968-56ee-8c95-d280a3c1edee",
+      "dbPromptVersao": "v2.7-lote7",
+      "dbEnunciado": "Não se pune a tentativa quando, por ineficácia absoluta do meio ou por absoluta impropriedade do objeto, é impossível consumar-se o crime.",
+      "sim": 63.64
+    },
+    {
+      "q9Slug": "b9-const-01-014",
+      "q9Enunciado": "As polícias militares e os corpos de bombeiros militares, forças auxiliares e reserva do Exército, subordinam-se, juntamente com as polícias civis e as polícias penais estaduais e distrital:",
+      "dbId": "dd225706-8ac1-56fa-bfd0-97fa660c129e",
+      "dbPromptVersao": "v2.7-lote7",
+      "dbEnunciado": "As Polícias Militares e os Corpos de Bombeiros Militares, forças auxiliares e reserva do Exército, subordinam-se, juntamente com as Polícias Civis e as Polícias Penais estaduais e distrital, aos Governadores dos Estados, do Distrito Federal e dos Territórios (art. 144, § 6º, da CF/88).",
+      "sim": 62.79
+    },
+    {
+      "q9Slug": "b9-dh-01-019",
+      "q9Enunciado": "O Protocolo de Istambul (Manual sobre a Investigação e Documentação Eficazes da Tortura e Outras Penas ou Tratamentos Cruéis, Desumanos ou Degradantes) da ONU constitui:",
+      "dbId": "8454e2ab-9f24-5c7b-acae-2f87eb07e979",
+      "dbPromptVersao": "v2.5-lote5",
+      "dbEnunciado": "Conforme o Protocolo de Istambul (Manual para a Investigação e Documentação Eficazes da Tortura e Outras Penas ou Tratamentos Cruéis, Desumanos ou Degradantes da ONU), assinale a afirmativa correta.",
+      "sim": 61.29
+    },
+    {
+      "q9Slug": "b9-adm-02-001",
+      "q9Enunciado": "Após as alterações promovidas pela Lei nº 14.230/2021 na Lei de Improbidade Administrativa (Lei nº 8.429/1992), exige-se a demonstração de dolo específico para a configuração de qualquer ato de improbidade administrativa, tendo sido expressamente revogada a modalidade culposa.",
+      "dbId": "85502bb9-f28a-5365-bdd7-a5ae6f450ac0",
+      "dbPromptVersao": "v2.3-lote3",
+      "dbEnunciado": "Após as alterações introduzidas pela Lei nº 14.230/2021 na Lei de Improbidade Administrativa (Lei nº 8.429/1992), exige-se a presença de dolo específico para a configuração de qualquer ato de improbidade administrativa, tendo sido expressamente revogada a modalidade culposa anteriormente prevista para os atos que causam prejuízo ao erário.",
+      "sim": 60.71
+    },
+    {
+      "q9Slug": "b9-dh-01-019",
+      "q9Enunciado": "O Protocolo de Istambul (Manual sobre a Investigação e Documentação Eficazes da Tortura e Outras Penas ou Tratamentos Cruéis, Desumanos ou Degradantes) da ONU constitui:",
+      "dbId": "7c781559-cd0c-5d73-b95c-09d4537959ef",
+      "dbPromptVersao": "v2.6-lote6",
+      "dbEnunciado": "O 'Protocolo de Istambul' (Manual para a Investigação e Documentação Eficazes da Tortura e Outras Penas ou Tratamentos Cruéis, Desumanos ou Degradantes da ONU) constitui documento internacional de referência técnica voltado a:",
+      "sim": 60.61
+    },
+    {
+      "q9Slug": "b9-penal-01-019",
+      "q9Enunciado": "Ninguém pode ser punido por fato que lei posterior deixa de considerar crime, cessando em virtude dela a execução e os efeitos penais da sentença condenatória. Trata-se do instituto da:",
+      "dbId": "f7eb2e3a-0ae2-520c-a653-0fe96d67b6d8",
+      "dbPromptVersao": "v2.8-lote8",
+      "dbEnunciado": "Ninguém pode ser punido por fato que lei posterior deixa de considerar crime, cessando em virtude dela a execução e os efeitos penais da sentença condenatória (art. 2º do CP). Esse postulado refere-se ao princípio da:",
+      "sim": 60
+    },
+    {
+      "q9Slug": "b9-const-01-017",
+      "q9Enunciado": "A segurança pública, dever do Estado, direito e responsabilidade de todos, é exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio. NÃO integra expressamente o rol taxativo do Art. 144 da CF:",
+      "dbId": "b4f5ec1e-a9f5-5b5e-a48d-23fb5c662efc",
+      "dbPromptVersao": "v2.7-lote7",
+      "dbEnunciado": "A segurança pública, dever do Estado, direito e responsabilidade de todos, é exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio (art. 144, caput, da CF/88).",
+      "sim": 59.52
+    }
+  ],
+  "legalCitationsCount": 309,
+  "legalCitations": [
+    {
+      "idSlug": "b9-tran-01-001",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-002",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-003",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-004",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 65"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-006",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 40"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-007",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 29",
+        "art. 31"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-008",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-009",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-010",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 32"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-011",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-012",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 38"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-013",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 40"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-015",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 54",
+        "art. 244"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-016",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 201"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-017",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-018",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-019",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-020",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 89"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-021",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-022",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 68"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-023",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "artigo 62",
+        "Código de Tr",
+        "Art. 62"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-024",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Código de Tr",
+        "Art. 35"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-01-025",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "citations": [
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-001",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 309"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-002",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 306",
+        "art. 306"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-003",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 176"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-004",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 310",
+        "Súmula 575",
+        "art. 310",
+        "Código de Tr"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-005",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 302"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-006",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 165-A"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-007",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 301"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-008",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 267"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-009",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 308"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-010",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 312"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-011",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Código de Tr",
+        "Art. 259"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-012",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 302"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-013",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 261"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-014",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 305",
+        "RE 971",
+        "Tema 907",
+        "art. 305"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-015",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 269",
+        "Art. 256"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-016",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 307"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-017",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 218"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-018",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 298"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-019",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 181"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-020",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 303",
+        "Art. 291",
+        "Lei 9.099/95"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-021",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 230"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-022",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 256",
+        "Código e dentro de sua circunscri"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-023",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 311"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-024",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 252"
+      ]
+    },
+    {
+      "idSlug": "b9-tran-02-025",
+      "disciplina": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto": "e74dc693-757f-5086-97a0-0710b9473007",
+      "citations": [
+        "Art. 304"
+      ]
+    },
+    {
+      "idSlug": "b9-rlm-01-021",
+      "disciplina": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto": "791c7278-7511-50df-bddf-600d9b818aaf",
+      "citations": [
+        "re 7"
+      ]
+    },
+    {
+      "idSlug": "b9-rlm-01-028",
+      "disciplina": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto": "48745dac-cbf3-5f1d-a0a2-1767a7d44429",
+      "citations": [
+        "re 1"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-001",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "citations": [
+        "Resolução 217"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-002",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Súmula Vinculante nº 25",
+        "RE 466",
+        "art. 5º",
+        "art. 652"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-003",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 7º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-006",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "citations": [
+        "Art. 8º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-007",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 4º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-009",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 61"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-013",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 8º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-014",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "citations": [
+        "art. 109",
+        "Art. 109"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-015",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "citations": [
+        "Artigo 1º",
+        "Art. 1º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-017",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-019",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "citations": [
+        "Código de processo penal aplic"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-020",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 14"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-021",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "citations": [
+        "Artigo 9º",
+        "Art. 9º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-024",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "citations": [
+        "artigo 5º",
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-025",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "citations": [
+        "Art. 13",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-029",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "citations": [
+        "Artigo 13"
+      ]
+    },
+    {
+      "idSlug": "b9-dh-01-030",
+      "disciplina": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-001",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-002",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144",
+        "art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-003",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-004",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "art. 144",
+        "Lei 13.675/2018"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-005",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-006",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Tema 1",
+        "RE 806"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-007",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Lei nº 14.532/2023.",
+        "Art. 5º",
+        "Lei 14.532/2023",
+        "art. 2º-A",
+        "Lei 7.716/89",
+        "HC 154"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-008",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Artigo 5º",
+        "art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-009",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "art. 144",
+        "ADI 2"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-010",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "art. 5º",
+        "Tema 979",
+        "RE 583",
+        "Súmula 280"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-011",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-012",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-013",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-014",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-015",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-016",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Lei nº 9.507/1997",
+        "Art. 5º",
+        "art. 7º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-017",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144",
+        "art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-018",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-019",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-020",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-021",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "art. 5º",
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-022",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "art. 144",
+        "Art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-023",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-024",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-const-01-025",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "citations": [
+        "Art. 144"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-001",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Artigo 18"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-002",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 22"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-003",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 24"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-004",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "citations": [
+        "Art. 103"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-005",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "citations": [
+        "Art. 84"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-006",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "citations": [
+        "Art. 58"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-007",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "citations": [
+        "Art. 92",
+        "Art. 103-B"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-008",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "citations": [
+        "Art. 97",
+        "Súmula Vinculante nº 10",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-009",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 34",
+        "Art. 36",
+        "art. 34"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-010",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "citations": [
+        "Art. 105"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-011",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "citations": [
+        "Lei nº 9.882/1999",
+        "Art. 102",
+        "Art. 4º",
+        "Lei 9.882/1999"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-012",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 24"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-013",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "citations": [
+        "Art. 86",
+        "Art. 52"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-014",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "citations": [
+        "Art. 101",
+        "art. 12"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-015",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "citations": [
+        "Art. 60"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-016",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "citations": [
+        "Art. 102"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-017",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 32"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-018",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "citations": [
+        "art. 80",
+        "Art. 80"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-019",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "citations": [
+        "art. 103-A",
+        "Art. 103-A"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-020",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 30"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-021",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "citations": [
+        "Art. 46"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-022",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "citations": [
+        "Art. 95"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-023",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "citations": [
+        "Art. 103"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-024",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "citations": [
+        "Art. 20"
+      ]
+    },
+    {
+      "idSlug": "b9-const-02-025",
+      "disciplina": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "citations": [
+        "Art. 86"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-001",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "citations": [
+        "Art. 78"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-004",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "50f75ddd-0ec6-5666-b08f-fa2179657fe1",
+      "citations": [
+        "Súmula 473"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-005",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "citations": [
+        "art. 37",
+        "Art. 37"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-006",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "citations": [
+        "Tema 940",
+        "RE 1"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-007",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "citations": [
+        "Tema 532",
+        "RE 633"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-015",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "citations": [
+        "Art. 84",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-020",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "citations": [
+        "Art. 1º"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-01-021",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "citations": [
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-001",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Lei nº 14.230/2021",
+        "Lei nº 8.429/1992",
+        "Art. 1º",
+        "Lei 8.429/92",
+        "Lei 14.230/2021",
+        "art. 10"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-002",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 28",
+        "Lei 8.112/90",
+        "art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-003",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 29",
+        "Lei 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-004",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Lei nº 14.133/2021",
+        "Art. 28",
+        "Art. 32",
+        "Lei 14.133/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-005",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Lei nº 8.429/1992",
+        "Lei nº 14.230/2021",
+        "Art. 23",
+        "Lei 8.429/92",
+        "Lei 14.230/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-006",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 13",
+        "Art. 14",
+        "Lei nº 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-007",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Lei nº 14.133/2021",
+        "Art. 6º",
+        "Art. 34"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-008",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "RE 843",
+        "Tema 1",
+        "Lei nº 14.230/2021",
+        "Lei 14.230/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-009",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 137",
+        "Lei 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-010",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Lei nº 14.133/2021",
+        "Art. 28",
+        "Lei 14.133/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-011",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Lei nº 8.429/1992",
+        "Lei nº 14.230/2021",
+        "Art. 12",
+        "Lei 8.429/92",
+        "Lei 14.230/21",
+        "art. 9º",
+        "Art. 9º"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-012",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "art. 25",
+        "Lei nº 8.112/1990",
+        "Art. 25",
+        "Lei nº 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-013",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Lei nº 14.133/2021",
+        "Art. 74",
+        "Lei 14.133/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-014",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 37",
+        "Lei nº 8.112/1990",
+        "Art. 12",
+        "Lei 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-015",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Art. 11",
+        "Lei nº 8.429/1992",
+        "Lei nº 14.230/2021",
+        "Lei 8.429/92",
+        "Lei 14.230/21",
+        "art. 11"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-016",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Lei nº 14.133/2021",
+        "Art. 76",
+        "Lei 14.133/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-017",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 24",
+        "Lei nº 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-018",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Art. 10",
+        "Lei nº 8.429/1992",
+        "Lei 8.429/92",
+        "Art. 9º",
+        "Art. 11"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-019",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Art. 75",
+        "Lei nº 14.133/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-020",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Art. 36",
+        "Lei 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-021",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Lei nº 8.429/1992",
+        "Art. 1º",
+        "Art. 2º",
+        "Lei 8.429/92"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-022",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Lei nº 8.112/1990",
+        "Art. 127",
+        "Lei 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-023",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "citations": [
+        "Lei nº 14.133/2021",
+        "Art. 174",
+        "Lei 14.133/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-024",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "citations": [
+        "Lei nº 8.112/1990.",
+        "Art. 37",
+        "Art. 118",
+        "Lei 8.112/90"
+      ]
+    },
+    {
+      "idSlug": "b9-adm-02-025",
+      "disciplina": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "citations": [
+        "Lei nº 8.429/1992",
+        "Art. 17-B",
+        "Lei 8.429/92",
+        "Lei 14.230/2021"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-001",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "citations": [
+        "Código Penal brasileiro adota expressamente a teoria da atividade para o tempo do crime",
+        "Art. 4º",
+        "Art. 6º"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-002",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "art. 20",
+        "Art. 20",
+        "Código Penal",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-003",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 15"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-004",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 16"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-005",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "citations": [
+        "art. 29",
+        "Código Penal brasileiro",
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-006",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Código Penal como erro de tipo permissivo",
+        "Art. 20"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-007",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 23",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-008",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "citations": [
+        "Art. 7º"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-009",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "citations": [
+        "Art. 71"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-010",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "art. 22"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-011",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 17",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-012",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 73",
+        "Código Penal",
+        "art. 20"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-013",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "citations": [
+        "Art. 70"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-014",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "citations": [
+        "Art. 3º",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-015",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 13"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-016",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 28",
+        "Código Penal e da teoria da actio libera in causa"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-017",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "citations": [
+        "Art. 29",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-018",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Lei nº 13.964/2019",
+        "Art. 25",
+        "Lei 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-019",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "citations": [
+        "Art. 2º"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-020",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "Art. 21",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-021",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "art. 24",
+        "Código Penal",
+        "Art. 24"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-022",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "citations": [
+        "Art. 69"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-023",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "citations": [
+        "art. 14",
+        "Código Penal",
+        "Art. 14"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-01-025",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "citations": [
+        "art. 30",
+        "Código Penal",
+        "Art. 30",
+        "art. 312"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-001",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 121"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-002",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Súmula 582"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-003",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 312",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-004",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "art. 316",
+        "art. 317"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-005",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 171",
+        "Lei nº 13.964/2019",
+        "Lei 13.964/2019",
+        "lei."
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-006",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 319",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-007",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 144",
+        "Art. 121",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-008",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 333"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-009",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 180"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-010",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 331",
+        "HC 379"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-011",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 320",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-012",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "art. 159",
+        "Código Penal",
+        "Art. 159"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-013",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 121",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-014",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 327"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-015",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 168",
+        "Art. 171"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-016",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 329",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-017",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 155"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-018",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 129"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-019",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 312",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-020",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 321",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-021",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 180"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-022",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 330",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-023",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 135",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-024",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "citations": [
+        "Art. 324",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-penal-02-025",
+      "disciplina": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "citations": [
+        "Art. 181",
+        "Código Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-001",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Art. 4º",
+        "Lei nº 12.830/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-002",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Art. 17",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-003",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Súmula Vinculante nº 14",
+        "Súmula Vinculante 14"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-004",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "art. 301",
+        "Código de Processo Penal",
+        "Art. 301"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-005",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 302"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-006",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Lei nº 13.964/2019",
+        "Lei 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-007",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Lei nº 7.960/1989",
+        "Art. 1º",
+        "Lei 7.960/1989",
+        "Lei 8.072/1990",
+        "art. 1º"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-008",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Lei nº 12.830/2013",
+        "Art. 2º"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-009",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 310",
+        "Resolução 213"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-010",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 322"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-011",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Código de Processo Penal",
+        "Art. 10"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-012",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 319",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-013",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 312",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-014",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-015",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Súmula 145"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-016",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 318"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-017",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-018",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 302"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-019",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "art. 155",
+        "Código de Processo Penal",
+        "Art. 155"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-020",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 310"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-021",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 323"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-022",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "citations": [
+        "Art. 16"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-023",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 303"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-01-025",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "citations": [
+        "Art. 313",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-001",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 158-A",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-002",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 157"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-003",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 158",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-004",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 28-A",
+        "Lei nº 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-005",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Tema 280",
+        "RE 603"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-006",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "citations": [
+        "art. 70",
+        "Código de Processo Penal",
+        "Art. 70"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-007",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 159"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-008",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 49",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-009",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 158-B"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-010",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 5º",
+        "Art. 245"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-011",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 158-B",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-012",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Lei nº 9.296/1996",
+        "Art. 2º"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-013",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 5º",
+        "Código de Processo Penal",
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-014",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 226",
+        "HC 598",
+        "art. 226"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-015",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "citations": [
+        "Art. 78",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-016",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 38",
+        "Art. 103"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-017",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 161",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-018",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 158-B",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-019",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 51"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-020",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 240"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-021",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 129",
+        "Art. 24"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-022",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 208",
+        "art. 203",
+        "art. 206"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-023",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 186",
+        "Art. 5º"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-024",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "citations": [
+        "Art. 25",
+        "Código de Processo Penal",
+        "art. 16",
+        "Lei 11.340/06"
+      ]
+    },
+    {
+      "idSlug": "b9-procp-02-025",
+      "disciplina": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "citations": [
+        "Art. 158-E",
+        "Código de Processo Penal"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-001",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Lei nº 11.343/2006",
+        "Art. 28",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-002",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 28",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-003",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 33",
+        "Lei nº 11.343/2006",
+        "HC 118"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-004",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 35",
+        "Lei nº 11.343/2006",
+        "Lei 11.343/2006."
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-005",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 14",
+        "Lei nº 10.826/2003",
+        "Lei 10.826/2003."
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-006",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 12",
+        "Lei nº 10.826/2003.",
+        "art. 14"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-007",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 15",
+        "Lei nº 10.826/2003",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-008",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Lei nº 12.850/2013",
+        "Código Penal",
+        "Art. 1º",
+        "art. 288"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-009",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Lei nº 12.850/2013",
+        "Art. 3º-A",
+        "Lei 12.850/2013",
+        "Lei 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-010",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Lei nº 12.850/2013",
+        "Art. 8º",
+        "Lei 12.850/2013",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-011",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 33",
+        "Lei nº 11.343/2006",
+        "art. 33"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-012",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 16",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-013",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Lei nº 11.343/2006",
+        "Art. 40",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-014",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 13",
+        "Lei nº 10.826/2003",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-015",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Lei nº 12.850/2013",
+        "Art. 10",
+        "Lei 12.850/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-016",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 33",
+        "Lei nº 11.343/2006",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-017",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 17",
+        "Lei nº 10.826/2003",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-018",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Art. 2º",
+        "Lei 12.850/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-019",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Lei nº 11.343/2006",
+        "Art. 50-A",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-020",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 5º",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-021",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Art. 2º",
+        "Lei nº 12.850/2013",
+        "Lei 12.850/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-022",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "art. 33",
+        "Lei nº 11.343/2006",
+        "Art. 33",
+        "art. 28",
+        "art. 28."
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-023",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 16",
+        "Art. 1º",
+        "Lei 8.072/1990",
+        "art. 16",
+        "Lei 10.826/2003."
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-024",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Lei nº 12.850/2013",
+        "Art. 8º-A",
+        "Lei 12.850/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-025",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 33",
+        "Lei nº 11.343/2006",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-026",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 16",
+        "Lei nº 10.826/2003",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-027",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Art. 3º",
+        "Lei nº 12.850/2013",
+        "Lei 12.850/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-028",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "citations": [
+        "Art. 40",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-029",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "citations": [
+        "Art. 16",
+        "Lei 10.826/2003"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-01-030",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "citations": [
+        "Lei nº 12.850/2013",
+        "Art. 2º",
+        "Lei 12.850/2013"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-001",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "Lei nº 13.869/2019",
+        "Art. 1º",
+        "Lei 13.869/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-002",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "art. 1º",
+        "Lei nº 13.869/2019",
+        "Art. 1º"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-003",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "Art. 3º",
+        "Lei 13.869/2019",
+        "Art. 29"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-004",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Lei nº 11.340/2006",
+        "Súmula 600",
+        "art. 5º",
+        "Lei 11.340/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-005",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Art. 12-C",
+        "Lei 11.340/2006",
+        "Lei 13.827/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-006",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Art. 24-A",
+        "Lei nº 11.340/2006",
+        "Lei 11.340/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-007",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "citations": [
+        "Lei nº 8.072/1990.",
+        "Art. 1º",
+        "Lei 8.072/1990",
+        "Lei 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-008",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "citations": [
+        "Lei nº 8.072/1990",
+        "Art. 33",
+        "Lei nº 11.343/2006",
+        "Súmula 599",
+        "Súmula 512",
+        "Art. 112",
+        "Lei 13.964/2019",
+        "Lei 11.343/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-009",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "citations": [
+        "Art. 1º",
+        "Lei nº 9.455/1997"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-010",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "citations": [
+        "Art. 1º",
+        "Lei 9.455/1997"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-011",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "citations": [
+        "Lei nº 9.613/1998",
+        "Lei 12.683/2012"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-012",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "citations": [
+        "Art. 2º",
+        "Lei 9.613/1998"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-013",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "Lei nº 13.869/2019",
+        "Art. 10",
+        "Lei 13.869/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-014",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "Lei nº 13.869/2019",
+        "Art. 4º",
+        "Lei 13.869/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-015",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Art. 129",
+        "Código Penal c",
+        "Lei nº 11.340/2006",
+        "Súmula 542",
+        "ADI 4424"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-016",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Art. 7º",
+        "Lei nº 11.340/2006",
+        "Lei 11.340/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-017",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "citations": [
+        "Lei nº 8.072/1990",
+        "Lei nº 13.964/2019",
+        "Art. 1º",
+        "Lei 8.072/1990",
+        "Art. 16",
+        "Lei 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-018",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "citations": [
+        "Art. 112",
+        "Lei 7.210/1984",
+        "Lei 13.964/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-019",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "citations": [
+        "Lei nº 9.455/1997",
+        "Art. 1º",
+        "Lei 9.455/1997"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-021",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "Art. 22",
+        "Lei nº 13.869/2019",
+        "Lei 13.869/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-022",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Lei nº 11.340/2006",
+        "Art. 41",
+        "Lei 11.340/2006",
+        "Súmula 536",
+        "Súmula 588",
+        "Lei nº 9.099/1995"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-023",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "citations": [
+        "Art. 159",
+        "Código Penal",
+        "Art. 1º",
+        "Lei 8.072/1990",
+        "art. 159"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-024",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "citations": [
+        "Lei nº 9.455/1997",
+        "Art. 1º",
+        "Lei 9.455/1997"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-025",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "citations": [
+        "Art. 13",
+        "Lei nº 13.869/2019",
+        "Lei 13.869/2019"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-026",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "citations": [
+        "Lei nº 11.340/2006",
+        "Art. 5º",
+        "Lei 11.340/2006"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-027",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "citations": [
+        "Lei nº 9.613/1998",
+        "Art. 1º",
+        "Lei 9.613/1998"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-028",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "citations": [
+        "Lei nº 8.072/1990",
+        "Art. 5º",
+        "Art. 2º",
+        "Lei 8.072/1990"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-029",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "citations": [
+        "Lei nº 9.455/1997",
+        "Art. 1º"
+      ]
+    },
+    {
+      "idSlug": "b9-legesp-02-030",
+      "disciplina": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "citations": [
+        "Art. 1º",
+        "Lei nº 9.613/1998",
+        "Lei 9.613/1998"
+      ]
+    },
+    {
+      "idSlug": "b9-port-01-006",
+      "disciplina": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto": "aae93c82-cbf2-5cb0-ae75-d341448be61d",
+      "citations": [
+        "re 9"
+      ]
+    },
+    {
+      "idSlug": "b9-port-01-022",
+      "disciplina": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto": "aae93c82-cbf2-5cb0-ae75-d341448be61d",
+      "citations": [
+        "lei."
+      ]
+    }
+  ]
+}
