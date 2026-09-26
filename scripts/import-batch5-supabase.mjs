@@ -1,16 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
-import { penalQuestions } from "./batch5_modules/penal.mjs";
-import { dppQuestions } from "./batch5_modules/processo_penal.mjs";
-import { legEspQuestions } from "./batch5_modules/legislacao_especial.mjs";
-import { constQuestions } from "./batch5_modules/constitucional.mjs";
-import { admQuestions } from "./batch5_modules/administrativo.mjs";
-import { portQuestions } from "./batch5_modules/portugues.mjs";
-import { dhQuestions } from "./batch5_modules/direitos_humanos.mjs";
-import { crimQuestions } from "./batch5_modules/criminologia.mjs";
-import { infoQuestions } from "./batch5_modules/informatica.mjs";
-import { rlmQuestions } from "./batch5_modules/rlm.mjs";
+import { penalQuestoes } from "./batch5_modules/penal.mjs";
+import { processoPenalQuestoes } from "./batch5_modules/processo_penal.mjs";
+import { legEspecialQuestoes } from "./batch5_modules/legislacao_especial.mjs";
+import { constitucionalQuestoes } from "./batch5_modules/constitucional.mjs";
+import { administrativoQuestoes } from "./batch5_modules/administrativo.mjs";
+import { portuguesQuestoes } from "./batch5_modules/portugues.mjs";
+import { direitosHumanosQuestoes } from "./batch5_modules/direitos_humanos.mjs";
+import { criminologiaQuestoes } from "./batch5_modules/criminologia.mjs";
+import { informaticaQuestoes } from "./batch5_modules/informatica.mjs";
+import { rlmQuestoes } from "./batch5_modules/rlm.mjs";
 import { formatarQuestao } from "./batch5_modules/helper.mjs";
 
 const envPath = path.resolve(process.cwd(), ".env.local");
@@ -57,16 +57,16 @@ async function importLote5() {
   console.log(`[+] Contagem inicial no banco: ${initialQCount} questões, ${initialACount} alternativas.`);
 
   const modulos = [
-    penalQuestions,
-    dppQuestions,
-    legEspQuestions,
-    constQuestions,
-    admQuestions,
-    portQuestions,
-    dhQuestions,
-    crimQuestions,
-    infoQuestions,
-    rlmQuestions,
+    penalQuestoes,
+    processoPenalQuestoes,
+    legEspecialQuestoes,
+    constitucionalQuestoes,
+    administrativoQuestoes,
+    portuguesQuestoes,
+    direitosHumanosQuestoes,
+    criminologiaQuestoes,
+    informaticaQuestoes,
+    rlmQuestoes,
   ];
 
   const todasQuestoes = [];
@@ -97,13 +97,21 @@ async function importLote5() {
   const { count: finalACount } = await supabase
     .from("questoes_alternativas")
     .select("*", { count: "exact", head: true });
+  const { count: finalLote5Count } = await supabase
+    .from("questoes")
+    .select("*", { count: "exact", head: true })
+    .eq("prompt_versao", "v2.5-lote5");
 
   console.log("\n--- RESULTADO DA IMPORTAÇÃO (LOTE 5) ---");
-  console.log(`[+] Questões no banco: ${initialQCount} -> ${finalQCount} (Diferença: +${finalQCount - initialQCount})`);
-  console.log(`[+] Alternativas no banco: ${initialACount} -> ${finalACount} (Diferença: +${finalACount - initialACount})`);
+  console.log(`[+] Total de questões no banco: ${finalQCount} (Esperado: 3760)`);
+  console.log(`[+] Total de questões do Lote 5: ${finalLote5Count} (Esperado: 500)`);
+  console.log(`[+] Total de alternativas no banco: ${finalACount}`);
 
-  if (finalQCount - initialQCount !== 500) {
-    throw new Error(`Diferença inesperada de questões: esperado +500, obtido +${finalQCount - initialQCount}`);
+  if (finalLote5Count !== 500) {
+    throw new Error(`Contagem do Lote 5 incorreta: esperado 500, obtido ${finalLote5Count}`);
+  }
+  if (finalQCount !== 3760) {
+    throw new Error(`Contagem total no banco incorreta: esperado 3760, obtido ${finalQCount}`);
   }
 
   console.log("\n=========================================================");

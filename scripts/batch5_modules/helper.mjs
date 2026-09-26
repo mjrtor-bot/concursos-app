@@ -77,6 +77,12 @@ export function formatarQuestao(raw, indexGlobal) {
     alternativas: raw.alternativas,
   });
 
+  let difNorm = (raw.dificuldade || "medio").toLowerCase();
+  if (difNorm === "media") difNorm = "medio";
+  if (!["facil", "medio", "dificil", "muito_dificil"].includes(difNorm)) {
+    difNorm = "medio";
+  }
+
   const questao = {
     id: qId,
     disciplina_id: raw.disciplina_id,
@@ -91,7 +97,7 @@ export function formatarQuestao(raw, indexGlobal) {
     cargo_nome: raw.cargo_nome,
     ano: raw.ano,
     tipo: raw.tipo,
-    dificuldade: raw.dificuldade,
+    dificuldade: difNorm,
     enunciado: raw.enunciado,
     texto_apoio: raw.texto_apoio || null,
     explicacao: raw.explicacao,

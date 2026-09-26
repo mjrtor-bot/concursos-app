@@ -2,16 +2,16 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
 import { TAXONOMIA } from "./batch5_modules/taxonomia.mjs";
-import { penalQuestions } from "./batch5_modules/penal.mjs";
-import { dppQuestions } from "./batch5_modules/processo_penal.mjs";
-import { legEspQuestions } from "./batch5_modules/legislacao_especial.mjs";
-import { constQuestions } from "./batch5_modules/constitucional.mjs";
-import { admQuestions } from "./batch5_modules/administrativo.mjs";
-import { portQuestions } from "./batch5_modules/portugues.mjs";
-import { dhQuestions } from "./batch5_modules/direitos_humanos.mjs";
-import { crimQuestions } from "./batch5_modules/criminologia.mjs";
-import { infoQuestions } from "./batch5_modules/informatica.mjs";
-import { rlmQuestions } from "./batch5_modules/rlm.mjs";
+import { penalQuestoes } from "./batch5_modules/penal.mjs";
+import { processoPenalQuestoes } from "./batch5_modules/processo_penal.mjs";
+import { legEspecialQuestoes } from "./batch5_modules/legislacao_especial.mjs";
+import { constitucionalQuestoes } from "./batch5_modules/constitucional.mjs";
+import { administrativoQuestoes } from "./batch5_modules/administrativo.mjs";
+import { portuguesQuestoes } from "./batch5_modules/portugues.mjs";
+import { direitosHumanosQuestoes } from "./batch5_modules/direitos_humanos.mjs";
+import { criminologiaQuestoes } from "./batch5_modules/criminologia.mjs";
+import { informaticaQuestoes } from "./batch5_modules/informatica.mjs";
+import { rlmQuestoes } from "./batch5_modules/rlm.mjs";
 import { formatarQuestao } from "./batch5_modules/helper.mjs";
 
 const envPath = path.resolve(process.cwd(), ".env.local");
@@ -62,16 +62,16 @@ async function auditLote5() {
   console.log("=== INICIANDO AUDITORIA COMPLETA DO LOTE 5 ===");
 
   const modulos = [
-    { nome: "penal", list: penalQuestions, esperado: 70 },
-    { nome: "processo_penal", list: dppQuestions, esperado: 70 },
-    { nome: "legislacao_especial", list: legEspQuestions, esperado: 70 },
-    { nome: "constitucional", list: constQuestions, esperado: 60 },
-    { nome: "administrativo", list: admQuestions, esperado: 60 },
-    { nome: "portugues", list: portQuestions, esperado: 60 },
-    { nome: "direitos_humanos", list: dhQuestions, esperado: 35 },
-    { nome: "informatica", list: infoQuestions, esperado: 30 },
-    { nome: "criminologia", list: crimQuestions, esperado: 25 },
-    { nome: "rlm", list: rlmQuestions, esperado: 20 },
+    { nome: "penal", list: penalQuestoes, esperado: 70 },
+    { nome: "processo_penal", list: processoPenalQuestoes, esperado: 70 },
+    { nome: "legislacao_especial", list: legEspecialQuestoes, esperado: 70 },
+    { nome: "constitucional", list: constitucionalQuestoes, esperado: 60 },
+    { nome: "administrativo", list: administrativoQuestoes, esperado: 60 },
+    { nome: "portugues", list: portuguesQuestoes, esperado: 60 },
+    { nome: "direitos_humanos", list: direitosHumanosQuestoes, esperado: 35 },
+    { nome: "informatica", list: informaticaQuestoes, esperado: 30 },
+    { nome: "criminologia", list: criminologiaQuestoes, esperado: 25 },
+    { nome: "rlm", list: rlmQuestoes, esperado: 20 },
   ];
 
   let totalRaw = 0;
@@ -124,9 +124,11 @@ async function auditLote5() {
   }
 
   console.log(`[+] Total de questões existentes no banco: ${dbQuestions.length}`);
+  const dbQuestionsOutrosLotes = dbQuestions.filter(q => q.prompt_versao !== "v2.5-lote5");
+  console.log(`[+] Total de questões de outros lotes (base prévia): ${dbQuestionsOutrosLotes.length}`);
 
-  const dbFpsSet = new Set(dbQuestions.map(q => q.fingerprint_hash));
-  const dbIdsSet = new Set(dbQuestions.map(q => q.id));
+  const dbFpsSet = new Set(dbQuestionsOutrosLotes.map(q => q.fingerprint_hash));
+  const dbIdsSet = new Set(dbQuestionsOutrosLotes.map(q => q.id));
 
   let colisoesFpComDb = 0;
   let colisoesIdComDb = 0;
