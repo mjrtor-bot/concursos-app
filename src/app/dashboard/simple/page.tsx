@@ -78,7 +78,7 @@ export default function SimpleDashboardPage() {
           <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm">
             <p className="text-sm text-slate-500 dark:text-slate-400">Taxa de Acertos</p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.taxa_acerto_geral}%
+              {stats.total_respondidas > 0 ? `${stats.taxa_acerto_geral}%` : "—"}
             </p>
             <p className="text-xs text-slate-500">{stats.total_acertos} acertos</p>
           </div>
@@ -86,9 +86,9 @@ export default function SimpleDashboardPage() {
           <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm">
             <p className="text-sm text-slate-500 dark:text-slate-400">Sequência de Estudos</p>
             <p className="text-2xl font-bold text-slate-900 dark:text-white">
-              {stats.sequencia_dias} Dias
+              {stats.sequencia_dias} {stats.sequencia_dias === 1 ? "Dia" : "Dias"}
             </p>
-            <p className="text-xs text-slate-500">Recorde: 14 dias</p>
+            <p className="text-xs text-slate-500">{stats.sequencia_dias > 0 ? "Constância ativa" : "Inicie sua sequência hoje"}</p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm">

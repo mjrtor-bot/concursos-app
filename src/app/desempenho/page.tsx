@@ -102,7 +102,7 @@ export default function DesempenhoPage() {
             </div>
           </div>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Telemetria analítica com base nas 5.760 questões policiais e sessões líquidas cronometradas
+            Telemetria analítica com base no banco de questões policiais e sessões líquidas cronometradas
           </p>
         </div>
 
@@ -124,16 +124,16 @@ export default function DesempenhoPage() {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         <StatCard
           title="Taxa de Acerto"
-          value={`${stats.taxa_acerto_geral}%`}
-          subtitle={`${stats.total_acertos}/${stats.total_respondidas} q.`}
+          value={stats.total_respondidas > 0 ? `${stats.taxa_acerto_geral}%` : "—"}
+          subtitle={stats.total_respondidas > 0 ? `${stats.total_acertos}/${stats.total_respondidas} q.` : "0 questões respondidas"}
           icon={<TrendingUp className="w-5 h-5 text-emerald-600" />}
           color="emerald"
         />
 
         <StatCard
           title="Tempo por Questão"
-          value={`${stats.tempo_medio_questao_segundos}s`}
-          subtitle="Meta policial: ≤ 75s"
+          value={stats.total_respondidas > 0 ? `${stats.tempo_medio_questao_segundos}s` : "—"}
+          subtitle={stats.total_respondidas > 0 ? "Meta policial: ≤ 75s" : "Sem dados registrados"}
           icon={<Clock className="w-5 h-5 text-blue-600" />}
           color="blue"
         />
@@ -148,8 +148,8 @@ export default function DesempenhoPage() {
 
         <StatCard
           title="Sequência Atual"
-          value={`${telemetria?.sequencia_atual_dias || stats.sequencia_dias} Dias`}
-          subtitle={`Recorde: ${telemetria?.melhor_sequencia_dias || stats.sequencia_dias}d`}
+          value={`${(telemetria?.sequencia_atual_dias ?? stats.sequencia_dias) || 0} Dias`}
+          subtitle={`Recorde: ${(telemetria?.melhor_sequencia_dias ?? stats.sequencia_dias) || 0}d`}
           icon={<Flame className="w-5 h-5 text-amber-500" />}
           color="amber"
         />
@@ -157,7 +157,7 @@ export default function DesempenhoPage() {
         <StatCard
           title="Simulados"
           value={stats.simulados_concluidos}
-          subtitle={`Média: ${stats.media_simulados}%`}
+          subtitle={stats.simulados_concluidos > 0 ? `Média: ${stats.media_simulados}%` : "Nenhum simulado realizado"}
           icon={<FileSpreadsheet className="w-5 h-5 text-purple-600" />}
           color="purple"
         />

@@ -65,12 +65,36 @@ export default function SimuladoExecucaoPage({
     setTempoRestanteSegundos(sim.tempo_limite_minutos * 60);
   }, [id]);
 
-  const carregarQuestoes = (sim: Simulado) => {
+  const carregarQuestoes = async (sim: Simulado) => {
     const qList: Questao[] = [];
+    const missingIds: string[] = [];
+
     sim.questoes_ids.forEach((qId) => {
       const q = DataService.getQuestaoById(qId);
-      if (q) qList.push(q);
+      if (q) {
+        qList.push(q);
+      } else {
+        missingIds.push(qId);
+      }
     });
+
+    if (missingIds.length > 0) {
+      try {
+        const res = await fetch(`/api/questoes?pageSize=200`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.questoes)) {
+          DataService.salvarQuestoesLote(json.questoes);
+          json.questoes.forEach((q: Questao) => {
+            if (missingIds.includes(q.id) && !qList.some((item) => item.id === q.id)) {
+              qList.push(q);
+            }
+          });
+        }
+      } catch (err) {
+        console.warn("Aviso ao buscar questões complementares para o simulado:", err);
+      }
+    }
+
     setQuestoes(qList);
   };
 

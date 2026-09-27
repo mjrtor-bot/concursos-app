@@ -32,36 +32,64 @@ export default function SimuladosPage() {
   // Custom Simulado form state
   const [novoTitulo, setNovoTitulo] = useState("");
   const [novoTempo, setNovoTempo] = useState("60");
-  const [novoQtd, setNovoQtd] = useState("5");
+  const [novoQtd, setNovoQtd] = useState("30");
+  const [isGerando, setIsGerando] = useState(false);
 
   useEffect(() => {
     setSimulados(DataService.getSimulados());
     setTentativas(DataService.getTentativasSimulado());
   }, []);
 
-  const handleCriarSimulado = (e: React.FormEvent) => {
+  const handleCriarSimulado = async (e: React.FormEvent) => {
     e.preventDefault();
-    const todasQuestoes = DataService.getQuestoes();
-    const qtd = Math.min(todasQuestoes.length, parseInt(novoQtd) || 5);
-    const shuffled = [...todasQuestoes].sort(() => 0.5 - Math.random());
-    const selecionadas = shuffled.slice(0, qtd).map((q) => q.id);
+    setIsGerando(true);
+    try {
+      const targetQtd = parseInt(novoQtd, 10) || 30;
+      let selecionadas: string[] = [];
 
-    const novoSimulado: Simulado = {
-      id: `sim-custom-${Date.now()}`,
-      titulo: novoTitulo || `Simulado Personalizado (${qtd} questões)`,
-      descricao: `Simulado criado sob medida com ${qtd} questões e limite de ${novoTempo} minutos.`,
-      tempo_limite_minutos: parseInt(novoTempo) || 60,
-      questoes_ids: selecionadas,
-      total_questoes: selecionadas.length,
-      dificuldade: "medio",
-      criado_por_sistema: false,
-      created_at: new Date().toISOString(),
-    };
+      // 1. Tenta buscar do banco de questões completo (/api/questoes)
+      try {
+        const res = await fetch(`/api/questoes?pageSize=${targetQtd}`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.questoes) && json.questoes.length > 0) {
+          DataService.salvarQuestoesLote(json.questoes);
+          const shuffled = [...json.questoes].sort(() => 0.5 - Math.random());
+          selecionadas = shuffled.slice(0, targetQtd).map((q: any) => q.id);
+        }
+      } catch (err) {
+        console.warn("Falha ao buscar questões via API para simulado, usando fallback:", err);
+      }
 
-    DataService.salvarSimulado(novoSimulado);
-    setSimulados(DataService.getSimulados());
-    setIsModalNovoSimulado(false);
-    success("Simulado criado com sucesso! Pronto para começar.");
+      // 2. Fallback caso API offline
+      if (selecionadas.length === 0) {
+        const todasQuestoes = DataService.getQuestoes();
+        const qtd = Math.min(todasQuestoes.length, targetQtd);
+        const shuffled = [...todasQuestoes].sort(() => 0.5 - Math.random());
+        selecionadas = shuffled.slice(0, qtd).map((q) => q.id);
+      }
+
+      const novoSimulado: Simulado = {
+        id: `sim-custom-${Date.now()}`,
+        titulo: novoTitulo || `Simulado Personalizado (${selecionadas.length} questões)`,
+        descricao: `Simulado criado sob medida com ${selecionadas.length} questões e limite de ${novoTempo} minutos.`,
+        tempo_limite_minutos: parseInt(novoTempo, 10) || 60,
+        questoes_ids: selecionadas,
+        total_questoes: selecionadas.length,
+        dificuldade: "medio",
+        criado_por_sistema: false,
+        created_at: new Date().toISOString(),
+      };
+
+      DataService.salvarSimulado(novoSimulado);
+      setSimulados(DataService.getSimulados());
+      setIsModalNovoSimulado(false);
+      setNovoTitulo("");
+      success(`Simulado com ${selecionadas.length} questões criado com sucesso! Pronto para começar.`);
+    } catch (err) {
+      console.error("Erro ao criar simulado:", err);
+    } finally {
+      setIsGerando(false);
+    }
   };
 
   return (
@@ -201,9 +229,10 @@ export default function SimuladosPage() {
                   onChange={(e) => setNovoQtd(e.target.value)}
                   className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100"
                 >
-                  <option value="5">5 Questões (Rápido)</option>
-                  <option value="8">8 Questões (Médio)</option>
-                  <option value="12">12 Questões (Completo)</option>
+                  <option value="15">15 Questões (Rápido - 30 min)</option>
+                  <option value="30">30 Questões (Bloco - 60 min)</option>
+                  <option value="60">60 Questões (Meio Simulado - 120 min)</option>
+                  <option value="120">120 Questões (Simulado Completo PF/PRF - 210 min)</option>
                 </select>
               </div>
 
@@ -218,8 +247,9 @@ export default function SimuladosPage() {
                 >
                   <option value="30">30 Minutos</option>
                   <option value="60">60 Minutos (1 Hora)</option>
-                  <option value="90">90 Minutos (1h30)</option>
                   <option value="120">120 Minutos (2 Horas)</option>
+                  <option value="210">210 Minutos (3h30 - Padrão Cespe)</option>
+                  <option value="240">240 Minutos (4 Horas)</option>
                 </select>
               </div>
             </div>
@@ -232,8 +262,8 @@ export default function SimuladosPage() {
               >
                 Cancelar
               </Button>
-              <Button type="submit" variant="primary">
-                Criar e Começar
+              <Button type="submit" variant="primary" disabled={isGerando}>
+                {isGerando ? "Carregando Questões..." : "Criar e Começar"}
               </Button>
             </div>
           </form>

@@ -261,22 +261,20 @@ export default function DashboardPage() {
           subtitle={`${stats.questoes_hoje} resolvidas hoje`}
           icon={<CheckSquare className="w-5 h-5 text-blue-600" />}
           color="blue"
-          trend={{ value: "+18%", isPositive: true }}
         />
 
         <StatCard
           title="Taxa de Acertos"
-          value={`${stats.taxa_acerto_geral}%`}
+          value={stats.total_respondidas > 0 ? `${stats.taxa_acerto_geral}%` : "—"}
           subtitle={`${stats.total_acertos} acertos no total`}
           icon={<Percent className="w-5 h-5 text-emerald-600" />}
           color="emerald"
-          trend={{ value: "+4%", isPositive: true }}
         />
 
         <StatCard
           title="Sequência de Estudos"
-          value={`${stats.sequencia_dias} Dias`}
-          subtitle="Recorde atual: 14 dias"
+          value={`${stats.sequencia_dias} ${stats.sequencia_dias === 1 ? "Dia" : "Dias"}`}
+          subtitle={stats.sequencia_dias > 0 ? "Constância ativa" : "Inicie sua sequência hoje"}
           icon={<Flame className="w-5 h-5 text-amber-500" />}
           color="amber"
         />

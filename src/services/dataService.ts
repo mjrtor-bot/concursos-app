@@ -663,9 +663,32 @@ export const DataService = {
     const taxaAcertoGeral =
       totalRespondidas > 0 ? Math.round((totalAcertos / totalRespondidas) * 100) : 0;
 
-    const tempoTotal = respostas.reduce((acc, r) => acc + (r.tempo_resposta || 60), 0);
+    const tempoTotal = respostas.reduce((acc, r) => acc + (r.tempo_resposta || 0), 0);
     const tempoMedio =
-      totalRespondidas > 0 ? Math.round(tempoTotal / totalRespondidas) : 65;
+      totalRespondidas > 0 ? Math.round(tempoTotal / totalRespondidas) : 0;
+
+    // Sequência real de dias consecutivos com respostas registradas
+    let sequenciaDias = 0;
+    if (totalRespondidas > 0) {
+      const datasComRespostas = new Set(
+        respostas.filter((r) => r.created_at).map((r) => r.created_at.split("T")[0])
+      );
+      const hoje = new Date();
+      const d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+      const hojeIso = d.toISOString().split("T")[0];
+      if (!datasComRespostas.has(hojeIso)) {
+        d.setDate(d.getDate() - 1);
+      }
+      while (true) {
+        const iso = d.toISOString().split("T")[0];
+        if (datasComRespostas.has(iso)) {
+          sequenciaDias++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+    }
 
     // Daily count today
     const hojeStr = new Date().toISOString().split("T")[0];
@@ -674,10 +697,11 @@ export const DataService = {
     ).length;
 
     // Per discipline
+    const todasQuestoes = this.getTodasQuestoes();
     const disciplinas = this.getDisciplinas();
     const porDisciplina = disciplinas
       .map((disc) => {
-        const questoesDisc = MOCK_QUESTOES.filter((q) => q.disciplina_id === disc.id);
+        const questoesDisc = todasQuestoes.filter((q) => q.disciplina_id === disc.id);
         const questoesIds = new Set(questoesDisc.map((q) => q.id));
         const respostasDisc = respostas.filter((r) => questoesIds.has(r.questao_id));
 
@@ -686,7 +710,7 @@ export const DataService = {
         const erros = total - acertos;
         const percentual = total > 0 ? Math.round((acertos / total) * 100) : 0;
         const tempoDisc = respostasDisc.reduce(
-          (acc, r) => acc + (r.tempo_resposta || 60),
+          (acc, r) => acc + (r.tempo_resposta || 0),
           0
         );
 
@@ -698,7 +722,7 @@ export const DataService = {
           acertos,
           erros,
           percentual,
-          tempo_medio_segundos: total > 0 ? Math.round(tempoDisc / total) : 60,
+          tempo_medio_segundos: total > 0 ? Math.round(tempoDisc / total) : 0,
         };
       })
       .filter((d) => d.total > 0 || true); // Include all disciplines for radar/charts
@@ -706,7 +730,7 @@ export const DataService = {
     // Per Banca
     const bancas = ["FGV", "Cebraspe (CESPE)", "Fundação Cesgranrio", "Fundação Vunesp", "FCC - Fundação Carlos Chagas"];
     const porBanca = bancas.map((banca) => {
-      const questoesBanca = MOCK_QUESTOES.filter((q) => q.banca === banca);
+      const questoesBanca = todasQuestoes.filter((q) => q.banca === banca);
       const qIds = new Set(questoesBanca.map((q) => q.id));
       const respostasBanca = respostas.filter((r) => qIds.has(r.questao_id));
       const total = respostasBanca.length;
@@ -745,7 +769,7 @@ export const DataService = {
       total_erros: totalErros,
       taxa_acerto_geral: taxaAcertoGeral,
       tempo_medio_questao_segundos: tempoMedio,
-      sequencia_dias: Math.max(1, Math.min(7, totalRespondidas > 0 ? 4 : 1)),
+      sequencia_dias: sequenciaDias,
       questoes_hoje: questoesHoje,
       meta_diaria: profile.meta_diaria_questoes || 30,
       simulados_concluidos: simuladosTentativas.length,

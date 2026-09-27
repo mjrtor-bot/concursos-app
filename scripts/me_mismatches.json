@@ -1,0 +1,668 @@
+[
+  {
+    "id": "2835d0fc-dea6-5eae-8c64-26d7307905b2",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+    "alternativas": [
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "28dded28-4c30-50b0-9ca2-cf245f814fc3",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      }
+    ]
+  },
+  {
+    "id": "2bb12354-8fa5-5a4e-9d10-a81abb6739d1",
+    "prompt_versao": "v2.3-lote3",
+    "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+    "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Durante a lavratura de auto de prisão em flagrante em sede policial, o defensor constituído do preso requer acesso imediato aos elementos de prova já formalmente documentados nos autos do inquérito policial. À luz do Artigo 8º da Convenção Americana sobre Direitos Humanos (CADH) e da Súmula Vinculante nº 14 do STF, assinale a conduta que deve ser adotada pela autoridade policial:",
+    "explicacao": "GABARITO: A Súmula Vinculante 14 do STF consagra: 'É direito do defensor, no interesse do representado, ter acesso amplo aos elementos de prova que, já documentados em procedimento investigatório realizado por órgão com competência de polícia judiciária, digam respeito ao exercício do direito de defesa'. Essa diretriz alinha-se às garantias judiciais do Artigo 8.2 da CADH (tempo e meios adequados para a preparação da defesa e comunicação prévia e pormenorizada). Ressalvam-se apenas diligências em andamento e ainda não documentadas.",
+    "alternativas": [
+      {
+        "letra": "B",
+        "texto": "Garantir ao defensor acesso amplo a todos os elementos de prova já documentados nos autos que digam respeito ao investigado, ressalvando-se diligências em andamento ainda não finalizadas.",
+        "correta": true
+      },
+      {
+        "letra": "C",
+        "texto": "Condicionar a vista dos autos ao depósito prévio de custas cartorárias de desarquivamento administrativo.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "Negar acesso total aos autos até o término do prazo do inquérito policial para resguardar o sigilo absoluto das investigações.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Permitir o acesso do advogado apenas aos depoimentos de testemunhas protegidas sob sigilo de identidade funcional.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "Exigir autorização judicial prévia para que o advogado tome ciência de termo de depoimento de condutor e testemunhas já formalizado.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "5552bf11-b634-5775-bd02-61ace01faf9b",
+    "prompt_versao": "v2.2-lote2",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-68] A situação descrita pressupõe atuação regular de agentes públicos e ausência de nulidade diversa daquela expressamente indicada no enunciado.",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "66ba60cf-f1b2-5232-973e-dfbe060c91b1",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+    "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Uma proposição logicamente equivalente a 'Ou o mandado de busca é expedido ou a operação será cancelada' (disjunção exclusiva: P ⊻ Q) é:",
+    "explicacao": "GABARITO: A disjunção exclusiva (P ⊻ Q) é logicamente equivalente à negação da bicondicional: ~(P ↔ Q) ou (P ∧ ~Q) ∨ (~P ∧ Q).",
+    "alternativas": [
+      {
+        "letra": "B",
+        "texto": "O mandado de busca é expedido se, e somente se, a operação não for cancelada.",
+        "correta": true
+      },
+      {
+        "letra": "A",
+        "texto": "O mandado de busca é expedido e a operação será cancelada.",
+        "correta": false
+      },
+      {
+        "letra": "C",
+        "texto": "Se o mandado for expedido, a operação será cancelada.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A operação será cancelada somente se o mandado for expedido.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "O mandado não foi expedido e a operação não foi cancelada.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "69dd4630-43e1-5ba1-ac46-eca28d0f3ef5",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+    "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "A negação lógica da proposição 'Existe pelo menos um investigado foragido' é:",
+    "explicacao": "GABARITO: A negação de uma proposição particular afirmativa ('Existe algum / Pelo menos um') é a universal negativa ('Nenhum investigado está foragido' / 'Todo investigado não está foragido').",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "Todos os investigados estão foragidos.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "Dois investigados não estão foragidos.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "Nenhum investigado está foragido.",
+        "correta": true
+      },
+      {
+        "letra": "C",
+        "texto": "Existe algum investigado preso.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "A maioria dos investigados está foragida.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "81068fd6-5909-5227-a008-27faaa4f07aa",
+    "prompt_versao": "v2.8-lote8",
+    "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+    "assunto_id": "874b8ded-33c7-575d-8339-7a2f42e85e25",
+    "letraDB": "A",
+    "letraExpl": "B",
+    "enunciado": "Assinale a alternativa que apresenta a concordância nominal CORRETA:",
+    "explicacao": "GABARITO: B. 'A viatura e o equipamento novos' (adjetivo posposto concordando com o substantivo mais próximo no masculino ou no plural masculino). 'Bastantes policiais' ('bastante' como pronome adjetivo pluraliza).",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "Elas mesmo preencheram os formulários da sindicância.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Os cadernos de ocorrência estavam meio desorganizados.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "As ocorrências foram tratadas com cautela bastante para evitar tumulto.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "Seguem inclusa as certidões de antecedentes criminais.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "Havia bastantes policiais convocados para o plantão extraordinário de carnaval.",
+        "correta": true
+      }
+    ]
+  },
+  {
+    "id": "8b7b91d4-17e2-533d-9d63-3fb751fe990b",
+    "prompt_versao": "v2.2-lote2",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-62] Para a resolução deste item autoral, adote como premissa que todos os fatos narrados foram comprovados documentalmente e que a legislação vigente em 2026 deve ser aplicada.",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "aee27583-73c7-50c5-a336-6bcc70484913",
+    "prompt_versao": "v2.2-lote2",
+    "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+    "assunto_id": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+    "letraDB": "C",
+    "letraExpl": "A",
+    "enunciado": "O fenômeno da vitimização terciária manifesta-se quando:",
+    "explicacao": "GABARITO: A vítima sofre isolamento, rejeição, discriminação ou reprovação moral em seu próprio meio social, comunitário ou familiar em decorrência do crime.",
+    "alternativas": [
+      {
+        "letra": "D",
+        "texto": "O agressor é condenado a cumprir pena privativa de liberdade em regime fechado.",
+        "correta": false
+      },
+      {
+        "letra": "C",
+        "texto": "A vítima é estigmatizada, rejeitada ou culpabilizada pelo seu próprio grupo familiar, círculo de amigos e comunidade.",
+        "correta": true
+      },
+      {
+        "letra": "A",
+        "texto": "O sujeito é agredido fisicamente durante a prática criminosa consumada.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "O Estado indeniza economicamente a vítima pelos danos patrimoniais.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "O sujeito sofre interrogatório ríspido e constrangedor na delegacia.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "c20478aa-ed74-5f10-a0e2-c647e47beb9a",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "cefbb6ff-2b3c-5d89-b400-c9bd2ddbfe71",
+    "prompt_versao": "v2.2-lote2",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-66] A banca espera distinção técnica entre regra geral, exceção expressa e consequência jurídica prática para concursos policiais.",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "d904eba6-562b-58d9-862e-1cc8d1ba7024",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+    "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "A Teoria do Etiquetamento Social (Labeling Approach ou Teoria da Rotulação), expoente das teorias da reação social e do conflito, afirma que:",
+    "explicacao": "GABARITO: A criminalidade não é uma qualidade intrínseca da conduta ou do indivíduo, mas um status social atribuído pela atuação seletiva das agências formais de controle (polícia, tribunais, prisões), que estigmatizam o autor e provocam a desvio secundário.",
+    "alternativas": [
+      {
+        "letra": "E",
+        "texto": "A punição deve visar à neutralização incapacitante dos criminosos irrecuperáveis.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "O crime decorre de defeitos genéticos e desvios cromossômicos hereditários.",
+        "correta": false
+      },
+      {
+        "letra": "C",
+        "texto": "A desorganização urbana das zonas de transição gera a perda de controle social informal.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "O delito é conduta aprendida em relações sociais íntimas com outros criminosos.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A criminalidade é uma propriedade atribuída a determinados indivíduos por meio de processos seletivos e estigmatizantes de controle formal.",
+        "correta": true
+      }
+    ]
+  },
+  {
+    "id": "dd3df68a-6025-5861-98ba-9a3e834225bb",
+    "prompt_versao": "v2.2-lote2",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-64] No cenário de treinamento, inexistem peculiaridades não mencionadas: a resposta deve decorrer apenas do texto legal, da doutrina majoritária e da jurisprudência consolidada.",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+    "alternativas": [
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "de4e56a9-01d9-5a3d-b8ff-82d1ecdd7c24",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+    "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "A negação lógica da proposição condicional 'Se o suspeito confessar o crime, então o juiz concederá a liberdade provisória' é dada por:",
+    "explicacao": "GABARITO: A negação de uma condicional P → Q é dada pela regra do 'MANÉ' (Mantém a primeira e Nega a segunda: P ∧ ~Q). Portanto: 'O suspeito confessa o crime e o juiz não concede a liberdade provisória'.",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "O suspeito não confessou o crime ou o juiz concedeu a liberdade provisória.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "O suspeito confessou o crime e o juiz não concedeu a liberdade provisória.",
+        "correta": true
+      },
+      {
+        "letra": "A",
+        "texto": "Se o suspeito não confessar o crime, então o juiz não concederá a liberdade provisória.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "O suspeito não confessou o crime e o juiz não concedeu a liberdade provisória.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Se o juiz não conceder a liberdade provisória, então o suspeito não confessou o crime.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "e6412ca0-af83-57ff-a167-a7c5e397a5c8",
+    "prompt_versao": "v2.2-lote2",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-70] Na narrativa do Lote 2, os envolvidos foram identificados previamente e a cadeia decisória foi formalmente documentada pela autoridade competente.",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+    "alternativas": [
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      }
+    ]
+  },
+  {
+    "id": "f49916ff-48ed-5a4e-9a5b-83805277cd0c",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+    "alternativas": [
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      },
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "fc87147e-4401-5a13-bbde-bfaea15f2ca4",
+    "prompt_versao": "v2.1",
+    "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+    "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+    "explicacao": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+    "alternativas": [
+      {
+        "letra": "B",
+        "texto": "A entrada forçada sem mandado só é lícita quando amparada em fundadas razões justificadas a posteriori de flagrante delito.",
+        "correta": true
+      },
+      {
+        "letra": "C",
+        "texto": "O consentimento do morador pode ser puramente tácito, dispensando qualquer registro em vídeo ou termo assinado.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A busca e apreensão domiciliar pode ser cumprida no período noturno com mandado judicial simples.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "Mesmo em caso de flagrante delito de crime permanente, exige-se sempre autorização judicial prévia por escrito.",
+        "correta": false
+      },
+      {
+        "letra": "A",
+        "texto": "A denúncia anônima isolada autoriza a invasão domiciliar imediata a qualquer hora.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "id": "fdab75b8-894d-5623-8058-cf12333dbc9f",
+    "prompt_versao": "v2.3-lote3",
+    "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+    "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+    "letraDB": "B",
+    "letraExpl": "A",
+    "enunciado": "O Artigo 7º, item 7, da Convenção Americana sobre Direitos Humanos dispõe que ninguém deve ser detido por dívidas, ressalvando unicamente a prisão por inadimplemento de obrigação alimentar. Em face dessa norma convencional e da jurisprudência consolidada no âmbito do STF, assinale a opção que reflete o enunciado da Súmula Vinculante nº 25.",
+    "explicacao": "GABARITO: A Súmula Vinculante 25 do STF dispõe expressamente: 'É ilícita a prisão civil de depositário infiel, qualquer que seja a modalidade do depósito'. Em razão do status supralegal da CADH (art. 7.7), as normas infraconstitucionais brasileiras que previam a prisão do depositário infiel tiveram sua eficácia suspensa/paralisada, restando unicamente admitida no Brasil a prisão civil do devedor inescusável de alimentos.",
+    "alternativas": [
+      {
+        "letra": "C",
+        "texto": "A prisão civil por dívida tributária qualificada é admitida quando o sujeito passivo for reincidente específico em sonegação fiscal.",
+        "correta": false
+      },
+      {
+        "letra": "B",
+        "texto": "É ilícita a prisão civil de depositário infiel, qualquer que seja a modalidade do depósito.",
+        "correta": true
+      },
+      {
+        "letra": "A",
+        "texto": "É lícita a prisão civil do depositário infiel no caso de alienação fiduciária em garantia com prévia interpelação cartorária.",
+        "correta": false
+      },
+      {
+        "letra": "E",
+        "texto": "A prisão civil do devedor de alimentos foi revogada pela CADH por equiparação à vedação genérica de prisão por dívida.",
+        "correta": false
+      },
+      {
+        "letra": "D",
+        "texto": "A prisão do depositário infiel judicial permanece válida por decorrer de mandado expedido por juiz competente da execução cível.",
+        "correta": false
+      }
+    ]
+  }
+]

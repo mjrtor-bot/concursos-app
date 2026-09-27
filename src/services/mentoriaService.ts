@@ -24,7 +24,7 @@ import {
   EditalVerticalizadoResumo,
 } from "@/types";
 import { MentoriaCicloService } from "./mentoriaCicloService";
-import { MOCK_DISCIPLINAS, MOCK_ASSUNTOS } from "@/data/mockData";
+import { MOCK_DISCIPLINAS, MOCK_ASSUNTOS, DISCIPLINAS_MASSIVAS, ASSUNTOS_MASSIVOS } from "@/data/mockData";
 
 // ── Chaves de Armazenamento Local de Contingência ─────────────────────────────
 const STORAGE_KEYS = {
@@ -862,26 +862,49 @@ export class MentoriaService {
   static async getEditalVerticalizado(usuarioId: string): Promise<EditalVerticalizadoResumo> {
     const supabase = this.getClient();
 
-    // 1. Buscar status salvo de tópicos
+    // 1. Buscar status salvo de tópicos, respostas e taxonomia dinâmica
     let topicosSalvos: MentoriaEditalTopico[] = [];
     let respostasUsuario: { assunto_id: string; correta: boolean; created_at: string }[] = [];
+    let disciplinasFonte: any[] = DISCIPLINAS_MASSIVAS;
+    let assuntosFonte: any[] = ASSUNTOS_MASSIVOS;
 
-    if (supabase && usuarioId) {
+    if (supabase) {
       try {
-        const [resTopicos, resRespostas] = await Promise.all([
-          supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
-          supabase.from("respostas_usuarios").select("assunto_id, correta, created_at").eq("usuario_id", usuarioId),
-        ]);
+        const promises: PromiseLike<any>[] = [
+          supabase.from("disciplinas").select("*").order("ordem", { ascending: true }),
+          supabase.from("assuntos").select("*").order("ordem", { ascending: true }),
+        ];
 
-        if (resTopicos.data) topicosSalvos = resTopicos.data;
-        if (resRespostas.data) respostasUsuario = resRespostas.data;
+        if (usuarioId) {
+          promises.push(
+            supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
+            supabase.from("respostas_usuarios").select("assunto_id, correta, created_at").eq("usuario_id", usuarioId)
+          );
+        }
+
+        const resultados = await Promise.all(promises);
+        const resDisc = resultados[0];
+        const resAss = resultados[1];
+        if (resDisc?.data && resDisc.data.length > 0) {
+          disciplinasFonte = resDisc.data;
+        }
+        if (resAss?.data && resAss.data.length > 0) {
+          assuntosFonte = resAss.data;
+        }
+
+        if (usuarioId && resultados.length >= 4) {
+          const resTopicos = resultados[2];
+          const resRespostas = resultados[3];
+          if (resTopicos?.data) topicosSalvos = resTopicos.data;
+          if (resRespostas?.data) respostasUsuario = resRespostas.data;
+        }
       } catch (err) {
         console.error("Erro ao buscar dados do edital verticalizado no Supabase:", err);
       }
     }
 
     // Se estiver offline ou sem Supabase, pegar do localStorage
-    if (topicosSalvos.length === 0) {
+    if (topicosSalvos.length === 0 && usuarioId) {
       topicosSalvos = this.getFromStorage<MentoriaEditalTopico[]>(`${STORAGE_KEYS.TOPICOS}_${usuarioId}`, []);
     }
 
@@ -910,8 +933,8 @@ export class MentoriaService {
     let totalQuestoesGeral = 0;
     let totalAcertosGeral = 0;
 
-    const disciplinasAgrupadas = MOCK_DISCIPLINAS.map((disc) => {
-      const assuntosDaDisc = MOCK_ASSUNTOS.filter((a) => a.disciplina_id === disc.id).sort((a, b) => a.ordem - b.ordem);
+    const disciplinasAgrupadas = disciplinasFonte.map((disc) => {
+      const assuntosDaDisc = assuntosFonte.filter((a) => a.disciplina_id === disc.id).sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
 
       let estudadosNaDisc = 0;
       let dominadosNaDisc = 0;
