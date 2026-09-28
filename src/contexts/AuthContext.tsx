@@ -107,6 +107,9 @@ function buildProfileFromSupabaseUser(supabaseUser: {
     concurso_alvo_id:
       (supabaseUser.user_metadata?.concurso_alvo_id as string | undefined) ||
       undefined,
+    meta_diaria_questoes:
+      (supabaseUser.user_metadata?.meta_diaria_questoes as number | undefined) ||
+      30,
     role:
       (supabaseUser.app_metadata?.role as "user" | "admin" | "editor" | undefined) ||
       "user",
