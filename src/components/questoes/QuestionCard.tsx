@@ -151,6 +151,8 @@ export function QuestionCard({
 
   const disciplina = DataService.getDisciplinaById(questao.disciplina_id);
   const assunto = DataService.getAssuntoById(questao.assunto_id);
+  const disciplinaNome = questao.disciplina_nome || (typeof questao.disciplina === "string" ? questao.disciplina : questao.disciplina?.nome) || disciplina?.nome;
+  const assuntoNome = questao.assunto_nome || (typeof questao.assunto === "string" ? questao.assunto : questao.assunto?.nome) || assunto?.nome;
 
   const getDificuldadeBadge = () => {
     switch (questao.dificuldade) {
@@ -193,15 +195,10 @@ export function QuestionCard({
           {questao.is_autoral_ia && (
             <span
               className="inline-flex items-center gap-1.5 text-xs font-semibold bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 px-2.5 py-0.5 rounded-md"
-              title={`Questão autoral gerada por IA (${questao.modelo_ia || "Claude 3.5 Sonnet"} - Prompt ${questao.prompt_versao || "v2.1"})`}
+              title="Questão autoral gerada por IA"
             >
               <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
               Questão autoral/IA
-              {questao.modelo_ia && (
-                <span className="text-[10px] opacity-75 font-normal">
-                  ({questao.modelo_ia})
-                </span>
-              )}
             </span>
           )}
 
@@ -285,11 +282,11 @@ export function QuestionCard({
       <div className="px-5 py-2.5 bg-slate-100/50 dark:bg-slate-800/20 border-b border-slate-100 dark:border-slate-800/60 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
         <BookOpen className="w-3.5 h-3.5 text-blue-500" />
         <span className="font-semibold text-slate-700 dark:text-slate-300">
-          {disciplina?.nome || "Disciplina"}
+          {disciplinaNome || "Disciplina"}
         </span>
         <span>›</span>
         <span className="text-slate-600 dark:text-slate-400">
-          {assunto?.nome || "Assunto"}
+          {assuntoNome || "Assunto"}
         </span>
       </div>
 
