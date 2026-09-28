@@ -16,17 +16,12 @@ import {
   EyeOff,
   ArrowRight,
   GraduationCap,
-  CheckCircle2,
-  AlertCircle,
-  Clock,
-  Send,
-  Loader2,
-  ShieldCheck,
+  CheckCircle2
 } from "lucide-react";
 
 export default function CadastroPage() {
   const router = useRouter();
-  const { signup, resendConfirmationEmail, isSupabaseConnected } = useAuth();
+  const { signup, isSupabaseConnected } = useAuth();
   const { success, error: showError } = useToast();
 
   const [nome, setNome] = useState("");
@@ -39,10 +34,6 @@ export default function CadastroPage() {
   const [aceitouTermos, setAceitouTermos] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Estado de confirmação de e-mail pendente pós-cadastro
-  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
-  const [isResending, setIsResending] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
 
   useEffect(() => {
     try {
@@ -56,14 +47,6 @@ export default function CadastroPage() {
     }
   }, []);
 
-  // Cooldown timer para reenvio
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const timer = setInterval(() => {
-      setResendCooldown((prev) => Math.max(0, prev - 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [resendCooldown]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,14 +75,8 @@ export default function CadastroPage() {
     try {
       const result = await signup(nome, email, password, concursoAlvoId);
       if (result.success) {
-        if (result.requiresEmailConfirmation) {
-          setRegisteredEmail(email.trim());
-          setResendCooldown(60);
-          success("Conta criada com sucesso! Verifique seu e-mail para ativar.");
-        } else {
-          success("Conta criada com sucesso! Bem-vindo(a) à plataforma.");
-          router.push("/onboarding");
-        }
+        success("Conta criada com sucesso! Bem-vindo(a) à plataforma.");
+        router.push("/onboarding");
       } else {
         showError(result.error || "Não foi possível concluir o cadastro.");
       }
@@ -110,28 +87,6 @@ export default function CadastroPage() {
     }
   };
 
-  const handleResend = async () => {
-    if (!registeredEmail) return;
-    setIsResending(true);
-    try {
-      const result = await resendConfirmationEmail(registeredEmail);
-      if (result.success) {
-        setResendCooldown(60);
-        success("E-mail de confirmação reenviado com sucesso!");
-      } else {
-        if (result.code === "over_email_send_rate_limit") {
-          setResendCooldown(120);
-          showError("Limite de envio atingido pelo servidor. Aguarde alguns minutos.");
-        } else {
-          showError(result.error || "Erro ao reenviar e-mail de confirmação.");
-        }
-      }
-    } catch {
-      showError("Erro inesperado ao reenviar confirmação.");
-    } finally {
-      setIsResending(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col justify-center py-10 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950">
@@ -146,86 +101,17 @@ export default function CadastroPage() {
         </div>
 
         <h2 className="mt-4 text-center text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-          {registeredEmail ? "Verifique seu e-mail" : "Crie sua conta gratuita"}
+          "Crie sua conta gratuita"
         </h2>
         <p className="mt-1 text-center text-sm text-slate-500 dark:text-slate-400">
-          {registeredEmail
-            ? "Enviamos um link de confirmação para ativar sua conta"
-            : "Acelere sua aprovação com questões comentadas, simulados e IA"}
+          "Acelere sua aprovação com questões comentadas, simulados e IA"
         </p>
       </div>
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-lg">
         <div className="bg-white dark:bg-slate-900 py-8 px-6 sm:px-8 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-800 rounded-3xl space-y-6">
 
-          {registeredEmail ? (
-            /* Tela de Confirmação de E-mail Pendente */
-            <div className="text-center space-y-5 py-2">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 rounded-3xl flex items-center justify-center mx-auto shadow-sm">
-                <Mail className="w-8 h-8" />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                  Quase pronto! Confirme seu cadastro
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-md mx-auto">
-                  Enviamos uma mensagem de ativação para{" "}
-                  <strong className="text-slate-900 dark:text-slate-100 font-semibold">{registeredEmail}</strong>.
-                  Clique no botão dentro do e-mail para validar sua conta e começar.
-                </p>
-              </div>
-
-              <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 rounded-2xl text-[11px] text-amber-800 dark:text-amber-300 flex items-start gap-2 text-left">
-                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <span>
-                  Não encontrou a mensagem? Verifique sua <strong>caixa de Spam ou Lixo Eletrônico</strong>. Se necessário, solicite um novo envio abaixo.
-                </span>
-              </div>
-
-              <div className="pt-2 space-y-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="md"
-                  onClick={handleResend}
-                  disabled={isResending || resendCooldown > 0}
-                  className="w-full justify-center text-xs"
-                  leftIcon={
-                    isResending ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : resendCooldown > 0 ? (
-                      <Clock className="w-3.5 h-3.5 text-slate-500" />
-                    ) : (
-                      <Send className="w-3.5 h-3.5 text-blue-600" />
-                    )
-                  }
-                >
-                  {isResending
-                    ? "Reenviando confirmação..."
-                    : resendCooldown > 0
-                    ? `Aguarde ${resendCooldown}s para reenviar`
-                    : "Reenviar e-mail de confirmação"}
-                </Button>
-
-                <Link
-                  href={`/login?registered=true&email=${encodeURIComponent(registeredEmail)}`}
-                  className="block"
-                >
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    className="w-full justify-center"
-                    rightIcon={<ArrowRight className="w-4 h-4" />}
-                  >
-                    Ir para a Página de Login
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          ) : (
-            /* Formulário Principal de Cadastro */
-            <form onSubmit={handleSubmit} className="space-y-4">
+                      <form onSubmit={handleSubmit} className="space-y-4">
               {/* Nome Completo */}
               <div>
                 <label
@@ -398,7 +284,6 @@ export default function CadastroPage() {
                 Criar Conta e Iniciar Preparação
               </Button>
             </form>
-          )}
 
           {/* Destaques de Benefícios */}
           <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-[11px] text-slate-600 dark:text-slate-400">
