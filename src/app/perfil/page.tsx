@@ -3,25 +3,21 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { useToast } from "@/contexts/ToastContext";
-import { DataService } from "@/services/dataService";
 import {
   User,
   Mail,
   Target,
   Sparkles,
-  RotateCcw,
   Check,
   Save,
-  ShieldCheck,
   Award,
 } from "lucide-react";
 
 export default function PerfilPage() {
-  const { user, updateUser, isSupabaseConnected } = useAuth();
+  const { user, updateUser } = useAuth();
   const { concursos, concursoAtivo, selecionarConcursoAtivo } = useConcurso();
   const { success, info } = useToast();
 
@@ -47,16 +43,7 @@ export default function PerfilPage() {
     success("Perfil e preferências atualizados com sucesso!");
   };
 
-  const handleResetarDados = () => {
-    if (
-      confirm(
-        "Tem certeza que deseja restaurar os dados de demonstração iniciais?"
-      )
-    ) {
-      DataService.resetarDadosParaPadrao();
-      window.location.reload();
-    }
-  };
+
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -157,78 +144,7 @@ export default function PerfilPage() {
           </CardContent>
         </Card>
 
-        {/* Supabase Status Card */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-emerald-600" />
-              <CardTitle>Status da Camada de Dados</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-              <div className="space-y-0.5">
-                <p className="font-semibold text-slate-900 dark:text-slate-100">
-                  Armazenamento Local & Fallback Ativo
-                </p>
-                <p className="text-slate-500">
-                  Todas as respostas, notas e simulados estão sendo persistidos de forma segura no navegador via LocalStorage.
-                </p>
-              </div>
-              <Badge variant="success" size="sm">
-                100% Funcional
-              </Badge>
-            </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-              <div className="space-y-0.5">
-                <p className="font-semibold text-slate-900 dark:text-slate-100">
-                  Conexão Supabase Backend
-                </p>
-                <p className="text-slate-500">
-                  {isSupabaseConnected
-                    ? "Conectado ao Supabase com credenciais válidas."
-                    : "Modo Local / Mocks ativos (Configure as chaves no .env para sincronizar com Supabase)."}
-                </p>
-              </div>
-              <Badge
-                variant={isSupabaseConnected ? "success" : "secondary"}
-                size="sm"
-              >
-                {isSupabaseConnected ? "Conectado" : "Pronto p/ Supabase"}
-              </Badge>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Reset Demo Data */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <RotateCcw className="w-5 h-5 text-rose-600" />
-              <CardTitle>Zona de Gerenciamento de Dados</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-                Restaurar Dados Demonstrativos
-              </p>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Limpa suas respostas atuais e restaura as estatísticas e histórico de exemplo inicial.
-              </p>
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResetarDados}
-              leftIcon={<RotateCcw className="w-3.5 h-3.5 text-rose-600" />}
-            >
-              Restaurar Demonstração
-            </Button>
-          </CardContent>
-        </Card>
       </div>
   );
 }

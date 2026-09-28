@@ -48,6 +48,9 @@ export default function DesempenhoPage() {
     async function carregarDados() {
       try {
         setLoading(true);
+        if (user) {
+          await DataService.sincronizarRespostasSupabase();
+        }
         const st = DataService.getEstatisticas();
         setStats(st);
 

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Concurso,
   Cargo,
   Edital,
@@ -60,7 +60,7 @@ function setToStorage<T>(key: string, value: T): void {
 
 // Data service
 export const DataService = {
-  // ── Profile & Auth ──
+  // â”€â”€ Profile & Auth â”€â”€
   getProfile(): Profile {
     return getFromStorage<Profile>(STORAGE_KEYS.PROFILE, MOCK_PROFILE);
   },
@@ -72,7 +72,7 @@ export const DataService = {
     return updated;
   },
 
-  // ── Concurso Ativo ──
+  // â”€â”€ Concurso Ativo â”€â”€
   getConcursoAtivoId(): string {
     const profile = this.getProfile();
     return getFromStorage<string>(
@@ -86,7 +86,7 @@ export const DataService = {
     this.updateProfile({ concurso_alvo_id: id });
   },
 
-  // ── Concursos ──
+  // â”€â”€ Concursos â”€â”€
   getConcursos(): Concurso[] {
     return MOCK_CONCURSOS;
   },
@@ -95,7 +95,7 @@ export const DataService = {
     return MOCK_CONCURSOS.find((c) => c.id === id);
   },
 
-  // ── Cargos ──
+  // â”€â”€ Cargos â”€â”€
   getCargos(concursoId?: string): Cargo[] {
     if (concursoId) {
       return MOCK_CARGOS.filter((c) => c.concurso_id === concursoId);
@@ -107,7 +107,7 @@ export const DataService = {
     return MOCK_CARGOS.find((c) => c.id === id);
   },
 
-  // ── Editais ──
+  // â”€â”€ Editais â”€â”€
   getEditais(concursoId?: string): Edital[] {
     if (concursoId) {
       return MOCK_EDITAIS.filter((e) => e.concurso_id === concursoId);
@@ -115,7 +115,7 @@ export const DataService = {
     return MOCK_EDITAIS;
   },
 
-  // ── Disciplinas & Assuntos ──
+  // â”€â”€ Disciplinas & Assuntos â”€â”€
   getDisciplinas(): Disciplina[] {
     return [...MOCK_DISCIPLINAS].sort((a, b) => a.ordem - b.ordem);
   },
@@ -137,7 +137,7 @@ export const DataService = {
     return MOCK_ASSUNTOS.find((a) => a.id === id);
   },
 
-  // ── Questões ──
+  // â”€â”€ QuestÃµes â”€â”€
   getQuestoesCustom(): Questao[] {
     return getFromStorage<Questao[]>(STORAGE_KEYS.QUESTOES_CUSTOM, []);
   },
@@ -205,7 +205,7 @@ export const DataService = {
       return custom[index];
     }
 
-    // Se for uma mock_questao que está sendo editada pela primeira vez, cria cópia em custom
+    // Se for uma mock_questao que estÃ¡ sendo editada pela primeira vez, cria cÃ³pia em custom
     const mock = MOCK_QUESTOES.find((q) => q.id === id);
     if (mock) {
       const nova: Questao = {
@@ -334,7 +334,35 @@ export const DataService = {
     return this.getTodasQuestoes().find((q) => q.id === id);
   },
 
-  // ── Respostas do Usuário ──
+  // â”€â”€ Respostas do UsuÃ¡rio â”€â”€
+  // Sincroniza o cache de leitura com a fonte autoritativa (Supabase).
+  // Para usuÃ¡rio autenticado, localStorage Ã© somente cache descartÃ¡vel.
+  async sincronizarRespostasSupabase(): Promise<RespostaUsuario[]> {
+    if (typeof window === "undefined") return [];
+    try {
+      const res = await fetch("/api/questoes/resposta", { method: "GET", cache: "no-store" });
+      if (res.status === 401) return this.getRespostas();
+      if (!res.ok) throw new Error(`Falha ao sincronizar respostas: ${res.status}`);
+      const json = await res.json();
+      const respostas = Array.isArray(json.respostas) ? json.respostas : [];
+      setToStorage(STORAGE_KEYS.RESPOSTAS, respostas);
+
+      // Nunca manter identidade/perfil demonstrativo em sessÃ£o autenticada.
+      const supabase = createClient();
+      const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+      if (session?.user) {
+        const profile = getFromStorage<Profile | null>(STORAGE_KEYS.PROFILE, null);
+        if (profile && (profile.id === "user-demo-1" || /Alexandre Silva/i.test(String((profile as any).nome || "")))) {
+          window.localStorage.removeItem(STORAGE_KEYS.PROFILE);
+        }
+      }
+      return respostas;
+    } catch (err) {
+      console.warn("[DataService] NÃ£o foi possÃ­vel sincronizar respostas:", err);
+      return this.getRespostas();
+    }
+  },
+
   getRespostas(): RespostaUsuario[] {
     return getFromStorage<RespostaUsuario[]>(STORAGE_KEYS.RESPOSTAS, []);
   },
@@ -357,9 +385,9 @@ export const DataService = {
     questaoFallback?: Questao
   ): { resposta: RespostaUsuario; correta: boolean; questao: Questao } {
     const questao = questaoFallback || this.getQuestaoById(questaoId);
-    if (!questao) throw new Error(`Questão ${questaoId} não encontrada`);
+    if (!questao) throw new Error(`QuestÃ£o ${questaoId} nÃ£o encontrada`);
 
-    // Salva a questão localmente para que o caderno de erros e histórico consigam recuperá-la
+    // Salva a questÃ£o localmente para que o caderno de erros e histÃ³rico consigam recuperÃ¡-la
     this.salvarQuestao(questao);
 
     let correta = false;
@@ -395,7 +423,7 @@ export const DataService = {
       this.marcarErroComoRevisado(questaoId);
     }
 
-    // Persistência assíncrona no Supabase caso usuário autenticado
+    // PersistÃªncia assÃ­ncrona no Supabase caso usuÃ¡rio autenticado
     this.persistirRespostaSupabase(questao, alternativaId, correta, tempoRespostaSegundos).catch((err) => {
       console.warn("[DataService] Falha ao persistir resposta no Supabase:", err);
     });
@@ -414,7 +442,7 @@ export const DataService = {
     const isUuid = (val?: string) =>
       Boolean(val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val));
 
-    // Se o ID da questão não é um UUID (ex: questão mock/teste local), não envia para o banco
+    // Se o ID da questÃ£o nÃ£o Ã© um UUID (ex: questÃ£o mock/teste local), nÃ£o envia para o banco
     if (!isUuid(questao.id)) return;
 
     const alt = questao.alternativas.find((a) => a.id === alternativaId);
@@ -442,7 +470,7 @@ export const DataService = {
       // Continua para fallback do cliente direto
     }
 
-    // 2. Fallback direto via cliente Supabase se disponível
+    // 2. Fallback direto via cliente Supabase se disponÃ­vel
     try {
       const supabase = createClient();
       if (!supabase) return;
@@ -484,7 +512,7 @@ export const DataService = {
     }
   },
 
-  // ── Caderno de Erros ──
+  // â”€â”€ Caderno de Erros â”€â”€
   getCadernoErros(): ItemCadernoErros[] {
     const itens = getFromStorage<ItemCadernoErros[]>(
       STORAGE_KEYS.CADERNO_ERROS,
@@ -558,7 +586,7 @@ export const DataService = {
     }
   },
 
-  // ── Favoritos ──
+  // â”€â”€ Favoritos â”€â”€
   getFavoritos(): string[] {
     return getFromStorage<string[]>(STORAGE_KEYS.FAVORITOS, []);
   },
@@ -582,7 +610,7 @@ export const DataService = {
     return this.getFavoritos().includes(questaoId);
   },
 
-  // ── Simulados ──
+  // â”€â”€ Simulados â”€â”€
   getSimulados(): Simulado[] {
     const custom = getFromStorage<Simulado[]>(STORAGE_KEYS.SIMULADOS_CUSTOM, []);
     return [...custom, ...MOCK_SIMULADOS];
@@ -603,7 +631,7 @@ export const DataService = {
     setToStorage(STORAGE_KEYS.SIMULADOS_CUSTOM, custom);
   },
 
-  // ── Anotações de Estudo Gerais ──
+  // â”€â”€ AnotaÃ§Ãµes de Estudo Gerais â”€â”€
   getAnotacoes(): Record<string, string> {
     return getFromStorage<Record<string, string>>(STORAGE_KEYS.ANOTACOES, {});
   },
@@ -648,7 +676,7 @@ export const DataService = {
     setToStorage(STORAGE_KEYS.SIMULADOS_TENTATIVAS, tentativas);
   },
 
-  // ── Estatísticas Dinâmicas ──
+  // â”€â”€ EstatÃ­sticas DinÃ¢micas â”€â”€
   getEstatisticas(): EstatisticasGerais {
     const respostas = this.getRespostas();
     const profile = this.getProfile();
@@ -667,7 +695,7 @@ export const DataService = {
     const tempoMedio =
       totalRespondidas > 0 ? Math.round(tempoTotal / totalRespondidas) : 0;
 
-    // Sequência real de dias consecutivos com respostas registradas
+    // SequÃªncia real de dias consecutivos com respostas registradas
     let sequenciaDias = 0;
     if (totalRespondidas > 0) {
       const datasComRespostas = new Set(
@@ -728,7 +756,7 @@ export const DataService = {
       .filter((d) => d.total > 0 || true); // Include all disciplines for radar/charts
 
     // Per Banca
-    const bancas = ["FGV", "Cebraspe (CESPE)", "Fundação Cesgranrio", "Fundação Vunesp", "FCC - Fundação Carlos Chagas"];
+    const bancas = ["FGV", "Cebraspe (CESPE)", "FundaÃ§Ã£o Cesgranrio", "FundaÃ§Ã£o Vunesp", "FCC - FundaÃ§Ã£o Carlos Chagas"];
     const porBanca = bancas.map((banca) => {
       const questoesBanca = todasQuestoes.filter((q) => q.banca === banca);
       const qIds = new Set(questoesBanca.map((q) => q.id));
@@ -782,11 +810,11 @@ export const DataService = {
     };
   },
 
-  // ── Limpeza e inicialização limpa ──
+  // â”€â”€ Limpeza e inicializaÃ§Ã£o limpa â”€â”€
   inicializarDadosDemonstracaoSeNecessario(): void {
     if (typeof window === "undefined") return;
 
-    // Purga automática de respostas mock/seed antigas do navegador do usuário
+    // Purga automÃ¡tica de respostas mock/seed antigas do navegador do usuÃ¡rio
     try {
       const respostasRaw = window.localStorage.getItem(STORAGE_KEYS.RESPOSTAS);
       if (respostasRaw) {
@@ -832,7 +860,7 @@ export const DataService = {
     window.localStorage.removeItem(STORAGE_KEYS.SIMULADOS_CUSTOM);
   },
 
-  // Reset total: remove todas as respostas mas mantém perfil
+  // Reset total: remove todas as respostas mas mantÃ©m perfil
   resetarRespostas(): void {
     if (typeof window === "undefined") return;
     window.localStorage.removeItem(STORAGE_KEYS.RESPOSTAS);
@@ -840,7 +868,7 @@ export const DataService = {
     window.localStorage.removeItem(STORAGE_KEYS.FAVORITOS);
   },
 
-  // Inicializar sem respostas seed (para começar do zero)
+  // Inicializar sem respostas seed (para comeÃ§ar do zero)
   inicializarSemRespostas(): void {
     if (typeof window === "undefined") return;
     const respostasExistentes = this.getRespostas();
@@ -849,3 +877,4 @@ export const DataService = {
     }
   },
 };
+

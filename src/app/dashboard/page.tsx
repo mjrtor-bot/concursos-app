@@ -158,7 +158,9 @@ export default function DashboardPage() {
                   {concursoAtivo.nome}
                 </h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
-                  {concursoAtivo.orgao} • {concursoAtivo.vagas_totais} vagas • Salário até R$ {concursoAtivo.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  {concursoAtivo.orgao}
+                  {concursoAtivo.vagas_totais > 0 ? ` • ${concursoAtivo.vagas_totais} vagas` : ""}
+                  {concursoAtivo.salario_max > 0 ? ` • Salário até R$ ${concursoAtivo.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : ""}
                 </p>
               </div>
 
@@ -179,7 +181,7 @@ export default function DashboardPage() {
                   <div className="text-center">
                     <Clock className="w-6 h-6 text-slate-400 mx-auto" />
                     <p className="text-xs font-medium text-slate-500 mt-1">
-                      Edital em Breve
+                      Data a definir
                     </p>
                   </div>
                 )}

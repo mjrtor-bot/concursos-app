@@ -166,6 +166,8 @@ export interface Questao {
   cargo?: string | null;
   disciplina?: Disciplina | string;
   assunto?: Assunto | string;
+  disciplina_nome?: string;
+  assunto_nome?: string;
   explicacao: string;
   texto_apoio?: string | null;
   taxa_acerto_comunidade?: number;
@@ -610,6 +612,8 @@ export interface MentoriaCicloItem {
   ordem_bloco: number; // 1, 2, 3, ..., N
   disciplina_id: string;
   disciplina_nome: string;
+  assunto_id?: string;
+  assunto_nome?: string;
   tipo: MentoriaTarefaTipo; // "TEORIA" | "QUESTOES" | "REVISAO"
   duracao_minutos: number;
   quantidade_questoes_sugerida: number;
@@ -797,6 +801,8 @@ export interface GradeSemanalDia {
     ordem: number;
     disciplina_id: string;
     disciplina_nome: string;
+    assunto_id?: string;
+    assunto_nome?: string;
     tipo: MentoriaTarefaTipo;
     duracao_minutos: number;
     prioridade_nivel: MentoriaTarefaPrioridade;

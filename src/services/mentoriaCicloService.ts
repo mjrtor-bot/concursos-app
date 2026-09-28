@@ -394,6 +394,8 @@ export class MentoriaCicloService {
               ordem_bloco: t.ordem,
               disciplina_id: t.disciplina_id || "disc-geral",
               disciplina_nome: t.titulo || "Disciplina",
+              assunto_id: t.assunto_id || undefined,
+              assunto_nome: t.assunto_nome || undefined,
               tipo: (t.tipo as MentoriaTarefaTipo) || "TEORIA",
               duracao_minutos: t.duracao_prevista_minutos || 40,
               quantidade_questoes_sugerida: t.quantidade_questoes || 15,
@@ -442,13 +444,14 @@ export class MentoriaCicloService {
       }
     }
 
-    // 2. Tenta recuperar do cache local
-    const planoLocal = this.obterPlanoLocal(usuarioId);
-    if (planoLocal) {
-      return planoLocal;
+    // 2. Cache local só é contingência quando Supabase não está disponível.
+    // Em sessão autenticada com backend configurado, o banco é a fonte autoritativa.
+    if (!supabase) {
+      const planoLocal = this.obterPlanoLocal(usuarioId);
+      if (planoLocal) return planoLocal;
     }
 
-    // 3. Se não existe, gera automaticamente o primeiro ciclo
+    // 3. Se não existe no backend, gera automaticamente o primeiro ciclo
     const gerado = await this.gerarOuRecalcularCiclo(usuarioId);
     if (gerado.success && gerado.plano) {
       return gerado.plano;
@@ -539,7 +542,7 @@ export class MentoriaCicloService {
 
           try {
             const { data: respostas } = await supabase
-              .from("respostas")
+              .from("respostas_usuarios")
               .select("correta, questoes!inner(disciplina_id)")
               .eq("usuario_id", usuarioId)
               .limit(5000);
@@ -614,11 +617,45 @@ export class MentoriaCicloService {
       duracaoBlocoMinutos
     );
 
-    const blocos = this.gerarSequenciaBlocosCiclo(
+    let blocos = this.gerarSequenciaBlocosCiclo(
       prioridades,
       duracaoBlocoMinutos,
       questoesPorBloco
     );
+
+    // Vincula cada bloco a um assunto real do edital/taxonomia, em ordem por disciplina.
+    // A sequência não depende de quantidade fixa de tópicos.
+    if (supabase && blocos.length > 0) {
+      try {
+        const disciplinaIds = Array.from(new Set(blocos.map((b) => b.disciplina_id).filter((id) => !id.startsWith("disc-"))));
+        if (disciplinaIds.length > 0) {
+          const { data: assuntosDb } = await supabase
+            .from("assuntos")
+            .select("id, disciplina_id, nome, ordem")
+            .in("disciplina_id", disciplinaIds)
+            .order("ordem", { ascending: true });
+
+          const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
+          for (const assunto of assuntosDb || []) {
+            const lista = assuntosPorDisciplina.get(assunto.disciplina_id) || [];
+            lista.push({ id: assunto.id, nome: assunto.nome });
+            assuntosPorDisciplina.set(assunto.disciplina_id, lista);
+          }
+
+          const cursor = new Map<string, number>();
+          blocos = blocos.map((bloco) => {
+            const lista = assuntosPorDisciplina.get(bloco.disciplina_id) || [];
+            if (lista.length === 0) return bloco;
+            const indice = cursor.get(bloco.disciplina_id) || 0;
+            const assunto = lista[indice % lista.length];
+            cursor.set(bloco.disciplina_id, indice + 1);
+            return { ...bloco, assunto_id: assunto.id, assunto_nome: assunto.nome };
+          });
+        }
+      } catch (err) {
+        console.warn("[MentoriaCicloService] Falha ao vincular assuntos do edital ao ciclo:", err);
+      }
+    }
 
     if (blocos.length === 0) {
       return { success: false, error: "Não foi possível gerar os blocos de estudo." };
@@ -661,6 +698,10 @@ export class MentoriaCicloService {
       versao: novaVersao,
       meta_semanal_minutos: metaSemanalMinutos,
       minutos_concluidos: 0,
+      ciclo_posicao_atual: 0,
+      ciclo_concluidos_contagem: 0,
+      prioridades_disciplinas: prioridades,
+      estrutura_ciclo: blocos,
       updated_at: agoraIso,
     };
 
@@ -686,7 +727,8 @@ export class MentoriaCicloService {
             ordem: b.ordem_bloco,
             tipo: b.tipo,
             disciplina_id: b.disciplina_id.startsWith("disc-") ? null : b.disciplina_id,
-            titulo: b.disciplina_nome,
+            assunto_id: b.assunto_id || null,
+            titulo: b.assunto_nome ? `${b.disciplina_nome} — ${b.assunto_nome}` : b.disciplina_nome,
             duracao_prevista_minutos: b.duracao_minutos,
             quantidade_questoes: b.quantidade_questoes_sugerida,
             prioridade: b.prioridade_nivel,
