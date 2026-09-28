@@ -27,17 +27,39 @@ export async function GET() {
       return NextResponse.json({ success: false, error: error.message }, { status: 500 });
     }
 
+    const questaoIds = Array.from(new Set((data || []).map((r) => r.questao_id).filter(Boolean)));
+    const { data: questoes } = questaoIds.length
+      ? await supabase
+          .from("questoes")
+          .select("id, disciplina_id, banca_nome")
+          .in("id", questaoIds)
+      : { data: [] as any[] };
+
+    const disciplinaIds = Array.from(new Set((questoes || []).map((q: any) => q.disciplina_id).filter(Boolean)));
+    const { data: disciplinas } = disciplinaIds.length
+      ? await supabase.from("disciplinas").select("id, nome").in("id", disciplinaIds)
+      : { data: [] as any[] };
+
+    const questaoMeta = new Map((questoes || []).map((q: any) => [q.id, q]));
+    const disciplinaMeta = new Map((disciplinas || []).map((d: any) => [d.id, d.nome]));
+
     return NextResponse.json({
       success: true,
-      respostas: (data || []).map((r) => ({
-        id: r.id,
-        usuario_id: user.id,
-        questao_id: r.questao_id,
-        alternativa_id: r.alternativa_id,
-        correta: Boolean(r.correta),
-        tempo_resposta: r.tempo_resposta_segundos || 0,
-        created_at: r.created_at,
-      })),
+      respostas: (data || []).map((r) => {
+        const q: any = questaoMeta.get(r.questao_id);
+        return {
+          id: r.id,
+          usuario_id: user.id,
+          questao_id: r.questao_id,
+          alternativa_id: r.alternativa_id,
+          correta: Boolean(r.correta),
+          tempo_resposta: r.tempo_resposta_segundos || 0,
+          disciplina_id: q?.disciplina_id || undefined,
+          disciplina_nome: q?.disciplina_id ? disciplinaMeta.get(q.disciplina_id) : undefined,
+          banca: q?.banca_nome || undefined,
+          created_at: r.created_at,
+        };
+      }),
     });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error?.message || "Erro interno" }, { status: 500 });
