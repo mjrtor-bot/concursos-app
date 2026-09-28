@@ -50,6 +50,7 @@ function QuestoesContent() {
 
     async function carregarTaxonomia() {
       try {
+        await DataService.sincronizarRespostasSupabase();
         const [resDisc, resAss] = await Promise.all([
           fetch("/api/disciplinas").catch(() => null),
           fetch("/api/assuntos").catch(() => null),
