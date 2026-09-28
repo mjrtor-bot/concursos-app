@@ -114,7 +114,7 @@ export default function MentoriaHojePage() {
   const podeConcluirBloco = Boolean(
     planoCiclo?.bloco_atual &&
     cronometroIniciado &&
-    (planoCiclo.bloco_atual.tipo !== "QUESTOES" || questoesRespondidas > 0)
+    segundosLiquidos > 0
   );
   const estadoBloco = !cronometroIniciado
     ? "NÃO INICIADO"
@@ -410,9 +410,6 @@ export default function MentoriaHojePage() {
     if (!cronometroIniciado) {
       return "Inicie o bloco antes de concluí-lo.";
     }
-    if (blocoAtual?.tipo === "QUESTOES" && questoesRespondidas < 1) {
-      return "Para concluir um bloco de questões, responda pelo menos 1 questão.";
-    }
     return null;
   }
 
@@ -426,9 +423,18 @@ export default function MentoriaHojePage() {
       return;
     }
 
+    const avisos: string[] = [];
     if (!atingiuTempoMinimo) {
+      avisos.push(
+        `Você estudou ${formatarMinutos(segundosLiquidos)}. A meta recomendada para este bloco é ${formatarMinutos(minimoNecessarioSegundos)} líquidos.`
+      );
+    }
+    if (planoCiclo.bloco_atual.tipo === "QUESTOES" && questoesRespondidas < 1) {
+      avisos.push("Você ainda não respondeu nenhuma questão neste bloco.");
+    }
+    if (avisos.length > 0) {
       const confirmou = window.confirm(
-        `Você estudou ${formatarMinutos(segundosLiquidos)}. A meta recomendada para este bloco é ${formatarMinutos(minimoNecessarioSegundos)} líquidos. Deseja finalizar mesmo assim? O tempo real será registrado.`
+        `${avisos.join("\n\n")}\n\nDeseja finalizar mesmo assim? O progresso real será registrado.`
       );
       if (!confirmou) return;
     }
@@ -789,7 +795,7 @@ export default function MentoriaHojePage() {
                     <p className="font-bold">Atenção para Conclusão Integral do Bloco de Questões:</p>
                     <p>
                       Você atingiu a meta de tempo líquido ({percentualConcluido}%), mas ainda não resolveu nenhuma questão abaixo.
-                      Para que a sessão seja registrada com status <strong>Concluída</strong>, resolva pelo menos 1 questão. Caso finalize agora sem questões, o status será registrado como <strong>Parcial</strong>.
+                      O recomendado é resolver pelo menos 1 questão antes de concluir. Se optar por finalizar agora, o sistema pedirá confirmação e registrará o progresso real.
                     </p>
                   </div>
                 </div>
