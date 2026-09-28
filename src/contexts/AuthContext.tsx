@@ -19,7 +19,6 @@ interface AuthContextType {
   isSupabaseConnected: boolean;
   login: (email: string, password: string) => Promise<AuthResult>;
   signup: (nome: string, email: string, password: string, concursoAlvoId?: string) => Promise<AuthResult>;
-  resendConfirmationEmail: (email: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<AuthResult>;
   updateUser: (updates: Partial<Profile>) => void;
@@ -255,7 +254,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               nome,
               concurso_alvo_id: concursoAlvoId ?? null,
             },
-            emailRedirectTo: `${origin}/auth/callback`,
           },
         });
 
@@ -263,14 +261,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const parsed = parseAuthError(error);
           console.error("[Auth] Erro no cadastro:", error.message);
           return { success: false, error: parsed.message, code: parsed.code };
-        }
-
-        // Se o Supabase exige confirmação de e-mail (data.user existe mas data.session é null)
-        if (data.user && !data.session) {
-          return {
-            success: true,
-            requiresEmailConfirmation: true,
-          };
         }
 
         if (data.session?.user) {
@@ -282,8 +272,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         return {
-          success: true,
-          requiresEmailConfirmation: true,
+          success: false,
+          error: "O cadastro foi criado, mas o Supabase não iniciou uma sessão. Desative Confirm email no Supabase Auth.",
+          code: "email_confirmation_still_enabled",
         };
       } catch (err: any) {
         const parsed = parseAuthError(err);
@@ -291,52 +282,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: false, error: parsed.message, code: parsed.code };
       } finally {
         setIsLoading(false);
-      }
-    },
-    []
-  );
-
-  // ── resendConfirmationEmail ───────────────────────────────────────────────
-  const resendConfirmationEmail = useCallback(
-    async (email: string): Promise<AuthResult> => {
-      if (!isSupabaseConfigured) {
-        return {
-          success: false,
-          error: "Supabase não configurado.",
-          code: "supabase_not_configured",
-        };
-      }
-
-      const supabase = createClient();
-      if (!supabase) {
-        return {
-          success: false,
-          error: "Cliente Supabase indisponível.",
-          code: "supabase_unavailable",
-        };
-      }
-
-      try {
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
-        const { error } = await supabase.auth.resend({
-          type: "signup",
-          email: email.trim(),
-          options: {
-            emailRedirectTo: `${origin}/auth/callback`,
-          },
-        });
-
-        if (error) {
-          const parsed = parseAuthError(error);
-          console.error("[Auth] Erro ao reenviar confirmação:", error.message);
-          return { success: false, error: parsed.message, code: parsed.code };
-        }
-
-        return { success: true };
-      } catch (err: any) {
-        const parsed = parseAuthError(err);
-        console.error("[Auth] Exceção ao reenviar confirmação:", err);
-        return { success: false, error: parsed.message, code: parsed.code };
       }
     },
     []
@@ -407,7 +352,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isSupabaseConnected: isSupabaseConfigured,
         login,
         signup,
-        resendConfirmationEmail,
         logout,
         resetPassword,
         updateUser,
