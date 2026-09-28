@@ -533,15 +533,47 @@ export class MentoriaCicloService {
 
         const { data: dbDiscs } = await queryDisciplinas;
         if (dbDiscs && dbDiscs.length > 0) {
+          // Consolida desempenho real já registrado por disciplina. O valor neutro
+          // 50/50 só é usado quando não existe diagnóstico nem histórico.
+          const desempenhoPorDisciplina = new Map<string, { respondidas: number; acertos: number }>();
+
+          try {
+            const { data: respostas } = await supabase
+              .from("respostas")
+              .select("correta, questoes!inner(disciplina_id)")
+              .eq("usuario_id", usuarioId)
+              .limit(5000);
+
+            for (const resposta of respostas || []) {
+              const relacao = resposta.questoes as unknown as { disciplina_id?: string } | { disciplina_id?: string }[] | null;
+              const disciplinaId = Array.isArray(relacao) ? relacao[0]?.disciplina_id : relacao?.disciplina_id;
+              if (!disciplinaId) continue;
+              const atual = desempenhoPorDisciplina.get(disciplinaId) || { respondidas: 0, acertos: 0 };
+              atual.respondidas += 1;
+              if (resposta.correta) atual.acertos += 1;
+              desempenhoPorDisciplina.set(disciplinaId, atual);
+            }
+          } catch (err) {
+            console.warn("[MentoriaCicloService] Falha ao consolidar desempenho por disciplina:", err);
+          }
+
           disciplinasInput = dbDiscs.map((d) => {
             const diag = diagnosticoPorDisciplina.get(d.id);
+            const desempenho = desempenhoPorDisciplina.get(d.id);
+            const taxaHistorica = desempenho && desempenho.respondidas > 0
+              ? Math.round((desempenho.acertos / desempenho.respondidas) * 100)
+              : null;
+
+            const scoreIndividual = diag?.score_final ?? taxaHistorica ?? 50;
+            const taxaIndividual = taxaHistorica ?? diag?.percentual_acerto ?? 50;
+
             return {
               disciplina_id: d.id,
               disciplina_nome: d.nome,
-              score_diagnostico: diag?.score_final ?? 50,
+              score_diagnostico: scoreIndividual,
               nivel_diagnostico: diag?.nivel_calculado ?? "intermediario",
               peso_base: 50,
-              taxa_acerto: diag?.percentual_acerto ?? 50,
+              taxa_acerto: taxaIndividual,
             };
           });
         }
