@@ -340,6 +340,11 @@ export default function MentoriaPlanoPage() {
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-50">
                 {planoCiclo.bloco_atual.disciplina_nome}
               </h2>
+              {planoCiclo.bloco_atual.assunto_nome && (
+                <p className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+                  Assunto: {planoCiclo.bloco_atual.assunto_nome}
+                </p>
+              )}
 
               <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400">
                 <span className="flex items-center gap-1">
@@ -430,6 +435,11 @@ export default function MentoriaPlanoPage() {
                   <p className="font-extrabold text-sm text-slate-900 dark:text-slate-100 line-clamp-1">
                     {bloco.disciplina_nome}
                   </p>
+                  {bloco.assunto_nome && (
+                    <p className="mt-1 text-[11px] font-medium text-indigo-600 dark:text-indigo-400 line-clamp-2">
+                      {bloco.assunto_nome}
+                    </p>
+                  )}
 
                   <div className="mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
                     <span className="flex items-center gap-1">
