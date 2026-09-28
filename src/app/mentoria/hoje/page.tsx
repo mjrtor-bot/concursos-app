@@ -113,7 +113,7 @@ export default function MentoriaHojePage() {
   const atingiuTempoMinimo = segundosLiquidos >= minimoNecessarioSegundos;
   const podeConcluirBloco = Boolean(
     planoCiclo?.bloco_atual &&
-    atingiuTempoMinimo &&
+    cronometroIniciado &&
     (planoCiclo.bloco_atual.tipo !== "QUESTOES" || questoesRespondidas > 0)
   );
   const estadoBloco = !cronometroIniciado
@@ -407,8 +407,8 @@ export default function MentoriaHojePage() {
   function getMensagemBloqueioConclusao() {
     const minimo = formatarMinutos(minimoNecessarioSegundos);
     const estudado = formatarMinutos(segundosLiquidos);
-    if (!atingiuTempoMinimo) {
-      return `Tempo mínimo para concluir este bloco: ${minimo} líquidos. Você estudou ${estudado}.`;
+    if (!cronometroIniciado) {
+      return "Inicie o bloco antes de concluí-lo.";
     }
     if (blocoAtual?.tipo === "QUESTOES" && questoesRespondidas < 1) {
       return "Para concluir um bloco de questões, responda pelo menos 1 questão.";
@@ -424,6 +424,13 @@ export default function MentoriaHojePage() {
     if (mensagemBloqueio) {
       window.alert(mensagemBloqueio);
       return;
+    }
+
+    if (!atingiuTempoMinimo) {
+      const confirmou = window.confirm(
+        `Você estudou ${formatarMinutos(segundosLiquidos)}. A meta recomendada para este bloco é ${formatarMinutos(minimoNecessarioSegundos)} líquidos. Deseja finalizar mesmo assim? O tempo real será registrado.`
+      );
+      if (!confirmou) return;
     }
 
     finalizacaoEmAndamentoRef.current = true;
