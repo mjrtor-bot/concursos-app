@@ -406,6 +406,48 @@ export class MentoriaCicloService {
             }));
           }
 
+          // Planos criados antes da inclusão de assuntos podem ter blocos sem
+          // assunto_id/assunto_nome. Enriquece o plano ativo com a taxonomia real
+          // do Supabase e persiste o snapshot corrigido para todas as telas usarem
+          // exatamente a mesma sequência.
+          if (blocos.length > 0 && blocos.some((b) => !b.assunto_id || !b.assunto_nome)) {
+            const disciplinaIds = Array.from(new Set(blocos.map((b) => b.disciplina_id).filter(Boolean)));
+            if (disciplinaIds.length > 0) {
+              const { data: assuntosDb } = await supabase
+                .from("assuntos")
+                .select("id, disciplina_id, nome, ordem")
+                .in("disciplina_id", disciplinaIds)
+                .order("ordem", { ascending: true });
+
+              const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
+              for (const assunto of assuntosDb || []) {
+                const lista = assuntosPorDisciplina.get(assunto.disciplina_id) || [];
+                lista.push({ id: assunto.id, nome: assunto.nome });
+                assuntosPorDisciplina.set(assunto.disciplina_id, lista);
+              }
+
+              const cursor = new Map<string, number>();
+              let alterado = false;
+              blocos = blocos.map((bloco) => {
+                if (bloco.assunto_id && bloco.assunto_nome) return bloco;
+                const lista = assuntosPorDisciplina.get(bloco.disciplina_id) || [];
+                if (lista.length === 0) return bloco;
+                const indice = cursor.get(bloco.disciplina_id) || 0;
+                const assunto = lista[indice % lista.length];
+                cursor.set(bloco.disciplina_id, indice + 1);
+                alterado = true;
+                return { ...bloco, assunto_id: assunto.id, assunto_nome: assunto.nome };
+              });
+
+              if (alterado) {
+                await supabase
+                  .from("mentoria_planos")
+                  .update({ estrutura_ciclo: blocos, updated_at: new Date().toISOString() })
+                  .eq("id", planoDb.id);
+              }
+            }
+          }
+
           if (blocos.length > 0) {
             // Verifica se há cache local com a posição atual e voltas
             const cached = this.obterPlanoLocal(usuarioId);
@@ -627,7 +669,7 @@ export class MentoriaCicloService {
     // A sequência não depende de quantidade fixa de tópicos.
     if (supabase && blocos.length > 0) {
       try {
-        const disciplinaIds = Array.from(new Set(blocos.map((b) => b.disciplina_id).filter((id) => !id.startsWith("disc-"))));
+        const disciplinaIds = Array.from(new Set(blocos.map((b) => b.disciplina_id).filter(Boolean)));
         if (disciplinaIds.length > 0) {
           const { data: assuntosDb } = await supabase
             .from("assuntos")

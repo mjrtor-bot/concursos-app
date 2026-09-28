@@ -680,6 +680,11 @@ export default function MentoriaHojePage() {
                   <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50">
                     {blocoAtual.disciplina_nome}
                   </h2>
+                  {blocoAtual.assunto_nome && (
+                    <p className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+                      Assunto: {blocoAtual.assunto_nome}
+                    </p>
+                  )}
                   <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400">
                     <Badge
                       variant={

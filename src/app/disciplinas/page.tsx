@@ -25,17 +25,29 @@ export default function DisciplinasPage() {
   const [stats, setStats] = useState<EstatisticasGerais | null>(null);
 
   useEffect(() => {
-    const discs = DataService.getDisciplinas();
-    const ass = DataService.getAssuntos();
-    const s = DataService.getEstatisticas();
-
-    setDisciplinas(discs);
-    setAssuntos(ass);
-    setStats(s);
-
-    if (discs.length > 0) {
-      setExpandedDiscId(discs[0].id);
+    async function carregarTaxonomia() {
+      try {
+        const [discRes, assRes] = await Promise.all([
+          fetch("/api/disciplinas", { cache: "no-store" }),
+          fetch("/api/assuntos", { cache: "no-store" }),
+        ]);
+        const [discJson, assJson] = await Promise.all([discRes.json(), assRes.json()]);
+        const discs: Disciplina[] = Array.isArray(discJson.disciplinas) ? discJson.disciplinas : [];
+        const ass: Assunto[] = Array.isArray(assJson.assuntos) ? assJson.assuntos : [];
+        setDisciplinas(discs);
+        setAssuntos(ass);
+        setStats(DataService.getEstatisticas());
+        if (discs.length > 0) setExpandedDiscId(discs[0].id);
+      } catch (error) {
+        console.error("Erro ao carregar taxonomia do Supabase:", error);
+        const discs = DataService.getDisciplinas();
+        setDisciplinas(discs);
+        setAssuntos(DataService.getAssuntos());
+        setStats(DataService.getEstatisticas());
+        if (discs.length > 0) setExpandedDiscId(discs[0].id);
+      }
     }
+    carregarTaxonomia();
   }, []);
 
   const toggleExpand = (id: string) => {
