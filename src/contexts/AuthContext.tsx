@@ -21,7 +21,7 @@ interface AuthContextType {
   signup: (nome: string, email: string, password: string, concursoAlvoId?: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<AuthResult>;
-  updateUser: (updates: Partial<Profile>) => void;
+  updateUser: (updates: Partial<Profile>) => Promise<AuthResult>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -339,9 +339,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // ── updateUser — atualiza apenas os metadados locais do perfil ────────────
-  const updateUser = useCallback((updates: Partial<Profile>) => {
-    setUser((prev) => (prev ? { ...prev, ...updates } : null));
+  // ── updateUser — Supabase é a fonte autoritativa do perfil autenticado ─────
+  const updateUser = useCallback(async (updates: Partial<Profile>): Promise<AuthResult> => {
+    const supabase = createClient();
+    if (!supabase) return { success: false, error: "Supabase indisponível.", code: "supabase_unavailable" };
+
+    const metadata: Record<string, unknown> = {};
+    if (updates.nome !== undefined) metadata.nome = updates.nome;
+    if (updates.concurso_alvo_id !== undefined) metadata.concurso_alvo_id = updates.concurso_alvo_id;
+    if (updates.meta_diaria_questoes !== undefined) metadata.meta_diaria_questoes = updates.meta_diaria_questoes;
+
+    const payload: { email?: string; data?: Record<string, unknown> } = {};
+    if (updates.email) payload.email = updates.email;
+    if (Object.keys(metadata).length) payload.data = metadata;
+
+    const { data, error } = await supabase.auth.updateUser(payload);
+    if (error) {
+      const parsed = parseAuthError(error);
+      return { success: false, error: parsed.message, code: parsed.code };
+    }
+    if (data.user) setUser(buildProfileFromSupabaseUser(data.user));
+    return { success: true };
   }, []);
 
   return (
