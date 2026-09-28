@@ -141,11 +141,23 @@ export async function GET(request: NextRequest) {
         }
       }
 
+      // Resolve a taxonomia real em lote; a UI não deve depender dos mocks para nomes.
+      const disciplinaIds = Array.from(new Set(rows.map((r: any) => r.disciplina_id).filter(Boolean)));
+      const assuntoIds = Array.from(new Set(rows.map((r: any) => r.assunto_id).filter(Boolean)));
+      const [discResult, assResult] = await Promise.all([
+        disciplinaIds.length ? supabase.from("disciplinas").select("id, nome").in("id", disciplinaIds) : Promise.resolve({ data: [] as any[] }),
+        assuntoIds.length ? supabase.from("assuntos").select("id, nome").in("id", assuntoIds) : Promise.resolve({ data: [] as any[] }),
+      ]);
+      const disciplinaNome = new Map((discResult.data || []).map((d: any) => [d.id, d.nome]));
+      const assuntoNome = new Map((assResult.data || []).map((a: any) => [a.id, a.nome]));
+
       // Remapeia para o formato do tipo Questao do frontend
       const questoes: Questao[] = rows.map((row: any) => ({
         id: row.id,
         disciplina_id: row.disciplina_id,
         assunto_id: row.assunto_id,
+        disciplina_nome: disciplinaNome.get(row.disciplina_id) || undefined,
+        assunto_nome: assuntoNome.get(row.assunto_id) || undefined,
         subassunto_id: row.subassunto_id ?? null,
         prova_id: row.prova_id ?? null,
         enunciado: row.enunciado,
