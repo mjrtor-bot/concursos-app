@@ -497,7 +497,62 @@ export class MentoriaCicloService {
       taxa_acerto?: number;
     }> = [];
 
-    if (diagnostico && diagnostico.disciplinas && diagnostico.disciplinas.length > 0) {
+    // O diagnóstico serve para PONTUAR as disciplinas, não para definir sozinho
+    // quais matérias pertencem ao ciclo. Antes, um diagnóstico parcial com duas
+    // matérias gerava um ciclo permanentemente restrito a essas duas matérias.
+    const diagnosticoPorDisciplina = new Map(
+      (diagnostico?.disciplinas || [])
+        .filter((d) => Boolean(d.disciplina_id))
+        .map((d) => [d.disciplina_id, d] as const)
+    );
+
+    if (supabase) {
+      try {
+        let idsAplicaveis: string[] = [];
+
+        // Quando há concurso selecionado, usa as disciplinas que realmente têm
+        // questões vinculadas a esse concurso. Assim o ciclo respeita o alvo do aluno.
+        if (perfil.concurso_id) {
+          const { data: questoesConcurso } = await supabase
+            .from("questoes")
+            .select("disciplina_id")
+            .eq("concurso_id", perfil.concurso_id)
+            .not("disciplina_id", "is", null)
+            .limit(5000);
+
+          idsAplicaveis = Array.from(
+            new Set((questoesConcurso || []).map((q) => q.disciplina_id).filter(Boolean))
+          );
+        }
+
+        // Sem vínculo suficiente com um concurso, usa a taxonomia cadastrada completa.
+        let queryDisciplinas = supabase.from("disciplinas").select("id, nome").order("ordem", { ascending: true });
+        if (idsAplicaveis.length > 0) {
+          queryDisciplinas = queryDisciplinas.in("id", idsAplicaveis);
+        }
+
+        const { data: dbDiscs } = await queryDisciplinas;
+        if (dbDiscs && dbDiscs.length > 0) {
+          disciplinasInput = dbDiscs.map((d) => {
+            const diag = diagnosticoPorDisciplina.get(d.id);
+            return {
+              disciplina_id: d.id,
+              disciplina_nome: d.nome,
+              score_diagnostico: diag?.score_final ?? 50,
+              nivel_diagnostico: diag?.nivel_calculado ?? "intermediario",
+              peso_base: 50,
+              taxa_acerto: diag?.percentual_acerto ?? 50,
+            };
+          });
+        }
+      } catch (err) {
+        console.warn("[MentoriaCicloService] Falha ao montar disciplinas aplicáveis ao ciclo:", err);
+      }
+    }
+
+    // Se a taxonomia remota estiver indisponível, preserva as disciplinas do
+    // diagnóstico como contingência antes de recorrer ao conjunto padrão.
+    if (disciplinasInput.length === 0 && diagnostico?.disciplinas?.length) {
       disciplinasInput = diagnostico.disciplinas.map((d, index) => ({
         disciplina_id: d.disciplina_id || `disc-${index}`,
         disciplina_nome: d.disciplina_nome,
@@ -506,35 +561,15 @@ export class MentoriaCicloService {
         peso_base: 50,
         taxa_acerto: d.percentual_acerto ?? 50,
       }));
-    } else {
-      // Se não concluiu diagnóstico, busca disciplinas do concurso/sistema
-      if (supabase) {
-        try {
-          const { data: dbDiscs } = await supabase.from("disciplinas").select("id, nome").limit(6);
-          if (dbDiscs && dbDiscs.length > 0) {
-            disciplinasInput = dbDiscs.map((d) => ({
-              disciplina_id: d.id,
-              disciplina_nome: d.nome,
-              score_diagnostico: 50,
-              nivel_diagnostico: "intermediario",
-              peso_base: 50,
-              taxa_acerto: 50,
-            }));
-          }
-        } catch {
-          // Ignore
-        }
-      }
+    }
 
-      // Fallback padrão se não houver disciplinas
-      if (disciplinasInput.length === 0) {
-        disciplinasInput = [
-          { disciplina_id: "disc-portugues", disciplina_nome: "Língua Portuguesa", score_diagnostico: 50, nivel_diagnostico: "intermediario", peso_base: 60, taxa_acerto: 50 },
-          { disciplina_id: "disc-const", disciplina_nome: "Direito Constitucional", score_diagnostico: 40, nivel_diagnostico: "basico", peso_base: 70, taxa_acerto: 45 },
-          { disciplina_id: "disc-admin", disciplina_nome: "Direito Administrativo", score_diagnostico: 45, nivel_diagnostico: "basico", peso_base: 70, taxa_acerto: 40 },
-          { disciplina_id: "disc-rlm", disciplina_nome: "Raciocínio Lógico", score_diagnostico: 35, nivel_diagnostico: "iniciante", peso_base: 50, taxa_acerto: 30 },
-        ];
-      }
+    if (disciplinasInput.length === 0) {
+      disciplinasInput = [
+        { disciplina_id: "disc-portugues", disciplina_nome: "Língua Portuguesa", score_diagnostico: 50, nivel_diagnostico: "intermediario", peso_base: 60, taxa_acerto: 50 },
+        { disciplina_id: "disc-const", disciplina_nome: "Direito Constitucional", score_diagnostico: 40, nivel_diagnostico: "basico", peso_base: 70, taxa_acerto: 45 },
+        { disciplina_id: "disc-admin", disciplina_nome: "Direito Administrativo", score_diagnostico: 45, nivel_diagnostico: "basico", peso_base: 70, taxa_acerto: 40 },
+        { disciplina_id: "disc-rlm", disciplina_nome: "Raciocínio Lógico", score_diagnostico: 35, nivel_diagnostico: "iniciante", peso_base: 50, taxa_acerto: 30 },
+      ];
     }
 
     const duracaoBlocoMinutos = perfil.duracao_bloco_minutos || 40;
