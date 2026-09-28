@@ -692,25 +692,7 @@ export class MentoriaService {
       }
     }
 
-    // Fallback local se estiver no navegador
-    if (typeof window !== "undefined" && (!supabase || questoesHoje === 0)) {
-      try {
-        const rawRespostas = localStorage.getItem("concursos_app_respostas");
-        if (rawRespostas) {
-          const locais = JSON.parse(rawRespostas);
-          if (Array.isArray(locais)) {
-            const respHoje = locais.filter((r) => r.created_at && r.created_at.startsWith(hojeIso));
-            if (respHoje.length > 0) {
-              questoesHoje = Math.max(questoesHoje, respHoje.length);
-              const tempoSeg = respHoje.reduce((acc, r) => acc + (r.tempo_resposta || 60), 0);
-              minutosLiquidosHoje = Math.max(minutosLiquidosHoje, Math.round(tempoSeg / 60));
-            }
-          }
-        }
-      } catch {
-        // Ignore
-      }
-    }
+
 
     const pctQuestoes = metaDiariaQuestoes > 0 ? Math.min(100, Math.round((questoesHoje / metaDiariaQuestoes) * 100)) : 0;
     const pctMinutos = metaDiariaMinutos > 0 ? Math.min(100, Math.round((minutosLiquidosHoje / metaDiariaMinutos) * 100)) : 0;
@@ -765,6 +747,8 @@ export class MentoriaService {
             ordem: b + 1,
             disciplina_id: blocoModelo.disciplina_id,
             disciplina_nome: blocoModelo.disciplina_nome,
+            assunto_id: blocoModelo.assunto_id,
+            assunto_nome: blocoModelo.assunto_nome,
             tipo: blocoModelo.tipo,
             duracao_minutos: duracaoBloco,
             prioridade_nivel: blocoModelo.prioridade_nivel,
@@ -846,6 +830,8 @@ export class MentoriaService {
         tipo: bloco.tipo,
         disciplina_id: bloco.disciplina_id,
         disciplina_nome: bloco.disciplina_nome,
+        assunto_id: bloco.assunto_id,
+        assunto_nome: bloco.assunto_nome,
         duracao_minutos: bloco.duracao_minutos,
         quantidade_questoes: bloco.quantidade_questoes_sugerida || 15,
         prioridade: bloco.prioridade_nivel,
