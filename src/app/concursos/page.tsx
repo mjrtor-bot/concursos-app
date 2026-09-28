@@ -161,24 +161,22 @@ export default function ConcursosPage() {
 
                   {/* Highlights Grid */}
                   <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl text-xs border border-slate-100 dark:border-slate-800">
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold">
-                        Vagas Totais
-                      </span>
-                      <p className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1">
-                        <Users className="w-3.5 h-3.5 text-blue-500" />
-                        {concurso.vagas_totais} vagas
-                      </p>
-                    </div>
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 uppercase font-semibold">
-                        Remuneração Até
-                      </span>
-                      <p className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                        <Award className="w-3.5 h-3.5" />
-                        R$ {concurso.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
+                    {concurso.vagas_totais > 0 && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">Vagas Totais</span>
+                        <p className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5 text-blue-500" />{concurso.vagas_totais} vagas
+                        </p>
+                      </div>
+                    )}
+                    {concurso.salario_max > 0 && (
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] text-slate-400 uppercase font-semibold">Remuneração Até</span>
+                        <p className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                          <Award className="w-3.5 h-3.5" />R$ {concurso.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                        </p>
+                      </div>
+                    )}
                     <div className="space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase font-semibold">
                         Escolaridade
@@ -195,7 +193,7 @@ export default function ConcursosPage() {
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
                         {concurso.data_prova
                           ? new Date(concurso.data_prova).toLocaleDateString("pt-BR")
-                          : "A definir"}
+                          : "Data a definir"}
                       </p>
                     </div>
                   </div>
