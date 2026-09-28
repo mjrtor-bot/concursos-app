@@ -197,6 +197,9 @@ export interface RespostaUsuario {
   correta: boolean;
   tempo_resposta: number; // in seconds
   questao_versao?: number;
+  disciplina_id?: string;
+  disciplina_nome?: string;
+  banca?: string;
   created_at: string;
 }
 
