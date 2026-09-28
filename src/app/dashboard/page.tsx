@@ -102,9 +102,9 @@ export default function DashboardPage() {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link href="/mentoria/hoje">
               <Button
+                variant="white"
                 size="md"
-                className="bg-white text-blue-900 hover:bg-blue-50 font-bold shadow-md"
-                leftIcon={<Play className="w-4 h-4 fill-blue-900" />}
+                leftIcon={<Play className="w-4 h-4 fill-blue-950 text-blue-950" />}
               >
                 Iniciar Missão de Hoje
               </Button>

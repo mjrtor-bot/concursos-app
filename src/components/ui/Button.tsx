@@ -6,7 +6,8 @@ export type ButtonVariant =
   | "outline"
   | "ghost"
   | "danger"
-  | "success";
+  | "success"
+  | "white";
 export type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -44,6 +45,8 @@ export function Button({
       "bg-rose-600 hover:bg-rose-700 text-white shadow-sm shadow-rose-500/20",
     success:
       "bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-500/20",
+    white:
+      "bg-white hover:bg-blue-50 text-blue-950 font-bold shadow-md border border-slate-200/50 hover:border-slate-300 focus:ring-2 focus:ring-white/80 dark:bg-white dark:hover:bg-slate-100 dark:text-blue-950",
   };
 
   const sizeStyles: Record<ButtonSize, string> = {

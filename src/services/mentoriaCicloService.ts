@@ -749,6 +749,8 @@ export class MentoriaCicloService {
           .from("mentoria_planos")
           .update({
             minutos_concluidos: novosMinutosConcluidos,
+            ciclo_posicao_atual: nova_posicao,
+            ciclo_concluidos_contagem: novasVoltas,
             updated_at: agoraIso,
           })
           .eq("id", planoAtual.plano_id)
@@ -786,6 +788,113 @@ export class MentoriaCicloService {
       status,
       nova_posicao,
       volta_completa,
+    };
+  }
+
+  /**
+   * Registra uma sessão parcial interrompida ("Encerrar sem concluir").
+   * Salva o tempo líquido no histórico de sessões e incrementa minutos estudados no plano,
+   * mas NUNCA avança o ciclo, NUNCA incrementa voltas e NUNCA marca a tarefa como concluída.
+   */
+  static async registrarSessaoParcial(
+    input: MentoriaRegistroSessaoInput
+  ): Promise<{
+    success: boolean;
+    status: "parcial";
+    nova_posicao: number;
+    volta_completa: boolean;
+  }> {
+    const duracaoPlanejadaMinutos =
+      input.duracao_planejada_minutos || input.duracao_prevista_minutos || 40;
+    const duracaoLiquidaSegundos =
+      input.duracao_liquida_segundos ?? input.segundos_liquidos ?? 0;
+    const pausasQtd = input.pausas_quantidade ?? input.pausas ?? 0;
+    const pausasSegundos = input.pausas_segundos_total ?? input.segundos_pausa ?? 0;
+    const blocoOrdem = input.bloco_ordem ?? input.bloco_numero ?? 1;
+    const questoesRespondidas = input.questoes_respondidas ?? input.questoes_feitas ?? 0;
+    const questoesAcertadas = input.questoes_acertadas ?? input.questoes_acertos ?? 0;
+
+    const supabase = this.getClient();
+    const agoraIso = new Date().toISOString();
+
+    // 1. Grava a sessão em mentoria_sessoes_estudo com status explicitamente parcial
+    if (supabase) {
+      try {
+        const sessaoPayload = {
+          usuario_id: input.usuario_id,
+          tarefa_id: input.tarefa_id && !input.tarefa_id.startsWith("bloco-") ? input.tarefa_id : null,
+          inicio: agoraIso,
+          fim: agoraIso,
+          segundos_liquidos: duracaoLiquidaSegundos,
+          pausas: pausasQtd,
+          segundos_pausa: pausasSegundos,
+          observacoes: JSON.stringify({
+            status: "parcial",
+            bloco_numero: blocoOrdem,
+            disciplina_id: input.disciplina_id,
+            disciplina_nome: input.disciplina_nome,
+            tipo: input.tipo || "TEORIA",
+            duracao_planejada_minutos: duracaoPlanejadaMinutos,
+            questoes_respondidas: questoesRespondidas,
+            questoes_acertadas: questoesAcertadas,
+            obs: input.observacoes || "Encerrado sem concluir",
+          }),
+        };
+
+        const { error: sessErr } = await supabase.from("mentoria_sessoes_estudo").insert(sessaoPayload);
+        if (sessErr) {
+          console.warn("[MentoriaCicloService] Erro ao gravar mentoria_sessoes_estudo parcial:", sessErr.message);
+        }
+      } catch (err) {
+        console.error("[MentoriaCicloService] Exceção ao gravar sessão parcial:", err);
+      }
+    }
+
+    // 2. Carrega plano atual para atualizar apenas minutos estudados
+    const planoAtual = await this.obterPlanoCiclo(input.usuario_id);
+    if (!planoAtual) {
+      return { success: true, status: "parcial", nova_posicao: 0, volta_completa: false };
+    }
+
+    const minutosAdicionados = Math.round(duracaoLiquidaSegundos / 60);
+    const novosMinutosConcluidos = planoAtual.minutos_concluidos + minutosAdicionados;
+    const posicaoMantida = planoAtual.posicao_atual_index;
+    const voltasMantidas = planoAtual.ciclo_concluidos_voltas;
+
+    // 3. Atualiza mentoria_planos (mantém posicao e contagem de voltas RIGOROSAMENTE inalteradas)
+    if (supabase && planoAtual.plano_id && !planoAtual.plano_id.startsWith("plano-ciclo-")) {
+      try {
+        await supabase
+          .from("mentoria_planos")
+          .update({
+            minutos_concluidos: novosMinutosConcluidos,
+            ciclo_posicao_atual: posicaoMantida,
+            ciclo_concluidos_contagem: voltasMantidas,
+            updated_at: agoraIso,
+          })
+          .eq("id", planoAtual.plano_id)
+          .eq("usuario_id", input.usuario_id);
+      } catch (err) {
+        console.error("[MentoriaCicloService] Erro ao atualizar minutos no plano:", err);
+      }
+    }
+
+    // Atualiza objeto em memória e cache local mantendo o mesmo bloco
+    planoAtual.posicao_atual_index = posicaoMantida;
+    planoAtual.ciclo_concluidos_voltas = voltasMantidas;
+    planoAtual.minutos_concluidos = novosMinutosConcluidos;
+    planoAtual.bloco_atual = planoAtual.blocos[posicaoMantida] || null;
+    planoAtual.proximo_bloco =
+      planoAtual.blocos[(posicaoMantida + 1) % planoAtual.total_blocos_ciclo] || null;
+    planoAtual.blocos_restantes_na_volta = Math.max(0, planoAtual.total_blocos_ciclo - posicaoMantida);
+
+    this.salvarPlanoLocal(input.usuario_id, planoAtual);
+
+    return {
+      success: true,
+      status: "parcial",
+      nova_posicao: posicaoMantida,
+      volta_completa: false,
     };
   }
 

@@ -39,7 +39,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   const { user } = useAuth();
   const { concursoAtivo, diasAteAProva } = useConcurso();
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
-  const [sequenciaDias, setSequenciaDias] = useState(1);
+  const [sequenciaDias, setSequenciaDias] = useState(0);
   const [questoesHoje, setQuestoesHoje] = useState(0);
   const [isMentoriaOpen, setIsMentoriaOpen] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
@@ -76,8 +76,8 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   useEffect(() => {
     try {
       const stats = DataService.getEstatisticas();
-      setSequenciaDias(stats.sequencia_dias || 1);
-      setQuestoesHoje(stats.questoes_hoje || 0);
+      setSequenciaDias(stats.sequencia_dias ?? 0);
+      setQuestoesHoje(stats.questoes_hoje ?? 0);
     } catch {
       // Fallback gracioso
     }
@@ -402,7 +402,11 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
             </div>
             <div className="min-w-0">
               <p className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                {sequenciaDias} {sequenciaDias === 1 ? "Dia de Foco! 🔥" : "Dias Seguidos! 🔥"}
+                {sequenciaDias === 0
+                  ? "0 Dias de Foco"
+                  : sequenciaDias === 1
+                  ? "1 Dia de Foco! 🔥"
+                  : `${sequenciaDias} Dias Seguidos! 🔥`}
               </p>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 {questoesHoje > 0

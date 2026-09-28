@@ -99,6 +99,34 @@ export default function MentoriaHojePage() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const finalizacaoEmAndamentoRef = useRef(false);
+
+  const blocoStorageKey = user && planoCiclo?.bloco_atual
+    ? `concursos_app_missao_diaria_sessao_${user.id}_${planoCiclo.plano_id}_${planoCiclo.bloco_atual.id}`
+    : null;
+  const duracaoPlanejadaSegundos = (planoCiclo?.bloco_atual?.duracao_minutos || 40) * 60;
+  const minimoNecessarioSegundos = Math.ceil(duracaoPlanejadaSegundos * 0.7);
+  const percentualConcluido = Math.min(
+    100,
+    Math.floor((segundosLiquidos / duracaoPlanejadaSegundos) * 100)
+  );
+  const atingiuTempoMinimo = segundosLiquidos >= minimoNecessarioSegundos;
+  const podeConcluirBloco = Boolean(
+    planoCiclo?.bloco_atual &&
+    atingiuTempoMinimo &&
+    (planoCiclo.bloco_atual.tipo !== "QUESTOES" || questoesRespondidas > 0)
+  );
+  const estadoBloco = !cronometroIniciado
+    ? "NÃO INICIADO"
+    : cronometroAtivo
+    ? "EM EXECUÇÃO"
+    : "PAUSADO";
+
+  const formatarMinutos = (segundos: number) => {
+    const minutos = Math.floor(segundos / 60);
+    const resto = segundos % 60;
+    return resto === 0 ? `${minutos} min` : `${minutos}min ${String(resto).padStart(2, "0")}s`;
+  };
 
   // Carregamento inicial do perfil e ciclo
   useEffect(() => {
@@ -184,6 +212,77 @@ export default function MentoriaHojePage() {
     carregarDadosBloco();
   }, [user, planoCiclo?.bloco_atual?.id, planoCiclo?.bloco_atual?.disciplina_id, perfil?.nivel_calculado]);
 
+  useEffect(() => {
+    if (!blocoStorageKey || typeof window === "undefined") return;
+    try {
+      const raw = localStorage.getItem(blocoStorageKey);
+      if (!raw) return;
+      const sessao = JSON.parse(raw) as {
+        cronometroIniciado?: boolean;
+        cronometroAtivo?: boolean;
+        segundosLiquidos?: number;
+        pausasContador?: number;
+        segundosPausaTotal?: number;
+        tempoInicioSessao?: string | null;
+        questoesRespondidas?: number;
+        questoesAcertadas?: number;
+        observacoesSessao?: string;
+        anotacoesTeoria?: string;
+        updatedAt?: string;
+      };
+
+      setCronometroIniciado(Boolean(sessao.cronometroIniciado));
+      // Restaura a sessão como PAUSADA ao recarregar/reabrir; usuário clica em Continuar para prosseguir
+      setCronometroAtivo(false);
+      setSegundosLiquidos(Math.max(0, sessao.segundosLiquidos || 0));
+      setPausasContador(sessao.pausasContador || 0);
+      setSegundosPausaTotal(sessao.segundosPausaTotal || 0);
+      setTempoInicioSessao(sessao.tempoInicioSessao || null);
+      setQuestoesRespondidas(sessao.questoesRespondidas || 0);
+      setQuestoesAcertadas(sessao.questoesAcertadas || 0);
+      setObservacoesSessao(sessao.observacoesSessao || "");
+      setAnotacoesTeoria(sessao.anotacoesTeoria || "");
+    } catch {
+      // Ignora sessão local corrompida.
+    }
+  }, [blocoStorageKey]);
+
+  useEffect(() => {
+    if (!blocoStorageKey || typeof window === "undefined" || !cronometroIniciado) return;
+    try {
+      localStorage.setItem(
+        blocoStorageKey,
+        JSON.stringify({
+          cronometroIniciado,
+          cronometroAtivo,
+          segundosLiquidos,
+          pausasContador,
+          segundosPausaTotal,
+          tempoInicioSessao,
+          questoesRespondidas,
+          questoesAcertadas,
+          observacoesSessao,
+          anotacoesTeoria,
+          updatedAt: new Date().toISOString(),
+        })
+      );
+    } catch {
+      // Ignore falhas de persistência local.
+    }
+  }, [
+    blocoStorageKey,
+    cronometroIniciado,
+    cronometroAtivo,
+    segundosLiquidos,
+    pausasContador,
+    segundosPausaTotal,
+    tempoInicioSessao,
+    questoesRespondidas,
+    questoesAcertadas,
+    observacoesSessao,
+    anotacoesTeoria,
+  ]);
+
   // Cronômetro de tempo líquido ativo
   useEffect(() => {
     if (cronometroAtivo) {
@@ -225,6 +324,15 @@ export default function MentoriaHojePage() {
     setPausasContador((prev) => prev + 1);
   }
 
+  function limparSessaoLocal() {
+    if (!blocoStorageKey || typeof window === "undefined") return;
+    try {
+      localStorage.removeItem(blocoStorageKey);
+    } catch {
+      // Ignore
+    }
+  }
+
   function handleZerar() {
     setCronometroAtivo(false);
     setCronometroIniciado(false);
@@ -233,6 +341,7 @@ export default function MentoriaHojePage() {
     setSegundosPausaTotal(0);
     setTempoInicioSessao(null);
     setHistoricoRespostasSessao(new Map());
+    limparSessaoLocal();
   }
 
   // Resolução de questão no bloco
@@ -295,11 +404,31 @@ export default function MentoriaHojePage() {
     }
   }
 
+  function getMensagemBloqueioConclusao() {
+    const minimo = formatarMinutos(minimoNecessarioSegundos);
+    const estudado = formatarMinutos(segundosLiquidos);
+    if (!atingiuTempoMinimo) {
+      return `Tempo mínimo para concluir este bloco: ${minimo} líquidos. Você estudou ${estudado}.`;
+    }
+    if (blocoAtual?.tipo === "QUESTOES" && questoesRespondidas < 1) {
+      return "Para concluir um bloco de questões, responda pelo menos 1 questão.";
+    }
+    return null;
+  }
+
   // Conclusão e Avanço do Bloco
   async function handleFinalizarSessao() {
-    if (!user || !planoCiclo || !planoCiclo.bloco_atual) return;
+    if (!user || !planoCiclo || !planoCiclo.bloco_atual || finalizacaoEmAndamentoRef.current) return;
 
+    const mensagemBloqueio = getMensagemBloqueioConclusao();
+    if (mensagemBloqueio) {
+      window.alert(mensagemBloqueio);
+      return;
+    }
+
+    finalizacaoEmAndamentoRef.current = true;
     setFinalizando(true);
+    setCronometroAtivo(false);
     try {
       const bloco = planoCiclo.bloco_atual;
       const res = await MentoriaCicloService.registrarSessaoConcluida({
@@ -344,6 +473,58 @@ export default function MentoriaHojePage() {
     } catch (err) {
       console.error("Erro ao registrar sessão concluída:", err);
     } finally {
+      finalizacaoEmAndamentoRef.current = false;
+      setFinalizando(false);
+    }
+  }
+
+  async function handleEncerrarSemConcluir() {
+    if (!user || !planoCiclo || !planoCiclo.bloco_atual || finalizacaoEmAndamentoRef.current) return;
+
+    finalizacaoEmAndamentoRef.current = true;
+    setFinalizando(true);
+    setCronometroAtivo(false);
+    try {
+      const bloco = planoCiclo.bloco_atual;
+      const res = await MentoriaCicloService.registrarSessaoParcial({
+        usuario_id: user.id,
+        plano_id: planoCiclo.plano_id,
+        tarefa_id: bloco.id,
+        disciplina_id: bloco.disciplina_id,
+        disciplina_nome: bloco.disciplina_nome,
+        bloco_ordem: bloco.ordem_bloco,
+        tipo: bloco.tipo,
+        duracao_planejada_minutos: bloco.duracao_minutos,
+        duracao_liquida_segundos: segundosLiquidos,
+        questoes_respondidas: questoesRespondidas,
+        questoes_acertadas: questoesAcertadas,
+        pausas_quantidade: pausasContador,
+        pausas_segundos_total: segundosPausaTotal,
+        observacoes: anotacoesTeoria
+          ? `[Encerrado sem concluir]\n${observacoesSessao}\n[Anotações]: ${anotacoesTeoria}`
+          : `[Encerrado sem concluir]\n${observacoesSessao}`,
+      });
+
+      if (res.success) {
+        setResultadoUltimaSessao({
+          status: "parcial",
+          volta_completa: false,
+          minutos_estudados: Math.round(segundosLiquidos / 60),
+          disciplina_nome: bloco.disciplina_nome,
+        });
+        const planoAtualizado = await MentoriaCicloService.obterPlanoCiclo(user.id);
+        if (planoAtualizado) setPlanoCiclo(planoAtualizado);
+        handleZerar();
+        setQuestoesRespondidas(0);
+        setQuestoesAcertadas(0);
+        setObservacoesSessao("");
+        setAnotacoesTeoria("");
+        setAnotacoesSalvas(false);
+      }
+    } catch (err) {
+      console.error("Erro ao encerrar sessão sem concluir:", err);
+    } finally {
+      finalizacaoEmAndamentoRef.current = false;
       setFinalizando(false);
     }
   }
@@ -372,14 +553,8 @@ export default function MentoriaHojePage() {
   }
 
   const blocoAtual = planoCiclo?.bloco_atual;
-  const duracaoPlanejadaSegundos = (blocoAtual?.duracao_minutos || 40) * 60;
-  const percentualConcluido = Math.min(
-    100,
-    Math.round((segundosLiquidos / duracaoPlanejadaSegundos) * 100)
-  );
 
   // Validação pedagógica de dupla condição (tempo >= 70% E questões >= 1 para blocos de questões)
-  const atingiuTempoMinimo = percentualConcluido >= 70;
   const blocoQuestoesSemResolucao =
     blocoAtual?.tipo === "QUESTOES" && atingiuTempoMinimo && questoesRespondidas === 0;
 
@@ -542,8 +717,14 @@ export default function MentoriaHojePage() {
                     {formatarTempo(segundosLiquidos)}
                   </p>
                   <p className="text-xs text-slate-400">
-                    Progresso do bloco: {percentualConcluido}% ({Math.round(segundosLiquidos / 60)} de {blocoAtual.duracao_minutos} min)
+                    Tempo planejado: {blocoAtual.duracao_minutos} min • Mínimo 70%: {formatarMinutos(minimoNecessarioSegundos)} • Realizado: {percentualConcluido}%
                   </p>
+                  <p className="text-xs font-bold text-slate-300">
+                    Estado do bloco: {estadoBloco}
+                  </p>
+                  {atingiuTempoMinimo && (
+                    <p className="text-xs font-black text-emerald-300">Tempo mínimo atingido</p>
+                  )}
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -575,18 +756,20 @@ export default function MentoriaHojePage() {
                       disabled={finalizando || segundosLiquidos === 0}
                       className="w-full sm:w-auto font-bold border-slate-700 text-white hover:bg-slate-800"
                     >
-                      {finalizando ? "Registrando..." : "Finalizar & Avançar"}
+                      {finalizando ? "Registrando..." : "Finalizar Bloco"}
                     </Button>
                   )}
 
-                  {segundosLiquidos > 0 && !cronometroAtivo && (
-                    <button
-                      onClick={handleZerar}
-                      title="Zerar cronômetro"
-                      className="p-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+                  {cronometroIniciado && (
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      onClick={handleEncerrarSemConcluir}
+                      disabled={finalizando}
+                      className="w-full sm:w-auto font-bold border-rose-700 text-rose-100 hover:bg-rose-950/40"
                     >
-                      <RotateCw className="w-4 h-4" />
-                    </button>
+                      Encerrar sem concluir
+                    </Button>
                   )}
                 </div>
               </div>
@@ -607,7 +790,13 @@ export default function MentoriaHojePage() {
 
               {/* Métricas ao Vivo da Sessão */}
               {cronometroIniciado && (
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs">
+                <>
+                  {!podeConcluirBloco && getMensagemBloqueioConclusao() && (
+                    <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-xl text-xs font-semibold text-amber-900 dark:text-amber-200">
+                      {getMensagemBloqueioConclusao()}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2 text-xs">
                   <div className="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800">
                     <span className="block text-slate-500 font-bold mb-1">Questões Resolvidas</span>
                     <span className="text-lg font-black text-slate-900 dark:text-slate-100">
@@ -634,7 +823,8 @@ export default function MentoriaHojePage() {
                       {pausasContador} ({Math.round(segundosPausaTotal / 60)} min)
                     </span>
                   </div>
-                </div>
+                  </div>
+                </>
               )}
 
               {/* Motivo de Explicabilidade do Bloco */}
