@@ -680,12 +680,10 @@ export class MentoriaCicloService {
     const questoesRespondidas = input.questoes_respondidas ?? input.questoes_feitas ?? 0;
     const questoesAcertadas = input.questoes_acertadas ?? input.questoes_acertos ?? 0;
 
-    const status = this.determinarStatusSessao(
-      duracaoPlanejadaMinutos,
-      duracaoLiquidaSegundos,
-      input.tipo,
-      questoesRespondidas
-    );
+    // Esta rotina representa uma conclusão explicitamente confirmada pelo usuário.
+    // O limiar de 70% continua útil como recomendação na UI, mas não deve
+    // reclassificar uma conclusão confirmada como parcial.
+    const status: MentoriaCicloStatusSessao = "concluida";
 
     const supabase = this.getClient();
     const agoraIso = new Date().toISOString();
@@ -729,8 +727,8 @@ export class MentoriaCicloService {
       return { success: true, status, nova_posicao: 0, volta_completa: false };
     }
 
-    // Regra: Somente avança o ponteiro se a sessão foi concluída (>= 70% do tempo)
-    const deveAvancar = status === "concluida";
+    // Uma chamada a registrarSessaoConcluida é uma conclusão confirmada e sempre avança.
+    const deveAvancar = true;
     const { nova_posicao, volta_completa } = deveAvancar
       ? this.avancarPosicaoCiclo(
           planoAtual.posicao_atual_index,
