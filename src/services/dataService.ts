@@ -335,6 +335,34 @@ export const DataService = {
   },
 
   // ── Respostas do Usuário ──
+  // Sincroniza o cache de leitura com a fonte autoritativa (Supabase).
+  // Para usuário autenticado, localStorage é somente cache descartável.
+  async sincronizarRespostasSupabase(): Promise<RespostaUsuario[]> {
+    if (typeof window === "undefined") return [];
+    try {
+      const res = await fetch("/api/questoes/resposta", { method: "GET", cache: "no-store" });
+      if (res.status === 401) return this.getRespostas();
+      if (!res.ok) throw new Error(`Falha ao sincronizar respostas: ${res.status}`);
+      const json = await res.json();
+      const respostas = Array.isArray(json.respostas) ? json.respostas : [];
+      setToStorage(STORAGE_KEYS.RESPOSTAS, respostas);
+
+      // Nunca manter identidade/perfil demonstrativo em sessão autenticada.
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const profile = getFromStorage<Profile | null>(STORAGE_KEYS.PROFILE, null);
+        if (profile && (profile.id === "user-demo-1" || /Alexandre Silva/i.test(String((profile as any).nome || "")))) {
+          window.localStorage.removeItem(STORAGE_KEYS.PROFILE);
+        }
+      }
+      return respostas;
+    } catch (err) {
+      console.warn("[DataService] Não foi possível sincronizar respostas:", err);
+      return this.getRespostas();
+    }
+  },
+
   getRespostas(): RespostaUsuario[] {
     return getFromStorage<RespostaUsuario[]>(STORAGE_KEYS.RESPOSTAS, []);
   },
