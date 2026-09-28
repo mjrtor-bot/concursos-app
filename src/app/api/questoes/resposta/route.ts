@@ -2,6 +2,48 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 
+export async function GET() {
+  try {
+    if (!isSupabaseConfigured) {
+      return NextResponse.json({ success: false, error: "Supabase não configurado" }, { status: 503 });
+    }
+    const supabase = await createClientServer();
+    if (!supabase) {
+      return NextResponse.json({ success: false, error: "Supabase indisponível" }, { status: 503 });
+    }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ success: false, error: "Não autenticado" }, { status: 401 });
+    }
+
+    const { data, error } = await supabase
+      .from("respostas_usuarios")
+      .select("id, usuario_id, questao_id, alternativa_id, correta, tempo_resposta_segundos, created_at")
+      .eq("usuario_id", user.id)
+      .order("created_at", { ascending: true })
+      .limit(5000);
+
+    if (error) {
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      respostas: (data || []).map((r) => ({
+        id: r.id,
+        usuario_id: user.id,
+        questao_id: r.questao_id,
+        alternativa_id: r.alternativa_id,
+        correta: Boolean(r.correta),
+        tempo_resposta: r.tempo_resposta_segundos || 0,
+        created_at: r.created_at,
+      })),
+    });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error?.message || "Erro interno" }, { status: 500 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     if (!isSupabaseConfigured) {
@@ -19,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       // Usuário não autenticado - permitido responder offline no cliente
-      return NextResponse.json({ success: true, saved: false, reason: "unauthenticated" });
+      return NextResponse.json({ success: false, saved: false, reason: "unauthenticated" }, { status: 401 });
     }
 
     const body = await request.json();
