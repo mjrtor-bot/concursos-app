@@ -724,47 +724,60 @@ export const DataService = {
       (r) => r.created_at && r.created_at.startsWith(hojeStr)
     ).length;
 
-    // Per discipline
+    // Estatísticas por disciplina e banca usam primeiro os metadados retornados
+    // pelo Supabase junto das respostas. O catálogo local fica apenas como fallback offline.
     const todasQuestoes = this.getTodasQuestoes();
     const disciplinas = this.getDisciplinas();
-    const porDisciplina = disciplinas
-      .map((disc) => {
-        const questoesDisc = todasQuestoes.filter((q) => q.disciplina_id === disc.id);
-        const questoesIds = new Set(questoesDisc.map((q) => q.id));
-        const respostasDisc = respostas.filter((r) => questoesIds.has(r.questao_id));
+    const respostaMeta = (r: RespostaUsuario) => {
+      if (r.disciplina_id || r.banca) return r;
+      const q = todasQuestoes.find((item) => item.id === r.questao_id);
+      return {
+        ...r,
+        disciplina_id: q?.disciplina_id,
+        disciplina_nome: q ? disciplinas.find((d) => d.id === q.disciplina_id)?.nome : undefined,
+        banca: q?.banca,
+      };
+    };
+    const respostasComMeta = respostas.map(respostaMeta);
 
-        const total = respostasDisc.length;
-        const acertos = respostasDisc.filter((r) => r.correta).length;
-        const erros = total - acertos;
-        const percentual = total > 0 ? Math.round((acertos / total) * 100) : 0;
-        const tempoDisc = respostasDisc.reduce(
-          (acc, r) => acc + (r.tempo_resposta || 0),
-          0
-        );
+    const disciplinasMap = new Map<string, { nome: string; cor?: string }>();
+    disciplinas.forEach((d) => disciplinasMap.set(d.id, { nome: d.nome, cor: d.cor }));
+    respostasComMeta.forEach((r) => {
+      if (r.disciplina_id && !disciplinasMap.has(r.disciplina_id)) {
+        disciplinasMap.set(r.disciplina_id, { nome: r.disciplina_nome || "Disciplina" });
+      }
+    });
 
-        return {
-          disciplina_id: disc.id,
-          disciplina_nome: disc.nome,
-          disciplina_cor: disc.cor,
-          total,
-          acertos,
-          erros,
-          percentual,
-          tempo_medio_segundos: total > 0 ? Math.round(tempoDisc / total) : 0,
-        };
-      })
-      .filter((d) => d.total > 0 || true); // Include all disciplines for radar/charts
-
-    // Per Banca
-    const bancas = ["FGV", "Cebraspe (CESPE)", "FundaÃ§Ã£o Cesgranrio", "FundaÃ§Ã£o Vunesp", "FCC - FundaÃ§Ã£o Carlos Chagas"];
-    const porBanca = bancas.map((banca) => {
-      const questoesBanca = todasQuestoes.filter((q) => q.banca === banca);
-      const qIds = new Set(questoesBanca.map((q) => q.id));
-      const respostasBanca = respostas.filter((r) => qIds.has(r.questao_id));
-      const total = respostasBanca.length;
-      const acertos = respostasBanca.filter((r) => r.correta).length;
+    const porDisciplina = Array.from(disciplinasMap.entries()).map(([id, meta]) => {
+      const respostasDisc = respostasComMeta.filter((r) => r.disciplina_id === id);
+      const total = respostasDisc.length;
+      const acertos = respostasDisc.filter((r) => r.correta).length;
+      const erros = total - acertos;
       const percentual = total > 0 ? Math.round((acertos / total) * 100) : 0;
-      return { banca, total, acertos, percentual };
+      const tempoDisc = respostasDisc.reduce((acc, r) => acc + (r.tempo_resposta || 0), 0);
+      return {
+        disciplina_id: id,
+        disciplina_nome: meta.nome,
+        disciplina_cor: meta.cor || "#3b82f6",
+        total,
+        acertos,
+        erros,
+        percentual,
+        tempo_medio_segundos: total > 0 ? Math.round(tempoDisc / total) : 0,
+      };
+    });
+
+    const bancasMap = new Map<string, RespostaUsuario[]>();
+    respostasComMeta.forEach((r) => {
+      if (!r.banca) return;
+      const lista = bancasMap.get(r.banca) || [];
+      lista.push(r);
+      bancasMap.set(r.banca, lista);
+    });
+    const porBanca = Array.from(bancasMap.entries()).map(([banca, lista]) => {
+      const total = lista.length;
+      const acertos = lista.filter((r) => r.correta).length;
+      return { banca, total, acertos, percentual: total > 0 ? Math.round((acertos / total) * 100) : 0 };
     });
 
     // Recent 7 days history
