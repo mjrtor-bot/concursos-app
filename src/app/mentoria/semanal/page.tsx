@@ -466,6 +466,11 @@ export default function PlanejamentoSemanalPage() {
                           >
                             {bloco.disciplina_nome}
                           </div>
+                          {bloco.assunto_nome && (
+                            <div className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 line-clamp-2" title={bloco.assunto_nome}>
+                              {bloco.assunto_nome}
+                            </div>
+                          )}
 
                           <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60">
                             {getPrioridadeBadge(bloco.prioridade_nivel)}
