@@ -166,6 +166,8 @@ export interface Questao {
   cargo?: string | null;
   disciplina?: Disciplina | string;
   assunto?: Assunto | string;
+  disciplina_nome?: string;
+  assunto_nome?: string;
   explicacao: string;
   texto_apoio?: string | null;
   taxa_acerto_comunidade?: number;
