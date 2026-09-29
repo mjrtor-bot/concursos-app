@@ -46,19 +46,17 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function carregar() {
-      const s = DataService.getEstatisticas();
-      setStats(s);
-
-      const todas = DataService.getQuestoes();
-      setQuestoesRecentes(todas.slice(0, 3));
-
       if (user) {
         try {
           setLoadingPlanejamento(true);
-          const [mList, met] = await Promise.all([
+          const [, taxonomia, mList, met] = await Promise.all([
+            DataService.sincronizarRespostasSupabase(),
+            DataService.carregarDisciplinasTaxonomia(),
             MentoriaService.getMissoesDoDia(user.id),
             MentoriaService.getMetasEstudo(user.id),
           ]);
+          setStats(DataService.getEstatisticas(taxonomia.disciplinas));
+          setQuestoesRecentes(DataService.getQuestoes().slice(0, 3));
           setMissoes(mList);
           setMetas(met);
         } catch (err) {
@@ -66,6 +64,9 @@ export default function DashboardPage() {
         } finally {
           setLoadingPlanejamento(false);
         }
+      } else {
+        setStats(DataService.getEstatisticas());
+        setQuestoesRecentes(DataService.getQuestoes().slice(0, 3));
       }
     }
     carregar();
