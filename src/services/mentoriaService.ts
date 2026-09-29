@@ -876,174 +876,146 @@ export class MentoriaService {
   // ── 8. EDITAL VERTICALIZADO E MATRIZ DE DOMÍNIO DE TÓPICOS ─────────────────
   static async getEditalVerticalizado(usuarioId: string): Promise<EditalVerticalizadoResumo> {
     const supabase = this.getClient();
-
-    // 1. Buscar status salvo de tópicos, respostas e taxonomia dinâmica
     let topicosSalvos: MentoriaEditalTopico[] = [];
     let respostasUsuario: { assunto_id: string; correta: boolean; created_at: string }[] = [];
-    let disciplinasFonte: Disciplina[] = DISCIPLINAS_MASSIVAS;
-    let assuntosFonte: Assunto[] = ASSUNTOS_MASSIVOS;
 
-    if (supabase) {
-      try {
-        const [resDisc, resAss, resTopicos, resRespostas] = await Promise.all([
-          supabase.from("disciplinas").select("*").order("ordem", { ascending: true }),
-          supabase.from("assuntos").select("*").order("ordem", { ascending: true }),
-          usuarioId
-            ? supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId)
-            : Promise.resolve({ data: [] as MentoriaEditalTopico[] }),
-          usuarioId
-            ? supabase
-                .from("respostas_usuarios")
-                .select("assunto_id, correta, created_at")
-                .eq("usuario_id", usuarioId)
-            : Promise.resolve({ data: [] as { assunto_id: string; correta: boolean; created_at: string }[] }),
-        ]);
+    // Sem backend, preserva somente o cache do próprio usuário; não exibe
+    // taxonomia genérica como se fosse o edital oficial selecionado.
+    if (!supabase) {
+      topicosSalvos = usuarioId
+        ? this.getFromStorage<MentoriaEditalTopico[]>(`${STORAGE_KEYS.TOPICOS}_${usuarioId}`, [])
+        : [];
+      return {
+        total_topicos: 0,
+        topicos_estudados: 0,
+        topicos_dominados: 0,
+        percentual_conclusao: 0,
+        taxa_acerto_global: 0,
+        disciplinas: [],
+      };
+    }
 
-        if (resDisc.data && resDisc.data.length > 0) {
-          disciplinasFonte = resDisc.data as Disciplina[];
-        }
-        if (resAss.data && resAss.data.length > 0) {
-          assuntosFonte = resAss.data as Assunto[];
-        }
-        if (resTopicos.data) topicosSalvos = resTopicos.data as MentoriaEditalTopico[];
-        if (resRespostas.data) {
-          respostasUsuario = resRespostas.data as {
-            assunto_id: string;
-            correta: boolean;
-            created_at: string;
-          }[];
-        }
-      } catch (err) {
-        console.error("Erro ao buscar dados do edital verticalizado no Supabase:", err);
+    try {
+      const { data: alvo } = await supabase
+        .from("usuario_concurso_alvo")
+        .select("edital_id")
+        .eq("usuario_id", usuarioId)
+        .maybeSingle();
+
+      if (!alvo?.edital_id) {
+        return { total_topicos: 0, topicos_estudados: 0, topicos_dominados: 0, percentual_conclusao: 0, taxa_acerto_global: 0, disciplinas: [] };
       }
-    }
 
-    // Se estiver offline ou sem Supabase, pegar do localStorage
-    if (topicosSalvos.length === 0 && usuarioId) {
-      topicosSalvos = this.getFromStorage<MentoriaEditalTopico[]>(`${STORAGE_KEYS.TOPICOS}_${usuarioId}`, []);
-    }
+      const [resTopicosEdital, resTopicosSalvos, resRespostas] = await Promise.all([
+        supabase
+          .from("edital_topicos")
+          .select("disciplina_id, assunto_id, peso, incidencia, ordem, disciplinas(id,nome), assuntos(id,nome)")
+          .eq("edital_id", alvo.edital_id)
+          .order("ordem", { ascending: true }),
+        supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
+        supabase.from("respostas_usuarios").select("assunto_id, correta, created_at").eq("usuario_id", usuarioId),
+      ]);
 
-    // 2. Mapear estatísticas por assunto
-    const statsPorAssunto = new Map<string, { total: number; acertos: number; ultimaData?: string }>();
-    for (const r of respostasUsuario) {
-      if (!r.assunto_id) continue;
-      const cur = statsPorAssunto.get(r.assunto_id) || { total: 0, acertos: 0 };
-      cur.total += 1;
-      if (r.correta) cur.acertos += 1;
-      if (!cur.ultimaData || (r.created_at && r.created_at > cur.ultimaData)) {
-        cur.ultimaData = r.created_at;
+      if (resTopicosEdital.error) throw resTopicosEdital.error;
+      topicosSalvos = (resTopicosSalvos.data || []) as MentoriaEditalTopico[];
+      respostasUsuario = (resRespostas.data || []) as { assunto_id: string; correta: boolean; created_at: string }[];
+
+      const statsPorAssunto = new Map<string, { total: number; acertos: number; ultimaData?: string }>();
+      for (const r of respostasUsuario) {
+        if (!r.assunto_id) continue;
+        const cur = statsPorAssunto.get(r.assunto_id) || { total: 0, acertos: 0 };
+        cur.total += 1;
+        if (r.correta) cur.acertos += 1;
+        if (!cur.ultimaData || (r.created_at && r.created_at > cur.ultimaData)) cur.ultimaData = r.created_at;
+        statsPorAssunto.set(r.assunto_id, cur);
       }
-      statsPorAssunto.set(r.assunto_id, cur);
-    }
 
-    const mapaTopicosSalvos = new Map<string, MentoriaEditalTopico>();
-    for (const t of topicosSalvos) {
-      mapaTopicosSalvos.set(t.assunto_id, t);
-    }
+      const mapaSalvos = new Map(topicosSalvos.map((t) => [t.assunto_id, t]));
+      const grupos = new Map<string, { nome: string; topicos: EditalVerticalizadoItem[] }>();
 
-    // 3. Montar matriz agrupada por disciplina
-    let totalTopicosGeral = 0;
-    let topicosEstudadosGeral = 0;
-    let topicosDominadosGeral = 0;
-    let totalQuestoesGeral = 0;
-    let totalAcertosGeral = 0;
+      for (const row of resTopicosEdital.data || []) {
+        const dRel = row.disciplinas as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
+        const aRel = row.assuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
+        const disc = Array.isArray(dRel) ? dRel[0] : dRel;
+        const assunto = Array.isArray(aRel) ? aRel[0] : aRel;
+        if (!row.disciplina_id || !row.assunto_id || !disc?.nome || !assunto?.nome) continue;
 
-    const disciplinasAgrupadas = disciplinasFonte.map((disc) => {
-      const assuntosDaDisc = assuntosFonte.filter((a) => a.disciplina_id === disc.id).sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
-
-      let estudadosNaDisc = 0;
-      let dominadosNaDisc = 0;
-      let totalQuestoesDisc = 0;
-      let totalAcertosDisc = 0;
-
-      const topicos: EditalVerticalizadoItem[] = assuntosDaDisc.map((assunto) => {
-        totalTopicosGeral++;
-        const salvo = mapaTopicosSalvos.get(assunto.id);
-        const stats = statsPorAssunto.get(assunto.id) || { total: 0, acertos: 0 };
-
-        totalQuestoesGeral += stats.total;
-        totalAcertosGeral += stats.acertos;
-        totalQuestoesDisc += stats.total;
-        totalAcertosDisc += stats.acertos;
-
-        const taxaAcerto = stats.total > 0 ? Math.round((stats.acertos / stats.total) * 100) : 0;
-
-        // Determinar status: priorizar manual, senão inferir por questões
+        const salvo = mapaSalvos.get(row.assunto_id);
+        const stats = statsPorAssunto.get(row.assunto_id) || { total: 0, acertos: 0 };
+        const taxa = stats.total > 0 ? Math.round((stats.acertos / stats.total) * 100) : 0;
         let status: "nao_iniciado" | "estudando" | "revisando" | "dominado" = "nao_iniciado";
         let estudado = false;
-        let percentualDominio = 0;
-
+        let dominio = 0;
         if (salvo) {
           status = salvo.status;
           estudado = salvo.estudado || salvo.status !== "nao_iniciado";
-          percentualDominio = salvo.percentual_dominio || (status === "dominado" ? 100 : taxaAcerto);
-        } else if (stats.total >= 15 && taxaAcerto >= 80) {
-          status = "dominado";
-          estudado = true;
-          percentualDominio = Math.min(100, taxaAcerto);
+          dominio = salvo.percentual_dominio || (status === "dominado" ? 100 : taxa);
+        } else if (stats.total >= 15 && taxa >= 80) {
+          status = "dominado"; estudado = true; dominio = Math.min(100, taxa);
         } else if (stats.total >= 5) {
-          status = "revisando";
-          estudado = true;
-          percentualDominio = Math.min(80, Math.round(taxaAcerto * 0.8));
+          status = "revisando"; estudado = true; dominio = Math.min(80, Math.round(taxa * 0.8));
         } else if (stats.total > 0) {
-          status = "estudando";
-          estudado = true;
-          percentualDominio = Math.min(50, Math.round((stats.total / 10) * 50));
+          status = "estudando"; estudado = true; dominio = Math.min(50, Math.round((stats.total / 10) * 50));
         }
 
-        if (estudado || status !== "nao_iniciado") {
-          estudadosNaDisc++;
-          topicosEstudadosGeral++;
-        }
-        if (status === "dominado") {
-          dominadosNaDisc++;
-          topicosDominadosGeral++;
-        }
+        const pesoNum = typeof row.peso === "number" ? row.peso : 50;
+        const peso: "baixo" | "medio" | "alto" | "critico" =
+          pesoNum >= 85 ? "critico" : pesoNum >= 65 ? "alto" : pesoNum >= 35 ? "medio" : "baixo";
 
-        return {
-          id: salvo?.id || `topico-${disc.id}-${assunto.id}`,
-          disciplina_id: disc.id,
+        const item: EditalVerticalizadoItem = {
+          id: salvo?.id || `topico-${row.disciplina_id}-${row.assunto_id}`,
+          disciplina_id: row.disciplina_id,
           disciplina_nome: disc.nome,
-          assunto_id: assunto.id,
+          assunto_id: row.assunto_id,
           assunto_nome: assunto.nome,
-          peso: (salvo?.peso || "medio") as "baixo" | "medio" | "alto" | "critico",
-          incidencia_percentual: salvo?.incidencia || Math.max(5, Math.min(25, (assuntosDaDisc.length > 0 ? Math.round(100 / assuntosDaDisc.length) : 10))),
+          peso,
+          incidencia_percentual: typeof row.incidencia === "number" ? row.incidencia : 0,
           estudado,
           status,
-          percentual_dominio: percentualDominio,
+          percentual_dominio: dominio,
           questoes_respondidas: stats.total,
           questoes_acertadas: stats.acertos,
-          taxa_acerto: taxaAcerto,
+          taxa_acerto: taxa,
           ultima_atividade: stats.ultimaData || salvo?.updated_at || null,
+        };
+
+        const grupo = grupos.get(row.disciplina_id) || { nome: disc.nome, topicos: [] };
+        // Evita duplicidade do mesmo assunto dentro do mesmo edital.
+        if (!grupo.topicos.some((t) => t.assunto_id === row.assunto_id)) grupo.topicos.push(item);
+        grupos.set(row.disciplina_id, grupo);
+      }
+
+      let total = 0, estudados = 0, dominados = 0, questoes = 0, acertos = 0;
+      const disciplinas = Array.from(grupos.entries()).map(([disciplina_id, g]) => {
+        const e = g.topicos.filter((t) => t.estudado).length;
+        const d = g.topicos.filter((t) => t.status === "dominado").length;
+        const q = g.topicos.reduce((n, t) => n + t.questoes_respondidas, 0);
+        const ac = g.topicos.reduce((n, t) => n + t.questoes_acertadas, 0);
+        total += g.topicos.length; estudados += e; dominados += d; questoes += q; acertos += ac;
+        return {
+          disciplina_id,
+          disciplina_nome: g.nome,
+          total_topicos: g.topicos.length,
+          topicos_estudados: e,
+          topicos_dominados: d,
+          percentual_conclusao: g.topicos.length ? Math.round((e / g.topicos.length) * 100) : 0,
+          taxa_acerto_media: q ? Math.round((ac / q) * 100) : 0,
+          topicos: g.topicos,
         };
       });
 
-      const percConclusaoDisc = assuntosDaDisc.length > 0 ? Math.round((estudadosNaDisc / assuntosDaDisc.length) * 100) : 0;
-      const taxaAcertoMediaDisc = totalQuestoesDisc > 0 ? Math.round((totalAcertosDisc / totalQuestoesDisc) * 100) : 0;
-
       return {
-        disciplina_id: disc.id,
-        disciplina_nome: disc.nome,
-        total_topicos: assuntosDaDisc.length,
-        topicos_estudados: estudadosNaDisc,
-        topicos_dominados: dominadosNaDisc,
-        percentual_conclusao: percConclusaoDisc,
-        taxa_acerto_media: taxaAcertoMediaDisc,
-        topicos,
+        total_topicos: total,
+        topicos_estudados: estudados,
+        topicos_dominados: dominados,
+        percentual_conclusao: total ? Math.round((estudados / total) * 100) : 0,
+        taxa_acerto_global: questoes ? Math.round((acertos / questoes) * 100) : 0,
+        disciplinas,
       };
-    });
-
-    const percentualConclusaoGeral = totalTopicosGeral > 0 ? Math.round((topicosEstudadosGeral / totalTopicosGeral) * 100) : 0;
-    const taxaAcertoGlobal = totalQuestoesGeral > 0 ? Math.round((totalAcertosGeral / totalQuestoesGeral) * 100) : 0;
-
-    return {
-      total_topicos: totalTopicosGeral,
-      topicos_estudados: topicosEstudadosGeral,
-      topicos_dominados: topicosDominadosGeral,
-      percentual_conclusao: percentualConclusaoGeral,
-      taxa_acerto_global: taxaAcertoGlobal,
-      disciplinas: disciplinasAgrupadas,
-    };
+    } catch (err) {
+      console.error("[MentoriaService] Erro ao carregar edital verticalizado oficial:", err);
+      return { total_topicos: 0, topicos_estudados: 0, topicos_dominados: 0, percentual_conclusao: 0, taxa_acerto_global: 0, disciplinas: [] };
+    }
   }
 
   static async atualizarTopicoStatus(
