@@ -151,6 +151,12 @@ export default function AdminQuestoesPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          <Link href="/admin/conteudos">
+            <Button variant="outline" className="flex items-center gap-2 text-xs font-semibold">
+              <BookOpen className="w-4 h-4 text-blue-600" />
+              Conteúdo por Assunto
+            </Button>
+          </Link>
           <Link href="/admin/usuarios">
             <Button variant="outline" className="flex items-center gap-2 text-xs font-semibold">
               <ShieldCheck className="w-4 h-4 text-purple-600" />
