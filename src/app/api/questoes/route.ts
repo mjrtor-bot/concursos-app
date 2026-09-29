@@ -38,12 +38,13 @@ export async function GET(request: NextRequest) {
           banca_nome, orgao_nome, cargo_nome, ano, tipo, dificuldade,
           enunciado, texto_apoio, explicacao,
           is_autoral_ia, modelo_ia, prompt_versao, revisada_por_especialista,
-          anulada, desatualizada, motivo_desatualizacao, versao,
+          anulada, desatualizada, motivo_desatualizacao, auditoria_status, auditoria_motivo, auditada_em, versao,
           fingerprint_hash, total_respostas, total_acertos, taxa_acerto,
           created_at, updated_at
         `,
           { count: "exact" }
         )
+        .neq("auditoria_status", "irrecuperavel")
         .order("created_at", { ascending: false });
 
       // Filtros
@@ -185,6 +186,9 @@ export async function GET(request: NextRequest) {
         anulada: row.anulada,
         desatualizada: row.desatualizada,
         motivo_desatualizacao: row.motivo_desatualizacao ?? null,
+        auditoria_status: row.auditoria_status ?? "pendente",
+        auditoria_motivo: row.auditoria_motivo ?? null,
+        auditada_em: row.auditada_em ?? null,
         versao: row.versao,
         fingerprint_hash: row.fingerprint_hash,
         created_at: row.created_at,

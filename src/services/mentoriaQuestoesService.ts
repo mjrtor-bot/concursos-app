@@ -263,6 +263,10 @@ export class MentoriaQuestoesService {
             is_autoral_ia,
             anulada,
             desatualizada,
+            auditoria_status,
+            banca_nome,
+            orgao_nome,
+            cargo_nome,
             disciplina_id,
             assunto_id,
             subassunto_id,
@@ -279,7 +283,8 @@ export class MentoriaQuestoesService {
           `
           )
           .eq("anulada", false)
-          .eq("desatualizada", false);
+          .eq("desatualizada", false)
+          .neq("auditoria_status", "irrecuperavel");
 
         if (disciplinaId && !disciplinaId.startsWith("disc-")) {
           query = query.eq("disciplina_id", disciplinaId);
@@ -302,12 +307,13 @@ export class MentoriaQuestoesService {
             is_autoral_ia: Boolean(q.is_autoral_ia),
             anulada: Boolean(q.anulada),
             desatualizada: Boolean(q.desatualizada),
+            auditoria_status: q.auditoria_status || "pendente",
             disciplina_id: q.disciplina_id,
             assunto_id: q.assunto_id,
             subassunto_id: q.subassunto_id,
-            banca: "Banca Oficial",
-            orgao: "Órgão Oficial",
-            cargo: "Cargo",
+            banca: q.banca_nome || "",
+            orgao: q.is_autoral_ia ? "" : (q.orgao_nome || ""),
+            cargo: q.is_autoral_ia ? undefined : (q.cargo_nome || undefined),
             disciplina: disciplinaNome || "Disciplina",
             assunto: "Assunto",
             created_at: q.created_at || new Date().toISOString(),
@@ -329,7 +335,7 @@ export class MentoriaQuestoesService {
     if (questoesCandidatas.length === 0) {
       const todas = DataService.getTodasQuestoes();
       questoesCandidatas = todas.filter((q) => {
-        if (q.anulada || q.desatualizada) return false;
+        if (q.anulada || q.desatualizada || q.auditoria_status === "irrecuperavel") return false;
         if (disciplinaId && q.disciplina_id !== disciplinaId) return false;
         if (assuntoId && q.assunto_id !== assuntoId) return false;
         return true;
@@ -339,7 +345,7 @@ export class MentoriaQuestoesService {
     // Se ainda estiver vazio e disciplinaId tiver slug/prefixo genérico
     if (questoesCandidatas.length === 0) {
       const todas = DataService.getTodasQuestoes();
-      questoesCandidatas = todas.filter((q) => !q.anulada && !q.desatualizada);
+      questoesCandidatas = todas.filter((q) => !q.anulada && !q.desatualizada && q.auditoria_status !== "irrecuperavel");
     }
 
     // 2. Obter Histórico de Respostas do Usuário
