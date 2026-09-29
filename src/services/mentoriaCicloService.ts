@@ -825,6 +825,12 @@ export class MentoriaCicloService {
   static async registrarSessaoConcluida(
     input: MentoriaRegistroSessaoInput
   ): Promise<{
+    success: boolean;
+    status: MentoriaCicloStatusSessao;
+    nova_posicao: number;
+    volta_completa: boolean;
+    error?: string;
+  }> {
     // Um plano pausado pode ser consultado, mas não deve avançar o ciclo.
     const supabaseConfig = this.getClient();
     if (supabaseConfig) {
@@ -832,13 +838,6 @@ export class MentoriaCicloService {
       if (cfg?.pausado) return { success:false, status:"abandonada", nova_posicao:0, volta_completa:false, error:"Plano pausado. Retome o plano antes de concluir um bloco." };
       if (cfg?.data_final && cfg.data_final < new Date().toISOString().slice(0,10)) return { success:false, status:"abandonada", nova_posicao:0, volta_completa:false, error:"A data final configurada para o plano já passou. Ajuste a data em Configurar." };
     }
-
-    success: boolean;
-    status: MentoriaCicloStatusSessao;
-    nova_posicao: number;
-    volta_completa: boolean;
-    error?: string;
-  }> {
     if (!input.usuario_id || !input.plano_id) {
       return { success: false, status: "abandonada", nova_posicao: 0, volta_completa: false, error: "Dados incompletos." };
     }
@@ -884,6 +883,11 @@ export class MentoriaCicloService {
         };
 
         const { error: sessErr } = await supabase.from("mentoria_sessoes_estudo").insert(sessaoPayload);
+        if (!sessErr) {
+          const xpTempo = Math.max(5, Math.round(duracaoLiquidaSegundos / 60));
+          const xpQuestoes = Math.min(50, questoesRespondidas * 2 + questoesAcertadas);
+          await supabase.rpc("registrar_xp", { p_tipo: "sessao_concluida", p_xp: xpTempo + xpQuestoes, p_referencia_id: input.tarefa_id || `${input.plano_id}:${blocoOrdem}:${agoraIso.slice(0,10)}` });
+        }
         if (sessErr) {
           console.warn("[MentoriaCicloService] Erro ao gravar mentoria_sessoes_estudo:", sessErr.message);
         }
