@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClientServer } from "@/lib/supabase/server";
 
 const DOIS_ANOS_MS = 2 * 365 * 24 * 60 * 60 * 1000;
 
 export async function GET(request: Request) {
-  const supabase = await createClient();
+  const supabase = await createClientServer();
+  if (!supabase) return NextResponse.json({ error: "Supabase não configurado" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
 
