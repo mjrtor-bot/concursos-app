@@ -33,14 +33,18 @@ export default function PerfilPage() {
     }
   }, [user]);
 
-  const handleSalvarPerfil = (e: React.FormEvent) => {
+  const handleSalvarPerfil = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser({
-      nome,
-      email,
+    const resultado = await updateUser({
+      nome: nome.trim(),
+      email: email.trim(),
       meta_diaria_questoes: Number(metaDiaria),
     });
-    success("Perfil e preferências atualizados com sucesso!");
+    if (resultado.success) {
+      success("Perfil e preferências atualizados com sucesso!");
+    } else {
+      info(resultado.error || "Não foi possível atualizar o perfil.");
+    }
   };
 
 
