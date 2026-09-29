@@ -107,6 +107,9 @@ function buildProfileFromSupabaseUser(supabaseUser: {
     concurso_alvo_id:
       (supabaseUser.user_metadata?.concurso_alvo_id as string | undefined) ||
       undefined,
+    cargo_alvo_id:
+      (supabaseUser.user_metadata?.cargo_alvo_id as string | undefined) ||
+      undefined,
     meta_diaria_questoes:
       (supabaseUser.user_metadata?.meta_diaria_questoes as number | undefined) ||
       30,
@@ -350,6 +353,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const metadata: Record<string, unknown> = {};
     if (updates.nome !== undefined) metadata.nome = updates.nome;
     if (updates.concurso_alvo_id !== undefined) metadata.concurso_alvo_id = updates.concurso_alvo_id;
+    if (updates.cargo_alvo_id !== undefined) metadata.cargo_alvo_id = updates.cargo_alvo_id;
     if (updates.meta_diaria_questoes !== undefined) metadata.meta_diaria_questoes = updates.meta_diaria_questoes;
 
     const payload: { email?: string; data?: Record<string, unknown> } = {};
