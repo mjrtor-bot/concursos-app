@@ -55,6 +55,11 @@ export default function ConfigurarMentoriaPage() {
   const [duracaoBloco, setDuracaoBloco] = useState(40);
   const [questoesBloco, setQuestoesBloco] = useState(15);
   const [perfilConcursoId, setPerfilConcursoId] = useState<string | null>(null);
+  const [materiasSimultaneas,setMateriasSimultaneas]=useState(3);
+  const [velocidade,setVelocidade]=useState("normal");
+  const [etapas,setEtapas]=useState<string[]>(["estudo","resumo","revisao","exercicio"]);
+  const [dataFinal,setDataFinal]=useState("");
+  const [planoPausado,setPlanoPausado]=useState(false);
 
   // Estados da Grade de Disponibilidade Semanal (minutos por dia)
   const [grade, setGrade] = useState<{ dia_semana: number; minutos_disponiveis: number; horario_preferido?: MentoriaHorario }[]>([
@@ -75,10 +80,12 @@ export default function ConfigurarMentoriaPage() {
         return;
       }
       try {
-        const [perfil, disp] = await Promise.all([
+        const [perfil, disp, configResp] = await Promise.all([
           MentoriaService.getPerfil(user.id),
           MentoriaService.getDisponibilidade(user.id),
+          fetch("/api/mentoria/config-plano",{cache:"no-store"}).then(r=>r.ok?r.json():null),
         ]);
+        if(configResp?.config){const c=configResp.config;setMateriasSimultaneas(c.materias_simultaneas||3);setVelocidade(c.velocidade||"normal");setEtapas(c.etapas||["estudo","resumo","revisao","exercicio"]);setDataFinal(c.data_final||"");setPlanoPausado(Boolean(c.pausado));}
 
         if (perfil) {
           setPerfilConcursoId(perfil.concurso_id || null);
@@ -188,6 +195,8 @@ export default function ConfigurarMentoriaPage() {
       );
 
       if (res.success) {
+        const configSave=await fetch("/api/mentoria/config-plano",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({materias_simultaneas:materiasSimultaneas,velocidade,etapas,data_final:dataFinal||null,pausado:planoPausado})});
+        if(!configSave.ok) throw new Error("Perfil salvo, mas falhou ao salvar configurações avançadas.");
         setMensagemSucesso("Perfil e Grade de Disponibilidade salvos com sucesso!");
         setTimeout(() => {
           router.push("/mentoria");
@@ -421,7 +430,9 @@ export default function ConfigurarMentoriaPage() {
           </CardContent>
         </Card>
 
-        {/* SEÇÃO 3: GRADE SEMANAL DE DISPONIBILIDADE */}
+        <Card className="border-slate-200 dark:border-slate-800"><CardHeader><CardTitle className="text-base font-bold">3. Configuração avançada do plano</CardTitle></CardHeader><CardContent className="space-y-5"><div className="grid sm:grid-cols-3 gap-4"><label className="text-xs font-bold">Matérias por vez<input type="number" min={1} max={20} value={materiasSimultaneas} onChange={e=>setMateriasSimultaneas(Number(e.target.value))} className="mt-2 w-full px-3 py-2 rounded-xl border bg-transparent"/></label><label className="text-xs font-bold">Velocidade<select value={velocidade} onChange={e=>setVelocidade(e.target.value)} className="mt-2 w-full px-3 py-2 rounded-xl border bg-transparent"><option value="leve">Leve</option><option value="normal">Normal</option><option value="intensiva">Intensiva</option></select></label><label className="text-xs font-bold">Terminar até<input type="date" value={dataFinal} onChange={e=>setDataFinal(e.target.value)} className="mt-2 w-full px-3 py-2 rounded-xl border bg-transparent"/></label></div><div><p className="text-xs font-bold mb-2">Etapas ativas</p><div className="flex flex-wrap gap-3">{["estudo","resumo","revisao","exercicio"].map(x=><label key={x} className="text-sm flex gap-2 items-center"><input type="checkbox" checked={etapas.includes(x)} onChange={e=>setEtapas(v=>e.target.checked?[...v,x]:v.filter(y=>y!==x))}/>{x[0].toUpperCase()+x.slice(1)}</label>)}</div></div><label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={planoPausado} onChange={e=>setPlanoPausado(e.target.checked)}/>Pausar geração/avanço do plano</label></CardContent></Card>
+
+        {/* SEÇÃO 4: GRADE SEMANAL DE DISPONIBILIDADE */}
         <Card className="border-slate-200 dark:border-slate-800">
           <CardHeader>
             <CardTitle className="text-base font-bold flex items-center justify-between">
