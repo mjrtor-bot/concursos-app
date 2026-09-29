@@ -22,6 +22,9 @@ import {
   Zap,
   Calendar,
   Layers,
+  Trophy,
+  PlusCircle,
+  MessageSquare,
   X,
 } from "lucide-react";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -111,6 +114,11 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       label: "Edital Verticalizado",
       icon: BookOpen,
     },
+    {
+      href: "/mentoria/comunicacao",
+      label: "Mural & Inbox",
+      icon: MessageSquare,
+    },
   ];
 
   const otherNavItems = [
@@ -128,6 +136,16 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       href: "/questoes",
       label: "Banco de Questões",
       icon: CheckSquare2,
+    },
+    {
+      href: "/questoes/externas",
+      label: "Questões Externas",
+      icon: PlusCircle,
+    },
+    {
+      href: "/ranking",
+      label: "Ranking & XP",
+      icon: Trophy,
     },
     {
       href: "/caderno-de-erros",

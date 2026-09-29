@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   Timer,
   Sliders,
+  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
@@ -37,6 +38,10 @@ export default function PlanejamentoSemanalPage() {
   const [loading, setLoading] = useState(true);
   const [semanaOffset, setSemanaOffset] = useState<number>(0);
   const [agora, setAgora] = useState<Date | null>(null);
+  const [calendario, setCalendario] = useState<{ tarefas:any[]; atrasadas:number; previsao_termino:string|null }>({ tarefas:[], atrasadas:0, previsao_termino:null });
+  const [replanejando, setReplanejando] = useState(false);
+  const [arrastandoId, setArrastandoId] = useState<string | null>(null);
+  const [movendoMeta, setMovendoMeta] = useState(false);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setAgora(new Date()));
@@ -51,12 +56,14 @@ export default function PlanejamentoSemanalPage() {
       }
       try {
         setLoading(true);
-        const [grade, st] = await Promise.all([
+        const [grade, st, cal] = await Promise.all([
           MentoriaService.getGradeSemanalDistribuida(user.id),
           MentoriaService.getDashboardStats(user.id),
+          fetch("/api/mentoria/calendario", { cache: "no-store" }).then(r => r.ok ? r.json() : { tarefas:[], atrasadas:0, previsao_termino:null }),
         ]);
         setGradeSemanal(grade);
         setStats(st);
+        setCalendario(cal);
       } catch (err) {
         console.error("Erro ao carregar planejamento semanal:", err);
       } finally {
@@ -65,6 +72,41 @@ export default function PlanejamentoSemanalPage() {
     }
     carregarDados();
   }, [user]);
+
+  const dataISO = (d: Date) => {
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  };
+
+  async function moverMeta(tarefaId: string, destino: Date) {
+    if (movendoMeta) return;
+    setMovendoMeta(true);
+    try {
+      const r=await fetch("/api/mentoria/calendario",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({tarefa_id:tarefaId,data_planejada:dataISO(destino),ordem_dia:1})});
+      if(!r.ok) throw new Error("Falha ao mover meta");
+      const cal=await fetch("/api/mentoria/calendario",{cache:"no-store"}).then(x=>x.json());
+      setCalendario(cal);
+    } catch(err) { console.error("Erro ao mover meta:",err); }
+    finally { setMovendoMeta(false); setArrastandoId(null); }
+  }
+
+  async function replanejarAtrasos() {
+    setReplanejando(true);
+    try {
+      const r = await fetch("/api/mentoria/calendario", { method: "POST" });
+      if (!r.ok) throw new Error("Falha ao replanejar");
+      const cal = await fetch("/api/mentoria/calendario", { cache: "no-store" }).then(x => x.json());
+      setCalendario(cal);
+    } catch (err) { console.error("Erro ao replanejar atrasos:", err); }
+    finally { setReplanejando(false); }
+  }
+
+  const diasAtraso = (data?: string) => {
+    if (!data || !agora) return 0;
+    const alvo = new Date(data + "T00:00:00");
+    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+    return Math.max(0, Math.floor((hoje.getTime() - alvo.getTime()) / 86400000));
+  };
 
   // Cálculos de datas reais da semana selecionada (Domingo a Sábado)
   const getDatasDaSemana = (offsetSemanas: number, hoje: Date) => {
@@ -250,6 +292,16 @@ export default function PlanejamentoSemanalPage() {
         </div>
       </div>
 
+      {calendario.atrasadas > 0 && (
+        <Card className="border-amber-300 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/20">
+          <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3"><AlertTriangle className="w-5 h-5 text-amber-600" /><div><p className="text-sm font-bold">{calendario.atrasadas} meta{calendario.atrasadas === 1 ? "" : "s"} atrasada{calendario.atrasadas === 1 ? "" : "s"}</p><p className="text-xs text-slate-600 dark:text-slate-400">Replaneje as pendências sem perder o progresso já concluído.</p></div></div>
+            <Button size="sm" onClick={replanejarAtrasos} disabled={replanejando}>{replanejando ? "Replanejando..." : "Replanejar atrasos"}</Button>
+          </CardContent>
+        </Card>
+      )}
+      {calendario.previsao_termino && <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">Previsão atual de término: {new Date(calendario.previsao_termino + "T00:00:00").toLocaleDateString("pt-BR")}</p>}
+
       {/* 2. Banner Pedagógico de Fila Contínua (Desacoplamento de Atrasos) */}
       <div className="p-4 bg-gradient-to-r from-blue-50 via-indigo-50/50 to-blue-50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-blue-950/30 border border-blue-200/80 dark:border-blue-900/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
         <div className="flex items-start gap-3">
@@ -366,9 +418,7 @@ export default function PlanejamentoSemanalPage() {
             <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">
               Grade de Estudo de Domingo a Sábado
             </CardTitle>
-            <p className="text-xs text-slate-500">
-              Distribuição harmônica de matérias conforme o algoritmo Hamilton-Hare
-            </p>
+            <p className="text-xs text-slate-500">Arraste uma meta pendente para outro dia para replanejá-la. A alteração é salva no servidor.</p>
           </div>
 
           <div className="flex items-center gap-1.5 flex-wrap text-xs">
@@ -409,7 +459,9 @@ export default function PlanejamentoSemanalPage() {
               return (
                 <div
                   key={dia.dia_semana}
-                  className={`rounded-2xl border p-3.5 flex flex-col transition-all ${
+                  onDragOver={(e) => { if (arrastandoId) e.preventDefault(); }}
+                  onDrop={(e) => { e.preventDefault(); if (arrastandoId && dataDoDia) void moverMeta(arrastandoId, dataDoDia); }}
+                  className={`rounded-2xl border p-3.5 flex flex-col transition-all ${arrastandoId ? "ring-1 ring-indigo-300 dark:ring-indigo-700 " : ""}${
                     isHoje
                       ? "bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-700 ring-2 ring-indigo-500/20"
                       : statusDia === "cumprido"
@@ -456,10 +508,16 @@ export default function PlanejamentoSemanalPage() {
                         <span className="text-[10px]">Recuperação mental</span>
                       </div>
                     ) : (
-                      dia.blocos.map((bloco) => (
+                      dia.blocos.map((bloco) => {
+                        const meta = calendario.tarefas.find((t:any) => t.id === bloco.id);
+                        const atraso = meta?.status_calendario === "atrasada" ? diasAtraso(meta.data_planejada) : 0;
+                        return (
                         <div
                           key={bloco.id}
-                          className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5"
+                          draggable={meta?.status_calendario !== "cumprida"}
+                          onDragStart={(e) => { e.dataTransfer.effectAllowed="move"; setArrastandoId(bloco.id); }}
+                          onDragEnd={() => setArrastandoId(null)}
+                          className={`p-2.5 rounded-xl ${arrastandoId === bloco.id ? "opacity-50 " : ""}bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5`}
                         >
                           <div className="flex items-center justify-between gap-1">
                             <span className="flex items-center gap-1 text-[10px] font-bold text-slate-600 dark:text-slate-300">
@@ -482,6 +540,9 @@ export default function PlanejamentoSemanalPage() {
                               {bloco.assunto_nome}
                             </div>
                           )}
+                          {meta?.data_planejada && <div className="text-[10px] text-slate-500">Meta: {new Date(meta.data_planejada + "T00:00:00").toLocaleDateString("pt-BR")}</div>}
+                          {meta?.status_calendario === "cumprida" && <Badge variant="success" size="sm">Cumprido</Badge>}
+                          {atraso > 0 && <Badge variant="error" size="sm">{atraso} dia{atraso === 1 ? "" : "s"} de atraso</Badge>}
 
                           <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-700/60">
                             {getPrioridadeBadge(bloco.prioridade_nivel)}
@@ -493,7 +554,8 @@ export default function PlanejamentoSemanalPage() {
                             </Link>
                           </div>
                         </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>

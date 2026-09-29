@@ -436,7 +436,7 @@ export default function DashboardPage() {
             <div>
               <CardTitle>Questões em Destaque</CardTitle>
               <p className="text-xs text-slate-500">
-                Pratique questões do acervo de 5.760 itens policiais
+                Pratique questões do acervo atualizado
               </p>
             </div>
           </div>
@@ -455,7 +455,7 @@ export default function DashboardPage() {
               <div className="space-y-1.5 flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap text-xs">
                   <Badge variant="primary" size="sm">
-                    {q.banca}
+                    {q.is_autoral_ia ? `Estilo ${String(q.banca || "Inédita").replace(/^Estilo\s+/i, "")}` : q.banca}
                   </Badge>
                   <Badge variant="outline" size="sm">
                     {q.ano}

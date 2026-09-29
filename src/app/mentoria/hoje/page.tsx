@@ -94,6 +94,7 @@ export default function MentoriaHojePage() {
 
   // Modo Teoria
   const [assuntoRoteiro, setAssuntoRoteiro] = useState<Assunto | null>(null);
+  const [conteudosAssunto, setConteudosAssunto] = useState<Array<{id:string;titulo:string;orientacao?:string;lei_seca?:string;lei_seca_url?:string;pdf_url?:string;video_url?:string}>>([]);
   const [anotacoesTeoria, setAnotacoesTeoria] = useState<string>("");
   const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
 
@@ -178,6 +179,7 @@ export default function MentoriaHojePage() {
             quantidade: Math.max(10, bloco.quantidade_questoes_sugerida || 15),
             nivelUsuario: perfil?.nivel_calculado || "intermediario",
             tipoBloco: "QUESTOES",
+            assuntoId: bloco.assunto_id || undefined,
           });
           setSelecaoResultado(resultado);
           setQuestoesPool(resultado.questoes);
@@ -200,6 +202,7 @@ export default function MentoriaHojePage() {
               quantidade: 10,
               nivelUsuario: perfil?.nivel_calculado || "intermediario",
               tipoBloco: "REVISAO",
+              assuntoId: bloco.assunto_id || undefined,
               apenasErros: true,
             }),
           ]);
@@ -230,6 +233,11 @@ export default function MentoriaHojePage() {
             ? json.assuntos.find((item: Assunto) => item.id === bloco.assunto_id)
             : null;
           setAssuntoRoteiro(assunto || null);
+          const conteudoResponse = await fetch(`/api/mentoria/conteudos?assunto_id=${encodeURIComponent(bloco.assunto_id)}`, { cache: "no-store" });
+          if (conteudoResponse.ok) {
+            const conteudoJson = await conteudoResponse.json();
+            setConteudosAssunto(Array.isArray(conteudoJson.conteudos) ? conteudoJson.conteudos : []);
+          } else setConteudosAssunto([]);
         } catch (err) {
           console.warn("Não foi possível carregar a referência do assunto do bloco:", err);
         }
@@ -239,76 +247,46 @@ export default function MentoriaHojePage() {
     carregarDadosBloco();
   }, [user, planoCiclo?.bloco_atual?.id, planoCiclo?.bloco_atual?.disciplina_id, perfil?.nivel_calculado]);
 
+  // Sessão ativa autoritativa no servidor. O navegador mantém apenas o estado visual corrente.
   useEffect(() => {
-    if (!blocoStorageKey || typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem(blocoStorageKey);
-      if (!raw) return;
-      const sessao = JSON.parse(raw) as {
-        cronometroIniciado?: boolean;
-        cronometroAtivo?: boolean;
-        segundosLiquidos?: number;
-        pausasContador?: number;
-        segundosPausaTotal?: number;
-        tempoInicioSessao?: string | null;
-        questoesRespondidas?: number;
-        questoesAcertadas?: number;
-        observacoesSessao?: string;
-        anotacoesTeoria?: string;
-        updatedAt?: string;
-      };
-
-      setCronometroIniciado(Boolean(sessao.cronometroIniciado));
-      // Restaura a sessão como PAUSADA ao recarregar/reabrir; usuário clica em Continuar para prosseguir
-      setCronometroAtivo(false);
-      setSegundosLiquidos(Math.max(0, sessao.segundosLiquidos || 0));
-      setPausasContador(sessao.pausasContador || 0);
-      setSegundosPausaTotal(sessao.segundosPausaTotal || 0);
-      setTempoInicioSessao(sessao.tempoInicioSessao || null);
-      setQuestoesRespondidas(sessao.questoesRespondidas || 0);
-      setQuestoesAcertadas(sessao.questoesAcertadas || 0);
-      setObservacoesSessao(sessao.observacoesSessao || "");
-      setAnotacoesTeoria(sessao.anotacoesTeoria || "");
-    } catch {
-      // Ignora sessão local corrompida.
-    }
-  }, [blocoStorageKey]);
+    if (!user || !planoCiclo?.bloco_atual) return;
+    let cancelado = false;
+    fetch(`/api/mentoria/sessao-ativa?tarefaId=${encodeURIComponent(planoCiclo.bloco_atual.id)}`, { cache: "no-store" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((json) => {
+        if (cancelado || !json?.sessao) return;
+        const sessao = json.sessao;
+        setCronometroIniciado(Boolean(sessao.cronometro_iniciado));
+        setCronometroAtivo(false);
+        setSegundosLiquidos(Math.max(0, sessao.segundos_liquidos || 0));
+        setPausasContador(sessao.pausas_contador || 0);
+        setSegundosPausaTotal(sessao.segundos_pausa_total || 0);
+        setTempoInicioSessao(sessao.tempo_inicio_sessao || null);
+        setQuestoesRespondidas(sessao.questoes_respondidas || 0);
+        setQuestoesAcertadas(sessao.questoes_acertadas || 0);
+        setObservacoesSessao(sessao.observacoes || "");
+        setAnotacoesTeoria(sessao.anotacoes || "");
+      }).catch((err) => console.warn("Falha ao restaurar sessão ativa:", err));
+    return () => { cancelado = true; };
+  }, [user, planoCiclo?.bloco_atual?.id]);
 
   useEffect(() => {
-    if (!blocoStorageKey || typeof window === "undefined" || !cronometroIniciado) return;
-    try {
-      localStorage.setItem(
-        blocoStorageKey,
-        JSON.stringify({
-          cronometroIniciado,
-          cronometroAtivo,
-          segundosLiquidos,
-          pausasContador,
-          segundosPausaTotal,
-          tempoInicioSessao,
-          questoesRespondidas,
-          questoesAcertadas,
-          observacoesSessao,
-          anotacoesTeoria,
-          updatedAt: new Date().toISOString(),
-        })
-      );
-    } catch {
-      // Ignore falhas de persistência local.
-    }
-  }, [
-    blocoStorageKey,
-    cronometroIniciado,
-    cronometroAtivo,
-    segundosLiquidos,
-    pausasContador,
-    segundosPausaTotal,
-    tempoInicioSessao,
-    questoesRespondidas,
-    questoesAcertadas,
-    observacoesSessao,
-    anotacoesTeoria,
-  ]);
+    if (!user || !planoCiclo?.bloco_atual || !cronometroIniciado) return;
+    const timer = window.setTimeout(() => {
+      fetch("/api/mentoria/sessao-ativa", {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plano_id: planoCiclo.plano_id, tarefa_id: planoCiclo.bloco_atual!.id,
+          cronometro_iniciado: cronometroIniciado, cronometro_ativo: cronometroAtivo,
+          segundos_liquidos: segundosLiquidos, pausas_contador: pausasContador,
+          segundos_pausa_total: segundosPausaTotal, tempo_inicio_sessao: tempoInicioSessao,
+          questoes_respondidas: questoesRespondidas, questoes_acertadas: questoesAcertadas,
+          observacoes: observacoesSessao, anotacoes: anotacoesTeoria,
+        }),
+      }).catch((err) => console.warn("Falha ao persistir sessão ativa:", err));
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [user, planoCiclo?.plano_id, planoCiclo?.bloco_atual?.id, cronometroIniciado, cronometroAtivo, segundosLiquidos, pausasContador, segundosPausaTotal, tempoInicioSessao, questoesRespondidas, questoesAcertadas, observacoesSessao, anotacoesTeoria]);
 
   // Cronômetro de tempo líquido ativo
   useEffect(() => {
@@ -352,12 +330,9 @@ export default function MentoriaHojePage() {
   }
 
   function limparSessaoLocal() {
-    if (!blocoStorageKey || typeof window === "undefined") return;
-    try {
-      localStorage.removeItem(blocoStorageKey);
-    } catch {
-      // Ignore
-    }
+    if (!planoCiclo?.bloco_atual) return;
+    fetch(`/api/mentoria/sessao-ativa?tarefaId=${encodeURIComponent(planoCiclo.bloco_atual.id)}`, { method: "DELETE" })
+      .catch((err) => console.warn("Falha ao limpar sessão ativa:", err));
   }
 
   function handleZerar() {
@@ -1153,6 +1128,19 @@ export default function MentoriaHojePage() {
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Use a referência acima como guia do bloco atual; ela não altera a fila contínua do ciclo.
                   </p>
+                  {conteudosAssunto.map((conteudo) => (
+                    <div key={conteudo.id} className="p-4 rounded-xl border border-blue-200 dark:border-blue-900 bg-blue-50/40 dark:bg-blue-950/20 space-y-3">
+                      <p className="font-black text-sm text-slate-900 dark:text-slate-100">{conteudo.titulo}</p>
+                      {conteudo.orientacao && <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">{conteudo.orientacao}</p>}
+                      {conteudo.lei_seca && <div className="text-xs"><strong>Lei seca / referência:</strong><p className="mt-1 whitespace-pre-wrap text-slate-600 dark:text-slate-400">{conteudo.lei_seca}</p></div>}
+                      <div className="flex flex-wrap gap-2">
+                        {conteudo.lei_seca_url && <a href={conteudo.lei_seca_url} target="_blank" rel="noopener noreferrer"><Button size="sm" variant="outline">Abrir legislação</Button></a>}
+                        {conteudo.pdf_url && <a href={conteudo.pdf_url} target="_blank" rel="noopener noreferrer"><Button size="sm" variant="outline">Abrir PDF</Button></a>}
+                        {conteudo.video_url && <a href={conteudo.video_url} target="_blank" rel="noopener noreferrer"><Button size="sm" variant="outline">Assistir vídeo</Button></a>}
+                      </div>
+                    </div>
+                  ))}
+                  {conteudosAssunto.length === 0 && <p className="text-xs text-amber-700 dark:text-amber-300">Ainda não há material complementar cadastrado para este assunto.</p>}
                 </CardContent>
               </Card>
 

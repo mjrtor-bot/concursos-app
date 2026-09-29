@@ -186,7 +186,7 @@ export function QuestionCard({
               </span>
               {questao.banca && (
                 <Badge variant="primary" size="sm">
-                  Estilo {questao.banca}
+                  Estilo {String(questao.banca).replace(/^Estilo\\s+/i, "")}
                 </Badge>
               )}
             </>

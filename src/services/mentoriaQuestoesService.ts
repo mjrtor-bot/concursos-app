@@ -315,7 +315,7 @@ export class MentoriaQuestoesService {
             orgao: q.is_autoral_ia ? "" : (q.orgao_nome || ""),
             cargo: q.is_autoral_ia ? undefined : (q.cargo_nome || undefined),
             disciplina: disciplinaNome || "Disciplina",
-            assunto: "Assunto",
+            assunto: undefined,
             created_at: q.created_at || new Date().toISOString(),
             alternativas: (q.questoes_alternativas || []).map((alt: any) => ({
               id: alt.id,
@@ -328,6 +328,20 @@ export class MentoriaQuestoesService {
         }
       } catch (err) {
         console.warn("[MentoriaQuestoesService] Erro ao buscar questões no Supabase:", err);
+      }
+    }
+
+    // Resolve os nomes reais dos assuntos para que o card não exiba rótulo vazio/genérico.
+    if (supabase && questoesCandidatas.length > 0) {
+      const assuntoIds = Array.from(new Set(questoesCandidatas.map((q) => q.assunto_id).filter(Boolean))) as string[];
+      if (assuntoIds.length > 0) {
+        const { data: assuntosData } = await supabase.from("assuntos").select("id,nome").in("id", assuntoIds);
+        const nomes = new Map((assuntosData || []).map((a: any) => [a.id, a.nome]));
+        questoesCandidatas = questoesCandidatas.map((q) => ({
+          ...q,
+          assunto: q.assunto_id ? nomes.get(q.assunto_id) || undefined : undefined,
+          assunto_nome: q.assunto_id ? nomes.get(q.assunto_id) || undefined : undefined,
+        }));
       }
     }
 

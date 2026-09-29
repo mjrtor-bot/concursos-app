@@ -26,6 +26,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 import { MentoriaService } from "@/services/mentoriaService";
 import {
   MentoriaPerfil,
@@ -41,6 +42,8 @@ type PesoFiltro = "todos" | "baixo" | "medio" | "alto" | "critico";
 
 export default function MentoriaEditalPage() {
   const { user } = useAuth();
+  const router = useRouter();
+  const [alvoOficial, setAlvoOficial] = useState<{ concurso:string; cargo:string; edital:string; fonte:string } | null>(null);
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [resumoEdital, setResumoEdital] = useState<EditalVerticalizadoResumo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,12 +63,19 @@ export default function MentoriaEditalPage() {
     }
     try {
       setLoading(true);
-      const [p, edital] = await Promise.all([
+      const [p, edital, alvoResp] = await Promise.all([
         MentoriaService.getPerfil(user.id),
         MentoriaService.getEditalVerticalizado(user.id),
+        fetch("/api/concursos/alvo", { cache: "no-store" }).then(r => r.ok ? r.json() : null),
       ]);
       setPerfil(p);
       setResumoEdital(edital);
+      if (alvoResp?.alvo) {
+        const c = (alvoResp.concursos || []).find((x: any) => x.id === alvoResp.alvo.concurso_id);
+        const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
+        const ed = cargo?.editais_concurso?.find((x: any) => x.id === alvoResp.alvo.edital_id);
+        setAlvoOficial(c && cargo && ed ? { concurso: c.nome, cargo: cargo.nome, edital: ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo, fonte: ed.fonte_oficial_url } : null);
+      } else setAlvoOficial(null);
 
       // Abrir todas as disciplinas por padrão
       const abertas: Record<string, boolean> = {};
@@ -313,15 +323,15 @@ export default function MentoriaEditalPage() {
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
             <FileText className="w-4 h-4" />
-            <span>Matriz Policial de Conteúdo & Domínio</span>
+            <span>Conteúdo oficial do edital selecionado</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">
             Edital Verticalizado
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-            {perfil
-              ? `Acompanhamento ponto a ponto para ${perfil.concurso_nome} (${perfil.cargo_nome}). Cada questão resolvida calcula seu domínio real.`
-              : "Mapeamento sistemático de todos os tópicos das disciplinas policiais com controle de avanço e taxa de acerto."}
+            {alvoOficial
+              ? `${alvoOficial.concurso} — ${alvoOficial.cargo}. Edital: ${alvoOficial.edital}. O progresso considera somente os tópicos vinculados a esse edital.`
+              : "Selecione um concurso, cargo e edital oficial no Perfil para carregar o conteúdo programático."}
           </p>
         </div>
 
@@ -339,6 +349,18 @@ export default function MentoriaEditalPage() {
           </div>
         </div>
       </div>
+
+      {!alvoOficial && (
+        <Card className="border-dashed border-2 border-amber-300 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+          <CardContent className="p-6 text-center space-y-3">
+            <AlertCircle className="w-8 h-8 text-amber-600 mx-auto" />
+            <h2 className="font-bold text-slate-900 dark:text-slate-100">Defina seu concurso alvo</h2>
+            <p className="text-sm text-slate-600 dark:text-slate-400">O Edital Verticalizado não usa mais uma matriz policial genérica. Escolha um concurso, cargo e edital oficial no Perfil.</p>
+            <Button onClick={() => router.push("/perfil")}>Ir para o Perfil</Button>
+          </CardContent>
+        </Card>
+      )}
+      {alvoOficial && <div className="flex flex-wrap items-center gap-3 text-sm"><a href={alvoOficial.fonte} target="_blank" rel="noreferrer" className="font-semibold text-indigo-600 hover:underline">Abrir fonte oficial do edital</a><Link href="/mentoria/edital/biblioteca" className="font-semibold text-slate-600 hover:text-indigo-600">Consultar biblioteca de editais</Link></div>}
 
       {/* 5 Cards de Métricas e KPIs Globais */}
       {resumoEdital && (

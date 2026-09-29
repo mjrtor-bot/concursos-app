@@ -143,9 +143,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     // Lê a sessão atual (token SSR sincronizado pelo middleware)
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (session?.user) {
-        setUser(buildProfileFromSupabaseUser(session.user));
+        const profile = buildProfileFromSupabaseUser(session.user);
+        const { data: dbProfile } = await supabase.from("profiles").select("nome,role").eq("id", session.user.id).maybeSingle();
+        setUser({ ...profile, nome: dbProfile?.nome || profile.nome, role: (dbProfile?.role as Profile["role"]) || profile.role });
       } else {
         setUser(null);
       }
@@ -157,7 +159,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-        setUser(buildProfileFromSupabaseUser(session.user));
+        const profile = buildProfileFromSupabaseUser(session.user);
+        supabase.from("profiles").select("nome,role").eq("id", session.user.id).maybeSingle().then(({ data: dbProfile }) => setUser({ ...profile, nome: dbProfile?.nome || profile.nome, role: (dbProfile?.role as Profile["role"]) || profile.role }));
       } else {
         // SESSÃO ENCERRADA — nunca cria usuário visitante/mock
         setUser(null);

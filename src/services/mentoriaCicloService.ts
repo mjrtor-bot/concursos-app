@@ -518,6 +518,16 @@ export class MentoriaCicloService {
       return { success: false, error: "Perfil da mentoria não encontrado. Configure seu perfil primeiro." };
     }
 
+    // Configuração avançada é autoritativa para geração do ciclo.
+    let configPlano: any = null;
+    if (supabase) {
+      const { data } = await supabase.from("mentoria_config_plano").select("*").eq("usuario_id", usuarioId).maybeSingle();
+      configPlano = data;
+    }
+    if (configPlano?.pausado) {
+      return { success: false, error: "O plano está pausado. Retome-o em Configurar antes de recalcular." };
+    }
+
     // 2. Obter Disponibilidade
     const disponibilidade = await MentoriaService.getDisponibilidade(usuarioId);
     const metaSemanalMinutos = disponibilidade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0);
@@ -551,103 +561,97 @@ export class MentoriaCicloService {
 
     if (supabase) {
       try {
-        let idsAplicaveis: string[] = [];
+        // O edital selecionado é a fonte autoritativa das disciplinas do ciclo.
+        // Não inferimos o conteúdo programático pelas questões do concurso.
+        const { data: alvo } = await supabase
+          .from("usuario_concurso_alvo")
+          .select("edital_id")
+          .eq("usuario_id", usuarioId)
+          .maybeSingle();
 
-        // Quando há concurso selecionado, usa as disciplinas que realmente têm
-        // questões vinculadas a esse concurso. Assim o ciclo respeita o alvo do aluno.
-        if (perfil.concurso_id) {
-          const { data: questoesConcurso } = await supabase
-            .from("questoes")
-            .select("disciplina_id")
-            .eq("concurso_id", perfil.concurso_id)
-            .not("disciplina_id", "is", null)
+        if (!alvo?.edital_id) {
+          return { success: false, error: "Selecione um concurso, cargo e edital oficial no Perfil antes de gerar o plano." };
+        }
+
+        const { data: topicosEdital, error: topicosErr } = await supabase
+          .from("edital_topicos")
+          .select("disciplina_id, assunto_id, peso, incidencia, ordem, disciplinas(id,nome)")
+          .eq("edital_id", alvo.edital_id)
+          .order("ordem", { ascending: true });
+
+        if (topicosErr) throw topicosErr;
+        if (!topicosEdital || topicosEdital.length === 0) {
+          return { success: false, error: "O edital selecionado ainda não possui conteúdo programático cadastrado. O plano não será preenchido com tópicos genéricos." };
+        }
+
+        const desempenhoPorDisciplina = new Map<string, { respondidas: number; acertos: number }>();
+        try {
+          const { data: respostas } = await supabase
+            .from("respostas_usuarios")
+            .select("correta, questoes!inner(disciplina_id)")
+            .eq("usuario_id", usuarioId)
             .limit(5000);
-
-          idsAplicaveis = Array.from(
-            new Set((questoesConcurso || []).map((q) => q.disciplina_id).filter(Boolean))
-          );
-        }
-
-        // Sem vínculo suficiente com um concurso, usa a taxonomia cadastrada completa.
-        let queryDisciplinas = supabase.from("disciplinas").select("id, nome").order("ordem", { ascending: true });
-        if (idsAplicaveis.length > 0) {
-          queryDisciplinas = queryDisciplinas.in("id", idsAplicaveis);
-        }
-
-        const { data: dbDiscs } = await queryDisciplinas;
-        if (dbDiscs && dbDiscs.length > 0) {
-          // Consolida desempenho real já registrado por disciplina. O valor neutro
-          // 50/50 só é usado quando não existe diagnóstico nem histórico.
-          const desempenhoPorDisciplina = new Map<string, { respondidas: number; acertos: number }>();
-
-          try {
-            const { data: respostas } = await supabase
-              .from("respostas_usuarios")
-              .select("correta, questoes!inner(disciplina_id)")
-              .eq("usuario_id", usuarioId)
-              .limit(5000);
-
-            for (const resposta of respostas || []) {
-              const relacao = resposta.questoes as unknown as { disciplina_id?: string } | { disciplina_id?: string }[] | null;
-              const disciplinaId = Array.isArray(relacao) ? relacao[0]?.disciplina_id : relacao?.disciplina_id;
-              if (!disciplinaId) continue;
-              const atual = desempenhoPorDisciplina.get(disciplinaId) || { respondidas: 0, acertos: 0 };
-              atual.respondidas += 1;
-              if (resposta.correta) atual.acertos += 1;
-              desempenhoPorDisciplina.set(disciplinaId, atual);
-            }
-          } catch (err) {
-            console.warn("[MentoriaCicloService] Falha ao consolidar desempenho por disciplina:", err);
+          for (const resposta of respostas || []) {
+            const relacao = resposta.questoes as unknown as { disciplina_id?: string } | { disciplina_id?: string }[] | null;
+            const disciplinaId = Array.isArray(relacao) ? relacao[0]?.disciplina_id : relacao?.disciplina_id;
+            if (!disciplinaId) continue;
+            const atual = desempenhoPorDisciplina.get(disciplinaId) || { respondidas: 0, acertos: 0 };
+            atual.respondidas += 1;
+            if (resposta.correta) atual.acertos += 1;
+            desempenhoPorDisciplina.set(disciplinaId, atual);
           }
-
-          disciplinasInput = dbDiscs.map((d) => {
-            const diag = diagnosticoPorDisciplina.get(d.id);
-            const desempenho = desempenhoPorDisciplina.get(d.id);
-            const taxaHistorica = desempenho && desempenho.respondidas > 0
-              ? Math.round((desempenho.acertos / desempenho.respondidas) * 100)
-              : null;
-
-            const scoreIndividual = diag?.score_final ?? taxaHistorica ?? 50;
-            const taxaIndividual = taxaHistorica ?? diag?.percentual_acerto ?? 50;
-
-            return {
-              disciplina_id: d.id,
-              disciplina_nome: d.nome,
-              score_diagnostico: scoreIndividual,
-              nivel_diagnostico: diag?.nivel_calculado ?? "intermediario",
-              peso_base: 50,
-              taxa_acerto: taxaIndividual,
-            };
-          });
+        } catch (err) {
+          console.warn("[MentoriaCicloService] Falha ao consolidar desempenho por disciplina:", err);
         }
+
+        const porDisciplina = new Map<string, { nome: string; pesos: number[]; incidencias: number[] }>();
+        for (const t of topicosEdital) {
+          const rel = t.disciplinas as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
+          const disc = Array.isArray(rel) ? rel[0] : rel;
+          if (!t.disciplina_id || !disc?.nome) continue;
+          const atual = porDisciplina.get(t.disciplina_id) || { nome: disc.nome, pesos: [], incidencias: [] };
+          if (typeof t.peso === "number") atual.pesos.push(t.peso);
+          if (typeof t.incidencia === "number") atual.incidencias.push(t.incidencia);
+          porDisciplina.set(t.disciplina_id, atual);
+        }
+
+        disciplinasInput = Array.from(porDisciplina.entries()).map(([id, meta]) => {
+          const diag = diagnosticoPorDisciplina.get(id);
+          const desempenho = desempenhoPorDisciplina.get(id);
+          const taxaHistorica = desempenho && desempenho.respondidas > 0 ? Math.round((desempenho.acertos / desempenho.respondidas) * 100) : null;
+          const pesoMedio = meta.pesos.length ? meta.pesos.reduce((a,b)=>a+b,0) / meta.pesos.length : 50;
+          const incidenciaMedia = meta.incidencias.length ? meta.incidencias.reduce((a,b)=>a+b,0) / meta.incidencias.length : 50;
+          const pesoBase = Math.max(1, Math.min(100, Math.round((pesoMedio + incidenciaMedia) / 2)));
+          return {
+            disciplina_id: id,
+            disciplina_nome: meta.nome,
+            score_diagnostico: diag?.score_final ?? taxaHistorica ?? 50,
+            nivel_diagnostico: diag?.nivel_calculado ?? "intermediario",
+            peso_base: pesoBase,
+            taxa_acerto: taxaHistorica ?? diag?.percentual_acerto ?? 50,
+          };
+        });
       } catch (err) {
-        console.warn("[MentoriaCicloService] Falha ao montar disciplinas aplicáveis ao ciclo:", err);
+        console.warn("[MentoriaCicloService] Falha ao montar disciplinas do edital selecionado:", err);
+        return { success: false, error: "Não foi possível carregar o conteúdo programático do edital selecionado." };
       }
     }
 
-    // Se a taxonomia remota estiver indisponível, preserva as disciplinas do
-    // diagnóstico como contingência antes de recorrer ao conjunto padrão.
-    if (disciplinasInput.length === 0 && diagnostico?.disciplinas?.length) {
-      disciplinasInput = diagnostico.disciplinas.map((d, index) => ({
-        disciplina_id: d.disciplina_id || `disc-${index}`,
-        disciplina_nome: d.disciplina_nome,
-        score_diagnostico: d.score_final ?? 50,
-        nivel_diagnostico: d.nivel_calculado ?? "intermediario",
-        peso_base: 50,
-        taxa_acerto: d.percentual_acerto ?? 50,
-      }));
-    }
+    // Respeita disciplinas explicitamente ativadas e o limite de matérias simultâneas.
+    const disciplinasAtivas: string[] = Array.isArray(configPlano?.disciplinas_ativas) ? configPlano.disciplinas_ativas : [];
+    if (disciplinasAtivas.length > 0) disciplinasInput = disciplinasInput.filter(d => disciplinasAtivas.includes(d.disciplina_id));
+    const limiteMaterias = Math.max(1, Number(configPlano?.materias_simultaneas) || disciplinasInput.length || 1);
+    disciplinasInput = disciplinasInput
+      .sort((a,b) => ((a.score_diagnostico ?? 50) - (b.score_diagnostico ?? 50)) || ((b.peso_base ?? 50) - (a.peso_base ?? 50)))
+      .slice(0, limiteMaterias);
 
     if (disciplinasInput.length === 0) {
-      disciplinasInput = [
-        { disciplina_id: "disc-portugues", disciplina_nome: "Língua Portuguesa", score_diagnostico: 50, nivel_diagnostico: "intermediario", peso_base: 60, taxa_acerto: 50 },
-        { disciplina_id: "disc-const", disciplina_nome: "Direito Constitucional", score_diagnostico: 40, nivel_diagnostico: "basico", peso_base: 70, taxa_acerto: 45 },
-        { disciplina_id: "disc-admin", disciplina_nome: "Direito Administrativo", score_diagnostico: 45, nivel_diagnostico: "basico", peso_base: 70, taxa_acerto: 40 },
-        { disciplina_id: "disc-rlm", disciplina_nome: "Raciocínio Lógico", score_diagnostico: 35, nivel_diagnostico: "iniciante", peso_base: 50, taxa_acerto: 30 },
-      ];
+      return { success: false, error: "Nenhuma disciplina ativa válida foi encontrada no edital selecionado." };
     }
 
-    const duracaoBlocoMinutos = perfil.duracao_bloco_minutos || 40;
+    const velocidade = configPlano?.velocidade || "normal";
+    const fatorVelocidade = velocidade === "leve" ? 0.75 : velocidade === "intensiva" ? 1.25 : 1;
+    const duracaoBlocoMinutos = Math.max(15, Math.round((perfil.duracao_bloco_minutos || 40) * fatorVelocidade));
     const questoesPorBloco = perfil.quantidade_questoes_bloco || 15;
 
     // 4. Executa o Motor Matemático
@@ -663,37 +667,47 @@ export class MentoriaCicloService {
       questoesPorBloco
     );
 
-    // Vincula cada bloco a um assunto real do edital/taxonomia, em ordem por disciplina.
-    // A sequência não depende de quantidade fixa de tópicos.
+    // Etapas escolhidas controlam os tipos de bloco produzidos pelo motor.
+    const etapas: string[] = Array.isArray(configPlano?.etapas) && configPlano.etapas.length ? configPlano.etapas : ["estudo","resumo","revisao","exercicio"];
+    const tiposPermitidos: MentoriaTarefaTipo[] = [];
+    if (etapas.includes("estudo") || etapas.includes("resumo")) tiposPermitidos.push("TEORIA");
+    if (etapas.includes("revisao")) tiposPermitidos.push("REVISAO");
+    if (etapas.includes("exercicio")) tiposPermitidos.push("QUESTOES");
+    if (tiposPermitidos.length > 0) {
+      blocos = blocos.map((b,i) => tiposPermitidos.includes(b.tipo) ? b : { ...b, tipo: tiposPermitidos[i % tiposPermitidos.length] });
+    }
+
+    // Vincula os blocos somente aos assuntos pertencentes ao edital alvo.
     if (supabase && blocos.length > 0) {
       try {
-        const disciplinaIds = Array.from(new Set(blocos.map((b) => b.disciplina_id).filter(Boolean)));
-        if (disciplinaIds.length > 0) {
-          const { data: assuntosDb } = await supabase
-            .from("assuntos")
-            .select("id, disciplina_id, nome, ordem")
-            .in("disciplina_id", disciplinaIds)
-            .order("ordem", { ascending: true });
+        const { data: alvo } = await supabase.from("usuario_concurso_alvo").select("edital_id").eq("usuario_id", usuarioId).maybeSingle();
+        const { data: topicos } = alvo?.edital_id
+          ? await supabase.from("edital_topicos").select("disciplina_id, assunto_id, ordem, assuntos(id,nome)").eq("edital_id", alvo.edital_id).order("ordem", { ascending: true })
+          : { data: [] };
 
-          const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
-          for (const assunto of assuntosDb || []) {
-            const lista = assuntosPorDisciplina.get(assunto.disciplina_id) || [];
-            lista.push({ id: assunto.id, nome: assunto.nome });
-            assuntosPorDisciplina.set(assunto.disciplina_id, lista);
-          }
-
-          const cursor = new Map<string, number>();
-          blocos = blocos.map((bloco) => {
-            const lista = assuntosPorDisciplina.get(bloco.disciplina_id) || [];
-            if (lista.length === 0) return bloco;
-            const indice = cursor.get(bloco.disciplina_id) || 0;
-            const assunto = lista[indice % lista.length];
-            cursor.set(bloco.disciplina_id, indice + 1);
-            return { ...bloco, assunto_id: assunto.id, assunto_nome: assunto.nome };
-          });
+        const assuntosAtivos: string[] = Array.isArray(configPlano?.assuntos_ativos) ? configPlano.assuntos_ativos : [];
+        const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
+        for (const t of topicos || []) {
+          if (assuntosAtivos.length > 0 && t.assunto_id && !assuntosAtivos.includes(t.assunto_id)) continue;
+          const rel = t.assuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
+          const assunto = Array.isArray(rel) ? rel[0] : rel;
+          if (!t.disciplina_id || !t.assunto_id || !assunto?.nome) continue;
+          const lista = assuntosPorDisciplina.get(t.disciplina_id) || [];
+          lista.push({ id: t.assunto_id, nome: assunto.nome });
+          assuntosPorDisciplina.set(t.disciplina_id, lista);
         }
+
+        const cursor = new Map<string, number>();
+        blocos = blocos.map((bloco) => {
+          const lista = assuntosPorDisciplina.get(bloco.disciplina_id) || [];
+          if (lista.length === 0) return bloco;
+          const indice = cursor.get(bloco.disciplina_id) || 0;
+          const assunto = lista[indice % lista.length];
+          cursor.set(bloco.disciplina_id, indice + 1);
+          return { ...bloco, assunto_id: assunto.id, assunto_nome: assunto.nome };
+        });
       } catch (err) {
-        console.warn("[MentoriaCicloService] Falha ao vincular assuntos do edital ao ciclo:", err);
+        console.warn("[MentoriaCicloService] Falha ao vincular assuntos do edital alvo:", err);
       }
     }
 
@@ -817,6 +831,13 @@ export class MentoriaCicloService {
     volta_completa: boolean;
     error?: string;
   }> {
+    // Um plano pausado pode ser consultado, mas não deve avançar o ciclo.
+    const supabaseConfig = this.getClient();
+    if (supabaseConfig) {
+      const { data: cfg } = await supabaseConfig.from("mentoria_config_plano").select("pausado,data_final").eq("usuario_id", input.usuario_id).maybeSingle();
+      if (cfg?.pausado) return { success:false, status:"abandonada", nova_posicao:0, volta_completa:false, error:"Plano pausado. Retome o plano antes de concluir um bloco." };
+      if (cfg?.data_final && cfg.data_final < new Date().toISOString().slice(0,10)) return { success:false, status:"abandonada", nova_posicao:0, volta_completa:false, error:"A data final configurada para o plano já passou. Ajuste a data em Configurar." };
+    }
     if (!input.usuario_id || !input.plano_id) {
       return { success: false, status: "abandonada", nova_posicao: 0, volta_completa: false, error: "Dados incompletos." };
     }
@@ -862,6 +883,11 @@ export class MentoriaCicloService {
         };
 
         const { error: sessErr } = await supabase.from("mentoria_sessoes_estudo").insert(sessaoPayload);
+        if (!sessErr) {
+          const xpTempo = Math.max(5, Math.round(duracaoLiquidaSegundos / 60));
+          const xpQuestoes = Math.min(50, questoesRespondidas * 2 + questoesAcertadas);
+          await supabase.rpc("registrar_xp", { p_tipo: "sessao_concluida", p_xp: xpTempo + xpQuestoes, p_referencia_id: input.tarefa_id || `${input.plano_id}:${blocoOrdem}:${agoraIso.slice(0,10)}` });
+        }
         if (sessErr) {
           console.warn("[MentoriaCicloService] Erro ao gravar mentoria_sessoes_estudo:", sessErr.message);
         }
@@ -902,6 +928,29 @@ export class MentoriaCicloService {
           })
           .eq("id", planoAtual.plano_id)
           .eq("usuario_id", input.usuario_id);
+
+        // Sincroniza automaticamente o tópico do edital com o estudo realmente concluído.
+        // A conclusão de qualquer bloco ligado a um assunto tira o tópico de "não iniciado".
+        const blocoConcluido = planoAtual.blocos.find((b) => b.id === input.tarefa_id) || planoAtual.blocos[planoAtual.posicao_atual_index];
+        const assuntoConcluidoId = blocoConcluido?.assunto_id || null;
+        if (input.disciplina_id && assuntoConcluidoId) {
+          const { data: topicoAtual } = await supabase
+            .from("mentoria_edital_topicos")
+            .select("id,status,percentual_dominio")
+            .eq("usuario_id", input.usuario_id)
+            .eq("disciplina_id", input.disciplina_id)
+            .eq("assunto_id", assuntoConcluidoId)
+            .maybeSingle();
+          if (topicoAtual) {
+            const statusAtual = topicoAtual.status || "nao_iniciado";
+            await supabase.from("mentoria_edital_topicos").update({
+              estudado: true,
+              status: statusAtual === "nao_iniciado" ? "estudando" : statusAtual,
+              percentual_dominio: Math.max(Number(topicoAtual.percentual_dominio) || 0, 30),
+              updated_at: agoraIso,
+            }).eq("id", topicoAtual.id).eq("usuario_id", input.usuario_id);
+          }
+        }
 
         if (input.tarefa_id && deveAvancar) {
           await supabase
