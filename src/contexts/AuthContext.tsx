@@ -207,7 +207,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         if (data.session?.user) {
-          setUser(buildProfileFromSupabaseUser(data.session.user));
+          const profile = buildProfileFromSupabaseUser(data.session.user);
+          const { data: dbProfile } = await supabase.from("profiles").select("nome,role").eq("id", data.session.user.id).maybeSingle();
+          setUser({ ...profile, nome: dbProfile?.nome || profile.nome, role: (dbProfile?.role as Profile["role"]) || profile.role });
           return { success: true };
         }
 
