@@ -94,6 +94,7 @@ export default function MentoriaHojePage() {
 
   // Modo Teoria
   const [assuntoRoteiro, setAssuntoRoteiro] = useState<Assunto | null>(null);
+  const [conteudosAssunto, setConteudosAssunto] = useState<Array<{id:string;titulo:string;orientacao?:string;lei_seca?:string;lei_seca_url?:string;pdf_url?:string;video_url?:string}>>([]);
   const [anotacoesTeoria, setAnotacoesTeoria] = useState<string>("");
   const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
 
@@ -232,6 +233,11 @@ export default function MentoriaHojePage() {
             ? json.assuntos.find((item: Assunto) => item.id === bloco.assunto_id)
             : null;
           setAssuntoRoteiro(assunto || null);
+          const conteudoResponse = await fetch(`/api/mentoria/conteudos?assunto_id=${encodeURIComponent(bloco.assunto_id)}`, { cache: "no-store" });
+          if (conteudoResponse.ok) {
+            const conteudoJson = await conteudoResponse.json();
+            setConteudosAssunto(Array.isArray(conteudoJson.conteudos) ? conteudoJson.conteudos : []);
+          } else setConteudosAssunto([]);
         } catch (err) {
           console.warn("Não foi possível carregar a referência do assunto do bloco:", err);
         }
@@ -1122,6 +1128,19 @@ export default function MentoriaHojePage() {
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Use a referência acima como guia do bloco atual; ela não altera a fila contínua do ciclo.
                   </p>
+                  {conteudosAssunto.map((conteudo) => (
+                    <div key={conteudo.id} className="p-4 rounded-xl border border-blue-200 dark:border-blue-900 bg-blue-50/40 dark:bg-blue-950/20 space-y-3">
+                      <p className="font-black text-sm text-slate-900 dark:text-slate-100">{conteudo.titulo}</p>
+                      {conteudo.orientacao && <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">{conteudo.orientacao}</p>}
+                      {conteudo.lei_seca && <div className="text-xs"><strong>Lei seca / referência:</strong><p className="mt-1 whitespace-pre-wrap text-slate-600 dark:text-slate-400">{conteudo.lei_seca}</p></div>}
+                      <div className="flex flex-wrap gap-2">
+                        {conteudo.lei_seca_url && <a href={conteudo.lei_seca_url} target="_blank" rel="noopener noreferrer"><Button size="sm" variant="outline">Abrir legislação</Button></a>}
+                        {conteudo.pdf_url && <a href={conteudo.pdf_url} target="_blank" rel="noopener noreferrer"><Button size="sm" variant="outline">Abrir PDF</Button></a>}
+                        {conteudo.video_url && <a href={conteudo.video_url} target="_blank" rel="noopener noreferrer"><Button size="sm" variant="outline">Assistir vídeo</Button></a>}
+                      </div>
+                    </div>
+                  ))}
+                  {conteudosAssunto.length === 0 && <p className="text-xs text-amber-700 dark:text-amber-300">Ainda não há material complementar cadastrado para este assunto.</p>}
                 </CardContent>
               </Card>
 
