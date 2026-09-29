@@ -57,7 +57,8 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
     const cargos=(c.concurso_cargos||[]).filter(x=>x.ativo);
     const editais=cargos.flatMap(x=>x.editais_concurso||[]);
     const prova=editais.find(e=>e.id===alvo?.edital_id)?.prova_em||editais.find(e=>e.prova_em)?.prova_em||null;
-    const sigla=(c.orgao.match(/\b[A-Z]{2,6}\b/g)||[]).at(-1)||c.orgao.replace(/[^A-Za-z]/g,"").slice(0,6).toUpperCase();
+    const siglas=c.orgao.match(/\b[A-Z]{2,6}\b/g)||[];
+    const sigla=siglas.length?siglas[siglas.length-1]:c.orgao.replace(/[^A-Za-z]/g,"").slice(0,6).toUpperCase();
     return {id:c.id,nome:c.nome,orgao:c.orgao,sigla,ano:new Date().getFullYear(),nivel:nivel(cargos[0]?.escolaridade),esfera:(c.esfera==="municipal"||c.esfera==="estadual"||c.esfera==="federal"?c.esfera:"estadual") as Concurso["esfera"],status:status(c.status),banca:"",descricao:"Dados provenientes de fonte oficial cadastrada.",vagas_totais:cargos.reduce((s,x)=>s+(x.vagas||0),0),salario_max:Math.max(0,...cargos.map(x=>Number(x.salario||0))),data_prova:prova,edital_url:c.fonte_oficial_url,uf:c.uf,created_at:""};
   }),[raw,alvo?.edital_id]);
 
