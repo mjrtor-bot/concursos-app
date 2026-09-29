@@ -95,6 +95,11 @@ export async function GET(request: NextRequest) {
         });
       }
 
+      // Questões autorais não podem ser tratadas como prova oficial.
+      // O banco atual contém conteúdo IA com metadados de estilo; a UI recebe
+      // esses campos somente como referência de estilo, nunca como procedência.
+      // Questões anuladas/desativadas continuam fora da listagem pública pelo filtro acima.
+
       // Paginação server-side
       const offset = (page - 1) * pageSize;
       query = query.range(offset, offset + pageSize - 1);
@@ -164,9 +169,11 @@ export async function GET(request: NextRequest) {
         tipo: row.tipo,
         dificuldade: row.dificuldade,
         banca: row.banca_nome ?? "",
-        ano: row.ano,
-        orgao: row.orgao_nome ?? "",
-        cargo: row.cargo_nome ?? undefined,
+        // Para conteúdo autoral, ano/órgão/cargo históricos são metadados sintéticos
+        // e não devem ser expostos como procedência oficial ao frontend.
+        ano: row.is_autoral_ia ? 0 : row.ano,
+        orgao: row.is_autoral_ia ? "" : (row.orgao_nome ?? ""),
+        cargo: row.is_autoral_ia ? undefined : (row.cargo_nome ?? undefined),
         explicacao: row.explicacao,
         texto_apoio: row.texto_apoio ?? undefined,
         taxa_acerto_comunidade: row.taxa_acerto ? Number(row.taxa_acerto) : undefined,

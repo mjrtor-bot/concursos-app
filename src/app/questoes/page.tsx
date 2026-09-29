@@ -236,7 +236,7 @@ function QuestoesContent() {
             Banco de Questões
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Resolva questões de provas anteriores com resolução comentada por especialistas
+            Pratique com questões autorais e, quando disponíveis, questões oficiais com procedência identificada
           </p>
         </div>
       </div>

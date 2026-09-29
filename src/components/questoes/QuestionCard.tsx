@@ -175,32 +175,46 @@ export function QuestionCard({
               Questão {numeroQuestao} {totalQuestoes ? `de ${totalQuestoes}` : ""}
             </span>
           )}
-          <Badge variant="primary" size="sm">
-            {questao.banca}
-          </Badge>
-          <Badge variant="outline" size="sm">
-            Ano {questao.ano}
-          </Badge>
-          <Badge variant="secondary" size="sm">
-            {questao.orgao}
-          </Badge>
-          {questao.cargo && (
-            <span className="text-slate-500 text-[11px] hidden md:inline">
-              • {questao.cargo}
-            </span>
+          {questao.is_autoral_ia ? (
+            <>
+              <span
+                className="inline-flex items-center gap-1.5 text-xs font-semibold bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 px-2.5 py-0.5 rounded-md"
+                title="Questão autoral: os metadados de banca indicam apenas o estilo, não a procedência de uma prova oficial"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+                Questão autoral
+              </span>
+              {questao.banca && (
+                <Badge variant="primary" size="sm">
+                  Estilo {questao.banca}
+                </Badge>
+              )}
+            </>
+          ) : (
+            <>
+              {questao.banca && (
+                <Badge variant="primary" size="sm">
+                  {questao.banca}
+                </Badge>
+              )}
+              {questao.ano && (
+                <Badge variant="outline" size="sm">
+                  Ano {questao.ano}
+                </Badge>
+              )}
+              {questao.orgao && (
+                <Badge variant="secondary" size="sm">
+                  {questao.orgao}
+                </Badge>
+              )}
+              {questao.cargo && (
+                <span className="text-slate-500 text-[11px] hidden md:inline">
+                  • {questao.cargo}
+                </span>
+              )}
+            </>
           )}
           {getDificuldadeBadge()}
-
-          {/* Badge Visual Obrigatório: Questão Autoral / IA */}
-          {questao.is_autoral_ia && (
-            <span
-              className="inline-flex items-center gap-1.5 text-xs font-semibold bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 px-2.5 py-0.5 rounded-md"
-              title="Questão autoral gerada por IA"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
-              Questão autoral/IA
-            </span>
-          )}
 
           {/* Badge: Revisada por Especialista */}
           {questao.revisada_por_especialista && (
