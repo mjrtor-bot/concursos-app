@@ -825,6 +825,14 @@ export class MentoriaCicloService {
   static async registrarSessaoConcluida(
     input: MentoriaRegistroSessaoInput
   ): Promise<{
+    // Um plano pausado pode ser consultado, mas não deve avançar o ciclo.
+    const supabaseConfig = this.getClient();
+    if (supabaseConfig) {
+      const { data: cfg } = await supabaseConfig.from("mentoria_config_plano").select("pausado,data_final").eq("usuario_id", input.usuario_id).maybeSingle();
+      if (cfg?.pausado) return { success:false, status:"abandonada", nova_posicao:0, volta_completa:false, error:"Plano pausado. Retome o plano antes de concluir um bloco." };
+      if (cfg?.data_final && cfg.data_final < new Date().toISOString().slice(0,10)) return { success:false, status:"abandonada", nova_posicao:0, volta_completa:false, error:"A data final configurada para o plano já passou. Ajuste a data em Configurar." };
+    }
+
     success: boolean;
     status: MentoriaCicloStatusSessao;
     nova_posicao: number;
