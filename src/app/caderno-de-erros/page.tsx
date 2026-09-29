@@ -32,14 +32,25 @@ export default function CadernoErrosPage() {
   const [editandoNotaId, setEditandoNotaId] = useState<string | null>(null);
   const [notaTexto, setNotaTexto] = useState("");
 
-  const carregarDados = () => {
-    const list = DataService.getCadernoErros();
-    setItens(list);
-    setDisciplinas(DataService.getDisciplinas());
+  const carregarDados = async () => {
+    try {
+      const [res, taxonomia] = await Promise.all([
+        fetch("/api/caderno-erros", { cache: "no-store" }),
+        DataService.carregarDisciplinasTaxonomia(),
+      ]);
+      if (!res.ok) throw new Error(`Falha ao carregar caderno: ${res.status}`);
+      const json = await res.json();
+      setItens(Array.isArray(json.itens) ? json.itens : []);
+      setDisciplinas(taxonomia.disciplinas);
+    } catch (err) {
+      console.warn("[CadernoErros] Usando cache local:", err);
+      setItens(DataService.getCadernoErros());
+      setDisciplinas(DataService.getDisciplinas());
+    }
   };
 
   useEffect(() => {
-    carregarDados();
+    void carregarDados();
   }, []);
 
   const itensFiltrados = itens.filter((item) => {
@@ -61,16 +72,30 @@ export default function CadernoErrosPage() {
   const taxaRecuperacao =
     totalErros > 0 ? Math.round((totalRevisados / totalErros) * 100) : 0;
 
-  const handleRemover = (questaoId: string) => {
+  const handleRemover = async (questaoId: string) => {
+    const res = await fetch(`/api/caderno-erros?questao_id=${encodeURIComponent(questaoId)}`, { method: "DELETE" });
+    if (!res.ok) {
+      info("Não foi possível remover a questão agora.");
+      return;
+    }
     DataService.removerDoCadernoErros(questaoId);
-    carregarDados();
+    await carregarDados();
     info("Questão removida do seu caderno de erros.");
   };
 
-  const handleSalvarNota = (questaoId: string) => {
+  const handleSalvarNota = async (questaoId: string) => {
+    const res = await fetch("/api/caderno-erros", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ questao_id: questaoId, anotacao: notaTexto }),
+    });
+    if (!res.ok) {
+      info("Não foi possível salvar a anotação agora.");
+      return;
+    }
     DataService.salvarAnotacaoErro(questaoId, notaTexto);
     setEditandoNotaId(null);
-    carregarDados();
+    await carregarDados();
     success("Anotação salva com sucesso!");
   };
 
@@ -149,7 +174,7 @@ export default function CadernoErrosPage() {
               onRespostaSalva={(correta) => {
                 if (correta) {
                   success("Excelente! Você dominou este conteúdo!");
-                  carregarDados();
+                  void carregarDados();
                 }
               }}
             />
