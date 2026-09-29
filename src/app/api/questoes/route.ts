@@ -157,6 +157,9 @@ export async function GET(request: NextRequest) {
       const disciplinaNome = new Map((discResult.data || []).map((d: any) => [d.id, d.nome]));
       const assuntoNome = new Map((assResult.data || []).map((a: any) => [a.id, a.nome]));
 
+      // Sanitização de apresentação para conteúdo autoral legado.
+      const bancaEstilo=(v:string)=>String(v||"").replace(/^(?:Estilo\\s+)+/i,"").replace(/^Inédita\\s*\\/\\s*Estilo\\s+/i,"").trim();
+      const textoLimpo=(v:string)=>String(v||"").replace(/R\\$\\s*(\\d{1,3})(\\d{3}),([0-9]{2})\\b/g,"R$ $1.$2,$3").replace(/\\bVariação\\s*\\d+\\b/gi,"").replace(/\\s{2,}/g," ").trim();
       // Remapeia para o formato do tipo Questao do frontend
       const questoes: Questao[] = rows.map((row: any) => ({
         id: row.id,
@@ -166,16 +169,16 @@ export async function GET(request: NextRequest) {
         assunto_nome: assuntoNome.get(row.assunto_id) || undefined,
         subassunto_id: row.subassunto_id ?? null,
         prova_id: row.prova_id ?? null,
-        enunciado: row.enunciado,
+        enunciado: textoLimpo(row.enunciado),
         tipo: row.tipo,
         dificuldade: row.dificuldade,
-        banca: row.banca_nome ?? "",
+        banca: row.is_autoral_ia ? bancaEstilo(row.banca_nome) : (row.banca_nome ?? ""),
         // Para conteúdo autoral, ano/órgão/cargo históricos são metadados sintéticos
         // e não devem ser expostos como procedência oficial ao frontend.
         ano: row.is_autoral_ia ? 0 : row.ano,
         orgao: row.is_autoral_ia ? "" : (row.orgao_nome ?? ""),
         cargo: row.is_autoral_ia ? undefined : (row.cargo_nome ?? undefined),
-        explicacao: row.explicacao,
+        explicacao: textoLimpo(row.explicacao),
         texto_apoio: row.texto_apoio ?? undefined,
         taxa_acerto_comunidade: row.taxa_acerto ? Number(row.taxa_acerto) : undefined,
         total_respostas_comunidade: row.total_respostas ?? 0,
