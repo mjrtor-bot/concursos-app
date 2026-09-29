@@ -158,8 +158,8 @@ export async function GET(request: NextRequest) {
       const assuntoNome = new Map((assResult.data || []).map((a: any) => [a.id, a.nome]));
 
       // Sanitização de apresentação para conteúdo autoral legado.
-      const bancaEstilo=(v:string)=>String(v||"").replace(/^(?:Estilo\\s+)+/i,"").replace(/^Inédita\\s*\\/\\s*Estilo\\s+/i,"").trim();
-      const textoLimpo=(v:string)=>String(v||"").replace(/R\\$\\s*(\\d{1,3})(\\d{3}),([0-9]{2})\\b/g,"R$ $1.$2,$3").replace(/\\bVariação\\s*\\d+\\b/gi,"").replace(/\\s{2,}/g," ").trim();
+      const bancaEstilo=(v:string)=>String(v||"").replace(/^(?:Estilo\s+)+/i,"").replace(/^Inédita\s*\/\s*Estilo\s+/i,"").trim();
+      const textoLimpo=(v:string)=>String(v||"").replace(/R\$\s*(\d{1,3})(\d{3}),([0-9]{2})\b/g,"R$ $1.$2,$3").replace(/\bVariação\s*\d+\b/gi,"").replace(/\s{2,}/g," ").trim();
       // Remapeia para o formato do tipo Questao do frontend
       const questoes: Questao[] = rows.map((row: any) => ({
         id: row.id,
