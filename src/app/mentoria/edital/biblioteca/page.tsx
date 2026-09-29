@@ -33,6 +33,7 @@ export default function BibliotecaEditaisPage() {
   const [arquivo,setArquivo]=useState<File|null>(null);
   const [enviando,setEnviando]=useState(false);
   const [mensagem,setMensagem]=useState("");
+  const [aplicando,setAplicando]=useState<string|null>(null);
 
   async function carregar(){
     setLoading(true); setErro("");
@@ -53,6 +54,17 @@ export default function BibliotecaEditaisPage() {
   useEffect(()=>{const t=setTimeout(carregar,250);return()=>clearTimeout(t);},[q,carreira,uf,status]);
 
   const ufs=useMemo(()=>Array.from(new Set(editais.map(e=>e.uf).filter(Boolean) as string[])).sort(),[editais]);
+
+  async function usarNoPlanejamento(id:string){
+    setAplicando(id); setMensagem("");
+    try{
+      const r=await fetch(`/api/editais/${id}/usar`,{method:"POST"});
+      const j=await r.json();
+      if(!r.ok)throw new Error(j.error||"Falha ao aplicar edital");
+      setMensagem(`${j.aviso} ${j.topicos} tópicos adicionados ao seu planejamento.`);
+    }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao aplicar edital");}
+    finally{setAplicando(null);}
+  }
 
   async function enviar(e:FormEvent<HTMLFormElement>){
     e.preventDefault(); setMensagem("");
@@ -95,7 +107,7 @@ export default function BibliotecaEditaisPage() {
          <div className="flex justify-between gap-3"><div><p className="text-xs font-bold text-indigo-600">{ed.sigla||ed.orgao_nome}{ed.uf?" · "+ed.uf:""}</p><h2 className="text-lg font-black">{ed.cargo}</h2></div><span className="h-fit rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-bold">{statusLabel[ed.status]||ed.status}</span></div>
          <dl className="mt-4 grid grid-cols-2 gap-2 text-sm"><div><dt className="text-slate-500">Banca</dt><dd className="font-semibold">{ed.banca||"Não informado"}</dd></div><div><dt className="text-slate-500">Edital</dt><dd className="font-semibold">{ed.edital_numero||"Não informado"}</dd></div><div><dt className="text-slate-500">Publicação</dt><dd>{new Date(ed.data_publicacao+"T12:00:00").toLocaleDateString("pt-BR")}</dd></div><div><dt className="text-slate-500">Prova</dt><dd>{ed.data_prova?new Date(ed.data_prova+"T12:00:00").toLocaleDateString("pt-BR"):"Data a definir"}</dd></div><div><dt className="text-slate-500">Disciplinas</dt><dd>{ed.total_disciplinas}</dd></div><div><dt className="text-slate-500">Tópicos</dt><dd>{ed.total_topicos}</dd></div></dl>
          {["prova_realizada","encerrado","expirado"].includes(ed.status)&&<p className="mt-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 p-2 text-xs text-amber-800 dark:text-amber-300">Este concurso já foi realizado. O conteúdo pode ser usado como referência, mas um novo edital poderá apresentar alterações.</p>}
-         <div className="mt-4 flex flex-wrap gap-2"><a href={ed.fonte_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-lg border px-3 py-2 text-sm font-semibold">Fonte oficial <ExternalLink className="h-3.5 w-3.5"/></a>{ed.pdf_url&&<a href={ed.pdf_url} target="_blank" rel="noreferrer" className="rounded-lg border px-3 py-2 text-sm font-semibold">Ver PDF</a>}<button className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-bold text-white" title="A integração com o ciclo será habilitada após confirmação da estrutura do edital.">Usar para meu planejamento</button></div>
+         <div className="mt-4 flex flex-wrap gap-2"><a href={ed.fonte_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 rounded-lg border px-3 py-2 text-sm font-semibold">Fonte oficial <ExternalLink className="h-3.5 w-3.5"/></a>{ed.pdf_url&&<a href={ed.pdf_url} target="_blank" rel="noreferrer" className="rounded-lg border px-3 py-2 text-sm font-semibold">Ver PDF</a>}<button onClick={()=>usarNoPlanejamento(ed.id)} disabled={aplicando===ed.id} className="rounded-lg bg-indigo-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-50">{aplicando===ed.id?"Aplicando...":"Usar para meu planejamento"}</button></div>
        </article>)}</div>}
     </section>
 
