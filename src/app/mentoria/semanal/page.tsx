@@ -40,6 +40,8 @@ export default function PlanejamentoSemanalPage() {
   const [agora, setAgora] = useState<Date | null>(null);
   const [calendario, setCalendario] = useState<{ tarefas:any[]; atrasadas:number; previsao_termino:string|null }>({ tarefas:[], atrasadas:0, previsao_termino:null });
   const [replanejando, setReplanejando] = useState(false);
+  const [arrastandoId, setArrastandoId] = useState<string | null>(null);
+  const [movendoMeta, setMovendoMeta] = useState(false);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setAgora(new Date()));
@@ -70,6 +72,23 @@ export default function PlanejamentoSemanalPage() {
     }
     carregarDados();
   }, [user]);
+
+  const dataISO = (d: Date) => {
+    const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  };
+
+  async function moverMeta(tarefaId: string, destino: Date) {
+    if (movendoMeta) return;
+    setMovendoMeta(true);
+    try {
+      const r=await fetch("/api/mentoria/calendario",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({tarefa_id:tarefaId,data_planejada:dataISO(destino),ordem_dia:1})});
+      if(!r.ok) throw new Error("Falha ao mover meta");
+      const cal=await fetch("/api/mentoria/calendario",{cache:"no-store"}).then(x=>x.json());
+      setCalendario(cal);
+    } catch(err) { console.error("Erro ao mover meta:",err); }
+    finally { setMovendoMeta(false); setArrastandoId(null); }
+  }
 
   async function replanejarAtrasos() {
     setReplanejando(true);
@@ -399,9 +418,7 @@ export default function PlanejamentoSemanalPage() {
             <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">
               Grade de Estudo de Domingo a Sábado
             </CardTitle>
-            <p className="text-xs text-slate-500">
-              Distribuição harmônica de matérias conforme o algoritmo Hamilton-Hare
-            </p>
+            <p className="text-xs text-slate-500">Arraste uma meta pendente para outro dia para replanejá-la. A alteração é salva no servidor.</p>
           </div>
 
           <div className="flex items-center gap-1.5 flex-wrap text-xs">
@@ -442,7 +459,9 @@ export default function PlanejamentoSemanalPage() {
               return (
                 <div
                   key={dia.dia_semana}
-                  className={`rounded-2xl border p-3.5 flex flex-col transition-all ${
+                  onDragOver={(e) => { if (arrastandoId) e.preventDefault(); }}
+                  onDrop={(e) => { e.preventDefault(); if (arrastandoId && dataDoDia) void moverMeta(arrastandoId, dataDoDia); }}
+                  className={`rounded-2xl border p-3.5 flex flex-col transition-all ${arrastandoId ? "ring-1 ring-indigo-300 dark:ring-indigo-700 " : ""}${
                     isHoje
                       ? "bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-300 dark:border-indigo-700 ring-2 ring-indigo-500/20"
                       : statusDia === "cumprido"
@@ -495,7 +514,10 @@ export default function PlanejamentoSemanalPage() {
                         return (
                         <div
                           key={bloco.id}
-                          className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5"
+                          draggable={meta?.status_calendario !== "cumprida"}
+                          onDragStart={(e) => { e.dataTransfer.effectAllowed="move"; setArrastandoId(bloco.id); }}
+                          onDragEnd={() => setArrastandoId(null)}
+                          className={`p-2.5 rounded-xl ${arrastandoId === bloco.id ? "opacity-50 " : ""}bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5"
                         >
                           <div className="flex items-center justify-between gap-1">
                             <span className="flex items-center gap-1 text-[10px] font-bold text-slate-600 dark:text-slate-300">
