@@ -19,7 +19,12 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      // Consulta de usuários através da tabela auth / profiles
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return NextResponse.json({ success:false, error:"Não autenticado." }, { status:401 });
+      const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      if (!me || !["admin","editor"].includes(me.role)) return NextResponse.json({ success:false, error:"Sem permissão." }, { status:403 });
+
+      // Consulta de usuários através da tabela profiles
       let query = supabase
         .from("profiles")
         .select(
@@ -80,6 +85,11 @@ export async function PUT(request: NextRequest) {
     if (isSupabaseConfigured) {
       const supabase = await createClientServer();
       if (supabase) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return NextResponse.json({ success:false, error:"Não autenticado." }, { status:401 });
+        const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+        if (!me || !["admin","editor"].includes(me.role)) return NextResponse.json({ success:false, error:"Sem permissão." }, { status:403 });
+        if (role && !["user","admin","editor"].includes(role)) return NextResponse.json({ success:false, error:"Role inválido." }, { status:400 });
         const { error } = await supabase
           .from("profiles")
           .update({
