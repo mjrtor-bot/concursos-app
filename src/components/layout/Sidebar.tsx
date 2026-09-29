@@ -37,28 +37,25 @@ interface SidebarProps {
 export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
-  const { concursoAtivo, diasAteAProva } = useConcurso();
+  const { concursoAtivo, prazoProva } = useConcurso();
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [sequenciaDias, setSequenciaDias] = useState(0);
   const [questoesHoje, setQuestoesHoje] = useState(0);
-  const [isMentoriaOpen, setIsMentoriaOpen] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("mentoria_submenu_open");
-      if (saved !== null) return saved === "true";
-    }
-    return true;
-  });
+  const [isMentoriaOpen, setIsMentoriaOpen] = useState(true);
 
   // Auto-expand quando estiver em qualquer rota da mentoria
   useEffect(() => {
-    if (pathname.startsWith("/mentoria")) {
+    if (!pathname.startsWith("/mentoria")) return;
+
+    const frame = window.requestAnimationFrame(() => {
       setIsMentoriaOpen(true);
       try {
         localStorage.setItem("mentoria_submenu_open", "true");
       } catch {
         // Ignore storage errors
       }
-    }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
   const toggleMentoria = () => {
@@ -74,13 +71,16 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   };
 
   useEffect(() => {
-    try {
-      const stats = DataService.getEstatisticas();
-      setSequenciaDias(stats.sequencia_dias ?? 0);
-      setQuestoesHoje(stats.questoes_hoje ?? 0);
-    } catch {
-      // Fallback gracioso
-    }
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        const stats = DataService.getEstatisticas();
+        setSequenciaDias(stats.sequencia_dias ?? 0);
+        setQuestoesHoje(stats.questoes_hoje ?? 0);
+      } catch {
+        // Fallback gracioso
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
 
   const mentoriaSubItems = [
@@ -222,14 +222,20 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
             <p className="font-bold text-xs text-slate-900 dark:text-slate-100 line-clamp-1">
               {concursoAtivo ? concursoAtivo.nome : "Selecione um Concurso"}
             </p>
-            {diasAteAProva !== null && (
-              <div className="flex items-center gap-1.5 mt-2 text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-900/80 px-2 py-1 rounded-md">
-                <Clock className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                <span>
-                  Faltam <strong className="text-blue-600 dark:text-blue-400">{diasAteAProva}</strong> dias para a prova
-                </span>
-              </div>
-            )}
+            <div className="flex items-center gap-1.5 mt-2 text-[11px] font-medium text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-900/80 px-2 py-1 rounded-md">
+              <Clock className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+              <span>
+                {prazoProva.situacao === "futura" ? (
+                  <>Faltam <strong className="text-blue-600 dark:text-blue-400">{prazoProva.dias}</strong> dias para a prova</>
+                ) : prazoProva.situacao === "hoje" ? (
+                  "A prova é hoje! 🎯"
+                ) : prazoProva.situacao === "realizada" ? (
+                  "Prova realizada"
+                ) : (
+                  "Data da prova a definir"
+                )}
+              </span>
+            </div>
           </div>
         </div>
 

@@ -1,12 +1,10 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import {
+  Disciplina,
+  Assunto,
   MentoriaPerfil,
   MentoriaDisponibilidade,
   MentoriaEditalTopico,
-  MentoriaPlano,
-  MentoriaTarefa,
-  MentoriaSessaoEstudo,
-  MentoriaRevisao,
   MentoriaDashboardStats,
   MentoriaDiaProgresso,
   MentoriaNivel,
@@ -17,14 +15,12 @@ import {
   MetasEstudoConfig,
   MissaoDiariaItem,
   GradeSemanalDia,
-  MentoriaTarefaTipo,
-  MentoriaTarefaPrioridade,
   MentoriaTarefaStatus,
   EditalVerticalizadoItem,
   EditalVerticalizadoResumo,
 } from "@/types";
 import { MentoriaCicloService } from "./mentoriaCicloService";
-import { MOCK_DISCIPLINAS, MOCK_ASSUNTOS, DISCIPLINAS_MASSIVAS, ASSUNTOS_MASSIVOS } from "@/data/mockData";
+import { DISCIPLINAS_MASSIVAS, ASSUNTOS_MASSIVOS } from "@/data/mockData";
 
 // ── Chaves de Armazenamento Local de Contingência ─────────────────────────────
 const STORAGE_KEYS = {
@@ -343,7 +339,10 @@ export class MentoriaService {
     const hojeDiaSemana = new Date().getDay(); // 0 = Dom, 1 = Seg...
     const dispHoje = disponibilidade.find((d) => d.dia_semana === hojeDiaSemana);
     const metaDiariaMinutos = dispHoje ? dispHoje.minutos_disponiveis : 0;
-    const metaSemanalMinutos = disponibilidade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0);
+    const metaSemanalMinutos = this.calcularCargaPlanejada(
+      disponibilidade,
+      perfil.duracao_bloco_minutos || 40
+    ).minutos_configurados;
 
     // 3. Questões e acertos reais da semana corrente
     let questoesSemana = 0;
@@ -644,6 +643,26 @@ export class MentoriaService {
     };
   }
 
+  static calcularCargaPlanejada(
+    disponibilidade: Pick<MentoriaDisponibilidade, "dia_semana" | "minutos_disponiveis">[],
+    duracaoBlocoMinutos: number
+  ): { minutos_configurados: number; blocos_completos: number; minutos_planejados: number; minutos_restantes: number } {
+    const minutosConfigurados = disponibilidade.reduce(
+      (acc, dia) => acc + Math.max(0, dia.minutos_disponiveis || 0),
+      0
+    );
+    const duracaoBloco = Math.max(1, duracaoBlocoMinutos || 40);
+    const blocosCompletos = Math.floor(minutosConfigurados / duracaoBloco);
+    const minutosPlanejados = blocosCompletos * duracaoBloco;
+
+    return {
+      minutos_configurados: minutosConfigurados,
+      blocos_completos: blocosCompletos,
+      minutos_planejados: minutosPlanejados,
+      minutos_restantes: minutosConfigurados - minutosPlanejados,
+    };
+  }
+
   // ── 5. METAS DE ESTUDO DIÁRIAS E SEMANAIS ──────────────────────────────────
   static async getMetasEstudo(usuarioId: string): Promise<MetasEstudoConfig> {
     const perfil = await this.getPerfil(usuarioId);
@@ -656,7 +675,10 @@ export class MentoriaService {
     const metaDiariaMinutos = dispHoje ? dispHoje.minutos_disponiveis : 120;
 
     const metaSemanalQuestoes = metaDiariaQuestoes * 6;
-    const metaSemanalMinutos = disponibilidade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0) || 720;
+    const metaSemanalMinutos = this.calcularCargaPlanejada(
+      disponibilidade,
+      perfil?.duracao_bloco_minutos || 40
+    ).minutos_configurados;
 
     const hojeIso = getDataBrasilia(new Date());
     let questoesHoje = 0;
@@ -726,41 +748,45 @@ export class MentoriaService {
       { nome: "Sábado", curto: "Sáb" },
     ];
 
+    const duracaoBloco = plano?.duracao_bloco_minutos || 40;
     const blocosDisponiveis = plano?.blocos || [];
-    let blocoPointer = 0;
+    const carga = this.calcularCargaPlanejada(disponibilidade, duracaoBloco);
+    const limiteBlocos = Math.min(carga.blocos_completos, blocosDisponiveis.length);
+    const sequencia = Array.from({ length: limiteBlocos }, (_, index) => {
+      const posicao = (plano!.posicao_atual_index + index) % blocosDisponiveis.length;
+      return blocosDisponiveis[posicao];
+    });
+    let sequenciaPointer = 0;
 
     return nomesDias.map((diaInfo, diaIndex) => {
       const disp = disponibilidade.find((d) => d.dia_semana === diaIndex);
-      const minutosDisponiveis = disp ? disp.minutos_disponiveis : 0;
-      const duracaoBloco = plano?.duracao_bloco_minutos || 40;
-      const numBlocosDia = minutosDisponiveis > 0 ? Math.max(1, Math.floor(minutosDisponiveis / duracaoBloco)) : 0;
-
+      const minutosDisponiveis = Math.max(0, disp?.minutos_disponiveis || 0);
+      const numBlocosDia = Math.floor(minutosDisponiveis / duracaoBloco);
       const blocosDia: GradeSemanalDia["blocos"] = [];
 
-      if (numBlocosDia > 0 && blocosDisponiveis.length > 0) {
-        for (let b = 0; b < numBlocosDia; b++) {
-          const blocoModelo = blocosDisponiveis[blocoPointer % blocosDisponiveis.length];
-          blocoPointer++;
-
-          blocosDia.push({
-            id: `grade-${diaIndex}-${b}-${blocoModelo.disciplina_id.slice(0, 8)}`,
-            ordem: b + 1,
-            disciplina_id: blocoModelo.disciplina_id,
-            disciplina_nome: blocoModelo.disciplina_nome,
-            assunto_id: blocoModelo.assunto_id,
-            assunto_nome: blocoModelo.assunto_nome,
-            tipo: blocoModelo.tipo,
-            duracao_minutos: duracaoBloco,
-            prioridade_nivel: blocoModelo.prioridade_nivel,
-          });
-        }
+      for (let b = 0; b < numBlocosDia && sequenciaPointer < sequencia.length; b++) {
+        const blocoModelo = sequencia[sequenciaPointer++];
+        blocosDia.push({
+          id: `grade-${diaIndex}-${b}-${blocoModelo.id}`,
+          ordem: b + 1,
+          disciplina_id: blocoModelo.disciplina_id,
+          disciplina_nome: blocoModelo.disciplina_nome,
+          assunto_id: blocoModelo.assunto_id,
+          assunto_nome: blocoModelo.assunto_nome,
+          tipo: blocoModelo.tipo,
+          duracao_minutos: duracaoBloco,
+          prioridade_nivel: blocoModelo.prioridade_nivel,
+        });
       }
 
+      const minutosPlanejados = blocosDia.length * duracaoBloco;
       return {
         dia_semana: diaIndex,
         nome_dia: diaInfo.nome,
         nome_curto: diaInfo.curto,
         minutos_disponiveis: minutosDisponiveis,
+        minutos_planejados: minutosPlanejados,
+        minutos_restantes: Math.max(0, minutosDisponiveis - minutosPlanejados),
         blocos: blocosDia,
       };
     });
@@ -776,16 +802,20 @@ export class MentoriaService {
     const hojeDiaSemana = new Date().getDay();
     const disponibilidade = await this.getDisponibilidade(usuarioId);
     const dispHoje = disponibilidade.find((d) => d.dia_semana === hojeDiaSemana);
-    const minutosHoje = dispHoje ? dispHoje.minutos_disponiveis : 120;
+    const minutosHoje = Math.max(0, dispHoje?.minutos_disponiveis || 0);
     const duracaoBloco = plano.duracao_bloco_minutos || 40;
-    const qtdBlocosHoje = Math.max(1, Math.min(6, Math.floor(minutosHoje / duracaoBloco)));
+    const qtdBlocosHoje = Math.min(6, Math.floor(minutosHoje / duracaoBloco));
+
+    if (qtdBlocosHoje === 0) {
+      return [];
+    }
 
     const missoes: MissaoDiariaItem[] = [];
     const posAtual = plano.posicao_atual_index;
 
     // Buscar respostas de hoje para calcular progresso real por disciplina
     const hojeIso = new Date().toISOString().split("T")[0];
-    let respostasHojeDiscMap = new Map<string, number>();
+    const respostasHojeDiscMap = new Map<string, number>();
 
     const supabase = this.getClient();
     if (supabase && usuarioId) {
@@ -814,13 +844,12 @@ export class MentoriaService {
       const isPrimeiroBloco = i === 0;
 
       // Calcular status e progresso
-      let status: MentoriaTarefaStatus = isPrimeiroBloco ? "em_andamento" : "pendente";
+      const status: MentoriaTarefaStatus = isPrimeiroBloco ? "em_andamento" : "pendente";
       let progresso = 0;
 
       const questoesFeitas = respostasHojeDiscMap.get(bloco.disciplina_id) || 0;
       if (bloco.tipo === "QUESTOES") {
         progresso = Math.min(100, Math.round((questoesFeitas / (bloco.quantidade_questoes_sugerida || 15)) * 100));
-        if (progresso >= 100) status = "concluida";
       }
 
       missoes.push({
@@ -851,38 +880,38 @@ export class MentoriaService {
     // 1. Buscar status salvo de tópicos, respostas e taxonomia dinâmica
     let topicosSalvos: MentoriaEditalTopico[] = [];
     let respostasUsuario: { assunto_id: string; correta: boolean; created_at: string }[] = [];
-    let disciplinasFonte: any[] = DISCIPLINAS_MASSIVAS;
-    let assuntosFonte: any[] = ASSUNTOS_MASSIVOS;
+    let disciplinasFonte: Disciplina[] = DISCIPLINAS_MASSIVAS;
+    let assuntosFonte: Assunto[] = ASSUNTOS_MASSIVOS;
 
     if (supabase) {
       try {
-        const promises: PromiseLike<any>[] = [
+        const [resDisc, resAss, resTopicos, resRespostas] = await Promise.all([
           supabase.from("disciplinas").select("*").order("ordem", { ascending: true }),
           supabase.from("assuntos").select("*").order("ordem", { ascending: true }),
-        ];
+          usuarioId
+            ? supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId)
+            : Promise.resolve({ data: [] as MentoriaEditalTopico[] }),
+          usuarioId
+            ? supabase
+                .from("respostas_usuarios")
+                .select("assunto_id, correta, created_at")
+                .eq("usuario_id", usuarioId)
+            : Promise.resolve({ data: [] as { assunto_id: string; correta: boolean; created_at: string }[] }),
+        ]);
 
-        if (usuarioId) {
-          promises.push(
-            supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
-            supabase.from("respostas_usuarios").select("assunto_id, correta, created_at").eq("usuario_id", usuarioId)
-          );
+        if (resDisc.data && resDisc.data.length > 0) {
+          disciplinasFonte = resDisc.data as Disciplina[];
         }
-
-        const resultados = await Promise.all(promises);
-        const resDisc = resultados[0];
-        const resAss = resultados[1];
-        if (resDisc?.data && resDisc.data.length > 0) {
-          disciplinasFonte = resDisc.data;
+        if (resAss.data && resAss.data.length > 0) {
+          assuntosFonte = resAss.data as Assunto[];
         }
-        if (resAss?.data && resAss.data.length > 0) {
-          assuntosFonte = resAss.data;
-        }
-
-        if (usuarioId && resultados.length >= 4) {
-          const resTopicos = resultados[2];
-          const resRespostas = resultados[3];
-          if (resTopicos?.data) topicosSalvos = resTopicos.data;
-          if (resRespostas?.data) respostasUsuario = resRespostas.data;
+        if (resTopicos.data) topicosSalvos = resTopicos.data as MentoriaEditalTopico[];
+        if (resRespostas.data) {
+          respostasUsuario = resRespostas.data as {
+            assunto_id: string;
+            correta: boolean;
+            created_at: string;
+          }[];
         }
       } catch (err) {
         console.error("Erro ao buscar dados do edital verticalizado no Supabase:", err);

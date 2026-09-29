@@ -15,20 +15,13 @@ import {
   Layers,
   ArrowRight,
   CheckCircle2,
-  AlertCircle,
   Timer,
-  BarChart3,
-  Flame,
-  Info,
   Sliders,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
-import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 import {
   GradeSemanalDia,
-  MentoriaCicloPlanoCompleto,
-  MetasEstudoConfig,
   MentoriaDashboardStats,
   MentoriaTarefaTipo,
 } from "@/types";
@@ -40,12 +33,15 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 export default function PlanejamentoSemanalPage() {
   const { user } = useAuth();
   const [gradeSemanal, setGradeSemanal] = useState<GradeSemanalDia[]>([]);
-  const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
-  const [metas, setMetas] = useState<MetasEstudoConfig | null>(null);
   const [stats, setStats] = useState<MentoriaDashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [semanaOffset, setSemanaOffset] = useState<number>(0);
-  const [diaFoco, setDiaFoco] = useState<number | null>(null);
+  const [agora, setAgora] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => setAgora(new Date()));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     async function carregarDados() {
@@ -55,15 +51,11 @@ export default function PlanejamentoSemanalPage() {
       }
       try {
         setLoading(true);
-        const [grade, ciclo, met, st] = await Promise.all([
+        const [grade, st] = await Promise.all([
           MentoriaService.getGradeSemanalDistribuida(user.id),
-          MentoriaCicloService.obterPlanoCiclo(user.id),
-          MentoriaService.getMetasEstudo(user.id),
           MentoriaService.getDashboardStats(user.id),
         ]);
         setGradeSemanal(grade);
-        setPlanoCiclo(ciclo);
-        setMetas(met);
         setStats(st);
       } catch (err) {
         console.error("Erro ao carregar planejamento semanal:", err);
@@ -75,8 +67,7 @@ export default function PlanejamentoSemanalPage() {
   }, [user]);
 
   // Cálculos de datas reais da semana selecionada (Domingo a Sábado)
-  const getDatasDaSemana = (offsetSemanas: number) => {
-    const hoje = new Date();
+  const getDatasDaSemana = (offsetSemanas: number, hoje: Date) => {
     const diaAtual = hoje.getDay(); // 0 = Dom, 6 = Sáb
     // Achar o domingo desta semana de referência
     const domingoBase = new Date(hoje);
@@ -91,7 +82,7 @@ export default function PlanejamentoSemanalPage() {
     return dias;
   };
 
-  const diasSemanaSelecionada = getDatasDaSemana(semanaOffset);
+  const diasSemanaSelecionada = agora ? getDatasDaSemana(semanaOffset, agora) : [];
   const dataInicioSemana = diasSemanaSelecionada[0];
   const dataFimSemana = diasSemanaSelecionada[6];
 
@@ -118,19 +109,26 @@ export default function PlanejamentoSemanalPage() {
     return `${diaIni} ${mesIni} - ${diaFim} ${mesFim}, ${ano}`;
   };
 
-  const hoje = new Date();
-  const hojeString = hoje.toISOString().split("T")[0];
-  const hojeDiaIndex = hoje.getDay();
+  const hojeDiaIndex = agora?.getDay() ?? 0;
 
   // Métricas da semana
-  const totalMinutosPlanejados = gradeSemanal.reduce((acc, d) => acc + d.minutos_disponiveis, 0);
-  const totalBlocosPlanejados = gradeSemanal.reduce((acc, d) => acc + d.blocos.length, 0);
+  const totalMinutosDisponiveis = gradeSemanal.reduce(
+    (acc, dia) => acc + dia.minutos_disponiveis,
+    0
+  );
+  const totalMinutosPlanejados = gradeSemanal.reduce(
+    (acc, dia) => acc + dia.minutos_planejados,
+    0
+  );
+  const totalMinutosRestantes = gradeSemanal.reduce(
+    (acc, dia) => acc + dia.minutos_restantes,
+    0
+  );
+  const totalBlocosPlanejados = gradeSemanal.reduce((acc, dia) => acc + dia.blocos.length, 0);
   const horasPlanejadas = (totalMinutosPlanejados / 60).toFixed(1);
 
   const minutosExecutados = semanaOffset === 0
     ? (stats?.minutos_estudados_semana || 0)
-    : semanaOffset < 0
-    ? totalMinutosPlanejados * 0.9 // Histórico aproximado para semanas passadas
     : 0;
   const horasExecutadas = (minutosExecutados / 60).toFixed(1);
   const taxaCumprimento = totalMinutosPlanejados > 0
@@ -175,6 +173,17 @@ export default function PlanejamentoSemanalPage() {
         return <Badge variant="secondary" size="sm">Padrão</Badge>;
     }
   };
+
+  if (loading || !agora) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          Carregando planejamento semanal...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 pb-12">
@@ -276,7 +285,7 @@ export default function PlanejamentoSemanalPage() {
                 {horasPlanejadas}h
               </h3>
               <p className="text-[10px] text-slate-500 mt-0.5">
-                {totalMinutosPlanejados} min programados
+                {totalMinutosPlanejados} min em blocos
               </p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
@@ -332,13 +341,15 @@ export default function PlanejamentoSemanalPage() {
           <CardContent className="p-4 flex items-center justify-between">
             <div>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                Total de Blocos
+                Disponibilidade
               </p>
               <h3 className="text-xl font-black text-slate-900 dark:text-slate-100 mt-0.5">
-                {totalBlocosPlanejados}
+                {(totalMinutosDisponiveis / 60).toFixed(1)}h
               </h3>
               <p className="text-[10px] text-slate-500 mt-0.5">
-                ~{planoCiclo?.duracao_bloco_minutos || 40}m por bloco
+                {totalMinutosRestantes > 0
+                  ? `${totalMinutosRestantes} min livres após os blocos`
+                  : `${totalBlocosPlanejados} blocos de estudo`}
               </p>
             </div>
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
@@ -380,10 +391,8 @@ export default function PlanejamentoSemanalPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
             {gradeSemanal.map((dia) => {
               const dataDoDia = diasSemanaSelecionada[dia.dia_semana];
-              const dataIso = dataDoDia.toISOString().split("T")[0];
               const isHoje = semanaOffset === 0 && dia.dia_semana === hojeDiaIndex;
               const isPassado = semanaOffset < 0 || (semanaOffset === 0 && dia.dia_semana < hojeDiaIndex);
-              const isFuturo = semanaOffset > 0 || (semanaOffset === 0 && dia.dia_semana > hojeDiaIndex);
               const isDescanso = dia.minutos_disponiveis === 0 || dia.blocos.length === 0;
 
               let statusDia: "cumprido" | "em_andamento" | "pendente" | "descanso" = "pendente";
@@ -422,7 +431,9 @@ export default function PlanejamentoSemanalPage() {
                         </span>
                       </div>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                        {dia.minutos_disponiveis > 0 ? `${dia.minutos_disponiveis} min` : "Livre"}
+                        {dia.minutos_disponiveis > 0
+                          ? `${dia.minutos_planejados} / ${dia.minutos_disponiveis} min`
+                          : "Livre"}
                       </span>
                     </div>
 
@@ -445,7 +456,7 @@ export default function PlanejamentoSemanalPage() {
                         <span className="text-[10px]">Recuperação mental</span>
                       </div>
                     ) : (
-                      dia.blocos.map((bloco, idx) => (
+                      dia.blocos.map((bloco) => (
                         <div
                           key={bloco.id}
                           className="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5"

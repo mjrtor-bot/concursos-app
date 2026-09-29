@@ -3,28 +3,22 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Compass,
   Calendar,
   Clock,
   CheckCircle2,
-  AlertCircle,
   BarChart3,
   BookOpen,
   Layers,
   Sparkles,
   ArrowRight,
   Settings,
-  Flame,
   Target,
   FileCheck,
   Brain,
-  History,
   Play,
   RotateCcw,
   BrainCircuit,
   Award,
-  RotateCw,
-  CheckSquare2,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -37,7 +31,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function MentoriaDashboardPage() {
   const { user } = useAuth();
-  const { concursoAtivo } = useConcurso();
+  const { prazoProva } = useConcurso();
   const [stats, setStats] = useState<MentoriaDashboardStats | null>(null);
   const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -195,21 +189,21 @@ export default function MentoriaDashboardPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          {stats.dias_restantes_prova !== null && (
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900 rounded-xl text-blue-800 dark:text-blue-300">
-              <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-              <div>
-                <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold">CONTAGEM REGRESSIVA</p>
-                <p className="text-sm font-black">
-                  {stats.dias_restantes_prova > 0
-                    ? `Faltam ${stats.dias_restantes_prova} dias`
-                    : stats.dias_restantes_prova === 0
-                    ? "É HOJE! 🎯"
-                    : "Prova realizada"}
-                </p>
-              </div>
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-900 rounded-xl text-blue-800 dark:text-blue-300">
+            <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div>
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-semibold">PRAZO DA PROVA</p>
+              <p className="text-sm font-black">
+                {prazoProva.situacao === "futura"
+                  ? `Faltam ${prazoProva.dias} dias`
+                  : prazoProva.situacao === "hoje"
+                  ? "É HOJE! 🎯"
+                  : prazoProva.situacao === "realizada"
+                  ? "Prova realizada"
+                  : "Data a definir"}
+              </p>
             </div>
-          )}
+          </div>
 
           <Link href="/mentoria/configurar">
             <Button

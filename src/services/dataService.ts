@@ -35,7 +35,34 @@ const STORAGE_KEYS = {
   ANOTACOES: "concursos_app_anotacoes",
   SIMULADOS_CUSTOM: "concursos_app_simulados_custom",
   QUESTOES_CUSTOM: "concursos_app_questoes_custom",
+  TAXONOMIA_DISCIPLINAS: "concursos_app_taxonomia_disciplinas",
 };
+
+export type FonteTaxonomiaDisciplinas = "supabase" | "cache" | "mock" | "indisponivel";
+
+export interface TaxonomiaDisciplinasResultado {
+  disciplinas: Disciplina[];
+  fonte: FonteTaxonomiaDisciplinas;
+}
+
+function normalizarDisciplina(valor: unknown): Disciplina | null {
+  if (!valor || typeof valor !== "object") return null;
+
+  const registro = valor as Partial<Disciplina>;
+  if (typeof registro.id !== "string" || !registro.id.trim()) return null;
+  if (typeof registro.nome !== "string" || !registro.nome.trim()) return null;
+
+  return {
+    id: registro.id,
+    nome: registro.nome,
+    slug: typeof registro.slug === "string" ? registro.slug : registro.id,
+    descricao: typeof registro.descricao === "string" ? registro.descricao : "",
+    icone: typeof registro.icone === "string" ? registro.icone : "BookOpen",
+    cor: typeof registro.cor === "string" ? registro.cor : "#3b82f6",
+    ordem: typeof registro.ordem === "number" ? registro.ordem : 0,
+    created_at: typeof registro.created_at === "string" ? registro.created_at : "",
+  };
+}
 
 // Helper for safe client localStorage
 function getFromStorage<T>(key: string, defaultValue: T): T {
@@ -122,6 +149,50 @@ export const DataService = {
 
   getDisciplinaById(id: string): Disciplina | undefined {
     return MOCK_DISCIPLINAS.find((d) => d.id === id);
+  },
+
+  async carregarDisciplinasTaxonomia(): Promise<TaxonomiaDisciplinasResultado> {
+    const disciplinasCacheadas = getFromStorage<Disciplina[]>(
+      STORAGE_KEYS.TAXONOMIA_DISCIPLINAS,
+      []
+    )
+      .map(normalizarDisciplina)
+      .filter((disciplina): disciplina is Disciplina => disciplina !== null)
+      .sort((a, b) => a.ordem - b.ordem);
+
+    if (typeof window === "undefined") {
+      return {
+        disciplinas: disciplinasCacheadas,
+        fonte: disciplinasCacheadas.length > 0 ? "cache" : "indisponivel",
+      };
+    }
+
+    try {
+      const response = await fetch("/api/disciplinas", { cache: "no-store" });
+      if (!response.ok) throw new Error(`Falha ao carregar disciplinas: ${response.status}`);
+
+      const json: { disciplinas?: unknown; fonte?: unknown } = await response.json();
+      const disciplinasBrutas: unknown[] = Array.isArray(json.disciplinas)
+        ? json.disciplinas
+        : [];
+      const disciplinas: Disciplina[] = disciplinasBrutas
+        .map(normalizarDisciplina)
+        .filter((disciplina): disciplina is Disciplina => disciplina !== null)
+        .sort((a, b) => a.ordem - b.ordem);
+      const fonte = json.fonte === "supabase" ? "supabase" : "mock";
+
+      if (fonte === "supabase" && disciplinas.length > 0) {
+        setToStorage(STORAGE_KEYS.TAXONOMIA_DISCIPLINAS, disciplinas);
+      }
+
+      return { disciplinas, fonte };
+    } catch (err) {
+      console.warn("[DataService] Não foi possível carregar a taxonomia:", err);
+      if (disciplinasCacheadas.length > 0) {
+        return { disciplinas: disciplinasCacheadas, fonte: "cache" };
+      }
+      return { disciplinas: [], fonte: "indisponivel" };
+    }
   },
 
   getAssuntos(disciplinaId?: string): Assunto[] {
@@ -352,7 +423,7 @@ export const DataService = {
       const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
       if (session?.user) {
         const profile = getFromStorage<Profile | null>(STORAGE_KEYS.PROFILE, null);
-        if (profile && (profile.id === "user-demo-1" || /Alexandre Silva/i.test(String((profile as any).nome || "")))) {
+        if (profile && (profile.id === "user-demo-1" || /Alexandre Silva/i.test(profile.nome || ""))) {
           window.localStorage.removeItem(STORAGE_KEYS.PROFILE);
         }
       }
@@ -677,7 +748,7 @@ export const DataService = {
   },
 
   // â”€â”€ EstatÃ­sticas DinÃ¢micas â”€â”€
-  getEstatisticas(): EstatisticasGerais {
+  getEstatisticas(disciplinasTaxonomia?: Disciplina[]): EstatisticasGerais {
     const respostas = this.getRespostas();
     const profile = this.getProfile();
     const cadernoErros = this.getCadernoErros();
@@ -724,29 +795,58 @@ export const DataService = {
       (r) => r.created_at && r.created_at.startsWith(hojeStr)
     ).length;
 
-    // Estatísticas por disciplina e banca usam primeiro os metadados retornados
-    // pelo Supabase junto das respostas. O catálogo local fica apenas como fallback offline.
+    // Respostas sincronizadas já carregam disciplina_id e disciplina_nome do Supabase.
+    // A taxonomia recebida é complementar; mocks só são usados no fluxo local sem resposta.
     const todasQuestoes = this.getTodasQuestoes();
-    const disciplinas = this.getDisciplinas();
+    const disciplinas = disciplinasTaxonomia || [];
+    const disciplinasLocais = this.getDisciplinas();
     const respostaMeta = (r: RespostaUsuario) => {
       if (r.disciplina_id || r.banca) return r;
       const q = todasQuestoes.find((item) => item.id === r.questao_id);
+      const disciplinaLocal = q
+        ? disciplinasLocais.find((d) => d.id === q.disciplina_id)
+        : undefined;
       return {
         ...r,
         disciplina_id: q?.disciplina_id,
-        disciplina_nome: q ? disciplinas.find((d) => d.id === q.disciplina_id)?.nome : undefined,
+        disciplina_nome: disciplinaLocal?.nome,
         banca: q?.banca,
       };
     };
-    const respostasComMeta = respostas.map(respostaMeta);
+    const respostasComMeta = respostas.map(respostaMeta).map((resposta) => ({
+      ...resposta,
+      disciplina_id:
+        typeof resposta.disciplina_id === "string" && resposta.disciplina_id.trim()
+          ? resposta.disciplina_id
+          : undefined,
+      disciplina_nome:
+        typeof resposta.disciplina_nome === "string" && resposta.disciplina_nome.trim()
+          ? resposta.disciplina_nome
+          : undefined,
+      banca:
+        typeof resposta.banca === "string" && resposta.banca.trim()
+          ? resposta.banca
+          : undefined,
+    }));
 
     const disciplinasMap = new Map<string, { nome: string; cor?: string }>();
     disciplinas.forEach((d) => disciplinasMap.set(d.id, { nome: d.nome, cor: d.cor }));
     respostasComMeta.forEach((r) => {
       if (r.disciplina_id && !disciplinasMap.has(r.disciplina_id)) {
-        disciplinasMap.set(r.disciplina_id, { nome: r.disciplina_nome || "Disciplina" });
+        disciplinasMap.set(r.disciplina_id, {
+          nome:
+            typeof r.disciplina_nome === "string" && r.disciplina_nome.trim()
+              ? r.disciplina_nome
+              : "Disciplina sem identificação",
+        });
       }
     });
+
+    if (disciplinasMap.size === 0 && respostasComMeta.length === 0) {
+      disciplinasLocais.forEach((d) =>
+        disciplinasMap.set(d.id, { nome: d.nome, cor: d.cor })
+      );
+    }
 
     const porDisciplina = Array.from(disciplinasMap.entries()).map(([id, meta]) => {
       const respostasDisc = respostasComMeta.filter((r) => r.disciplina_id === id);

@@ -799,6 +799,8 @@ export interface GradeSemanalDia {
   nome_dia: string; // "Segunda", "Terça", etc.
   nome_curto: string; // "Seg", "Ter", etc.
   minutos_disponiveis: number;
+  minutos_planejados: number;
+  minutos_restantes: number;
   blocos: {
     id: string;
     ordem: number;

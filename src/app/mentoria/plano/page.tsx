@@ -574,7 +574,7 @@ export default function MentoriaPlanoPage() {
 
       {/* GRADE SEMANAL DISTRIBUÍDA (HAMILTON-HARE) */}
       <div className="space-y-4">
-        <WeeklyScheduleGrid grade={gradeSemanal} loading={false} />
+        <WeeklyScheduleGrid grade={gradeSemanal} loading={loading} />
       </div>
 
       {/* Grade de Disponibilidade Semanal de Referência */}

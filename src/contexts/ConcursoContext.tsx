@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Concurso, Cargo } from "@/types";
 import { DataService } from "@/services/dataService";
+import { calcularPrazoProva, PrazoProva } from "@/lib/prazoProva";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
 
@@ -11,7 +12,7 @@ interface ConcursoContextType {
   cargoAtivo: Cargo | null;
   concursos: Concurso[];
   cargosDoConcurso: Cargo[];
-  diasAteAProva: number | null;
+  prazoProva: PrazoProva;
   selecionarConcursoAtivo: (concursoId: string) => void;
   selecionarCargoAtivo: (cargoId: string) => void;
 }
@@ -26,22 +27,20 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
   const [cargoAtivoId, setCargoAtivoId] = useState<string | null>(null);
 
   useEffect(() => {
-    const list = DataService.getConcursos();
-    setConcursos(list);
-
-    const savedId = DataService.getConcursoAtivoId();
-    if (savedId) {
-      setConcursoAtivoId(savedId);
-    }
+    const frame = window.requestAnimationFrame(() => {
+      setConcursos(DataService.getConcursos());
+      const savedId = DataService.getConcursoAtivoId();
+      if (savedId) setConcursoAtivoId(savedId);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {
-    if (user?.concurso_alvo_id && user.concurso_alvo_id !== concursoAtivoId) {
-      setConcursoAtivoId(user.concurso_alvo_id);
-    }
-    if (user?.cargo_alvo_id) {
-      setCargoAtivoId(user.cargo_alvo_id);
-    }
+    const frame = window.requestAnimationFrame(() => {
+      if (user?.concurso_alvo_id) setConcursoAtivoId(user.concurso_alvo_id);
+      if (user?.cargo_alvo_id) setCargoAtivoId(user.cargo_alvo_id);
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [user]);
 
   const concursoAtivo =
@@ -75,15 +74,10 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Calculate days to exam
-  const diasAteAProva: number | null = React.useMemo(() => {
-    if (!concursoAtivo?.data_prova) return null;
-    const dataProva = new Date(concursoAtivo.data_prova);
-    const hoje = new Date();
-    const diffTime = dataProva.getTime() - hoje.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 0;
-  }, [concursoAtivo]);
+  const prazoProva = React.useMemo(
+    () => calcularPrazoProva(concursoAtivo?.data_prova),
+    [concursoAtivo?.data_prova]
+  );
 
   return (
     <ConcursoContext.Provider
@@ -92,7 +86,7 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
         cargoAtivo,
         concursos,
         cargosDoConcurso,
-        diasAteAProva,
+        prazoProva,
         selecionarConcursoAtivo,
         selecionarCargoAtivo,
       }}

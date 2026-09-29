@@ -33,7 +33,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 import { MentoriaQuestoesService } from "@/services/mentoriaQuestoesService";
-import { DataService } from "@/services/dataService";
 import {
   MentoriaPerfil,
   MentoriaCicloPlanoCompleto,
@@ -55,6 +54,7 @@ export default function MentoriaHojePage() {
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hojeFormatado, setHojeFormatado] = useState("");
 
   // ── ESTADO DO CRONÔMETRO DE ESTUDO REAL ────────────────────────────────────
   const [cronometroAtivo, setCronometroAtivo] = useState(false);
@@ -93,7 +93,7 @@ export default function MentoriaHojePage() {
   const [revisaoQuestaoAtiva, setRevisaoQuestaoAtiva] = useState<Questao | null>(null);
 
   // Modo Teoria
-  const [assuntosDisciplina, setAssuntosDisciplina] = useState<Assunto[]>([]);
+  const [assuntoRoteiro, setAssuntoRoteiro] = useState<Assunto | null>(null);
   const [anotacoesTeoria, setAnotacoesTeoria] = useState<string>("");
   const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
 
@@ -127,6 +127,17 @@ export default function MentoriaHojePage() {
     const resto = segundos % 60;
     return resto === 0 ? `${minutos} min` : `${minutos}min ${String(resto).padStart(2, "0")}s`;
   };
+
+  useEffect(() => {
+    setHojeFormatado(
+      new Intl.DateTimeFormat("pt-BR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date())
+    );
+  }, []);
 
   // Carregamento inicial do perfil e ciclo
   useEffect(() => {
@@ -204,8 +215,24 @@ export default function MentoriaHojePage() {
           setLoadingRevisoes(false);
         }
       } else if (bloco.tipo === "TEORIA") {
-        const assuntos = DataService.getAssuntos(bloco.disciplina_id);
-        setAssuntosDisciplina(assuntos);
+        setAssuntoRoteiro(null);
+        if (!bloco.assunto_id) return;
+
+        try {
+          const response = await fetch(
+            `/api/assuntos?disciplina_id=${encodeURIComponent(bloco.disciplina_id)}`,
+            { cache: "no-store" }
+          );
+          if (!response.ok) return;
+
+          const json = await response.json();
+          const assunto = Array.isArray(json.assuntos)
+            ? json.assuntos.find((item: Assunto) => item.id === bloco.assunto_id)
+            : null;
+          setAssuntoRoteiro(assunto || null);
+        } catch (err) {
+          console.warn("Não foi possível carregar a referência do assunto do bloco:", err);
+        }
       }
     }
 
@@ -548,13 +575,6 @@ export default function MentoriaHojePage() {
     const segundos = totalSegundos % 60;
     return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
   };
-
-  const hojeFormatado = new Intl.DateTimeFormat("pt-BR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date());
 
   if (loading) {
     return (
@@ -1112,32 +1132,29 @@ export default function MentoriaHojePage() {
                 </h3>
               </div>
 
-              {/* Tópicos da Disciplina */}
-              {assuntosDisciplina.length > 0 && (
-                <Card className="border-slate-200 dark:border-slate-800">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-bold flex items-center gap-2">
-                      <ListCheck className="w-4 h-4 text-blue-600" />
-                      Tópicos Recomendados para Esta Disciplina
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {assuntosDisciplina.slice(0, 6).map((assunto) => (
-                        <div
-                          key={assunto.id}
-                          className="p-2.5 bg-slate-50 dark:bg-slate-900/60 rounded-lg border border-slate-200 dark:border-slate-800 text-xs flex items-center gap-2"
-                        >
-                          <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
-                          <span className="font-medium text-slate-800 dark:text-slate-200 truncate">
-                            {assunto.nome}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+              {/* Foco e referência do assunto persistido no ciclo */}
+              <Card className="border-slate-200 dark:border-slate-800">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-bold flex items-center gap-2">
+                    <ListCheck className="w-4 h-4 text-blue-600" />
+                    Roteiro deste bloco
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-lg border border-slate-200 dark:border-slate-800 text-xs">
+                    <p className="font-bold text-slate-900 dark:text-slate-100">
+                      Foco: {blocoAtual.assunto_nome || "Assunto definido no ciclo"}
+                    </p>
+                    <p className="mt-1.5 leading-relaxed text-slate-600 dark:text-slate-400">
+                      {assuntoRoteiro?.descricao ||
+                        "Estude este assunto em ciclos curtos: leia a teoria, registre os pontos-chave e consolide o entendimento nas anotações abaixo."}
+                    </p>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Use a referência acima como guia do bloco atual; ela não altera a fila contínua do ciclo.
+                  </p>
+                </CardContent>
+              </Card>
 
               {/* Box de Anotações e Resumo Teórico */}
               <Card className="border-slate-200 dark:border-slate-800">
@@ -1194,34 +1211,41 @@ export default function MentoriaHojePage() {
               </h3>
 
               <div className="space-y-2">
-                {planoCiclo.blocos.slice(0, 4).map((bloco, idx) => {
-                  if (idx === planoCiclo.posicao_atual_index) return null;
-
-                  return (
-                    <div
-                      key={bloco.id || idx}
-                      className="p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-xs flex items-center justify-center">
-                          {bloco.ordem_bloco}
-                        </span>
-                        <div>
-                          <p className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
-                            {bloco.disciplina_nome}
+                {Array.from(
+                  { length: Math.min(4, planoCiclo.blocos.length - 1) },
+                  (_, offset) =>
+                    planoCiclo.blocos[
+                      (planoCiclo.posicao_atual_index + offset + 1) % planoCiclo.blocos.length
+                    ]
+                ).map((bloco) => (
+                  <div
+                    key={bloco.id}
+                    className="p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-xs flex items-center justify-center">
+                        {bloco.ordem_bloco}
+                      </span>
+                      <div>
+                        <p className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
+                          {bloco.disciplina_nome}
+                        </p>
+                        {bloco.assunto_nome && (
+                          <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mt-0.5">
+                            {bloco.assunto_nome}
                           </p>
-                          <p className="text-xs text-slate-500">
-                            {bloco.tipo} • {bloco.duracao_minutos} minutos • Prioridade {bloco.prioridade_nivel}
-                          </p>
-                        </div>
+                        )}
+                        <p className="text-xs text-slate-500">
+                          {bloco.tipo} • {bloco.duracao_minutos} minutos • Prioridade {bloco.prioridade_nivel}
+                        </p>
                       </div>
-
-                      <Badge variant="outline" className="text-xs font-semibold">
-                        Aguardando
-                      </Badge>
                     </div>
-                  );
-                })}
+
+                    <Badge variant="outline" className="text-xs font-semibold">
+                      Aguardando
+                    </Badge>
+                  </div>
+                ))}
               </div>
             </div>
           )}

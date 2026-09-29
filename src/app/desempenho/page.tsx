@@ -16,24 +16,20 @@ import {
   MetasEstudoConfig,
   MentoriaDashboardStats,
 } from "@/types";
+import { FonteTaxonomiaDisciplinas } from "@/services/dataService";
 import { ActivityHeatmap } from "@/components/planejamento/ActivityHeatmap";
 import {
   BarChart3,
   TrendingUp,
   Clock,
-  CheckCircle2,
   AlertTriangle,
-  Lightbulb,
   ArrowRight,
   Flame,
   FileSpreadsheet,
-  Target,
   Timer,
   Zap,
   RotateCcw,
-  BookOpen,
   Award,
-  Sparkles,
 } from "lucide-react";
 
 export default function DesempenhoPage() {
@@ -42,6 +38,7 @@ export default function DesempenhoPage() {
   const [telemetria, setTelemetria] = useState<ConstanciaTelemetria | null>(null);
   const [metas, setMetas] = useState<MetasEstudoConfig | null>(null);
   const [dashStats, setDashStats] = useState<MentoriaDashboardStats | null>(null);
+  const [fonteTaxonomia, setFonteTaxonomia] = useState<FonteTaxonomiaDisciplinas>("indisponivel");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,7 +48,9 @@ export default function DesempenhoPage() {
         if (user) {
           await DataService.sincronizarRespostasSupabase();
         }
-        const st = DataService.getEstatisticas();
+        const taxonomia = await DataService.carregarDisciplinasTaxonomia();
+        setFonteTaxonomia(taxonomia.fonte);
+        const st = DataService.getEstatisticas(taxonomia.disciplinas);
         setStats(st);
 
         if (user) {
@@ -73,7 +72,16 @@ export default function DesempenhoPage() {
     carregarDados();
   }, [user]);
 
-  if (!stats) return null;
+  if (loading || !stats) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          Carregando desempenho...
+        </p>
+      </div>
+    );
+  }
 
   // Find lowest and highest performing discipline
   const sortedDiscs = [...stats.por_disciplina]
@@ -353,6 +361,15 @@ export default function DesempenhoPage() {
             <p className="text-xs text-slate-500">
               Acompanhamento de questões resolvidas, acertos, erros e aproveitamento
             </p>
+            <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
+              {fonteTaxonomia === "supabase"
+                ? "Taxonomia carregada do banco de questões."
+                : fonteTaxonomia === "cache"
+                ? "Taxonomia exibida a partir do último cache do banco de questões."
+                : fonteTaxonomia === "mock"
+                ? "Taxonomia demonstrativa: o banco de questões ainda não forneceu disciplinas."
+                : "A matriz usa os metadados das respostas disponíveis."}
+            </p>
           </div>
 
           <Link href="/mentoria/edital">
@@ -374,51 +391,59 @@ export default function DesempenhoPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-              {stats.por_disciplina.map((disc) => (
-                <tr
-                  key={disc.disciplina_id}
-                  className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
-                >
-                  <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-slate-100">
-                    {disc.disciplina_nome}
-                  </td>
-                  <td className="px-4 py-3.5 text-center font-medium">
-                    {disc.total}
-                  </td>
-                  <td className="px-4 py-3.5 text-center text-emerald-600 dark:text-emerald-400 font-bold">
-                    {disc.acertos}
-                  </td>
-                  <td className="px-4 py-3.5 text-center text-rose-600 dark:text-rose-400 font-bold">
-                    {disc.erros}
-                  </td>
-                  <td className="px-4 py-3.5 min-w-[140px]">
-                    <div className="flex items-center gap-2">
-                      <ProgressBar
-                        value={disc.percentual}
-                        color={
-                          disc.percentual >= 70
-                            ? "emerald"
-                            : disc.percentual >= 50
-                            ? "amber"
-                            : "rose"
-                        }
-                        size="sm"
-                        showValue={false}
-                      />
-                      <span className="font-bold text-[11px] w-8">
-                        {disc.percentual}%
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3.5 text-right">
-                    <Link href={`/questoes?disciplina_id=${disc.disciplina_id}`}>
-                      <Button size="sm" variant="secondary">
-                        Praticar
-                      </Button>
-                    </Link>
+              {stats.por_disciplina.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-5 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
+                    Ainda não há disciplinas associadas às suas respostas.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                stats.por_disciplina.map((disc) => (
+                  <tr
+                    key={disc.disciplina_id}
+                    className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
+                  >
+                    <td className="px-5 py-3.5 font-bold text-slate-900 dark:text-slate-100">
+                      {disc.disciplina_nome}
+                    </td>
+                    <td className="px-4 py-3.5 text-center font-medium">
+                      {disc.total}
+                    </td>
+                    <td className="px-4 py-3.5 text-center text-emerald-600 dark:text-emerald-400 font-bold">
+                      {disc.acertos}
+                    </td>
+                    <td className="px-4 py-3.5 text-center text-rose-600 dark:text-rose-400 font-bold">
+                      {disc.erros}
+                    </td>
+                    <td className="px-4 py-3.5 min-w-[140px]">
+                      <div className="flex items-center gap-2">
+                        <ProgressBar
+                          value={disc.percentual}
+                          color={
+                            disc.percentual >= 70
+                              ? "emerald"
+                              : disc.percentual >= 50
+                              ? "amber"
+                              : "rose"
+                          }
+                          size="sm"
+                          showValue={false}
+                        />
+                        <span className="font-bold text-[11px] w-8">
+                          {disc.percentual}%
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3.5 text-right">
+                      <Link href={`/questoes?disciplina_id=${disc.disciplina_id}`}>
+                        <Button size="sm" variant="secondary">
+                          Praticar
+                        </Button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </CardContent>

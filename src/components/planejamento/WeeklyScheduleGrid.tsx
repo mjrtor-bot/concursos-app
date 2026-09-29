@@ -1,15 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Calendar,
-  Clock,
   BookOpen,
   HelpCircle,
   RotateCcw,
   Sparkles,
   ChevronRight,
-  Info,
 } from "lucide-react";
 import { GradeSemanalDia, MentoriaTarefaTipo } from "@/types";
 import Link from "next/link";
@@ -20,7 +18,17 @@ interface WeeklyScheduleGridProps {
 }
 
 export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklyScheduleGridProps) {
-  const [diaSelecionado, setDiaSelecionado] = useState<number>(() => new Date().getDay());
+  const [diaSelecionado, setDiaSelecionado] = useState<number>(0);
+  const [hojeDiaSemana, setHojeDiaSemana] = useState<number | null>(null);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const hoje = new Date().getDay();
+      setDiaSelecionado(hoje);
+      setHojeDiaSemana(hoje);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   if (loading) {
     return (
@@ -34,8 +42,6 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
       </div>
     );
   }
-
-  const hojeDiaSemana = new Date().getDay();
 
   const getTipoIcon = (tipo: MentoriaTarefaTipo) => {
     switch (tipo) {
@@ -63,8 +69,19 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
     }
   };
 
-  const totalMinutosSemana = grade.reduce((acc, d) => acc + d.minutos_disponiveis, 0);
-  const totalBlocosSemana = grade.reduce((acc, d) => acc + d.blocos.length, 0);
+  const totalBlocosSemana = grade.reduce((acc, dia) => acc + dia.blocos.length, 0);
+  const totalMinutosDisponiveis = grade.reduce(
+    (acc, dia) => acc + dia.minutos_disponiveis,
+    0
+  );
+  const totalMinutosSemana = grade.reduce(
+    (acc, dia) => acc + dia.minutos_planejados,
+    0
+  );
+  const totalMinutosRestantes = grade.reduce(
+    (acc, dia) => acc + dia.minutos_restantes,
+    0
+  );
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-xs">
@@ -87,7 +104,7 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
         {/* Resumo Semanal */}
         <div className="flex items-center gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
           <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60">
-            {Math.floor(totalMinutosSemana / 60)}h {totalMinutosSemana % 60 > 0 ? `${totalMinutosSemana % 60}m` : ""} semanais
+            {Math.floor(totalMinutosSemana / 60)}h {totalMinutosSemana % 60 > 0 ? `${totalMinutosSemana % 60}m` : ""} em blocos
           </span>
           <span className="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/60">
             {totalBlocosSemana} blocos de estudo
@@ -98,7 +115,7 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
       {/* Grid de Dias (Desktop: 7 colunas / Mobile: abas) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
         {grade.map((dia) => {
-          const isHoje = dia.dia_semana === hojeDiaSemana;
+          const isHoje = hojeDiaSemana !== null && dia.dia_semana === hojeDiaSemana;
           const isSelecionado = dia.dia_semana === diaSelecionado;
 
           return (
@@ -126,7 +143,7 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
                   )}
                 </div>
                 <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                  {dia.minutos_disponiveis}m
+                  {dia.minutos_planejados} / {dia.minutos_disponiveis}m
                 </span>
               </div>
 
@@ -153,6 +170,11 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
                       <div className="font-semibold text-[11px] text-slate-800 dark:text-slate-200 truncate" title={bloco.disciplina_nome}>
                         {bloco.disciplina_nome}
                       </div>
+                      {bloco.assunto_nome && (
+                        <div className="mt-0.5 text-[10px] font-medium text-indigo-600 dark:text-indigo-400 truncate" title={bloco.assunto_nome}>
+                          {bloco.assunto_nome}
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -166,7 +188,11 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
       <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 flex-wrap gap-2">
         <div className="flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-          <span>Distribuição proporcional garantindo que nenhuma matéria fique mais de 3 dias sem contato.</span>
+          <span>
+            {totalMinutosRestantes > 0
+              ? `${totalMinutosDisponiveis} min disponíveis: ${totalMinutosSemana} min em blocos e ${totalMinutosRestantes} min livres.`
+              : "Distribuição proporcional garantindo que nenhuma matéria fique mais de 3 dias sem contato."}
+          </span>
         </div>
         <Link
           href="/mentoria/plano"

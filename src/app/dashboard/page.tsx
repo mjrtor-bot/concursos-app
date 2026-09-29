@@ -30,16 +30,14 @@ import {
   Play,
   Clock,
   BookOpen,
-  Award,
   Target,
   Zap,
-  RotateCcw,
   Calendar,
 } from "lucide-react";
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { concursoAtivo, diasAteAProva } = useConcurso();
+  const { concursoAtivo, prazoProva } = useConcurso();
   const [stats, setStats] = useState<EstatisticasGerais | null>(null);
   const [questoesRecentes, setQuestoesRecentes] = useState<Questao[]>([]);
   const [missoes, setMissoes] = useState<MissaoDiariaItem[]>([]);
@@ -75,7 +73,8 @@ export default function DashboardPage() {
 
   if (!stats || !user) return null;
 
-  const missaoAtiva = missoes.find((m) => m.status === "pendente" || m.status === "em_andamento") || missoes[0];
+  // A primeira missão sempre representa o ponteiro persistido do ciclo.
+  const missaoAtiva = missoes[0];
 
   return (
     <div className="space-y-6 pb-12">
@@ -165,16 +164,34 @@ export default function DashboardPage() {
               </div>
 
               <div className="flex items-center gap-4 sm:gap-6 shrink-0 bg-white dark:bg-slate-800/80 p-3 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
-                {diasAteAProva !== null ? (
+                {prazoProva.situacao === "futura" ? (
                   <div className="text-center">
                     <p className="text-[11px] font-semibold text-slate-400 uppercase">
                       Contagem Regressiva
                     </p>
                     <p className="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400">
-                      {diasAteAProva}
+                      {prazoProva.dias}
                     </p>
                     <p className="text-[10px] text-slate-500 font-medium">
                       dias até a prova
+                    </p>
+                  </div>
+                ) : prazoProva.situacao === "hoje" ? (
+                  <div className="text-center">
+                    <p className="text-[11px] font-semibold text-slate-400 uppercase">
+                      Dia da prova
+                    </p>
+                    <p className="text-sm font-extrabold text-amber-600 dark:text-amber-400">
+                      É hoje! 🎯
+                    </p>
+                  </div>
+                ) : prazoProva.situacao === "realizada" ? (
+                  <div className="text-center">
+                    <p className="text-[11px] font-semibold text-slate-400 uppercase">
+                      Situação da prova
+                    </p>
+                    <p className="text-sm font-extrabold text-slate-600 dark:text-slate-300">
+                      Prova realizada
                     </p>
                   </div>
                 ) : (

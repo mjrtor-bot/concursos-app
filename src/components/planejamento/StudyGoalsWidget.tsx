@@ -27,10 +27,10 @@ export function StudyGoalsWidget({ metas, loading = false, onOpenTimer }: StudyG
   }
 
   const dados = metas || {
-    meta_diaria_questoes: 30,
-    meta_diaria_minutos: 120,
-    meta_semanal_questoes: 210,
-    meta_semanal_minutos: 840,
+    meta_diaria_questoes: 0,
+    meta_diaria_minutos: 0,
+    meta_semanal_questoes: 0,
+    meta_semanal_minutos: 0,
     questoes_concluidas_hoje: 0,
     minutos_liquidos_hoje: 0,
     percentual_questoes_hoje: 0,

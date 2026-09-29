@@ -41,8 +41,7 @@ export class MentoriaCicloService {
   static calcularScorePrioridade(
     scoreDiagnostico: number,
     pesoBase: number = 50,
-    taxaAcerto: number = 50,
-    disciplinaNome: string = "Disciplina"
+    taxaAcerto: number = 50
   ): {
     prioridade_score: number;
     prioridade_nivel: "baixa" | "media" | "alta";
@@ -129,8 +128,7 @@ export class MentoriaCicloService {
       const { prioridade_score, prioridade_nivel, motivo_explicabilidade } = this.calcularScorePrioridade(
         d.score_diagnostico,
         d.peso_base ?? 50,
-        d.taxa_acerto ?? 50,
-        d.disciplina_nome
+        d.taxa_acerto ?? 50
       );
       return {
         disciplina_id: d.disciplina_id,
@@ -152,7 +150,7 @@ export class MentoriaCicloService {
     // Caso tenhamos blocos suficientes para atender a regra de mínimo 1 bloco por disciplina
     if (totalBlocosDisponiveis >= numDisciplinas) {
       comPrioridade.forEach((d) => (d.blocos = 1));
-      let blocosRestantes = totalBlocosDisponiveis - numDisciplinas;
+      const blocosRestantes = totalBlocosDisponiveis - numDisciplinas;
 
       if (blocosRestantes > 0) {
         const somaScores = comPrioridade.reduce((acc, curr) => acc + curr.prioridade_score, 0);
@@ -173,8 +171,8 @@ export class MentoriaCicloService {
             if (disc) disc.blocos += df.inteiro;
           });
 
-          let blocosJaDistribuidos = distribuicaoFracionada.reduce((acc, curr) => acc + curr.inteiro, 0);
-          let sobra = blocosRestantes - blocosJaDistribuidos;
+          const blocosJaDistribuidos = distribuicaoFracionada.reduce((acc, curr) => acc + curr.inteiro, 0);
+          const sobra = blocosRestantes - blocosJaDistribuidos;
 
           // Distribui as sobras para os maiores restos
           distribuicaoFracionada.sort((a, b) => b.resto - a.resto);
@@ -1050,17 +1048,49 @@ export class MentoriaCicloService {
   /**
    * Atualização manual de posição do ciclo (ex: pular bloco sob autorização do usuário).
    */
-  static async pularBloco(usuarioId: string): Promise<{ success: boolean; plano?: MentoriaCicloPlanoCompleto }> {
+  static async pularBloco(usuarioId: string): Promise<{ success: boolean; plano?: MentoriaCicloPlanoCompleto; error?: string }> {
     const plano = await this.obterPlanoCiclo(usuarioId);
-    if (!plano) return { success: false };
+    if (!plano || plano.total_blocos_ciclo === 0) {
+      return { success: false, error: "Nenhum ciclo ativo disponível." };
+    }
 
     const { nova_posicao, volta_completa } = this.avancarPosicaoCiclo(
       plano.posicao_atual_index,
       plano.total_blocos_ciclo
     );
+    const novasVoltas = plano.ciclo_concluidos_voltas + (volta_completa ? 1 : 0);
+    const supabase = this.getClient();
+
+    if (supabase && plano.plano_id && !plano.plano_id.startsWith("plano-ciclo-")) {
+      try {
+        const { data, error } = await supabase
+          .from("mentoria_planos")
+          .update({
+            ciclo_posicao_atual: nova_posicao,
+            ciclo_concluidos_contagem: novasVoltas,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", plano.plano_id)
+          .eq("usuario_id", usuarioId)
+          .select("id");
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        if (!data || data.length !== 1) {
+          return {
+            success: false,
+            error: "O ciclo não foi atualizado. Verifique sua permissão e tente novamente.",
+          };
+        }
+      } catch (err) {
+        console.error("[MentoriaCicloService] Erro ao pular bloco:", err);
+        return { success: false, error: "Não foi possível persistir o novo bloco." };
+      }
+    }
 
     plano.posicao_atual_index = nova_posicao;
-    if (volta_completa) plano.ciclo_concluidos_voltas += 1;
+    plano.ciclo_concluidos_voltas = novasVoltas;
     plano.bloco_atual = plano.blocos[nova_posicao] || null;
     plano.proximo_bloco = plano.blocos[(nova_posicao + 1) % plano.total_blocos_ciclo] || null;
     plano.blocos_restantes_na_volta = Math.max(0, plano.total_blocos_ciclo - nova_posicao);

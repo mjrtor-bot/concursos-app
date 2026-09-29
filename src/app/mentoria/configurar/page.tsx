@@ -4,19 +4,14 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  Settings,
   Save,
-  Clock,
   Calendar,
   Sparkles,
   ArrowLeft,
   CheckCircle2,
   AlertCircle,
-  HelpCircle,
-  Compass,
   Target,
   Sliders,
-  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -25,8 +20,6 @@ import {
   MentoriaNivel,
   MentoriaHorario,
   MentoriaPrioridade,
-  MentoriaPerfil,
-  MentoriaDisponibilidade,
 } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -61,6 +54,7 @@ export default function ConfigurarMentoriaPage() {
   const [prioridadeEstudo, setPrioridadeEstudo] = useState<MentoriaPrioridade>("equilibrado");
   const [duracaoBloco, setDuracaoBloco] = useState(40);
   const [questoesBloco, setQuestoesBloco] = useState(15);
+  const [perfilConcursoId, setPerfilConcursoId] = useState<string | null>(null);
 
   // Estados da Grade de Disponibilidade Semanal (minutos por dia)
   const [grade, setGrade] = useState<{ dia_semana: number; minutos_disponiveis: number; horario_preferido?: MentoriaHorario }[]>([
@@ -87,6 +81,7 @@ export default function ConfigurarMentoriaPage() {
         ]);
 
         if (perfil) {
+          setPerfilConcursoId(perfil.concurso_id || null);
           setConcursoNome(perfil.concurso_nome || "");
           setCargoNome(perfil.cargo_nome || "");
           setDataProva(perfil.data_prova || "");
@@ -97,6 +92,7 @@ export default function ConfigurarMentoriaPage() {
           setQuestoesBloco(perfil.quantidade_questoes_bloco || 15);
         } else if (concursoAtivo) {
           // Preenchimento prévio inteligente com o concurso ativo no contexto
+          setPerfilConcursoId(concursoAtivo.id);
           setConcursoNome(concursoAtivo.nome || "");
           if (concursoAtivo.data_prova) {
             setDataProva(concursoAtivo.data_prova.substring(0, 10));
@@ -120,6 +116,17 @@ export default function ConfigurarMentoriaPage() {
     }
     carregar();
   }, [user, concursoAtivo]);
+
+  const perfilDivergeDoConcursoAtivo = Boolean(
+    perfilConcursoId && concursoAtivo && perfilConcursoId !== concursoAtivo.id
+  );
+
+  const sincronizarComConcursoAtivo = () => {
+    if (!concursoAtivo) return;
+    setPerfilConcursoId(concursoAtivo.id);
+    setConcursoNome(concursoAtivo.nome || "");
+    setDataProva(concursoAtivo.data_prova?.slice(0, 10) || "");
+  };
 
   // Cálculos dinâmicos em tempo real
   const totalMinutosSemanais = grade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0);
@@ -165,7 +172,7 @@ export default function ConfigurarMentoriaPage() {
       const res = await MentoriaService.salvarPerfil(
         user.id,
         {
-          concurso_id: concursoAtivo?.id || null,
+          concurso_id: perfilConcursoId,
           concurso_nome: concursoNome,
           cargo_id: null,
           cargo_nome: cargoNome,
@@ -188,8 +195,9 @@ export default function ConfigurarMentoriaPage() {
       } else {
         setMensagemErro(res.error || "Erro ao salvar o perfil.");
       }
-    } catch (err: any) {
-      setMensagemErro("Erro inesperado: " + (err.message || String(err)));
+    } catch (err: unknown) {
+      const mensagem = err instanceof Error ? err.message : String(err);
+      setMensagemErro("Erro inesperado: " + mensagem);
     } finally {
       setSalvando(false);
     }
@@ -258,6 +266,16 @@ export default function ConfigurarMentoriaPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {perfilDivergeDoConcursoAtivo && concursoAtivo && (
+              <div className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between">
+                <p>
+                  O perfil da mentoria usa “{concursoNome || "concurso informado"}”, enquanto o concurso ativo é “{concursoAtivo.nome}”. A troca não é automática para preservar seu plano atual.
+                </p>
+                <Button type="button" size="sm" variant="outline" onClick={sincronizarComConcursoAtivo}>
+                  Usar concurso ativo
+                </Button>
+              </div>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
