@@ -178,6 +178,7 @@ export default function MentoriaHojePage() {
             quantidade: Math.max(10, bloco.quantidade_questoes_sugerida || 15),
             nivelUsuario: perfil?.nivel_calculado || "intermediario",
             tipoBloco: "QUESTOES",
+            assuntoId: bloco.assunto_id || undefined,
           });
           setSelecaoResultado(resultado);
           setQuestoesPool(resultado.questoes);
@@ -200,6 +201,7 @@ export default function MentoriaHojePage() {
               quantidade: 10,
               nivelUsuario: perfil?.nivel_calculado || "intermediario",
               tipoBloco: "REVISAO",
+              assuntoId: bloco.assunto_id || undefined,
               apenasErros: true,
             }),
           ]);
