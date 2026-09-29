@@ -885,6 +885,29 @@ export class MentoriaCicloService {
           .eq("id", planoAtual.plano_id)
           .eq("usuario_id", input.usuario_id);
 
+        // Sincroniza automaticamente o tópico do edital com o estudo realmente concluído.
+        // A conclusão de qualquer bloco ligado a um assunto tira o tópico de "não iniciado".
+        const blocoConcluido = planoAtual.blocos.find((b) => b.id === input.tarefa_id) || planoAtual.blocos[planoAtual.posicao_atual_index];
+        const assuntoConcluidoId = blocoConcluido?.assunto_id || null;
+        if (input.disciplina_id && assuntoConcluidoId) {
+          const { data: topicoAtual } = await supabase
+            .from("mentoria_edital_topicos")
+            .select("id,status,percentual_dominio")
+            .eq("usuario_id", input.usuario_id)
+            .eq("disciplina_id", input.disciplina_id)
+            .eq("assunto_id", assuntoConcluidoId)
+            .maybeSingle();
+          if (topicoAtual) {
+            const statusAtual = topicoAtual.status || "nao_iniciado";
+            await supabase.from("mentoria_edital_topicos").update({
+              estudado: true,
+              status: statusAtual === "nao_iniciado" ? "estudando" : statusAtual,
+              percentual_dominio: Math.max(Number(topicoAtual.percentual_dominio) || 0, 30),
+              updated_at: agoraIso,
+            }).eq("id", topicoAtual.id).eq("usuario_id", input.usuario_id);
+          }
+        }
+
         if (input.tarefa_id && deveAvancar) {
           await supabase
             .from("mentoria_tarefas")
