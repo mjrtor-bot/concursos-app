@@ -182,6 +182,9 @@ export interface Questao {
   anulada?: boolean;
   desatualizada?: boolean;
   motivo_desatualizacao?: string | null;
+  auditoria_status?: "pendente" | "ok" | "suspeita" | "irrecuperavel";
+  auditoria_motivo?: string | null;
+  auditada_em?: string | null;
   versao?: number;
   fingerprint_hash?: string;
 
