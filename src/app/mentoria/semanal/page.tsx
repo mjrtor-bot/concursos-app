@@ -517,7 +517,7 @@ export default function PlanejamentoSemanalPage() {
                           draggable={meta?.status_calendario !== "cumprida"}
                           onDragStart={(e) => { e.dataTransfer.effectAllowed="move"; setArrastandoId(bloco.id); }}
                           onDragEnd={() => setArrastandoId(null)}
-                          className={`p-2.5 rounded-xl ${arrastandoId === bloco.id ? "opacity-50 " : ""}bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5"
+                          className={`p-2.5 rounded-xl ${arrastandoId === bloco.id ? "opacity-50 " : ""}bg-white dark:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between gap-1.5`}
                         >
                           <div className="flex items-center justify-between gap-1">
                             <span className="flex items-center gap-1 text-[10px] font-bold text-slate-600 dark:text-slate-300">
