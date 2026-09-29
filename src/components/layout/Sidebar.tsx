@@ -22,6 +22,8 @@ import {
   Zap,
   Calendar,
   Layers,
+  Trophy,
+  PlusCircle,
   X,
 } from "lucide-react";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -128,6 +130,16 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       href: "/questoes",
       label: "Banco de Questões",
       icon: CheckSquare2,
+    },
+    {
+      href: "/questoes/externas",
+      label: "Questões Externas",
+      icon: PlusCircle,
+    },
+    {
+      href: "/ranking",
+      label: "Ranking & XP",
+      icon: Trophy,
     },
     {
       href: "/caderno-de-erros",
