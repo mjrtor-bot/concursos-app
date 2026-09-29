@@ -24,6 +24,7 @@ import {
   Layers,
   Trophy,
   PlusCircle,
+  MessageSquare,
   X,
 } from "lucide-react";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -112,6 +113,11 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       href: "/mentoria/edital",
       label: "Edital Verticalizado",
       icon: BookOpen,
+    },
+    {
+      href: "/mentoria/comunicacao",
+      label: "Mural & Inbox",
+      icon: MessageSquare,
     },
   ];
 
