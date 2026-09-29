@@ -518,6 +518,16 @@ export class MentoriaCicloService {
       return { success: false, error: "Perfil da mentoria não encontrado. Configure seu perfil primeiro." };
     }
 
+    // Configuração avançada é autoritativa para geração do ciclo.
+    let configPlano: any = null;
+    if (supabase) {
+      const { data } = await supabase.from("mentoria_config_plano").select("*").eq("usuario_id", usuarioId).maybeSingle();
+      configPlano = data;
+    }
+    if (configPlano?.pausado) {
+      return { success: false, error: "O plano está pausado. Retome-o em Configurar antes de recalcular." };
+    }
+
     // 2. Obter Disponibilidade
     const disponibilidade = await MentoriaService.getDisponibilidade(usuarioId);
     const metaSemanalMinutos = disponibilidade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0);
@@ -627,11 +637,21 @@ export class MentoriaCicloService {
       }
     }
 
+    // Respeita disciplinas explicitamente ativadas e o limite de matérias simultâneas.
+    const disciplinasAtivas: string[] = Array.isArray(configPlano?.disciplinas_ativas) ? configPlano.disciplinas_ativas : [];
+    if (disciplinasAtivas.length > 0) disciplinasInput = disciplinasInput.filter(d => disciplinasAtivas.includes(d.disciplina_id));
+    const limiteMaterias = Math.max(1, Number(configPlano?.materias_simultaneas) || disciplinasInput.length || 1);
+    disciplinasInput = disciplinasInput
+      .sort((a,b) => ((a.score_diagnostico ?? 50) - (b.score_diagnostico ?? 50)) || ((b.peso_base ?? 50) - (a.peso_base ?? 50)))
+      .slice(0, limiteMaterias);
+
     if (disciplinasInput.length === 0) {
-      return { success: false, error: "Nenhuma disciplina válida foi encontrada no edital selecionado." };
+      return { success: false, error: "Nenhuma disciplina ativa válida foi encontrada no edital selecionado." };
     }
 
-    const duracaoBlocoMinutos = perfil.duracao_bloco_minutos || 40;
+    const velocidade = configPlano?.velocidade || "normal";
+    const fatorVelocidade = velocidade === "leve" ? 0.75 : velocidade === "intensiva" ? 1.25 : 1;
+    const duracaoBlocoMinutos = Math.max(15, Math.round((perfil.duracao_bloco_minutos || 40) * fatorVelocidade));
     const questoesPorBloco = perfil.quantidade_questoes_bloco || 15;
 
     // 4. Executa o Motor Matemático
@@ -647,6 +667,16 @@ export class MentoriaCicloService {
       questoesPorBloco
     );
 
+    // Etapas escolhidas controlam os tipos de bloco produzidos pelo motor.
+    const etapas: string[] = Array.isArray(configPlano?.etapas) && configPlano.etapas.length ? configPlano.etapas : ["estudo","resumo","revisao","exercicio"];
+    const tiposPermitidos: MentoriaTarefaTipo[] = [];
+    if (etapas.includes("estudo") || etapas.includes("resumo")) tiposPermitidos.push("TEORIA");
+    if (etapas.includes("revisao")) tiposPermitidos.push("REVISAO");
+    if (etapas.includes("exercicio")) tiposPermitidos.push("QUESTOES");
+    if (tiposPermitidos.length > 0) {
+      blocos = blocos.map((b,i) => tiposPermitidos.includes(b.tipo) ? b : { ...b, tipo: tiposPermitidos[i % tiposPermitidos.length] });
+    }
+
     // Vincula os blocos somente aos assuntos pertencentes ao edital alvo.
     if (supabase && blocos.length > 0) {
       try {
@@ -655,8 +685,10 @@ export class MentoriaCicloService {
           ? await supabase.from("edital_topicos").select("disciplina_id, assunto_id, ordem, assuntos(id,nome)").eq("edital_id", alvo.edital_id).order("ordem", { ascending: true })
           : { data: [] };
 
+        const assuntosAtivos: string[] = Array.isArray(configPlano?.assuntos_ativos) ? configPlano.assuntos_ativos : [];
         const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
         for (const t of topicos || []) {
+          if (assuntosAtivos.length > 0 && t.assunto_id && !assuntosAtivos.includes(t.assunto_id)) continue;
           const rel = t.assuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
           const assunto = Array.isArray(rel) ? rel[0] : rel;
           if (!t.disciplina_id || !t.assunto_id || !assunto?.nome) continue;
