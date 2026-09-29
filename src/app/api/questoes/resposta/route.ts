@@ -138,25 +138,33 @@ export async function POST(request: NextRequest) {
       .maybeSingle();
 
     if (!correta) {
-      const payload = erroAtual
-        ? {
+      let cadernoError: { message: string } | null = null;
+
+      if (erroAtual) {
+        const { error } = await supabase
+          .from("caderno_erros")
+          .update({
             total_erros: (erroAtual.total_erros || 0) + 1,
             revisado: false,
             ultimo_erro_em: agora,
             updated_at: agora,
-          }
-        : {
+          })
+          .eq("id", erroAtual.id);
+        cadernoError = error;
+      } else {
+        const { error } = await supabase
+          .from("caderno_erros")
+          .insert({
             usuario_id: user.id,
             questao_id,
             total_erros: 1,
             revisado: false,
             ultimo_erro_em: agora,
             updated_at: agora,
-          };
-      const operacao = erroAtual
-        ? supabase.from("caderno_erros").update(payload).eq("id", erroAtual.id)
-        : supabase.from("caderno_erros").insert(payload);
-      const { error: cadernoError } = await operacao;
+          });
+        cadernoError = error;
+      }
+
       if (cadernoError) console.warn("[API /questoes/resposta] Aviso caderno_erros:", cadernoError.message);
     } else if (erroAtual) {
       const { error: revisaoError } = await supabase
