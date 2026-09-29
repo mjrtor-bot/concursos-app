@@ -241,76 +241,46 @@ export default function MentoriaHojePage() {
     carregarDadosBloco();
   }, [user, planoCiclo?.bloco_atual?.id, planoCiclo?.bloco_atual?.disciplina_id, perfil?.nivel_calculado]);
 
+  // Sessão ativa autoritativa no servidor. O navegador mantém apenas o estado visual corrente.
   useEffect(() => {
-    if (!blocoStorageKey || typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem(blocoStorageKey);
-      if (!raw) return;
-      const sessao = JSON.parse(raw) as {
-        cronometroIniciado?: boolean;
-        cronometroAtivo?: boolean;
-        segundosLiquidos?: number;
-        pausasContador?: number;
-        segundosPausaTotal?: number;
-        tempoInicioSessao?: string | null;
-        questoesRespondidas?: number;
-        questoesAcertadas?: number;
-        observacoesSessao?: string;
-        anotacoesTeoria?: string;
-        updatedAt?: string;
-      };
-
-      setCronometroIniciado(Boolean(sessao.cronometroIniciado));
-      // Restaura a sessão como PAUSADA ao recarregar/reabrir; usuário clica em Continuar para prosseguir
-      setCronometroAtivo(false);
-      setSegundosLiquidos(Math.max(0, sessao.segundosLiquidos || 0));
-      setPausasContador(sessao.pausasContador || 0);
-      setSegundosPausaTotal(sessao.segundosPausaTotal || 0);
-      setTempoInicioSessao(sessao.tempoInicioSessao || null);
-      setQuestoesRespondidas(sessao.questoesRespondidas || 0);
-      setQuestoesAcertadas(sessao.questoesAcertadas || 0);
-      setObservacoesSessao(sessao.observacoesSessao || "");
-      setAnotacoesTeoria(sessao.anotacoesTeoria || "");
-    } catch {
-      // Ignora sessão local corrompida.
-    }
-  }, [blocoStorageKey]);
+    if (!user || !planoCiclo?.bloco_atual) return;
+    let cancelado = false;
+    fetch(`/api/mentoria/sessao-ativa?tarefaId=${encodeURIComponent(planoCiclo.bloco_atual.id)}`, { cache: "no-store" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((json) => {
+        if (cancelado || !json?.sessao) return;
+        const sessao = json.sessao;
+        setCronometroIniciado(Boolean(sessao.cronometro_iniciado));
+        setCronometroAtivo(false);
+        setSegundosLiquidos(Math.max(0, sessao.segundos_liquidos || 0));
+        setPausasContador(sessao.pausas_contador || 0);
+        setSegundosPausaTotal(sessao.segundos_pausa_total || 0);
+        setTempoInicioSessao(sessao.tempo_inicio_sessao || null);
+        setQuestoesRespondidas(sessao.questoes_respondidas || 0);
+        setQuestoesAcertadas(sessao.questoes_acertadas || 0);
+        setObservacoesSessao(sessao.observacoes || "");
+        setAnotacoesTeoria(sessao.anotacoes || "");
+      }).catch((err) => console.warn("Falha ao restaurar sessão ativa:", err));
+    return () => { cancelado = true; };
+  }, [user, planoCiclo?.bloco_atual?.id]);
 
   useEffect(() => {
-    if (!blocoStorageKey || typeof window === "undefined" || !cronometroIniciado) return;
-    try {
-      localStorage.setItem(
-        blocoStorageKey,
-        JSON.stringify({
-          cronometroIniciado,
-          cronometroAtivo,
-          segundosLiquidos,
-          pausasContador,
-          segundosPausaTotal,
-          tempoInicioSessao,
-          questoesRespondidas,
-          questoesAcertadas,
-          observacoesSessao,
-          anotacoesTeoria,
-          updatedAt: new Date().toISOString(),
-        })
-      );
-    } catch {
-      // Ignore falhas de persistência local.
-    }
-  }, [
-    blocoStorageKey,
-    cronometroIniciado,
-    cronometroAtivo,
-    segundosLiquidos,
-    pausasContador,
-    segundosPausaTotal,
-    tempoInicioSessao,
-    questoesRespondidas,
-    questoesAcertadas,
-    observacoesSessao,
-    anotacoesTeoria,
-  ]);
+    if (!user || !planoCiclo?.bloco_atual || !cronometroIniciado) return;
+    const timer = window.setTimeout(() => {
+      fetch("/api/mentoria/sessao-ativa", {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plano_id: planoCiclo.plano_id, tarefa_id: planoCiclo.bloco_atual!.id,
+          cronometro_iniciado: cronometroIniciado, cronometro_ativo: cronometroAtivo,
+          segundos_liquidos: segundosLiquidos, pausas_contador: pausasContador,
+          segundos_pausa_total: segundosPausaTotal, tempo_inicio_sessao: tempoInicioSessao,
+          questoes_respondidas: questoesRespondidas, questoes_acertadas: questoesAcertadas,
+          observacoes: observacoesSessao, anotacoes: anotacoesTeoria,
+        }),
+      }).catch((err) => console.warn("Falha ao persistir sessão ativa:", err));
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [user, planoCiclo?.plano_id, planoCiclo?.bloco_atual?.id, cronometroIniciado, cronometroAtivo, segundosLiquidos, pausasContador, segundosPausaTotal, tempoInicioSessao, questoesRespondidas, questoesAcertadas, observacoesSessao, anotacoesTeoria]);
 
   // Cronômetro de tempo líquido ativo
   useEffect(() => {
@@ -354,12 +324,9 @@ export default function MentoriaHojePage() {
   }
 
   function limparSessaoLocal() {
-    if (!blocoStorageKey || typeof window === "undefined") return;
-    try {
-      localStorage.removeItem(blocoStorageKey);
-    } catch {
-      // Ignore
-    }
+    if (!planoCiclo?.bloco_atual) return;
+    fetch(`/api/mentoria/sessao-ativa?tarefaId=${encodeURIComponent(planoCiclo.bloco_atual.id)}`, { method: "DELETE" })
+      .catch((err) => console.warn("Falha ao limpar sessão ativa:", err));
   }
 
   function handleZerar() {
