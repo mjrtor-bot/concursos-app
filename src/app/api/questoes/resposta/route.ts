@@ -128,20 +128,42 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Se errou, atualiza caderno_erros
+    // Mantém o caderno de erros consistente com o histórico real.
+    const agora = new Date().toISOString();
+    const { data: erroAtual } = await supabase
+      .from("caderno_erros")
+      .select("id,total_erros")
+      .eq("usuario_id", user.id)
+      .eq("questao_id", questao_id)
+      .maybeSingle();
+
     if (!correta) {
-      const { error: cadernoError } = await supabase.from("caderno_erros").upsert(
-        {
-          usuario_id: user.id,
-          questao_id,
-          revisado: false,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "usuario_id, questao_id" }
-      );
-      if (cadernoError) {
-        console.warn("[API /questoes/resposta] Aviso caderno_erros:", cadernoError.message);
-      }
+      const payload = erroAtual
+        ? {
+            total_erros: (erroAtual.total_erros || 0) + 1,
+            revisado: false,
+            ultimo_erro_em: agora,
+            updated_at: agora,
+          }
+        : {
+            usuario_id: user.id,
+            questao_id,
+            total_erros: 1,
+            revisado: false,
+            ultimo_erro_em: agora,
+            updated_at: agora,
+          };
+      const operacao = erroAtual
+        ? supabase.from("caderno_erros").update(payload).eq("id", erroAtual.id)
+        : supabase.from("caderno_erros").insert(payload);
+      const { error: cadernoError } = await operacao;
+      if (cadernoError) console.warn("[API /questoes/resposta] Aviso caderno_erros:", cadernoError.message);
+    } else if (erroAtual) {
+      const { error: revisaoError } = await supabase
+        .from("caderno_erros")
+        .update({ revisado: true, updated_at: agora })
+        .eq("id", erroAtual.id);
+      if (revisaoError) console.warn("[API /questoes/resposta] Aviso revisão caderno:", revisaoError.message);
     }
 
     return NextResponse.json({ success: true, saved: true });
