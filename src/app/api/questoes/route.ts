@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     const dificuldade = (searchParams.get("dificuldade") as any) || undefined;
     const origem = (searchParams.get("origem") as any) || "todas";
     const termo_busca = searchParams.get("termo_busca") || undefined;
+    const status = searchParams.get("status") || "todas";
     const anuladaParam = searchParams.get("anulada");
     const desatualizadaParam = searchParams.get("desatualizada");
 
@@ -100,6 +101,32 @@ export async function GET(request: NextRequest) {
       // O banco atual contém conteúdo IA com metadados de estilo; a UI recebe
       // esses campos somente como referência de estilo, nunca como procedência.
       // Questões anuladas/desativadas continuam fora da listagem pública pelo filtro acima.
+
+      // Status é filtrado no servidor para manter lista, total e paginação consistentes.
+      if (status !== "todas") {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return NextResponse.json({ success:false, error:"Não autenticado" }, { status:401 });
+        if (status === "favoritas") {
+          const { data: favs } = await supabase.from("questoes_favoritas").select("questao_id").eq("usuario_id", user.id);
+          const ids=(favs||[]).map((x:any)=>x.questao_id);
+          if (!ids.length) return NextResponse.json({success:true,questoes:[],total:0,page,pageSize,totalPages:1,hasMore:false,fonte:"supabase"});
+          query=query.in("id",ids);
+        } else {
+          const { data: respostas } = await supabase.from("respostas_usuarios").select("questao_id,correta,created_at").eq("usuario_id", user.id).order("created_at",{ascending:false});
+          const latest=new Map<string,boolean>();
+          for(const r of respostas||[]) if(!latest.has(r.questao_id)) latest.set(r.questao_id,Boolean(r.correta));
+          let ids:string[]=[];
+          if(status==="acertadas") ids=[...latest].filter(([,ok])=>ok).map(([id])=>id);
+          if(status==="erradas") ids=[...latest].filter(([,ok])=>!ok).map(([id])=>id);
+          if(status==="nao_resolvidas") {
+            const done=[...latest.keys()];
+            if(done.length) query=query.not("id","in",`(${done.join(",")})`);
+          } else {
+            if(!ids.length) return NextResponse.json({success:true,questoes:[],total:0,page,pageSize,totalPages:1,hasMore:false,fonte:"supabase"});
+            query=query.in("id",ids);
+          }
+        }
+      }
 
       // Paginação server-side
       const offset = (page - 1) * pageSize;
