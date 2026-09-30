@@ -36,6 +36,7 @@ export default function PlanejamentoSemanalPage() {
   const [gradeSemanal, setGradeSemanal] = useState<GradeSemanalDia[]>([]);
   const [stats, setStats] = useState<MentoriaDashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [erroCarregamento, setErroCarregamento] = useState("");
   const [semanaOffset, setSemanaOffset] = useState<number>(0);
   const [agora, setAgora] = useState<Date | null>(null);
   const [calendario, setCalendario] = useState<{ tarefas:any[]; atrasadas:number; previsao_termino:string|null }>({ tarefas:[], atrasadas:0, previsao_termino:null });
@@ -56,6 +57,7 @@ export default function PlanejamentoSemanalPage() {
       }
       try {
         setLoading(true);
+        setErroCarregamento("");
         const [grade, st, cal] = await Promise.all([
           MentoriaService.getGradeSemanalDistribuida(user.id),
           MentoriaService.getDashboardStats(user.id),
@@ -66,6 +68,7 @@ export default function PlanejamentoSemanalPage() {
         setCalendario(cal);
       } catch (err) {
         console.error("Erro ao carregar planejamento semanal:", err);
+        setErroCarregamento(err instanceof Error ? err.message : "Não foi possível carregar o planejamento.");
       } finally {
         setLoading(false);
       }
@@ -225,6 +228,10 @@ export default function PlanejamentoSemanalPage() {
         </p>
       </div>
     );
+  }
+
+  if (erroCarregamento) {
+    return <div className="max-w-xl mx-auto py-16 text-center space-y-4"><AlertTriangle className="w-10 h-10 mx-auto text-amber-600"/><h2 className="text-xl font-bold">Não foi possível carregar o planejamento</h2><p className="text-sm text-slate-500">{erroCarregamento}</p><Button onClick={() => window.location.reload()}>Tentar novamente</Button></div>;
   }
 
   return (
