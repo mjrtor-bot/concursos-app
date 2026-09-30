@@ -113,14 +113,39 @@ export default function BibliotecaEditaisPage() {
   }
 
   async function processarPdf(id:string){
-    setProcessando(true); setMensagem(""); setConfirmado(false);
+    setProcessando(true); setMensagem(""); setConfirmado(false); setPreview(null); setMostrarPreview(false);
     try{
       const r=await fetch("/api/editais/processar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({edital_usuario_id:id})});
       const j=await r.json();
-      if(!r.ok && r.status!==422)throw new Error(j.error||"Falha ao processar o PDF");
-      if(j.estrutura){setPreview(j.estrutura);setMostrarPreview(true);}
+      if(!r.ok && r.status!==202 && r.status!==422)throw new Error(j.error||"Falha ao iniciar o processamento do PDF");
       if(r.status===422)throw new Error(j.aviso||"Nenhum conteúdo programático foi encontrado no PDF.");
-      setMensagem(`PDF processado: ${j.total_disciplinas} disciplinas e ${j.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
+
+      if(j.processing){
+        setMensagem("PDF recebido. A análise está sendo executada; esta tela será atualizada automaticamente.");
+        for(let tentativa=0; tentativa<120; tentativa++){
+          await new Promise(resolve=>setTimeout(resolve,3000));
+          const sr=await fetch(`/api/editais/processar/status?edital_usuario_id=${encodeURIComponent(id)}`,{cache:"no-store"});
+          const sj=await sr.json();
+          if(!sr.ok)throw new Error(sj.error||"Falha ao consultar o processamento do PDF");
+          if(sj.done){
+            if(!sj.ok || sj.status==="erro" || sj.status==="revisao_sem_conteudo"){
+              throw new Error(sj.error||sj.aviso||"Nenhum conteúdo programático foi encontrado no PDF.");
+            }
+            setPreview(sj.estrutura);
+            setMostrarPreview(true);
+            setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
+            return;
+          }
+          setMensagem("Analisando o PDF completo... aguarde. O processamento continua mesmo enquanto esta tela consulta o andamento.");
+        }
+        throw new Error("A análise ainda está em andamento. Atualize a página em alguns instantes para continuar.");
+      }
+
+      if(j.estrutura){
+        setPreview(j.estrutura);
+        setMostrarPreview(true);
+        setMensagem(`PDF processado: ${j.total_disciplinas} disciplinas e ${j.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
+      }
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao processar o PDF");}
     finally{setProcessando(false);}
   }
