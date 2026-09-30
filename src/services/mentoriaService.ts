@@ -814,7 +814,7 @@ export class MentoriaService {
     const posAtual = plano.posicao_atual_index;
 
     // Buscar respostas de hoje para calcular progresso real por disciplina
-    const hojeIso = new Date().toISOString().split("T")[0];
+    const hojeIso = getDataBrasilia(new Date());
     const respostasHojeDiscMap = new Map<string, number>();
 
     const supabase = this.getClient();
