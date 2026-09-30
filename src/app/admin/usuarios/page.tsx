@@ -74,7 +74,11 @@ export default function AdminUsuariosPage() {
         }
       }
 
-      setUsuarios([]);\n      showFeedback("erro", "Não foi possível carregar usuários do banco real.");\n    } catch {\n      setUsuarios([]);\n      showFeedback("erro", "Falha ao consultar usuários do banco real.");
+      setUsuarios([]);
+      showFeedback("erro", "Não foi possível carregar usuários do banco real.");
+    } catch {
+      setUsuarios([]);
+      showFeedback("erro", "Falha ao consultar usuários do banco real.");
     } finally {
       setLoading(false);
     }
