@@ -123,7 +123,7 @@ export async function GET(request: NextRequest) {
       if (questaoIds.length > 0) {
         const { data: altsData, error: altsError } = await supabase
           .from("questoes_alternativas")
-          .select("id, questao_id, letra, texto, correta, ordem, explicacao_especifica")
+          .select("id, questao_id, letra, texto, ordem")
           .in("questao_id", questaoIds)
           .order("ordem", { ascending: true });
 
@@ -139,9 +139,7 @@ export async function GET(request: NextRequest) {
               questao_id: alt.questao_id,
               letra: alt.letra,
               texto: alt.texto,
-              correta: alt.correta,
               ordem: alt.ordem,
-              explicacao_especifica: alt.explicacao_especifica ?? undefined,
             });
           }
         }
