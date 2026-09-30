@@ -87,37 +87,51 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const {
-      questao_id,
-      alternativa_id,
-      correta,
-      tempo_resposta_segundos,
-      tipo,
-      alternativa_texto,
-      questao_versao,
-    } = body;
+    const { questao_id, alternativa_id, tempo_resposta_segundos, questao_versao } = body;
 
     const isUuid = (val?: string) =>
       Boolean(val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val));
 
-    if (!isUuid(questao_id)) {
-      return NextResponse.json({ success: true, saved: false, reason: "non_uuid_question" });
+    if (!isUuid(questao_id) || !isUuid(alternativa_id)) {
+      return NextResponse.json({ success: false, saved: false, reason: "invalid_ids" }, { status: 400 });
     }
+
+    // O servidor é a única autoridade sobre o gabarito. Nunca confie em `correta`
+    // enviada pelo navegador.
+    const { data: questao, error: questaoError } = await supabase
+      .from("questoes")
+      .select("id,tipo,versao,auditoria_status,anulada,desatualizada")
+      .eq("id", questao_id)
+      .maybeSingle();
+    if (questaoError || !questao || questao.auditoria_status === "irrecuperavel" || questao.anulada || questao.desatualizada) {
+      return NextResponse.json({ success: false, saved: false, reason: "question_unavailable" }, { status: 404 });
+    }
+
+    const { data: alternativa, error: alternativaError } = await supabase
+      .from("questoes_alternativas")
+      .select("id,questao_id,texto,correta")
+      .eq("id", alternativa_id)
+      .eq("questao_id", questao_id)
+      .maybeSingle();
+    if (alternativaError || !alternativa) {
+      return NextResponse.json({ success: false, saved: false, reason: "invalid_alternative" }, { status: 400 });
+    }
+
+    const correta = Boolean(alternativa.correta);
+    const respostaCertoErrado =
+      questao.tipo === "certo_errado"
+        ? String(alternativa.texto || "").toLowerCase() === "certo" ? "certo" : "errado"
+        : null;
 
     // Grava na tabela respostas_usuarios
     const { error: insertError } = await supabase.from("respostas_usuarios").insert({
       usuario_id: user.id,
       questao_id,
       alternativa_id: isUuid(alternativa_id) ? alternativa_id : null,
-      resposta_certo_errado:
-        tipo === "certo_errado"
-          ? alternativa_texto?.toLowerCase() === "certo"
-            ? "certo"
-            : "errado"
-          : null,
+      resposta_certo_errado: respostaCertoErrado,
       correta: Boolean(correta),
       tempo_resposta_segundos: tempo_resposta_segundos || 0,
-      questao_versao: questao_versao || 1,
+      questao_versao: questao_versao || questao.versao || 1,
     });
 
     if (insertError) {
@@ -174,7 +188,7 @@ export async function POST(request: NextRequest) {
       if (revisaoError) console.warn("[API /questoes/resposta] Aviso revisão caderno:", revisaoError.message);
     }
 
-    return NextResponse.json({ success: true, saved: true });
+    return NextResponse.json({ success: true, saved: true, correta, alternativa_correta_id: correta ? alternativa.id : undefined });
   } catch (error: any) {
     console.error("[API /questoes/resposta] Exceção:", error);
     return NextResponse.json(
