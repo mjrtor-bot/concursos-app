@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
           {type:"input_file",file_id:uploaded.id},
           {type:"input_text",text:"Leia o PDF inteiro, inclusive anexos, tabelas e páginas finais. Localize qualquer seção equivalente a conteúdo programático, programa de matérias, conhecimentos, disciplinas, objetos de avaliação, conteúdo das provas ou tópicos exigidos. Extraia cada disciplina e TODOS os subitens/assuntos que o próprio documento exigir, preservando a redação e a granularidade. Não use conhecimento externo e não invente itens. Títulos como Conhecimentos Gerais/Específicos são grupos: procure as matérias e tópicos dentro deles. Se o edital apenas remeter o conteúdo programático para outro documento/anexo que NÃO esteja neste PDF, deixe disciplinas vazio e escreva em observacoes exatamente qual anexo/documento está faltando e onde a remissão aparece. Se houver conteúdo em tabelas, listas numeradas ou texto corrido, converta-o para disciplina → assuntos sem resumir."}
         ]}],
+        reasoning:{effort:"low"},
         text:{format:{type:"json_schema",name:"edital_conteudo",strict:true,schema}}
       })
     });
