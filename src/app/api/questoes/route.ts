@@ -52,9 +52,11 @@ export async function GET(request: NextRequest) {
       if (disciplina_id && disciplina_id !== "todos") {
         let idsDisciplina = [disciplina_id];
         if (disciplina_nome) {
-          const base = disciplina_nome.replace(/^Noções de\s+/i, "").replace(/\s+e Tecnologia$/i, "").trim();
-          const { data: equivalentes } = await supabase.from("disciplinas").select("id,nome").ilike("nome", `%${base}%`);
-          if (equivalentes?.length) idsDisciplina = Array.from(new Set([disciplina_id, ...equivalentes.map((d:any)=>d.id)]));
+          const normalizar = (v:string) => v.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/^nocoes de /, "").replace(/ e tecnologia$/, "").replace(/ basica$/, "").trim();
+          const base = normalizar(disciplina_nome);
+          const { data: catalogo } = await supabase.from("disciplinas").select("id,nome");
+          const equivalentes = (catalogo || []).filter((d:any) => normalizar(d.nome) === base);
+          if (equivalentes.length) idsDisciplina = Array.from(new Set([disciplina_id, ...equivalentes.map((d:any)=>d.id)]));
         }
         query = idsDisciplina.length > 1 ? query.in("disciplina_id", idsDisciplina) : query.eq("disciplina_id", disciplina_id);
       }
