@@ -363,6 +363,15 @@ export class MentoriaCicloService {
 
     const supabase = this.getClient();
 
+    // Um plano só é válido quando está vinculado ao edital oficial atualmente selecionado.
+    // Planos legados ficam preservados no histórico, mas deixam de alimentar Missão/Plano/Semana.
+    let editalAlvoId: string | null = null;
+    if (supabase) {
+      const { data: alvoAtual } = await supabase.from("usuario_concurso_alvo").select("edital_id").eq("usuario_id", usuarioId).maybeSingle();
+      editalAlvoId = alvoAtual?.edital_id || null;
+      if (!editalAlvoId) return null;
+    }
+
     // 1. Tenta carregar plano ativo existente do Supabase
     if (supabase) {
       try {
@@ -371,6 +380,7 @@ export class MentoriaCicloService {
           .select("*")
           .eq("usuario_id", usuarioId)
           .eq("status", "ativo")
+          .eq("edital_id", editalAlvoId)
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle();
@@ -540,6 +550,7 @@ export class MentoriaCicloService {
     }
 
     // 3. Obter Diagnóstico Concluído ou Ativo
+    let editalSelecionadoId: string | null = null;
     const diagnostico = await MentoriaDiagnosticoService.getDiagnosticoAtivo(usuarioId);
     let disciplinasInput: Array<{
       disciplina_id: string;
@@ -572,6 +583,7 @@ export class MentoriaCicloService {
         if (!alvo?.edital_id) {
           return { success: false, error: "Selecione um concurso, cargo e edital oficial no Perfil antes de gerar o plano." };
         }
+        editalSelecionadoId = alvo.edital_id;
 
         const { data: topicosEdital, error: topicosErr } = await supabase
           .from("edital_topicos")
@@ -756,6 +768,7 @@ export class MentoriaCicloService {
       ciclo_concluidos_contagem: 0,
       prioridades_disciplinas: prioridades,
       estrutura_ciclo: blocos,
+      edital_id: editalSelecionadoId,
       updated_at: agoraIso,
     };
 
