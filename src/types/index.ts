@@ -143,7 +143,7 @@ export interface Alternativa {
   questao_id?: string;
   letra?: "A" | "B" | "C" | "D" | "E";
   texto: string;
-  correta: boolean;
+  correta?: boolean;
   ordem: number;
   explicacao_especifica?: string;
 }
