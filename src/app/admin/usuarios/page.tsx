@@ -83,7 +83,7 @@ export default function AdminUsuariosPage() {
   useEffect(() => {
     carregarUsuarios();
     fetch("/api/concursos/alvo",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{
-      setConcursos((j.concursos||[]).map((x:any)=>({id:x.id,nome:x.nome,orgao:x.orgao,sigla:(x.orgao.match(/\\b[A-Z]{2,6}\\b/g)||[]).pop()||x.orgao.replace(/[^A-Za-z]/g,"").slice(0,6).toUpperCase(),ano:new Date().getFullYear(),nivel:"medio",esfera:x.esfera||"estadual",status:x.status||"previsto",banca:"",descricao:"",vagas_totais:0,salario_max:0,data_prova:null,edital_url:x.fonte_oficial_url,created_at:""})));
+      setConcursos(((j.concursos||[]).map((x:any)=>({id:x.id,nome:x.nome,orgao:x.orgao,sigla:(x.orgao.match(/\\b[A-Z]{2,6}\\b/g)||[]).pop()||x.orgao.replace(/[^A-Za-z]/g,"").slice(0,6).toUpperCase(),ano:new Date().getFullYear(),nivel:"medio",esfera:x.esfera||"estadual",status:x.status||"previsto",banca:"",descricao:"",vagas_totais:0,salario_max:0,data_prova:null,edital_url:x.fonte_oficial_url,created_at:""}))) as Concurso[]);
     }).catch(()=>setConcursos([]));
   }, [carregarUsuarios]);
 
