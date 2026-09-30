@@ -49,7 +49,7 @@ export default function SimuladosPage() {
 
       // 1. Tenta buscar do banco de questões completo (/api/questoes)
       try {
-        const res = await fetch(`/api/questoes?pageSize=${targetQtd}`);
+        const res = await fetch(`/api/questoes?pageSize=${targetQtd}&anulada=false&desatualizada=false`);
         const json = await res.json();
         if (json.success && Array.isArray(json.questoes) && json.questoes.length > 0) {
           DataService.salvarQuestoesLote(json.questoes);
@@ -67,6 +67,8 @@ export default function SimuladosPage() {
         const shuffled = [...todasQuestoes].sort(() => 0.5 - Math.random());
         selecionadas = shuffled.slice(0, qtd).map((q) => q.id);
       }
+
+      if (selecionadas.length === 0) throw new Error("Não há questões válidas disponíveis para gerar o simulado.");
 
       const novoSimulado: Simulado = {
         id: `sim-custom-${Date.now()}`,
