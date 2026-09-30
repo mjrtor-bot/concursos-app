@@ -101,7 +101,7 @@ function QuestoesContent() {
         params.set("dificuldade", filtro.dificuldade);
       if (filtro.origem && filtro.origem !== "todas")
         params.set("origem", filtro.origem);
-      if (filtro.termo_busca && filtro.termo_busca.trim())
+      if (filtro.status && filtro.status !== "todas") params.set("status", filtro.status);\n      if (filtro.termo_busca && filtro.termo_busca.trim())
         params.set("termo_busca", filtro.termo_busca.trim());
       params.set("page", String(page));
       params.set("pageSize", String(PAGE_SIZE));
@@ -125,19 +125,6 @@ function QuestoesContent() {
           const data = await response.json();
           if (data.success && Array.isArray(data.questoes)) {
             let lista: Questao[] = data.questoes;
-
-            // Filtro client-side de status (favoritas, acertadas, erradas, etc.)
-            if (filtro.status && filtro.status !== "todas") {
-              lista = lista.filter((q) => {
-                const resp = DataService.getRespostaByQuestaoId(q.id);
-                const isFav = DataService.isFavorita(q.id);
-                if (filtro.status === "nao_resolvidas") return !resp;
-                if (filtro.status === "acertadas") return resp?.correta === true;
-                if (filtro.status === "erradas") return resp?.correta === false;
-                if (filtro.status === "favoritas") return isFav;
-                return true;
-              });
-            }
 
             setQuestoes(lista);
             setApiPage(data.page ?? page);
