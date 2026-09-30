@@ -103,12 +103,13 @@ export default function SimuladosPage() {
         created_at: new Date().toISOString(),
       };
 
-      DataService.salvarSimulado(novoSimulado);
       if (user) {
         const persist = await fetch("/api/simulados", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(novoSimulado) });
         if (!persist.ok) throw new Error("Não foi possível persistir o simulado na sua conta.");
         const payload = await persist.json();
-        if (payload?.simulado) novoSimulado.id = payload.simulado.id;
+        if (payload?.simulado) Object.assign(novoSimulado, payload.simulado);
+      } else {
+        DataService.salvarSimulado(novoSimulado);
       }
       setSimulados((atuais) => [novoSimulado, ...atuais.filter(s => s.id !== novoSimulado.id)]);
       setIsModalNovoSimulado(false);
