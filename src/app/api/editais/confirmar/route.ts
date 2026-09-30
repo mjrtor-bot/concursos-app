@@ -20,8 +20,10 @@ export async function POST(request:NextRequest){
   if(!edital)return NextResponse.json({error:"Edital de destino não encontrado."},{status:404});
 
   const estrutura:any=upload.estrutura_extraida;
+  const disciplinasValidas=(estrutura.disciplinas||[]).filter((d:any)=>String(d?.nome||"").trim() && Array.isArray(d?.assuntos) && d.assuntos.some((a:any)=>String(a||"").trim()));
+  if(!disciplinasValidas.length)return NextResponse.json({error:"A prévia não possui conteúdo programático válido para confirmar."},{status:422});
   let ordem=0,total=0;
-  for(const d of estrutura.disciplinas||[]){
+  for(const d of disciplinasValidas){
     const nome=String(d.nome||"").trim(); if(!nome)continue;
     const slug=slugify(nome);
     let {data:disc}=await supabase.from("disciplinas").select("id").eq("slug",slug).maybeSingle();
@@ -37,6 +39,7 @@ export async function POST(request:NextRequest){
       total++;
     }
   }
+  if(total===0)return NextResponse.json({error:"Nenhum tópico válido foi gravado."},{status:422});
   await supabase.from("editais_usuario").update({status:"confirmado",confirmado_em:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",uploadId);
   return NextResponse.json({ok:true,total_topicos:total});
 }
