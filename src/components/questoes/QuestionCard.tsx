@@ -5,6 +5,7 @@ import { Questao, RespostaUsuario } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { DataService } from "@/services/dataService";
+import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/contexts/ToastContext";
 import {
   Bookmark,
@@ -78,10 +79,13 @@ export function QuestionCard({
     setIsFavorita(DataService.isFavorita(questao.id));
     const notaSalva = DataService.getAnotacaoQuestao(questao.id);
     setAnotacao(notaSalva || "");
+    const sb=createClient();
+    if(sb){sb.auth.getUser().then(async({data:{user}})=>{if(!user)return;const[{data:fav},{data:nota}]=await Promise.all([sb.from("questoes_favoritas").select("id").eq("usuario_id",user.id).eq("questao_id",questao.id).maybeSingle(),sb.from("questoes_anotacoes").select("texto").eq("usuario_id",user.id).eq("questao_id",questao.id).maybeSingle()]);setIsFavorita(Boolean(fav));if(nota?.texto!==undefined)setAnotacao(nota.texto||"");});}
   }, [questao.id, modoSimulado, respostaInicial]);
 
-  const handleSalvarAnotacao = () => {
+  const handleSalvarAnotacao = async () => {
     DataService.salvarAnotacaoQuestao(questao.id, anotacao);
+    const sb=createClient(); if(sb){const{data:{user}}=await sb.auth.getUser();if(user){await sb.from("questoes_anotacoes").delete().eq("usuario_id",user.id).eq("questao_id",questao.id);if(anotacao.trim())await sb.from("questoes_anotacoes").insert({usuario_id:user.id,questao_id:questao.id,texto:anotacao.trim()});}}
     if (anotacao.trim()) {
       success("Anotação de estudo salva!");
     } else {
@@ -89,9 +93,10 @@ export function QuestionCard({
     }
   };
 
-  const handleLimparAnotacao = () => {
+  const handleLimparAnotacao = async () => {
     setAnotacao("");
     DataService.salvarAnotacaoQuestao(questao.id, "");
+    const sb=createClient();if(sb){const{data:{user}}=await sb.auth.getUser();if(user)await sb.from("questoes_anotacoes").delete().eq("usuario_id",user.id).eq("questao_id",questao.id);}
     info("Anotação limpa.");
   };
 
@@ -141,9 +146,11 @@ export function QuestionCard({
     }
   };
 
-  const handleToggleFavorito = () => {
-    const estado = DataService.toggleFavorito(questao.id);
+  const handleToggleFavorito = async () => {
+    const estado = !isFavorita;
+    DataService.toggleFavorito(questao.id);
     setIsFavorita(estado);
+    const sb=createClient();if(sb){const{data:{user}}=await sb.auth.getUser();if(user){if(estado)await sb.from("questoes_favoritas").insert({usuario_id:user.id,questao_id:questao.id});else await sb.from("questoes_favoritas").delete().eq("usuario_id",user.id).eq("questao_id",questao.id);}}
     if (estado) {
       success("Questão favoritada com sucesso!");
     } else {
@@ -345,7 +352,7 @@ export function QuestionCard({
               <span>Minhas Anotações de Estudo</span>
             </div>
             <span className="text-[10px] font-normal text-amber-700/80 dark:text-amber-400/80">
-              Salvo no seu dispositivo
+              Sincronizado com sua conta
             </span>
           </div>
 
