@@ -20,7 +20,7 @@ export async function GET() {
       .from("respostas_usuarios")
       .select("id, usuario_id, questao_id, alternativa_id, correta, tempo_resposta_segundos, created_at")
       .eq("usuario_id", user.id)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(5000);
 
     if (error) {
