@@ -62,6 +62,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     edital: data,
-    message: "PDF armazenado com segurança. A extração estruturada ainda depende do processador de PDF e ficará pendente até essa etapa ser configurada.",
+    edital_usuario_id: data.id,
+    message: "PDF armazenado com segurança. Agora processe o arquivo para gerar a prévia estruturada.",
   }, { status: 201 });
 }
