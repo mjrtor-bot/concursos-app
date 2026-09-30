@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
     const pageSize = Math.min(200, Math.max(1, parseInt(searchParams.get("pageSize") || "10", 10)));
     const disciplina_id = searchParams.get("disciplina_id") || undefined;
-    const concurso_id = searchParams.get("concurso_id") || undefined;
     const assunto_id = searchParams.get("assunto_id") || undefined;
     const subassunto_id = searchParams.get("subassunto_id") || undefined;
     const banca = searchParams.get("banca") || undefined;
@@ -50,9 +49,6 @@ export async function GET(request: NextRequest) {
         .order("created_at", { ascending: false });
 
       // Filtros
-      if (concurso_id) {
-        query = query.eq("concurso_id", concurso_id);
-      }
       if (disciplina_id && disciplina_id !== "todos") {
         query = query.eq("disciplina_id", disciplina_id);
       }
