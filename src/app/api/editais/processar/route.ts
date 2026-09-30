@@ -72,8 +72,11 @@ export async function POST(request: NextRequest) {
     });
     const json = await resp.json();
     if (!resp.ok) throw new Error(json.error?.message || "Falha na análise do edital.");
-    const output = extractOutputText(json);
-    const estrutura = JSON.parse(output);
+    const output = extractOutputText(json).trim();
+    if (!output) throw new Error("A análise do PDF terminou sem retornar conteúdo estruturado.");
+    let estrutura:any;
+    try { estrutura = JSON.parse(output); } catch { throw new Error("A análise do PDF retornou uma estrutura inválida. Tente novamente com o arquivo original."); }
+    if (!estrutura || !Array.isArray(estrutura.disciplinas)) throw new Error("A análise do PDF não retornou a lista de disciplinas esperada.");
     const totalAssuntos = estrutura.disciplinas.reduce((n:number,d:any)=>n+(d.assuntos?.length||0),0);
     if (!estrutura.disciplinas.length || totalAssuntos===0) {
       const diagnostico = Array.isArray(estrutura.observacoes) && estrutura.observacoes.length ? estrutura.observacoes.join(" | ") : "Nenhum conteúdo programático foi localizado no PDF.";
@@ -82,6 +85,9 @@ export async function POST(request: NextRequest) {
     }
 
     await auth.supabase!.from("editais_usuario").update({ status:"aguardando_confirmacao", estrutura_extraida:estrutura, erro_processamento:null, updated_at:new Date().toISOString() }).eq("id", registro.id);
+    if (uploaded?.id) {
+      await fetch(`https://api.openai.com/v1/files/${uploaded.id}`, { method:"DELETE", headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}` } }).catch(()=>undefined);
+    }
     return NextResponse.json({ ok:true, edital_usuario_id:registro.id, estrutura, total_disciplinas:estrutura.disciplinas.length, total_assuntos:totalAssuntos });
   } catch (e) {
     const message=e instanceof Error?e.message:"Erro inesperado";
