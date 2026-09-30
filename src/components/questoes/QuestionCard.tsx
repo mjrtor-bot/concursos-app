@@ -50,7 +50,7 @@ export function QuestionCard({
   const [selecionadaId, setSelecionadaId] = useState<string | null>(
     respostaInicial || null
   );
-  const [resposta, setResposta] = useState<RespostaUsuario | null>(null);
+  const [resposta, setResposta] = useState<RespostaUsuario | null>(null);\n  const [gabaritoId, setGabaritoId] = useState<string | null>(null);
   const [mostrarExplicacao, setMostrarExplicacao] = useState(false);
   const [isFavorita, setIsFavorita] = useState(false);
   const [tempoInicio, setTempoInicio] = useState<number>(Date.now());
@@ -398,7 +398,7 @@ export function QuestionCard({
           {questao.alternativas.map((alt) => {
             const isSelected = selecionadaId === alt.id;
             const isAnswered = Boolean(resposta);
-            const isCorrect = alt.correta;
+            const isCorrect = Boolean(resposta) ? alt.id === gabaritoId : false;
 
             let optionStyle =
               "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 text-slate-800 dark:text-slate-200";
