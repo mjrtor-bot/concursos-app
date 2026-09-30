@@ -35,7 +35,8 @@ export default function BibliotecaEditaisPage() {
   const [carreira,setCarreira]=useState("todos");
   const [uf,setUf]=useState("todos");
   const [status,setStatus]=useState("todos");
-  const [mensagem,setMensagem]=useState("");\n  const [aplicando,setAplicando]=useState<string|null>(null);
+  const [mensagem,setMensagem]=useState("");
+  const [aplicando,setAplicando]=useState<string|null>(null);
 
   async function carregar(){
     setLoading(true); setErro("");
@@ -72,7 +73,9 @@ export default function BibliotecaEditaisPage() {
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao aplicar edital");}
     finally{setAplicando(null);}
   }
-\n\n  return <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-6">
+
+
+  return <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-6">
     <header className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
       <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Editais Verticalizados</p>
       <h1 className="mt-1 text-3xl font-black">Biblioteca de concursos policiais</h1>
@@ -100,5 +103,6 @@ export default function BibliotecaEditaisPage() {
        </article>)}</div>}
     </section>
 
-    {user?.role==="admin"&&<section className="rounded-2xl border bg-white dark:bg-slate-900 p-6"><div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importação administrativa</h2><p className="text-sm text-slate-600 dark:text-slate-400">Para importar, revisar e publicar conteúdo programático oficial, use Administração → Editais. O edital só será liberado para planejamento após possuir disciplinas e tópicos validados.</p><a href="/admin/editais" className="mt-3 inline-block rounded-lg bg-indigo-600 px-3 py-2 text-sm font-bold text-white">Abrir Administração de Editais</a></div></div></section>\n  </main>;
+    {user?.role==="admin"&&<section className="rounded-2xl border bg-white dark:bg-slate-900 p-6"><div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importação administrativa</h2><p className="text-sm text-slate-600 dark:text-slate-400">Para importar, revisar e publicar conteúdo programático oficial, use Administração → Editais. O edital só será liberado para planejamento após possuir disciplinas e tópicos validados.</p><a href="/admin/editais" className="mt-3 inline-block rounded-lg bg-indigo-600 px-3 py-2 text-sm font-bold text-white">Abrir Administração de Editais</a></div></div></section>
+  </main>;
 }
