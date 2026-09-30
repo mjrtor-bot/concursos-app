@@ -44,6 +44,8 @@ function QuestoesContent() {
     status: "todas",
   });
 
+  // O padrão deve exibir o acervo disponível; filtros restritivos só entram por ação explícita do usuário.
+
   // ── Taxonomia (disciplinas / assuntos) ───────────────────────────────────
   useEffect(() => {
     let isMounted = true;
