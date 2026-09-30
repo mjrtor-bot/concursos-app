@@ -109,9 +109,10 @@ export async function middleware(request: NextRequest) {
 
   // ── Verificação de papel admin para rotas /admin/* ───────────────────────
   if (isAdminRoute) {
-    // Autorização restrita EXCLUSIVAMENTE ao app_metadata gerenciado pelo servidor (Service Role)
-    // Jamais confiar em user_metadata, que pode ser manipulado pelo cliente.
-    const role = user.app_metadata?.role || "user";
+    // A role autoritativa vive em public.profiles. app_metadata pode estar defasado
+    // até o próximo refresh do JWT, portanto não deve bloquear um admin válido.
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    const role = profile?.role || user.app_metadata?.role || "user";
 
     if (role !== "admin") {
       // Redireciona não-admins para o dashboard

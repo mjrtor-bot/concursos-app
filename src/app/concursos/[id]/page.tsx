@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { DataService } from "@/services/dataService";
+
 import { useConcurso } from "@/contexts/ConcursoContext";
 import {
   Building2,
@@ -33,15 +33,16 @@ export default function ConcursoDetalhePage({
   const { concursoAtivo, selecionarConcursoAtivo, selecionarCargoAtivo, cargoAtivo } =
     useConcurso();
 
-  const concurso = DataService.getConcursoById(id);
+  const { concursos, cargosDoConcurso } = useConcurso();
+  const concurso = concursos.find((item) => item.id === id);
   if (!concurso) {
     notFound();
   }
 
   const isAlvo = concursoAtivo?.id === concurso.id;
-  const cargos = DataService.getCargos(concurso.id);
-  const editais = DataService.getEditais(concurso.id);
-  const disciplinas = DataService.getDisciplinas();
+  const cargos = cargosDoConcurso;
+  const editais: Array<{id:string;titulo:string;publicado_em:string;url:string}> = concurso.edital_url ? [{id: concurso.id, titulo: "Fonte oficial do concurso", publicado_em: concurso.created_at || new Date().toISOString(), url: concurso.edital_url}] : [];
+  const disciplinas: Array<{id:string;slug:string;nome:string;descricao?:string}> = [];
 
   return (
     <div className="space-y-6">
