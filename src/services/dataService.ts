@@ -449,6 +449,34 @@ export const DataService = {
       )[0];
   },
 
+  registrarRespostaValidada(
+    questaoId: string,
+    alternativaId: string,
+    correta: boolean,
+    tempoRespostaSegundos: number = 0,
+    questaoFallback?: Questao
+  ): { resposta: RespostaUsuario; correta: boolean; questao: Questao } {
+    const questao = questaoFallback || this.getQuestaoById(questaoId);
+    if (!questao) throw new Error(`Questão ${questaoId} não encontrada`);
+    this.salvarQuestao(questao);
+    const profile = this.getProfile();
+    const novaResposta: RespostaUsuario = {
+      id: `resp-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      usuario_id: profile.id,
+      questao_id: questaoId,
+      alternativa_id: alternativaId,
+      correta,
+      tempo_resposta: tempoRespostaSegundos,
+      created_at: new Date().toISOString(),
+    };
+    const respostas = this.getRespostas();
+    respostas.push(novaResposta);
+    setToStorage(STORAGE_KEYS.RESPOSTAS, respostas);
+    if (!correta) this.adicionarAoCadernoErros(questaoId);
+    else this.marcarErroComoRevisado(questaoId);
+    return { resposta: novaResposta, correta, questao };
+  },
+
   registrarResposta(
     questaoId: string,
     alternativaId: string,
