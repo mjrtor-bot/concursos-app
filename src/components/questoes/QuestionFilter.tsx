@@ -128,7 +128,7 @@ export function QuestionFilter({
             className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-purple-500 text-slate-900 dark:text-slate-100 font-medium"
           >
             <option value="todas">Todas as Questões</option>
-            <option value="oficiais">Provas Oficiais Anteriores</option>
+            <option value="oficiais">Provas Oficiais Anteriores (quando disponíveis)</option>
             <option value="autorais_ia">Autorais / Criadas por IA</option>
           </select>
         </div>
