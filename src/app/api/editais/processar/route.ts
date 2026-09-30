@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         model:"gpt-5.6-luna",
         input:[{role:"user",content:[
           {type:"input_file",file_id:uploaded.id},
-          {type:"input_text",text:"Analise somente o conteúdo programático efetivamente presente neste edital. Extraia disciplinas e seus assuntos. Não invente, complete, resuma ou acrescente conteúdo externo. Preserve nomes e granularidade do documento. Se uma seção estiver ambígua, registre em observacoes e não crie assunto especulativo."}
+          {type:"input_text",text:"Leia o PDF inteiro, inclusive anexos, tabelas e páginas finais. Localize qualquer seção equivalente a conteúdo programático, programa de matérias, conhecimentos, disciplinas, objetos de avaliação, conteúdo das provas ou tópicos exigidos. Extraia cada disciplina e TODOS os subitens/assuntos que o próprio documento exigir, preservando a redação e a granularidade. Não use conhecimento externo e não invente itens. Títulos como Conhecimentos Gerais/Específicos são grupos: procure as matérias e tópicos dentro deles. Se o edital apenas remeter o conteúdo programático para outro documento/anexo que NÃO esteja neste PDF, deixe disciplinas vazio e escreva em observacoes exatamente qual anexo/documento está faltando e onde a remissão aparece. Se houver conteúdo em tabelas, listas numeradas ou texto corrido, converta-o para disciplina → assuntos sem resumir."}
         ]}],
         text:{format:{type:"json_schema",name:"edital_conteudo",strict:true,schema}}
       })
@@ -75,7 +75,11 @@ export async function POST(request: NextRequest) {
     const output = extractOutputText(json);
     const estrutura = JSON.parse(output);
     const totalAssuntos = estrutura.disciplinas.reduce((n:number,d:any)=>n+(d.assuntos?.length||0),0);
-    if (!estrutura.disciplinas.length || totalAssuntos===0) throw new Error("Nenhum conteúdo programático confiável foi identificado.");
+    if (!estrutura.disciplinas.length || totalAssuntos===0) {
+      const diagnostico = Array.isArray(estrutura.observacoes) && estrutura.observacoes.length ? estrutura.observacoes.join(" | ") : "Nenhum conteúdo programático foi localizado no PDF.";
+      await auth.supabase!.from("editais_usuario").update({ status:"revisao_sem_conteudo", estrutura_extraida:estrutura, erro_processamento:diagnostico, updated_at:new Date().toISOString() }).eq("id", registro.id);
+      return NextResponse.json({ ok:false, edital_usuario_id:registro.id, estrutura, total_disciplinas:estrutura.disciplinas?.length||0, total_assuntos:totalAssuntos, aviso:diagnostico }, { status:422 });
+    }
 
     await auth.supabase!.from("editais_usuario").update({ status:"aguardando_confirmacao", estrutura_extraida:estrutura, erro_processamento:null, updated_at:new Date().toISOString() }).eq("id", registro.id);
     return NextResponse.json({ ok:true, edital_usuario_id:registro.id, estrutura, total_disciplinas:estrutura.disciplinas.length, total_assuntos:totalAssuntos });
