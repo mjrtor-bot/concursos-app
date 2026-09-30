@@ -40,10 +40,51 @@ export async function PUT(request: Request) {
     editalId = edital?.id ?? null;
   }
 
+  const { data: alvoAnterior } = await supabase.from("usuario_concurso_alvo").select("edital_id").eq("usuario_id", user.id).maybeSingle();
+  const mudouEdital = alvoAnterior?.edital_id !== editalId;
+
   const { data, error } = await supabase.from("usuario_concurso_alvo").upsert({
     usuario_id: user.id, concurso_id: body.concurso_id, cargo_id: body.cargo_id, edital_id: editalId, updated_at: new Date().toISOString(),
   }, { onConflict: "usuario_id" }).select("concurso_id,cargo_id,edital_id").single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ alvo: data });
+
+  if (mudouEdital) {
+    const { error: archiveError } = await supabase.from("mentoria_planos")
+      .update({ status: "arquivado", updated_at: new Date().toISOString() })
+      .eq("usuario_id", user.id).eq("status", "ativo");
+    if (archiveError) return NextResponse.json({ error: archiveError.message }, { status: 500 });
+
+    const { error: limparError } = await supabase.from("mentoria_edital_topicos").delete().eq("usuario_id", user.id);
+    if (limparError) return NextResponse.json({ error: limparError.message }, { status: 500 });
+  }
+
+  if (editalId) {
+    const { data: topicos, error: topicosError } = await supabase.from("edital_topicos")
+      .select("disciplina_id,assunto_id,peso,incidencia")
+      .eq("edital_id", editalId)
+      .not("assunto_id", "is", null);
+    if (topicosError) return NextResponse.json({ error: topicosError.message }, { status: 500 });
+
+    if (topicos?.length) {
+      const linhas = topicos.map((t) => ({
+        usuario_id: user.id,
+        disciplina_id: t.disciplina_id,
+        assunto_id: t.assunto_id,
+        subassunto_id: null,
+        peso: Number(t.peso || 0) >= 75 ? "alto" : Number(t.peso || 0) >= 40 ? "medio" : "baixo",
+        incidencia: Number(t.incidencia || 0),
+        estudado: false,
+        percentual_dominio: 0,
+        status: "nao_iniciado",
+        questoes_respondidas: 0,
+        taxa_acerto: 0,
+      }));
+      const { error: syncError } = await supabase.from("mentoria_edital_topicos")
+        .upsert(linhas, { onConflict: "usuario_id,disciplina_id,assunto_id" });
+      if (syncError) return NextResponse.json({ error: syncError.message }, { status: 500 });
+    }
+  }
+
+  return NextResponse.json({ alvo: data, mudou_edital: mudouEdital });
 }

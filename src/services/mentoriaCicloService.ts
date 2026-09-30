@@ -748,8 +748,9 @@ export class MentoriaCicloService {
           // Arquiva o plano anterior
           await supabase
             .from("mentoria_planos")
-            .update({ status: "arquivado" })
-            .eq("id", planoAntigo.id);
+            .update({ status: "arquivado", updated_at: new Date().toISOString() })
+            .eq("usuario_id", usuarioId)
+            .eq("status", "ativo");
         }
       } catch (err) {
         console.warn("[MentoriaCicloService] Erro ao verificar versão anterior do plano:", err);

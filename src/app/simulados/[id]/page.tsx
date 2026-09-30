@@ -99,7 +99,7 @@ export default function SimuladoExecucaoPage({
   };
 
   // Finalize Submission
-  const handleFinalizar = useCallback(() => {
+  const handleFinalizar = useCallback(async () => {
     if (!simulado || isSubmitting) return;
     setIsSubmitting(true);
 
@@ -107,29 +107,22 @@ export default function SimuladoExecucaoPage({
     let erros = 0;
     let emBranco = 0;
 
-    questoes.forEach((q) => {
+    for (const q of questoes) {
       const resp = respostas[q.id];
       if (!resp || !resp.alternativa_selecionada_id) {
         emBranco += 1;
       } else {
-        const alt = q.alternativas.find(
-          (a) => a.id === resp.alternativa_selecionada_id
-        );
-        if (alt?.correta) {
-          acertos += 1;
-        } else {
-          erros += 1;
-        }
-
-        // Register in DataService answers so stats update
-        DataService.registrarResposta(
-          q.id,
-          resp.alternativa_selecionada_id,
-          resp.tempo_gasto || 60,
-          q
-        );
+        // A correção do simulado também é autoritativa no servidor.
+        // O cliente nunca recebe o campo `correta`.
       }
-    });
+      if (resp?.alternativa_selecionada_id) {
+        const r = await fetch("/api/questoes/resposta", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ questao_id: q.id, alternativa_id: resp.alternativa_selecionada_id, tempo_resposta_segundos: resp.tempo_gasto || 60, questao_versao: q.versao || 1 }) });
+        const j = await r.json();
+        if (!r.ok || typeof j.correta !== "boolean") { setIsSubmitting(false); error("Falha ao corrigir o simulado."); return; }
+        if (j.correta) acertos += 1; else erros += 1;
+        DataService.registrarRespostaValidada(q.id, resp.alternativa_selecionada_id, j.correta, resp.tempo_gasto || 60, q);
+      }
+    }
 
     const percentual =
       questoes.length > 0 ? Math.round((acertos / questoes.length) * 100) : 0;

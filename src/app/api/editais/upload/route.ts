@@ -13,8 +13,13 @@ export async function POST(request: Request) {
   if (!supabase) return NextResponse.json({ error: "Supabase não configurado" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  if (!profile || !["admin","editor"].includes(profile.role)) {
+    return NextResponse.json({ error: "Apenas administradores podem importar PDFs de editais." }, { status: 403 });
+  }
 
-  const form = await request.formData();
+  let form: FormData;
+  try { form = await request.formData(); } catch { return NextResponse.json({ error: "Falha ao ler o upload. Envie um PDF de até 20 MB." }, { status: 400 }); }
   const file = form.get("arquivo");
   if (!(file instanceof File)) return NextResponse.json({ error: "PDF obrigatório" }, { status: 400 });
   if (file.type !== "application/pdf" || !file.name.toLowerCase().endsWith(".pdf")) {
@@ -57,6 +62,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     edital: data,
-    message: "PDF armazenado com segurança. A extração estruturada ainda depende do processador de PDF e ficará pendente até essa etapa ser configurada.",
+    edital_usuario_id: data.id,
+    message: "PDF armazenado com segurança. Agora processe o arquivo para gerar a prévia estruturada.",
   }, { status: 201 });
 }

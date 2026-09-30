@@ -1041,7 +1041,7 @@ export class MentoriaService {
             percentual_dominio: percentual,
             updated_at: now,
           },
-          { onConflict: "usuario_id,assunto_id" }
+          { onConflict: "usuario_id,disciplina_id,assunto_id" }
         );
         if (!error) return true;
       } catch {

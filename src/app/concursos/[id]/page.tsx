@@ -2,7 +2,6 @@
 
 import React, { use } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -35,9 +34,7 @@ export default function ConcursoDetalhePage({
 
   const { concursos, cargosDoConcurso } = useConcurso();
   const concurso = concursos.find((item) => item.id === id);
-  if (!concurso) {
-    notFound();
-  }
+  if (!concurso) return <div className="p-8 text-sm text-slate-500">Carregando dados oficiais do concurso...</div>;
 
   const isAlvo = concursoAtivo?.id === concurso.id;
   const cargos = cargosDoConcurso;

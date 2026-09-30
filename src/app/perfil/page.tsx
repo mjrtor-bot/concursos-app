@@ -5,6 +5,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { useConcurso } from "@/contexts/ConcursoContext";
+import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 import { User, Save } from "lucide-react";
 
 type EditalReal = { id:string; numero:string|null; titulo:string; publicado_em:string|null; prova_em:string|null; fonte_oficial_url:string; pdf_url:string|null; status:string };
@@ -15,6 +17,7 @@ type Alvo = { concurso_id:string; cargo_id:string; edital_id:string|null };
 export default function PerfilPage() {
   const { user, updateUser } = useAuth();
   const { success, info } = useToast();
+  const { recarregarConcursoAlvo } = useConcurso();
   const [nome,setNome]=useState("");
   const [email,setEmail]=useState("");
   const [metaDiaria,setMetaDiaria]=useState(30);
@@ -60,8 +63,13 @@ export default function PerfilPage() {
       const res=await fetch("/api/concursos/alvo",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({concurso_id:concursoId,cargo_id:cargoId,edital_id:editalId||null})});
       const json=await res.json();
       if(!res.ok){info(json.error||"Perfil salvo, mas não foi possível salvar o concurso alvo.");return;}
+      await recarregarConcursoAlvo();
+      if(user?.id){
+        const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
+        if(!ciclo.success){info(ciclo.error||"Alvo salvo, mas o ciclo ainda não pôde ser gerado.");return;}
+      }
     }
-    success("Perfil, concurso e cargo alvo atualizados.");
+    success("Perfil salvo e planejamento atualizado para o edital selecionado.");
   };
 
   const cls="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100";

@@ -101,34 +101,41 @@ export function QuestionCard({
     }
   };
 
-  const handleResponder = () => {
+  const handleResponder = async () => {
     if (!selecionadaId) return;
 
     const tempoGastoSegundos = Math.max(
       1,
       Math.round((Date.now() - tempoInicio) / 1000)
     );
-    const resultado = DataService.registrarResposta(
-      questao.id,
-      selecionadaId,
-      tempoGastoSegundos,
-      questao
-    );
+    try {
+      const res = await fetch("/api/questoes/resposta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questao_id: questao.id,
+          alternativa_id: selecionadaId,
+          tempo_resposta_segundos: tempoGastoSegundos,
+          questao_versao: questao.versao || 1,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok || typeof json.correta !== "boolean") throw new Error(json.error || json.reason || "Falha ao corrigir resposta");
 
-    setResposta(resultado.resposta);
-    setMostrarExplicacao(true);
-
-    if (resultado.correta) {
-      success("Parabéns! Resposta correta 🎉");
-    } else {
-      info(
-        "Resposta incorreta",
-        "A questão foi enviada ao seu Caderno de Erros para revisão."
+      const resultado = DataService.registrarRespostaValidada(
+        questao.id,
+        selecionadaId,
+        json.correta,
+        tempoGastoSegundos,
+        questao
       );
-    }
-
-    if (onRespostaSalva) {
-      onRespostaSalva(resultado.correta);
+      setResposta(resultado.resposta);
+      setMostrarExplicacao(true);
+      if (resultado.correta) success("Parabéns! Resposta correta.");
+      else info("Resposta incorreta", "A questão foi enviada ao seu Caderno de Erros para revisão.");
+      onRespostaSalva?.(resultado.correta);
+    } catch (err) {
+      info("Não foi possível corrigir a resposta", err instanceof Error ? err.message : "Tente novamente.");
     }
   };
 

@@ -43,10 +43,16 @@ export default function MentoriaDashboardPage() {
         return;
       }
       try {
-        const [dados, ciclo] = await Promise.all([
-          MentoriaService.getDashboardStats(user.id),
-          MentoriaCicloService.obterPlanoCiclo(user.id),
-        ]);
+        const dados = await MentoriaService.getDashboardStats(user.id);
+        let ciclo = await MentoriaCicloService.obterPlanoCiclo(user.id);
+        // Se o alvo/editais foi trocado e o plano anterior arquivado, o primeiro
+        // acesso à Mentoria deve reconstruir o ciclo automaticamente.
+        if (!ciclo && dados?.tem_perfil) {
+          const gerado = await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
+          if (gerado.success) {
+            ciclo = await MentoriaCicloService.obterPlanoCiclo(user.id);
+          }
+        }
         setStats(dados);
         setPlanoCiclo(ciclo);
       } catch (err) {
