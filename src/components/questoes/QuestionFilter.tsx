@@ -45,6 +45,10 @@ export function QuestionFilter({
     ? assuntos.filter((a) => a.disciplina_id === filtro.disciplina_id)
     : assuntos;
 
+  const disciplinaSelecionada = disciplinas.find((d) => d.id === filtro.disciplina_id);
+  const assuntoSelecionado = assuntos.find((a) => a.id === filtro.assunto_id);
+  const assuntoCompativel = !assuntoSelecionado || !disciplinaSelecionada || assuntoSelecionado.disciplina_id === disciplinaSelecionada.id;
+
   const handleChange = (campo: keyof FiltroQuestoes, valor: unknown) => {
     onFiltroChange({
       ...filtro,
@@ -172,7 +176,7 @@ export function QuestionFilter({
             Assunto
           </label>
           <select
-            value={filtro.assunto_id || "todos"}
+            value={assuntoCompativel ? (filtro.assunto_id || "todos") : "todos"}
             onChange={(e) => handleChange("assunto_id", e.target.value)}
             disabled={!filtro.disciplina_id}
             className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 text-slate-900 dark:text-slate-100 disabled:opacity-50"
