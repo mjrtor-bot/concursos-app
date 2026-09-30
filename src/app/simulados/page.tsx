@@ -9,6 +9,7 @@ import { Modal } from "@/components/ui/Modal";
 import { DataService } from "@/services/dataService";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { useToast } from "@/contexts/ToastContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Simulado, SimuladoTentativa, Concurso } from "@/types";
 import {
   FileSpreadsheet,
@@ -24,7 +25,8 @@ import {
 
 export default function SimuladosPage() {
   const { concursos, concursoAtivo } = useConcurso();
-  const { success } = useToast();
+  const { success, error: toastError } = useToast();
+  const { user } = useAuth();
   const [simulados, setSimulados] = useState<Simulado[]>([]);
   const [tentativas, setTentativas] = useState<SimuladoTentativa[]>([]);
   const [isModalNovoSimulado, setIsModalNovoSimulado] = useState(false);
@@ -36,9 +38,27 @@ export default function SimuladosPage() {
   const [isGerando, setIsGerando] = useState(false);
 
   useEffect(() => {
-    setSimulados(DataService.getSimulados());
-    setTentativas(DataService.getTentativasSimulado());
-  }, []);
+    let ativo = true;
+    async function carregar() {
+      if (user) {
+        try {
+          const r = await fetch("/api/simulados", { cache: "no-store" });
+          if (r.ok) {
+            const j = await r.json();
+            if (ativo && Array.isArray(j.simulados)) setSimulados(j.simulados);
+            if (ativo && Array.isArray(j.tentativas)) setTentativas(j.tentativas);
+            return;
+          }
+        } catch (err) { console.warn("Falha ao carregar simulados persistidos:", err); }
+      }
+      if (ativo) {
+        setSimulados(DataService.getSimulados());
+        setTentativas(DataService.getTentativasSimulado());
+      }
+    }
+    carregar();
+    return () => { ativo = false; };
+  }, [user]);
 
   const handleCriarSimulado = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,12 +104,19 @@ export default function SimuladosPage() {
       };
 
       DataService.salvarSimulado(novoSimulado);
-      setSimulados(DataService.getSimulados());
+      if (user) {
+        const persist = await fetch("/api/simulados", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(novoSimulado) });
+        if (!persist.ok) throw new Error("Não foi possível persistir o simulado na sua conta.");
+        const payload = await persist.json();
+        if (payload?.simulado) novoSimulado.id = payload.simulado.id;
+      }
+      setSimulados((atuais) => [novoSimulado, ...atuais.filter(s => s.id !== novoSimulado.id)]);
       setIsModalNovoSimulado(false);
       setNovoTitulo("");
       success(`Simulado com ${selecionadas.length} questões criado com sucesso! Pronto para começar.`);
     } catch (err) {
       console.error("Erro ao criar simulado:", err);
+      toastError(err instanceof Error ? err.message : "Erro ao criar simulado.");
     } finally {
       setIsGerando(false);
     }
