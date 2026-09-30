@@ -215,6 +215,8 @@ function QuestoesContent() {
     setFiltro({ status: "todas", origem: "todas" });
   };
 
+  const filtroSomenteOficiais = filtro.origem === "oficiais";
+
   // ── Números globais para exibição ────────────────────────────────────────
   const questaoGlobalNumero = (apiPage - 1) * PAGE_SIZE + currentIndex + 1;
   const isUltimaQuestao =
@@ -259,7 +261,7 @@ function QuestoesContent() {
         <EmptyState
           icon={<CheckSquare2 className="w-8 h-8" />}
           title="Nenhuma questão encontrada com estes filtros"
-          description="Tente ajustar ou limpar os filtros de matéria, banca ou status para visualizar mais questões."
+          description={filtroSomenteOficiais ? "Não há questões oficiais com procedência cadastradas para estes filtros. Selecione Todas as Questões ou Autorais / Criadas por IA para usar o acervo disponível." : "Tente ajustar ou limpar os filtros de matéria, banca ou status para visualizar mais questões."}
           actionLabel="Limpar Filtros"
           onAction={handleLimparFiltros}
         />
