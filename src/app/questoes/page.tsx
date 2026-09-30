@@ -85,6 +85,14 @@ function QuestoesContent() {
     return () => { isMounted = false; };
   }, []);
 
+  useEffect(() => {
+    if (!filtro.assunto_id || !filtro.disciplina_id || assuntos.length === 0) return;
+    const assunto = assuntos.find((a) => a.id === filtro.assunto_id);
+    if (assunto && assunto.disciplina_id !== filtro.disciplina_id) {
+      setFiltro((atual) => ({ ...atual, assunto_id: undefined }));
+    }
+  }, [filtro.disciplina_id, filtro.assunto_id, assuntos]);
+
   // ── Monta os URLSearchParams para a API ──────────────────────────────────
   const buildParams = useCallback(
     (page: number) => {
@@ -144,8 +152,8 @@ function QuestoesContent() {
           }
         }
 
-        // Fallback offline — só ativa se a API não responder de forma alguma
-        const lista = DataService.getQuestoes(filtro);
+        console.error("[QuestoesPage] API de questões indisponível");
+        const lista: Questao[] = [];
         setQuestoes(lista);
         setTotalQuestoes(lista.length);
         setTotalApiPages(1);
@@ -153,7 +161,7 @@ function QuestoesContent() {
         setCurrentIndex(0);
       } catch (error) {
         console.error("[QuestoesPage] Erro ao buscar questões:", error);
-        const lista = DataService.getQuestoes(filtro);
+        const lista: Questao[] = [];
         setQuestoes(lista);
         setTotalQuestoes(lista.length);
         setTotalApiPages(1);
