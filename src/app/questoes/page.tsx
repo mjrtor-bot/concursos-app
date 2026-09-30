@@ -101,7 +101,8 @@ function QuestoesContent() {
         params.set("dificuldade", filtro.dificuldade);
       if (filtro.origem && filtro.origem !== "todas")
         params.set("origem", filtro.origem);
-      if (filtro.status && filtro.status !== "todas") params.set("status", filtro.status);\n      if (filtro.termo_busca && filtro.termo_busca.trim())
+      if (filtro.status && filtro.status !== "todas") params.set("status", filtro.status);
+      if (filtro.termo_busca && filtro.termo_busca.trim())
         params.set("termo_busca", filtro.termo_busca.trim());
       params.set("page", String(page));
       params.set("pageSize", String(PAGE_SIZE));
