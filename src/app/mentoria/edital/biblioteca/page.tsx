@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FileText, Search, Upload, ExternalLink, AlertCircle, Loader2 } from "lucide-react";
+import { Search, Upload, ExternalLink, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
