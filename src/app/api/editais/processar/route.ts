@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
 
   await auth.supabase!.from("editais_usuario").update({ status:"processando", erro_processamento:null, updated_at:new Date().toISOString() }).eq("id", registro.id);
 
+  let openAIFileId:string | null = null;
   try {
     const { data: arquivo, error: downloadError } = await auth.supabase!.storage.from("editais-usuario").download(registro.arquivo_path);
     if (downloadError || !arquivo) throw new Error(downloadError?.message || "Não foi possível baixar o PDF.");
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
     const up = await fetch("https://api.openai.com/v1/files", { method:"POST", headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}` }, body:form });
     const uploaded = await up.json();
     if (!up.ok || !uploaded.id) throw new Error(uploaded.error?.message || "Falha ao preparar PDF para análise.");
+    openAIFileId = uploaded.id;
 
     const schema = {
       type:"object",
@@ -85,13 +87,14 @@ export async function POST(request: NextRequest) {
     }
 
     await auth.supabase!.from("editais_usuario").update({ status:"aguardando_confirmacao", estrutura_extraida:estrutura, erro_processamento:null, updated_at:new Date().toISOString() }).eq("id", registro.id);
-    if (uploaded?.id) {
-      await fetch(`https://api.openai.com/v1/files/${uploaded.id}`, { method:"DELETE", headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}` } }).catch(()=>undefined);
-    }
     return NextResponse.json({ ok:true, edital_usuario_id:registro.id, estrutura, total_disciplinas:estrutura.disciplinas.length, total_assuntos:totalAssuntos });
   } catch (e) {
     const message=e instanceof Error?e.message:"Erro inesperado";
     await auth.supabase!.from("editais_usuario").update({ status:"erro", erro_processamento:message, updated_at:new Date().toISOString() }).eq("id", registro.id);
     return NextResponse.json({ error:message }, { status:500 });
+  } finally {
+    if (openAIFileId && process.env.OPENAI_API_KEY) {
+      await fetch(`https://api.openai.com/v1/files/${openAIFileId}`, { method:"DELETE", headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}` } }).catch(()=>undefined);
+    }
   }
 }
