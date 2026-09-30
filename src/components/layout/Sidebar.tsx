@@ -12,6 +12,8 @@ import {
   FileSpreadsheet,
   BarChart3,
   Database,
+  Settings,
+  Users,
   User,
   ChevronRight,
   ChevronDown,
@@ -168,16 +170,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       label: "Meu Perfil",
       icon: User,
     },
-    ...(user?.role === "admin"
-      ? [
-          {
-            href: "/admin/questoes",
-            label: "Gestão do Catálogo",
-            icon: Database,
-            badge: "Admin",
-          },
-        ]
-      : []),
+
   ];
 
   return (
@@ -372,6 +365,18 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
               </div>
             )}
           </div>
+
+          {user?.role === "admin" && (
+            <div className="pt-3 mt-2 border-t border-slate-200/80 dark:border-slate-800">
+              <div className="px-3.5 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Administração</div>
+              {[
+                { href:"/admin/editais", label:"Editais", icon:BookOpen },
+                { href:"/admin/concursos", label:"Concursos", icon:GraduationCap },
+                { href:"/admin/questoes", label:"Questões", icon:Database },
+                { href:"/admin/usuarios", label:"Usuários", icon:Users },
+              ].map((item)=>{const Icon=item.icon;const active=pathname.startsWith(item.href);return <Link key={item.href} href={item.href} onClick={onCloseMobile} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${active?"bg-blue-600 text-white font-bold":"text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60"}`}><Icon className="w-4 h-4"/><span>{item.label}</span></Link>})}
+            </div>
+          )}
 
           {/* 3. Outros Módulos da Plataforma */}
           {otherNavItems.map((item) => {
