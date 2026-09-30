@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
-import { mockQuestoes } from "@/data/mockData";
-import { Questao, FiltroQuestoes } from "@/types";
+import { Questao } from "@/types";
 
 export async function GET(request: NextRequest) {
   try {
@@ -240,69 +239,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // ── Fallback: mock data (demo / sem Supabase configurado) ──────────────
-    let items: Questao[] = [...mockQuestoes];
-
-    if (disciplina_id && disciplina_id !== "todos") {
-      items = items.filter((q) => q.disciplina_id === disciplina_id);
-    }
-    if (assunto_id && assunto_id !== "todos") {
-      items = items.filter((q) => q.assunto_id === assunto_id);
-    }
-    if (banca && banca !== "todas") {
-      items = items.filter((q) => q.banca === banca);
-    }
-    if (ano && !isNaN(ano)) {
-      items = items.filter((q) => q.ano === ano);
-    }
-    if (tipo && tipo !== "todos") {
-      items = items.filter((q) => q.tipo === tipo);
-    }
-    if (dificuldade && dificuldade !== "todos") {
-      items = items.filter((q) => q.dificuldade === dificuldade);
-    }
-    if (origem === "oficiais") {
-      items = items.filter((q) => !q.is_autoral_ia);
-    } else if (origem === "autorais_ia") {
-      items = items.filter((q) => q.is_autoral_ia === true);
-    }
-    if (anuladaParam === "false" || anuladaParam === null) {
-      items = items.filter((q) => !q.anulada);
-    } else if (anuladaParam === "true") {
-      items = items.filter((q) => q.anulada === true);
-    }
-    if (desatualizadaParam === "false") {
-      items = items.filter((q) => !q.desatualizada);
-    } else if (desatualizadaParam === "true") {
-      items = items.filter((q) => q.desatualizada === true);
-    }
-    if (termo_busca && termo_busca.trim()) {
-      const termo = termo_busca.toLowerCase().trim();
-      items = items.filter(
-        (q) =>
-          q.enunciado.toLowerCase().includes(termo) ||
-          q.explicacao.toLowerCase().includes(termo) ||
-          q.banca.toLowerCase().includes(termo) ||
-          q.orgao.toLowerCase().includes(termo) ||
-          (q.cargo && q.cargo.toLowerCase().includes(termo))
-      );
-    }
-
-    const total = items.length;
-    const totalPages = Math.ceil(total / pageSize) || 1;
-    const offset = (page - 1) * pageSize;
-    const paginatedItems = items.slice(offset, offset + pageSize);
-
-    return NextResponse.json({
-      success: true,
-      questoes: paginatedItems,
-      total,
-      page,
-      pageSize,
-      totalPages,
-      hasMore: page < totalPages,
-      fonte: "mock",
-    });
+    return NextResponse.json({ success: false, error: "Banco de questões indisponível" }, { status: 503 });
   } catch (error: any) {
     console.error("[API /questoes] Erro inesperado:", error);
     return NextResponse.json(
