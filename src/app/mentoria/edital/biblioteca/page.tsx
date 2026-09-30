@@ -77,20 +77,38 @@ export default function BibliotecaEditaisPage() {
   }
 
   async function enviar(e:FormEvent<HTMLFormElement>){
-    e.preventDefault(); setMensagem("");
+    e.preventDefault();
+    setMensagem("");
+
+    // Capturar o elemento do formulário ANTES de qualquer await.
+    // Em React, e.currentTarget pode ficar null após a suspensão assíncrona do evento.
+    const form = e.currentTarget;
+
     if(!arquivo){setMensagem("Selecione um PDF.");return;}
-    if(arquivo.type!=="application/pdf"||!arquivo.name.toLowerCase().endsWith(".pdf")){setMensagem("Envie somente um arquivo PDF.");return;}
+    if(arquivo.type!=="application/pdf"||!arquivo.name.toLowerCase().endsWith(".pdf")){
+      setMensagem("Envie somente um arquivo PDF.");return;
+    }
     if(arquivo.size>20*1024*1024){setMensagem("O PDF deve ter no máximo 20 MB.");return;}
+
     setEnviando(true);
     try{
-      const fd=new FormData(e.currentTarget); fd.set("arquivo",arquivo);
+      const fd=new FormData(form);
+      fd.set("arquivo",arquivo);
+
       const r=await fetch("/api/editais/upload",{method:"POST",body:fd});
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha no upload");
+
       setMensagem(j.message||"PDF enviado.");
-      setArquivo(null); (e.currentTarget as HTMLFormElement).reset();
-    }catch(err){setMensagem(err instanceof Error?err.message:"Falha no upload");}
-    finally{setEnviando(false);}
+      setArquivo(null);
+
+      // Usa a referência capturada antes do await; nunca acessa e.currentTarget aqui.
+      form.reset();
+    }catch(err){
+      setMensagem(err instanceof Error?err.message:"Falha no upload");
+    }finally{
+      setEnviando(false);
+    }
   }
 
   return <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-6">
