@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       method:"POST",
       headers:{ Authorization:`Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type":"application/json" },
       body:JSON.stringify({
-        model:"gpt-5.1-mini",
+        model:"gpt-5.6-luna",
         input:[{role:"user",content:[
           {type:"input_file",file_id:uploaded.id},
           {type:"input_text",text:"Analise somente o conteúdo programático efetivamente presente neste edital. Extraia disciplinas e seus assuntos. Não invente, complete, resuma ou acrescente conteúdo externo. Preserve nomes e granularidade do documento. Se uma seção estiver ambígua, registre em observacoes e não crie assunto especulativo."}
