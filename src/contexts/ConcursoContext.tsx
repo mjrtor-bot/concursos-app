@@ -19,6 +19,7 @@ interface ConcursoContextType {
   prazoProva: PrazoProva;
   selecionarConcursoAtivo: (concursoId: string) => Promise<void>;
   selecionarCargoAtivo: (cargoId: string) => Promise<void>;
+  recarregarConcursoAlvo: () => Promise<void>;
 }
 
 const ConcursoContext = createContext<ConcursoContextType | undefined>(undefined);
@@ -82,6 +83,6 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
     try{await salvar(alvo.concurso_id,id);success("Cargo alvo atualizado.");}catch(e){info(e instanceof Error?e.message:"Não foi possível alterar o cargo.");}
   };
   const prazoProva=useMemo(()=>calcularPrazoProva(concursoAtivo?.data_prova),[concursoAtivo?.data_prova]);
-  return <ConcursoContext.Provider value={{concursoAtivo,cargoAtivo,concursos,cargosDoConcurso,prazoProva,selecionarConcursoAtivo,selecionarCargoAtivo}}>{children}</ConcursoContext.Provider>;
+  return <ConcursoContext.Provider value={{concursoAtivo,cargoAtivo,concursos,cargosDoConcurso,prazoProva,selecionarConcursoAtivo,selecionarCargoAtivo,recarregarConcursoAlvo:carregar}}>{children}</ConcursoContext.Provider>;
 }
 export function useConcurso(){const c=useContext(ConcursoContext);if(!c)throw new Error("useConcurso must be used within a ConcursoProvider");return c;}
