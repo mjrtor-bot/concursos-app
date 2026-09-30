@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 export default function SimuladosPage() {
-  const { concursos } = useConcurso();
+  const { concursos, concursoAtivo } = useConcurso();
   const { success } = useToast();
   const [simulados, setSimulados] = useState<Simulado[]>([]);
   const [tentativas, setTentativas] = useState<SimuladoTentativa[]>([]);
@@ -79,6 +79,7 @@ export default function SimuladosPage() {
         total_questoes: selecionadas.length,
         dificuldade: "medio",
         criado_por_sistema: false,
+        concurso_id: concursoAtivo?.id,
         created_at: new Date().toISOString(),
       };
 
