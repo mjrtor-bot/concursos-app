@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
     const pageSize = Math.min(200, Math.max(1, parseInt(searchParams.get("pageSize") || "10", 10)));
     const disciplina_id = searchParams.get("disciplina_id") || undefined;
+    const disciplina_nome = searchParams.get("disciplina_nome") || undefined;
     const assunto_id = searchParams.get("assunto_id") || undefined;
     const subassunto_id = searchParams.get("subassunto_id") || undefined;
     const banca = searchParams.get("banca") || undefined;
@@ -49,7 +50,13 @@ export async function GET(request: NextRequest) {
 
       // Filtros
       if (disciplina_id && disciplina_id !== "todos") {
-        query = query.eq("disciplina_id", disciplina_id);
+        let idsDisciplina = [disciplina_id];
+        if (disciplina_nome) {
+          const base = disciplina_nome.replace(/^Noções de\s+/i, "").replace(/\s+e Tecnologia$/i, "").trim();
+          const { data: equivalentes } = await supabase.from("disciplinas").select("id,nome").ilike("nome", `%${base}%`);
+          if (equivalentes?.length) idsDisciplina = Array.from(new Set([disciplina_id, ...equivalentes.map((d:any)=>d.id)]));
+        }
+        query = idsDisciplina.length > 1 ? query.in("disciplina_id", idsDisciplina) : query.eq("disciplina_id", disciplina_id);
       }
       if (assunto_id && assunto_id !== "todos") {
         query = query.eq("assunto_id", assunto_id);
