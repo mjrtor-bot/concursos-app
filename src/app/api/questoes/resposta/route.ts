@@ -188,7 +188,12 @@ export async function POST(request: NextRequest) {
       if (revisaoError) console.warn("[API /questoes/resposta] Aviso revisão caderno:", revisaoError.message);
     }
 
-    return NextResponse.json({ success: true, saved: true, correta, alternativa_correta_id: correta ? alternativa.id : undefined });
+    let alternativa_correta_id = alternativa.id;
+    if (!correta) {
+      const { data: corretaRow } = await supabase.from("questoes_alternativas").select("id").eq("questao_id", questao_id).eq("correta", true).maybeSingle();
+      alternativa_correta_id = corretaRow?.id || "";
+    }
+    return NextResponse.json({ success: true, saved: true, correta, alternativa_correta_id });
   } catch (error: any) {
     console.error("[API /questoes/resposta] Exceção:", error);
     return NextResponse.json(
