@@ -50,7 +50,8 @@ export function QuestionCard({
   const [selecionadaId, setSelecionadaId] = useState<string | null>(
     respostaInicial || null
   );
-  const [resposta, setResposta] = useState<RespostaUsuario | null>(null);\n  const [gabaritoId, setGabaritoId] = useState<string | null>(null);
+  const [resposta, setResposta] = useState<RespostaUsuario | null>(null);
+  const [gabaritoId, setGabaritoId] = useState<string | null>(null);
   const [mostrarExplicacao, setMostrarExplicacao] = useState(false);
   const [isFavorita, setIsFavorita] = useState(false);
   const [tempoInicio, setTempoInicio] = useState<number>(Date.now());
@@ -63,6 +64,7 @@ export function QuestionCard({
     setTempoInicio(Date.now());
     setSelecionadaId(respostaInicial || null);
     setResposta(null);
+    setGabaritoId(null);
     setMostrarExplicacao(false);
     setMostrarAnotacao(false);
 
