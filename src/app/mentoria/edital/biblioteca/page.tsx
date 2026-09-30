@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FileText, Search, Upload, ExternalLink, AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -39,6 +39,7 @@ export default function BibliotecaEditaisPage() {
   const [enviando,setEnviando]=useState(false);
   const [mensagem,setMensagem]=useState("");
   const [aplicando,setAplicando]=useState<string|null>(null);
+  const formRef=useRef<HTMLFormElement>(null);
 
   async function carregar(){
     setLoading(true); setErro("");
@@ -81,14 +82,15 @@ export default function BibliotecaEditaisPage() {
     if(!arquivo){setMensagem("Selecione um PDF.");return;}
     if(arquivo.type!=="application/pdf"||!arquivo.name.toLowerCase().endsWith(".pdf")){setMensagem("Envie somente um arquivo PDF.");return;}
     if(arquivo.size>20*1024*1024){setMensagem("O PDF deve ter no máximo 20 MB.");return;}
+    const form=formRef.current;
     setEnviando(true);
     try{
-      const fd=new FormData(e.currentTarget); fd.set("arquivo",arquivo);
+      const fd=new FormData(form??undefined); fd.set("arquivo",arquivo);
       const r=await fetch("/api/editais/upload",{method:"POST",body:fd});
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha no upload");
       setMensagem(j.message||"PDF enviado.");
-      setArquivo(null); (e.currentTarget as HTMLFormElement).reset();
+      setArquivo(null); form?.reset();
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha no upload");}
     finally{setEnviando(false);}
   }
@@ -123,7 +125,7 @@ export default function BibliotecaEditaisPage() {
 
     <section id="importar" className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
       <div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importar edital em PDF</h2><p className="text-sm text-slate-600 dark:text-slate-400">Não encontrou seu concurso? Envie o edital em PDF para preparar a verticalização. O arquivo fica privado e vinculado à sua conta.</p></div></div>
-      <form onSubmit={enviar} className="mt-5 grid gap-3 sm:grid-cols-2">
+      <form ref={formRef} onSubmit={enviar} className="mt-5 grid gap-3 sm:grid-cols-2">
         <input name="nome" required placeholder="Nome do concurso / edital" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="orgao" placeholder="Órgão" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="cargo" placeholder="Cargo" className="rounded-xl border bg-transparent p-2.5"/>
