@@ -49,7 +49,8 @@ export default function SimuladosPage() {
 
       // 1. Tenta buscar do banco de questões completo (/api/questoes)
       try {
-        const res = await fetch(`/api/questoes?pageSize=${targetQtd}&anulada=false&desatualizada=false`);
+        const concursoFiltro = concursoAtivo?.id ? `&concurso_id=${encodeURIComponent(concursoAtivo.id)}` : "";
+        const res = await fetch(`/api/questoes?pageSize=${targetQtd}&anulada=false&desatualizada=false${concursoFiltro}`);
         const json = await res.json();
         if (json.success && Array.isArray(json.questoes) && json.questoes.length > 0) {
           DataService.salvarQuestoesLote(json.questoes);
