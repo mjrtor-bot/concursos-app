@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { FileText, Search, Upload, ExternalLink, AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, ChevronDown, ExternalLink, FileText, Loader2, Search, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
@@ -13,6 +13,9 @@ type Edital = {
   data_prova?: string | null; status: string; fonte_url: string; pdf_url?: string | null;
   total_disciplinas: number; total_topicos: number;
 };
+
+type PreviewDisciplina = { nome: string; assuntos: string[] };
+type Preview = { titulo_detectado: string; disciplinas: PreviewDisciplina[]; observacoes: string[] };
 
 const carreiras = [
   ["todos","Todas"],["PF","PF"],["PRF","PRF"],["POLICIA_CIVIL","Polícia Civil"],
@@ -35,10 +38,16 @@ export default function BibliotecaEditaisPage() {
   const [carreira,setCarreira]=useState("todos");
   const [uf,setUf]=useState("todos");
   const [status,setStatus]=useState("todos");
+
+  const [formValues,setFormValues]=useState({nome:"",orgao:"",cargo:"",uf:""});
   const [arquivo,setArquivo]=useState<File|null>(null);
   const [enviando,setEnviando]=useState(false);
+  const [processando,setProcessando]=useState(false);
   const [mensagem,setMensagem]=useState("");
   const [aplicando,setAplicando]=useState<string|null>(null);
+  const [uploadId,setUploadId]=useState<string|null>(null);
+  const [preview,setPreview]=useState<Preview|null>(null);
+  const [mostrarPreview,setMostrarPreview]=useState(false);
 
   async function carregar(){
     setLoading(true); setErro("");
@@ -76,34 +85,58 @@ export default function BibliotecaEditaisPage() {
     finally{setAplicando(null);}
   }
 
+  async function processarPdf(id:string){
+    setProcessando(true); setMensagem("");
+    try{
+      const r=await fetch("/api/editais/processar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({edital_usuario_id:id})});
+      const j=await r.json();
+      if(!r.ok && r.status!==422)throw new Error(j.error||"Falha ao processar o PDF");
+      if(j.estrutura){
+        setPreview(j.estrutura);
+        setMostrarPreview(true);
+      }
+      if(r.status===422){
+        throw new Error(j.aviso||"Nenhum conteúdo programático foi encontrado no PDF.");
+      }
+      setMensagem(`PDF processado: ${j.total_disciplinas} disciplinas e ${j.total_assuntos} assuntos encontrados.`);
+    }catch(err){
+      setMensagem(err instanceof Error?err.message:"Falha ao processar o PDF");
+    }finally{setProcessando(false);}
+  }
+
   async function enviar(e:FormEvent<HTMLFormElement>){
     e.preventDefault();
-    setMensagem("");
-
-    // Capturar o elemento do formulário ANTES de qualquer await.
-    // Em React, e.currentTarget pode ficar null após a suspensão assíncrona do evento.
-    const form = e.currentTarget;
+    setMensagem(""); setPreview(null); setMostrarPreview(false); setUploadId(null);
 
     if(!arquivo){setMensagem("Selecione um PDF.");return;}
     if(arquivo.type!=="application/pdf"||!arquivo.name.toLowerCase().endsWith(".pdf")){
       setMensagem("Envie somente um arquivo PDF.");return;
     }
-    if(arquivo.size>20*1024*1024){setMensagem("O PDF deve ter no máximo 20 MB.");return;}
+    if(arquivo.size<=0||arquivo.size>20*1024*1024){
+      setMensagem("O PDF deve ter no máximo 20 MB.");return;
+    }
 
     setEnviando(true);
     try{
-      const fd=new FormData(form);
+      const fd=new FormData();
+      fd.set("nome",formValues.nome);
+      fd.set("orgao",formValues.orgao);
+      fd.set("cargo",formValues.cargo);
+      fd.set("uf",formValues.uf);
       fd.set("arquivo",arquivo);
 
       const r=await fetch("/api/editais/upload",{method:"POST",body:fd});
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha no upload");
 
-      setMensagem(j.message||"PDF enviado.");
-      setArquivo(null);
+      const id=j.edital_usuario_id||j.edital?.id;
+      if(!id)throw new Error("Upload concluído, mas o identificador do edital não foi retornado.");
 
-      // Usa a referência capturada antes do await; nunca acessa e.currentTarget aqui.
-      form.reset();
+      setUploadId(id);
+      setMensagem("PDF armazenado com segurança. Agora processe o arquivo para gerar a prévia.");
+      setFormValues({nome:"",orgao:"",cargo:"",uf:""});
+      setArquivo(null);
+      await processarPdf(id);
     }catch(err){
       setMensagem(err instanceof Error?err.message:"Falha no upload");
     }finally{
@@ -140,17 +173,38 @@ export default function BibliotecaEditaisPage() {
     </section>
 
     <section id="importar" className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
-      <div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importar edital em PDF</h2><p className="text-sm text-slate-600 dark:text-slate-400">Não encontrou seu concurso? Envie o edital em PDF para preparar a verticalização. O arquivo fica privado e vinculado à sua conta.</p></div></div>
+      <div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importar edital em PDF</h2><p className="text-sm text-slate-600 dark:text-slate-400">Envie o edital para gerar automaticamente uma prévia de disciplinas e assuntos. O arquivo fica privado e vinculado à sua conta.</p></div></div>
       <form onSubmit={enviar} className="mt-5 grid gap-3 sm:grid-cols-2">
-        <input name="nome" required placeholder="Nome do concurso / edital" className="rounded-xl border bg-transparent p-2.5"/>
-        <input name="orgao" placeholder="Órgão" className="rounded-xl border bg-transparent p-2.5"/>
-        <input name="cargo" placeholder="Cargo" className="rounded-xl border bg-transparent p-2.5"/>
-        <input name="uf" maxLength={2} placeholder="UF" className="rounded-xl border bg-transparent p-2.5 uppercase"/>
+        <input name="nome" value={formValues.nome} onChange={e=>setFormValues(v=>({...v,nome:e.target.value}))} required placeholder="Nome do concurso / edital" className="rounded-xl border bg-transparent p-2.5"/>
+        <input name="orgao" value={formValues.orgao} onChange={e=>setFormValues(v=>({...v,orgao:e.target.value}))} placeholder="Órgão" className="rounded-xl border bg-transparent p-2.5"/>
+        <input name="cargo" value={formValues.cargo} onChange={e=>setFormValues(v=>({...v,cargo:e.target.value}))} placeholder="Cargo" className="rounded-xl border bg-transparent p-2.5"/>
+        <input name="uf" value={formValues.uf} onChange={e=>setFormValues(v=>({...v,uf:e.target.value.toUpperCase().slice(0,2)}))} maxLength={2} placeholder="UF" className="rounded-xl border bg-transparent p-2.5 uppercase"/>
         <label className="sm:col-span-2 rounded-xl border border-dashed p-5 text-sm"><span className="font-bold">PDF do edital (máx. 20 MB)</span><input type="file" accept="application/pdf,.pdf" onChange={e=>setArquivo(e.target.files?.[0]||null)} className="mt-2 block w-full"/></label>
-        <button disabled={enviando} className="sm:col-span-2 rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white disabled:opacity-50">{enviando?"Enviando PDF...":"Enviar edital em PDF"}</button>
+        <button disabled={enviando||processando} className="sm:col-span-2 rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white disabled:opacity-50">{enviando?"Enviando PDF...":processando?"Processando PDF...":"Enviar e gerar prévia"}</button>
       </form>
+
       {mensagem&&<div className="mt-4 flex gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 p-3 text-sm"><AlertCircle className="h-4 w-4 shrink-0 mt-0.5"/>{mensagem}</div>}
-      <p className="mt-3 text-xs text-slate-500">O upload seguro já está preparado. A extração automática de disciplinas e assuntos não inventará conteúdo: enquanto o processador de PDF não estiver configurado, o edital permanecerá como “aguardando processamento”.</p>
+
+      {uploadId&&!preview&&!processando&&<button onClick={()=>processarPdf(uploadId)} className="mt-3 rounded-xl border px-4 py-2.5 text-sm font-bold">Processar PDF novamente</button>}
+
+      {processando&&<div className="mt-4 flex items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm"><Loader2 className="h-5 w-5 animate-spin text-indigo-600"/><div><strong>Processando edital...</strong><p className="text-slate-600">O PDF inteiro está sendo analisado para localizar disciplinas e todos os assuntos. Isso pode levar alguns minutos.</p></div></div>}
+
+      {preview&&<section className="mt-5 rounded-2xl border border-indigo-200 bg-white dark:bg-slate-900 overflow-hidden">
+        <button type="button" onClick={()=>setMostrarPreview(v=>!v)} className="w-full flex items-center justify-between gap-3 p-5 text-left">
+          <div><p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Prévia estruturada</p><h3 className="text-xl font-black">{preview.titulo_detectado||formValues.nome||"Edital importado"}</h3><p className="mt-1 text-sm text-slate-500">{preview.disciplinas.length} disciplinas · {preview.disciplinas.reduce((n,d)=>n+d.assuntos.length,0)} assuntos</p></div>
+          <ChevronDown className={`h-5 w-5 transition-transform ${mostrarPreview?"rotate-180":""}`}/>
+        </button>
+        {mostrarPreview&&<div className="border-t p-5 space-y-3">
+          {preview.observacoes?.length>0&&<div className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800"><strong>Observações:</strong><ul className="mt-1 list-disc pl-5">{preview.observacoes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>}
+          {preview.disciplinas.map((d,i)=><details key={i} className="rounded-xl border p-4" open={i<3}>
+            <summary className="cursor-pointer font-bold">{d.nome} <span className="ml-2 text-xs font-normal text-slate-500">{d.assuntos.length} assuntos</span></summary>
+            <ol className="mt-3 list-decimal pl-5 space-y-1 text-sm">{d.assuntos.map((a,j)=><li key={j}>{a}</li>)}</ol>
+          </details>)}
+          <div className="pt-2 text-xs text-slate-500">A prévia é extraída do PDF. O sistema não deve inventar disciplinas ou assuntos ausentes no documento.</div>
+        </div>}
+      </section>}
+
+      <p className="mt-3 text-xs text-slate-500">O upload é privado. Após o processamento, a prévia fica disponível para conferência antes de qualquer gravação do conteúdo programático.</p>
     </section>
   </main>;
 }
