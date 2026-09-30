@@ -2,6 +2,9 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { FileText, Search, Upload, ExternalLink, AlertCircle, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useConcurso } from "@/contexts/ConcursoContext";
+import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 
 type Edital = {
   id: string; orgao_nome: string; sigla?: string | null; uf?: string | null;
@@ -23,6 +26,8 @@ const statusLabel: Record<string,string> = {
 };
 
 export default function BibliotecaEditaisPage() {
+  const { user } = useAuth();
+  const { recarregarConcursoAlvo } = useConcurso();
   const [editais,setEditais]=useState<Edital[]>([]);
   const [loading,setLoading]=useState(true);
   const [erro,setErro]=useState("");
@@ -61,7 +66,12 @@ export default function BibliotecaEditaisPage() {
       const r=await fetch(`/api/editais/${id}/usar`,{method:"POST"});
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha ao aplicar edital");
-      setMensagem(`${j.aviso} ${j.topicos} tópicos adicionados ao seu planejamento.`);
+      await recarregarConcursoAlvo();
+      if(user?.id){
+        const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
+        if(!ciclo.success)throw new Error(ciclo.error||"Edital aplicado, mas o ciclo não pôde ser gerado.");
+      }
+      setMensagem(`${j.aviso} ${j.topicos} tópicos sincronizados e ciclo atualizado.`);
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao aplicar edital");}
     finally{setAplicando(null);}
   }
