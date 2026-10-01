@@ -122,7 +122,7 @@ export default function BibliotecaEditaisPage() {
 
       if(j.processing){
         setMensagem("PDF recebido. A análise está sendo executada; esta tela será atualizada automaticamente.");
-        for(let tentativa=0; tentativa<120; tentativa++){
+        for(let tentativa=0; tentativa<300; tentativa++){
           await new Promise(resolve=>setTimeout(resolve,3000));
           const sr=await fetch(`/api/editais/processar/status?edital_usuario_id=${encodeURIComponent(id)}`,{cache:"no-store"});
           const sj=await sr.json();
