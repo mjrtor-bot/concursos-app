@@ -151,7 +151,8 @@ export default function BibliotecaEditaisPage() {
   }
 
   async function confirmarPreview(){
-    if(!uploadId||!preview)return;
+    if(!uploadId){ setMensagem("O identificador do upload não está disponível. Atualize a página e gere uma nova prévia."); return; }
+    if(!preview){ setMensagem("A prévia do edital ainda não está disponível."); return; }
     if(!alvo?.edital_id){
       setMensagem("Seu concurso alvo não possui um edital cadastrado. Selecione um concurso/edital válido antes de confirmar a importação.");
       return;
