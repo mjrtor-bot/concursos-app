@@ -1,6 +1,8 @@
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 -- Helper function to slugify strings
 CREATE OR REPLACE FUNCTION public.slugify(v TEXT) RETURNS TEXT AS $$
-    SELECT lower(regexp_replace(regexp_replace(unaccent(v), '[^a-zA-Z0-9]', '-', 'g'), '-+', '-', 'g'));
+    SELECT lower(regexp_replace(regexp_replace(public.unaccent(v), '[^a-zA-Z0-9]', '-', 'g'), '-+', '-', 'g'));
 $$ LANGUAGE SQL IMMUTABLE;
 
 -- Create RPC function to atomically process and persist edital topics
@@ -72,4 +74,4 @@ BEGIN
 
     RETURN jsonb_build_object('ok', true, 'total_topicos', v_total_topicos);
 END;
-$$ LANGUAGE plpgsql;
+$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
