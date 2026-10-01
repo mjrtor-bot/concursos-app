@@ -1,3 +1,5 @@
+"use client";
+
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2, ChevronDown, ExternalLink, Loader2, Search, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
