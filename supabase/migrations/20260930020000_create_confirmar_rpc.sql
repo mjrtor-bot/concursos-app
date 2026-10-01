@@ -25,7 +25,7 @@ BEGIN
         SELECT 1 FROM public.editais_usuario
         WHERE id = p_upload_id
         AND usuario_id = p_usuario_id
-        AND status = 'aguardando_confirmacao'
+        AND status = 'aguardando_revisao'
     ) THEN
         RAISE EXCEPTION 'Upload não encontrado ou em estado inválido.';
     END IF;
