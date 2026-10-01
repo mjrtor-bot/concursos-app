@@ -233,7 +233,6 @@ export default function BibliotecaEditaisPage() {
       <a href="/mentoria/edital" className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-indigo-300 hover:text-indigo-600">Meu edital</a>
       <a href="/mentoria/edital/biblioteca" className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-indigo-300 hover:text-indigo-600">Biblioteca policial</a>
       <a href="/mentoria/edital/importados" className="inline-flex items-center gap-2 rounded-xl border border-indigo-300 bg-indigo-50 px-4 py-2.5 text-sm font-bold text-indigo-700 hover:bg-indigo-100">Meus editais importados</a>
-      <a href="/mentoria/edital/importados" className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-700">Meus editais importados</a>
       <a href="/mentoria/edital/biblioteca#importar" className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-600">Importar edital em PDF</a>
     </div>
 
