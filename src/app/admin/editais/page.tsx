@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { aguardarProcessamento } from "@/lib/editais/aguardarProcessamento";
 const empty = { id: "", concurso_id: "", cargo_id: "", numero: "", titulo: "", publicado_em: "", prova_em: "", banca: "", status: "publicado", fonte_oficial_url: "", pdf_url: "" };
 export default function AdminEditais() {
   const [lista, setLista] = useState<any[]>([]);
@@ -41,14 +42,19 @@ export default function AdminEditais() {
       fd.append("nome", edital.titulo || file.name);
       fd.append("orgao", edital.concursos?.nome || "");
       fd.append("cargo", edital.concurso_cargos?.nome || "");
+      fd.append("edital_id", edital.id);
       const ur = await fetch("/api/editais/upload", { method: "POST", body: fd }), uj = await ur.json();
       if (!ur.ok) throw new Error(uj.error || "Falha no upload");
       const id = uj.edital_usuario_id || uj.edital?.id;
       const pr = await fetch("/api/editais/processar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ edital_usuario_id: id }) }), pj = await pr.json();
       if (!pr.ok) throw new Error(pj.error || "Falha ao processar PDF");
+
+      setMsg("PDF recebido. A análise está sendo executada...");
+      const resultado = await aguardarProcessamento(id, setMsg);
+
       setUploadId(id);
-      setPreview({ ...pj, edital_id: edital.id });
-      setMsg(`Prévia pronta: ${pj.total_disciplinas} disciplinas e ${pj.total_assuntos} assuntos. Revise antes de confirmar.`);
+      setPreview({ ...resultado, edital_id: edital.id });
+      setMsg(`Prévia pronta: ${resultado.total_disciplinas} disciplinas e ${resultado.total_assuntos} assuntos. Revise antes de confirmar.`);
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Erro ao importar PDF");
     }

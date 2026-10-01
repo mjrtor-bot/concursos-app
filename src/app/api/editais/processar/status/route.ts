@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
   const { data: registro } = await auth.supabase!
     .from("editais_usuario")
-    .select("id,status,erro_processamento,estrutura_extraida,usuario_id")
+    .select("id,status,erro_processamento,estrutura_extraida,usuario_id,processamento_iniciado_em")
     .eq("id", id)
     .eq("usuario_id", auth.user!.id)
     .maybeSingle();
@@ -101,11 +101,12 @@ export async function GET(request: NextRequest) {
 
   if (!resp.ok) {
     const message = json.error?.message || "Não foi possível consultar o processamento.";
-    await auth.supabase!.from("editais_usuario").update({
+    const { error: updateError } = await auth.supabase!.from("editais_usuario").update({
       status: "erro",
       erro_processamento: message,
       updated_at: new Date().toISOString()
     }).eq("id", id);
+    if (updateError) console.error(`Erro ao atualizar para erro no edital ${id}:`, updateError);
     if (meta.file_id) {
       await fetch(`https://api.openai.com/v1/files/${meta.file_id}`, {
         method: "DELETE",
@@ -116,7 +117,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (json.status === "queued" || json.status === "in_progress") {
-    const startedAt = registro.updated_at ? new Date(registro.updated_at).getTime() : Date.now();
+    const startedAt = registro.processamento_iniciado_em ? new Date(registro.processamento_iniciado_em).getTime() : Date.now();
     const elapsedMs = Date.now() - startedAt;
     const providerStatus = json.status;
     // Persistimos o último estado observado para diagnóstico e evitamos jobs presos indefinidamente.
@@ -151,11 +152,12 @@ export async function GET(request: NextRequest) {
 
   if (json.status === "failed" || json.status === "cancelled" || json.status === "incomplete") {
     const message = json.error?.message || `Processamento OpenAI terminou com status: ${json.status}.`;
-    await auth.supabase!.from("editais_usuario").update({
+    const { error: updateError } = await auth.supabase!.from("editais_usuario").update({
       status: "erro",
       erro_processamento: message,
       updated_at: new Date().toISOString()
     }).eq("id", id);
+    if (updateError) console.error(`Erro ao atualizar para erro no edital ${id}:`, updateError);
     if (meta.file_id) {
       await fetch(`https://api.openai.com/v1/files/${meta.file_id}`, {
         method: "DELETE",
@@ -169,11 +171,12 @@ export async function GET(request: NextRequest) {
     const output = extractOutputText(json).trim();
     if (!output) {
       const message = "A análise terminou sem retornar conteúdo estruturado.";
-      await auth.supabase!.from("editais_usuario").update({
+      const { error: updateError } = await auth.supabase!.from("editais_usuario").update({
         status: "erro",
         erro_processamento: message,
         updated_at: new Date().toISOString()
       }).eq("id", id);
+      if (updateError) console.error(`Erro ao atualizar para erro no edital ${id}:`, updateError);
       return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
     }
 
@@ -181,21 +184,23 @@ export async function GET(request: NextRequest) {
     try { estrutura = JSON.parse(output); }
     catch {
       const message = "A análise terminou, mas o conteúdo estruturado retornado pelo modelo é inválido.";
-      await auth.supabase!.from("editais_usuario").update({
+      const { error: updateError } = await auth.supabase!.from("editais_usuario").update({
         status: "erro",
         erro_processamento: message,
         updated_at: new Date().toISOString()
       }).eq("id", id);
+      if (updateError) console.error(`Erro ao atualizar para erro no edital ${id}:`, updateError);
       return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
     }
 
     if (!estrutura || !Array.isArray(estrutura.disciplinas)) {
       const message = "A análise não retornou a lista de disciplinas esperada.";
-      await auth.supabase!.from("editais_usuario").update({
+      const { error: updateError } = await auth.supabase!.from("editais_usuario").update({
         status: "erro",
         erro_processamento: message,
         updated_at: new Date().toISOString()
       }).eq("id", id);
+      if (updateError) console.error(`Erro ao atualizar para erro no edital ${id}:`, updateError);
       return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
     }
 
@@ -231,12 +236,16 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    await auth.supabase!.from("editais_usuario").update({
+    const { error: finalUpdateError } = await auth.supabase!.from("editais_usuario").update({
       status: "aguardando_revisao",
       estrutura_extraida: estrutura,
       erro_processamento: null,
       updated_at: new Date().toISOString()
     }).eq("id", id);
+    if (finalUpdateError) {
+      console.error(`Erro ao confirmar e salvar estrutura para edital ${id}:`, finalUpdateError);
+      return NextResponse.json({ ok: false, done: true, status: "erro", error: "Falha ao salvar edição final." }, { status: 500 });
+    }
 
     if (meta.file_id) {
       await fetch(`https://api.openai.com/v1/files/${meta.file_id}`, {
@@ -257,10 +266,11 @@ export async function GET(request: NextRequest) {
 
   const unknownStatus = json.status || "unknown";
   const message = `A OpenAI retornou um estado de processamento não reconhecido: ${unknownStatus}.`;
-  await auth.supabase!.from("editais_usuario").update({
+  const { error: unknownStatusError } = await auth.supabase!.from("editais_usuario").update({
     status: "erro",
     erro_processamento: message,
     updated_at: new Date().toISOString()
   }).eq("id", id).eq("status", "processando");
+  if (unknownStatusError) console.error(`Erro ao atualizar para erro no edital ${id}:`, unknownStatusError);
   return NextResponse.json({ ok: false, done: true, status: "erro", error: message, provider_status: unknownStatus });
 }

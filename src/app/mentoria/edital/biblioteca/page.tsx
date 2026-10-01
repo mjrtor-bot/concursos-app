@@ -5,6 +5,7 @@ import { AlertCircle, CheckCircle2, ChevronDown, ExternalLink, Loader2, Search, 
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
+import { aguardarProcessamento } from "@/lib/editais/aguardarProcessamento";
 
 type Edital = {
   id: string; orgao_nome: string; sigla?: string | null; uf?: string | null;
@@ -122,23 +123,11 @@ export default function BibliotecaEditaisPage() {
 
       if(j.processing){
         setMensagem("PDF recebido. A análise está sendo executada; esta tela será atualizada automaticamente.");
-        for(let tentativa=0; tentativa<300; tentativa++){
-          await new Promise(resolve=>setTimeout(resolve,3000));
-          const sr=await fetch(`/api/editais/processar/status?edital_usuario_id=${encodeURIComponent(id)}`,{cache:"no-store"});
-          const sj=await sr.json();
-          if(!sr.ok)throw new Error(sj.error||"Falha ao consultar o processamento do PDF");
-          if(sj.done){
-            if(!sj.ok || sj.status==="erro" || sj.status==="revisao_sem_conteudo"){
-              throw new Error(sj.error||sj.aviso||"Nenhum conteúdo programático foi encontrado no PDF.");
-            }
-            setPreview(sj.estrutura);
-            setMostrarPreview(true);
-            setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
-            return;
-          }
-          setMensagem("Analisando o PDF completo... aguarde. O processamento continua mesmo enquanto esta tela consulta o andamento.");
-        }
-        throw new Error("A análise ainda está em andamento. Atualize a página em alguns instantes para continuar.");
+        const sj = await aguardarProcessamento(id, setMensagem);
+        setPreview(sj.estrutura);
+        setMostrarPreview(true);
+        setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
+        return;
       }
 
       if(j.estrutura){

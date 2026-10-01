@@ -48,6 +48,7 @@ export async function POST(request: Request) {
     orgao_nome: String(form.get("orgao") || "").slice(0,200) || null,
     cargo: String(form.get("cargo") || "").slice(0,200) || null,
     uf: String(form.get("uf") || "").slice(0,2).toUpperCase() || null,
+    edital_id: form.get("edital_id") ? String(form.get("edital_id")) : null,
     arquivo_path: path,
     arquivo_nome: safeName(file.name),
     arquivo_tamanho: file.size,

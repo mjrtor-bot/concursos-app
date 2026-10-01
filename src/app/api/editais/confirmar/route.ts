@@ -19,9 +19,7 @@ export async function POST(request: NextRequest) {
 
   const { data: res, error: rpcError } = await supabase.rpc("confirmar_edital_usuario", {
     p_upload_id: uploadId,
-    p_edital_id: editalId,
-    p_usuario_id: user.id,
-    p_estrutura: upload.estrutura_extraida
+    p_edital_id: editalId
   });
   if (rpcError) return NextResponse.json({ error: rpcError.message }, { status: 500 });
 

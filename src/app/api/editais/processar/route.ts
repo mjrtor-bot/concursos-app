@@ -28,6 +28,17 @@ export async function POST(request: NextRequest) {
   if (auth.error) return auth.error;
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "OPENAI_API_KEY não configurada no servidor." }, { status: 503 });
 
+  const model = process.env.OPENAI_EDITAL_MODEL || "gpt-5.6-luna";
+
+  // Preflight model validation
+  const modelRes = await fetch(`https://api.openai.com/v1/models/${model}`, {
+      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` }
+  });
+  if (!modelRes.ok) {
+      console.error(`Modelo ${model} inválido ou indisponível.`);
+      return NextResponse.json({ error: `Modelo configurado ${model} indisponível.` }, { status: 503 });
+  }
+
   const body = await request.json().catch(() => null);
   const editalUsuarioId = body?.edital_usuario_id;
   if (!editalUsuarioId) return NextResponse.json({ error: "edital_usuario_id obrigatório" }, { status: 400 });
@@ -72,7 +83,7 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-5.6-luna",
+        model: model,
         background: true,
         input: [{
           role: "user", content: [
@@ -89,6 +100,7 @@ export async function POST(request: NextRequest) {
     // Armazenar ID da resposta para polling e retornar aceito (HTTP 202)
     await auth.supabase!.from("editais_usuario").update({
       status: "processando",
+      processamento_iniciado_em: new Date().toISOString(),
       erro_processamento: JSON.stringify({ response_id: json.id, file_id: uploaded.id }),
       updated_at: new Date().toISOString()
     }).eq("id", registro.id);
