@@ -35,12 +35,22 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       .eq("id", item.edital_id)
       .maybeSingle();
 
-    if (
-      atual &&
-      atual.titulo?.toLowerCase().includes(tituloBase.toLowerCase()) &&
-      atual.cargo_id
-    ) {
-      return atual.id;
+    if (atual && atual.cargo_id) {
+      const [{ data: atualCargo }, { data: atualConcurso }] = await Promise.all([
+        admin.from("concurso_cargos").select("id,nome,concurso_id").eq("id", atual.cargo_id).maybeSingle(),
+        admin.from("concursos").select("id,nome,orgao").eq("id", atual.concurso_id).maybeSingle(),
+      ]);
+
+      const mesmoCargo =
+        atualCargo?.nome?.trim().toLowerCase() === cargoNome.toLowerCase();
+      const mesmoOrgao =
+        atualConcurso?.orgao?.trim().toLowerCase() === orgao.toLowerCase();
+      const mesmoNome =
+        atualConcurso?.nome?.trim().toLowerCase() === concursoNome.toLowerCase();
+
+      if (mesmoCargo && mesmoOrgao && mesmoNome) {
+        return atual.id;
+      }
     }
   }
 
