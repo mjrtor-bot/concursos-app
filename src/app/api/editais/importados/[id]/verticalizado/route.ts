@@ -14,7 +14,7 @@ export async function GET(
   const { id } = await params;
   const { data: edital, error: editalError } = await supabase
     .from("editais_usuario")
-    .select("id,nome,orgao_nome,cargo,uf,arquivo_nome,status,confirmado_em,edital_id")
+    .select("id,nome,orgao_nome,cargo,uf,arquivo_nome,status,confirmado_em,edital_id,estrutura_extraida")
     .eq("id", id)
     .eq("usuario_id", user.id)
     .eq("status", "confirmado")
@@ -23,6 +23,13 @@ export async function GET(
   if (editalError) return NextResponse.json({ error: editalError.message }, { status: 500 });
   if (!edital) return NextResponse.json({ error: "Edital importado não encontrado." }, { status: 404 });
   if (!edital.edital_id) return NextResponse.json({ error: "O edital importado não possui edital de destino vinculado." }, { status: 409 });
+
+  const estrutura = (edital as any).estrutura_extraida || {};
+  const paresImportados = new Set(
+    (Array.isArray(estrutura.disciplinas) ? estrutura.disciplinas : []).flatMap((d: any) =>
+      (Array.isArray(d.assuntos) ? d.assuntos : []).map((a: any) => `${String(d.nome).trim()}||| ${String(a).trim()}`.replace("||| ","|||"))
+    )
+  );
 
   const [topicosRes, salvosRes, respostasRes] = await Promise.all([
     supabase
@@ -53,6 +60,7 @@ export async function GET(
     const disc = Array.isArray(row.disciplinas) ? row.disciplinas[0] : row.disciplinas;
     const assunto = Array.isArray(row.assuntos) ? row.assuntos[0] : row.assuntos;
     if (!row.disciplina_id || !row.assunto_id || !disc?.nome || !assunto?.nome) continue;
+    if (paresImportados.size > 0 && !paresImportados.has(`${String(disc.nome).trim()}|||${String(assunto.nome).trim()}`)) continue;
 
     const saved = salvos.get(row.assunto_id);
     const st = stats.get(row.assunto_id) || { total: 0, acertos: 0 };
