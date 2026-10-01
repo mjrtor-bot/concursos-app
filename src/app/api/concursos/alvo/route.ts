@@ -25,6 +25,7 @@ function slugify(value: string) {
 
 async function materializarImportado(admin: any, item: Importado, sourceUrl: string) {
   const tituloBase = (item.nome || item.arquivo_nome || "Edital importado").trim();
+  const concursoNome = tituloBase;
   const cargoNome = (item.cargo || "Cargo importado").trim();
   const orgao = (item.orgao_nome || "Edital importado").trim();
 
@@ -54,7 +55,6 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
     }
   }
 
-  const concursoNome = tituloBase;
   const { data: concurso, error: concursoError } = await admin
     .from("concursos")
     .insert({
