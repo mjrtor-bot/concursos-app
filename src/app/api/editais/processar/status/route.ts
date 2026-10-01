@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
 
   if (!registro) return NextResponse.json({ error: "PDF não encontrado." }, { status: 404 });
 
-  if (registro.status === "aguardando_confirmacao" && registro.estrutura_extraida) {
+  if (registro.status === "aguardando_revisao" && registro.estrutura_extraida) {
     const estrutura: any = registro.estrutura_extraida;
     const totalAssuntos = (estrutura.disciplinas || []).reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
     return NextResponse.json({
@@ -232,7 +232,7 @@ export async function GET(request: NextRequest) {
     }
 
     await auth.supabase!.from("editais_usuario").update({
-      status: "aguardando_confirmacao",
+      status: "aguardando_revisao",
       estrutura_extraida: estrutura,
       erro_processamento: null,
       updated_at: new Date().toISOString()
@@ -248,7 +248,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       ok: true,
       done: true,
-      status: "aguardando_confirmacao",
+      status: "aguardando_revisao",
       estrutura,
       total_disciplinas: estrutura.disciplinas.length,
       total_assuntos: totalAssuntos
