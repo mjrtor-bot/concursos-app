@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClientServer } from "@/lib/supabase/server";
+import { createClientServer, createAdminClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
 
   if (!resp.ok) {
     const message = json.error?.message || "Não foi possível consultar o processamento.";
-    const { error: updateError } = await auth.supabase!.from("editais_usuario").update({
+    const { error: updateError } = await db.from("editais_usuario").update({
       status: "erro",
       erro_processamento: message,
       updated_at: new Date().toISOString()
