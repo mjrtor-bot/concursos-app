@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 
-function slugify(v:string){return v.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,180)}
-
 export async function POST(request:NextRequest){
   const supabase=await createClientServer();
   if(!supabase)return NextResponse.json({error:"Supabase indisponível"},{status:503});
@@ -16,27 +14,16 @@ export async function POST(request:NextRequest){
 
   const {data:upload}=await supabase.from("editais_usuario").select("id,status,estrutura_extraida").eq("id",uploadId).eq("usuario_id",user.id).maybeSingle();
   if(!upload||upload.status!=="aguardando_confirmacao"||!upload.estrutura_extraida)return NextResponse.json({error:"Não há prévia processada aguardando confirmação."},{status:409});
-  const {data:edital}=await supabase.from("editais_concurso").select("id").eq("id",editalId).maybeSingle();
-  if(!edital)return NextResponse.json({error:"Edital de destino não encontrado."},{status:404});
+  const { data: edital } = await supabase.from("editais_concurso").select("id").eq("id", editalId).maybeSingle();
+  if (!edital) return NextResponse.json({ error: "Edital de destino não encontrado." }, { status: 404 });
 
-  const estrutura:any=upload.estrutura_extraida;
-  let ordem=0,total=0;
-  for(const d of estrutura.disciplinas||[]){
-    const nome=String(d.nome||"").trim(); if(!nome)continue;
-    const slug=slugify(nome);
-    let {data:disc}=await supabase.from("disciplinas").select("id").eq("slug",slug).maybeSingle();
-    if(!disc){const ins=await supabase.from("disciplinas").insert({nome,slug}).select("id").single();if(ins.error)return NextResponse.json({error:ins.error.message},{status:500});disc=ins.data}
-    for(const raw of d.assuntos||[]){
-      const assuntoNome=String(raw||"").trim();if(!assuntoNome)continue;
-      const assuntoSlug=slugify(assuntoNome);
-      let {data:ass}=await supabase.from("assuntos").select("id").eq("disciplina_id",disc!.id).eq("slug",assuntoSlug).maybeSingle();
-      if(!ass){const ins=await supabase.from("assuntos").insert({disciplina_id:disc!.id,nome:assuntoNome,slug:assuntoSlug}).select("id").single();if(ins.error)return NextResponse.json({error:ins.error.message},{status:500});ass=ins.data}
-      ordem++;
-      const up=await supabase.from("edital_topicos").upsert({edital_id:editalId,disciplina_id:disc!.id,assunto_id:ass!.id,ordem},{onConflict:"edital_id,disciplina_id,assunto_id"});
-      if(up.error)return NextResponse.json({error:up.error.message},{status:500});
-      total++;
-    }
-  }
-  await supabase.from("editais_usuario").update({status:"confirmado",confirmado_em:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",uploadId);
-  return NextResponse.json({ok:true,total_topicos:total});
+  const { data: res, error: rpcError } = await supabase.rpc("confirmar_edital_usuario", {
+    p_upload_id: uploadId,
+    p_edital_id: editalId,
+    p_usuario_id: user.id,
+    p_estrutura: upload.estrutura_extraida
+  });
+  if (rpcError) return NextResponse.json({ error: rpcError.message }, { status: 500 });
+
+  return NextResponse.json({ ok: true, total_topicos: res.total_topicos });
 }

@@ -28,10 +28,11 @@ export async function POST(request: NextRequest) {
   const editalUsuarioId = body?.edital_usuario_id;
   if (!editalUsuarioId) return NextResponse.json({ error: "edital_usuario_id obrigatório" }, { status: 400 });
 
-  const { data: registro, error: regError } = await auth.supabase!.from("editais_usuario").select("*").eq("id", editalUsuarioId).eq("usuario_id", auth.user!.id).maybeSingle();
-  if (regError || !registro) return NextResponse.json({ error: "PDF não encontrado." }, { status: 404 });
+  const { data: registro, error: regError } = await auth.supabase!.from("editais_usuario").select("*").eq("id", editalUsuarioId).eq("usuario_id", auth.user!.id).in("status", ["aguardando_processamento", "erro"]).maybeSingle();
+  if (regError || !registro) return NextResponse.json({ error: "PDF não encontrado ou não aguardando processamento." }, { status: 404 });
 
-  await auth.supabase!.from("editais_usuario").update({ status:"processando", erro_processamento:null, updated_at:new Date().toISOString() }).eq("id", registro.id);
+  const { error: updateError } = await auth.supabase!.from("editais_usuario").update({ status:"processando", erro_processamento:null, updated_at:new Date().toISOString() }).eq("id", registro.id).eq("status", registro.status);
+  if (updateError) return NextResponse.json({ error: "Conflito de estado ao iniciar processamento." }, { status: 409 });
 
   try {
     const { data: arquivo, error: downloadError } = await auth.supabase!.storage.from("editais-usuario").download(registro.arquivo_path);
