@@ -16,3 +16,16 @@ export async function createClientServer() {
     },
   });
 }
+
+
+/** Client server-side com service role para operações administrativas. Nunca exponha no cliente. */
+export function createAdminClient() {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!isSupabaseConfigured || !serviceKey) return null;
+  return createServerClient(supabaseUrl, serviceKey, {
+    cookies: {
+      getAll() { return []; },
+      setAll() {},
+    },
+  });
+}
