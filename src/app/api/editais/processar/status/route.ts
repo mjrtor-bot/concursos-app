@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
   const { data: registro } = await auth.supabase!
     .from("editais_usuario")
-    .select("id,status,erro_processamento,estrutura_extraida,usuario_id,processamento_iniciado_em")
+    .select("id,status,erro_processamento,estrutura_extraida,usuario_id,processamento_iniciado_em,created_at")
     .eq("id", id)
     .eq("usuario_id", auth.user!.id)
     .maybeSingle();
@@ -117,14 +117,15 @@ export async function GET(request: NextRequest) {
   }
 
   if (json.status === "queued" || json.status === "in_progress") {
-    const startedAt = registro.processamento_iniciado_em ? new Date(registro.processamento_iniciado_em).getTime() : Date.now();
+    const startedAt = registro.processamento_iniciado_em ? new Date(registro.processamento_iniciado_em).getTime() : (registro.created_at ? new Date(registro.created_at).getTime() : Date.now());
     const elapsedMs = Date.now() - startedAt;
     const providerStatus = json.status;
-    // Persistimos o último estado observado para diagnóstico e evitamos jobs presos indefinidamente.
+
     await auth.supabase!.from("editais_usuario").update({
       erro_processamento: JSON.stringify({
         response_id: meta.response_id,
         file_id: meta.file_id,
+        started_at: startedAt,
         provider_status: providerStatus,
         last_checked_at: new Date().toISOString()
       }),

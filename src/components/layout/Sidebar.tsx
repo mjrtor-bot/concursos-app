@@ -10,6 +10,7 @@ import {
   CheckSquare2,
   AlertTriangle,
   FileSpreadsheet,
+  FileText,
   BarChart3,
   Database,
   Settings,
@@ -115,6 +116,11 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       href: "/mentoria/edital",
       label: "Edital Verticalizado",
       icon: BookOpen,
+    },
+    {
+      href: "/mentoria/edital/importados",
+      label: "Meus Editais Importados",
+      icon: FileText,
     },
     {
       href: "/mentoria/comunicacao",

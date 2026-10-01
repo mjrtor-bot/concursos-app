@@ -360,7 +360,7 @@ export default function MentoriaEditalPage() {
           </CardContent>
         </Card>
       )}
-      {alvoOficial && <div className="flex flex-wrap items-center gap-3 text-sm"><a href={alvoOficial.fonte} target="_blank" rel="noreferrer" className="font-semibold text-indigo-600 hover:underline">Abrir fonte oficial do edital</a><Link href="/mentoria/edital/biblioteca" className="font-semibold text-slate-600 hover:text-indigo-600">Consultar biblioteca de editais</Link></div>}
+      {alvoOficial && <div className="flex flex-wrap items-center gap-3 text-sm"><a href={alvoOficial.fonte} target="_blank" rel="noreferrer" className="font-semibold text-indigo-600 hover:underline">Abrir fonte oficial do edital</a><Link href="/mentoria/edital/biblioteca" className="font-semibold text-slate-600 hover:text-indigo-600">Consultar biblioteca de editais</Link><Link href="/mentoria/edital/importados" className="font-semibold text-indigo-600 hover:underline">Meus editais importados</Link></div>}
 
       {/* 5 Cards de Métricas e KPIs Globais */}
       {resumoEdital && (
