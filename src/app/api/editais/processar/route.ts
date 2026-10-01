@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       }
     };
 
-    // Iniciar processamento assíncrono
+    // Iniciar processamento assíncrono (não aguarda GPT concluir)
     const resp = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
@@ -85,14 +85,14 @@ export async function POST(request: NextRequest) {
     const json = await resp.json();
     if (!resp.ok) throw new Error(json.error?.message || "Falha ao iniciar análise do edital.");
 
-    // Armazenar ID da resposta para polling e retornar aceito
+    // Armazenar ID da resposta para polling e retornar aceito (HTTP 202)
     await auth.supabase!.from("editais_usuario").update({
       status: "processando",
       erro_processamento: JSON.stringify({ response_id: json.id, file_id: uploaded.id }),
       updated_at: new Date().toISOString()
     }).eq("id", registro.id);
 
-    return NextResponse.json({ ok: true, processing: true, edital_usuario_id: registro.id });
+    return NextResponse.json({ ok: true, processing: true, edital_usuario_id: registro.id }, { status: 202 });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Erro inesperado";
     await auth.supabase!.from("editais_usuario").update({ status: "erro", erro_processamento: message, updated_at: new Date().toISOString() }).eq("id", registro.id);
