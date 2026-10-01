@@ -44,6 +44,7 @@ export default function MentoriaEditalPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [alvoOficial, setAlvoOficial] = useState<{ concurso:string; cargo:string; edital:string; fonte:string } | null>(null);
+  const [editalImportado, setEditalImportado] = useState(false);
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [resumoEdital, setResumoEdital] = useState<EditalVerticalizadoResumo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,6 +58,7 @@ export default function MentoriaEditalPage() {
   const [disciplinasAbertas, setDisciplinasAbertas] = useState<Record<string, boolean>>({});
 
   const carregarDados = async () => {
+    const importedId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("importado") : null;
     if (!user) {
       setLoading(false);
       return;
@@ -65,11 +67,25 @@ export default function MentoriaEditalPage() {
       setLoading(true);
       const [p, edital, alvoResp] = await Promise.all([
         MentoriaService.getPerfil(user.id),
-        MentoriaService.getEditalVerticalizado(user.id),
+        importedId ? Promise.resolve(null) : MentoriaService.getEditalVerticalizado(user.id),
         fetch("/api/concursos/alvo", { cache: "no-store" }).then(r => r.ok ? r.json() : null),
       ]);
       setPerfil(p);
-      setResumoEdital(edital);
+      if (importedId) {
+        const importedResp = await fetch(`/api/editais/importados/${importedId}/verticalizado`, { cache: "no-store" });
+        const importedJson = await importedResp.json();
+        if (!importedResp.ok) throw new Error(importedJson.error || "Falha ao carregar o edital importado.");
+        setResumoEdital(importedJson.resumo);
+        setEditalImportado(true);
+        setAlvoOficial({
+          concurso: importedJson.edital.orgao || "Edital importado",
+          cargo: importedJson.edital.cargo || "Cargo não informado",
+          edital: importedJson.edital.nome || importedJson.edital.arquivo_nome || "Edital importado",
+          fonte: "#",
+        });
+      } else {
+        setResumoEdital(edital);
+      }
       if (alvoResp?.alvo) {
         const c = (alvoResp.concursos || []).find((x: any) => x.id === alvoResp.alvo.concurso_id);
         const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
@@ -329,7 +345,7 @@ export default function MentoriaEditalPage() {
             Edital Verticalizado
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-            {alvoOficial
+            {editalImportado ? "Edital importado por você e verticalizado a partir dos tópicos extraídos do PDF. O progresso abaixo é específico deste edital." : alvoOficial
               ? `${alvoOficial.concurso} — ${alvoOficial.cargo}. Edital: ${alvoOficial.edital}. O progresso considera somente os tópicos vinculados a esse edital.`
               : "Selecione um concurso, cargo e edital oficial no Perfil para carregar o conteúdo programático."}
           </p>
@@ -360,7 +376,7 @@ export default function MentoriaEditalPage() {
           </CardContent>
         </Card>
       )}
-      {alvoOficial && <div className="flex flex-wrap items-center gap-3 text-sm"><a href={alvoOficial.fonte} target="_blank" rel="noreferrer" className="font-semibold text-indigo-600 hover:underline">Abrir fonte oficial do edital</a><Link href="/mentoria/edital/biblioteca" className="font-semibold text-slate-600 hover:text-indigo-600">Consultar biblioteca de editais</Link><Link href="/mentoria/edital/importados" className="font-semibold text-indigo-600 hover:underline">Meus editais importados</Link></div>}
+      {alvoOficial && <div className="flex flex-wrap items-center gap-3 text-sm">{!editalImportado && <a href={alvoOficial.fonte} target="_blank" rel="noreferrer" className="font-semibold text-indigo-600 hover:underline">Abrir fonte oficial do edital</a>}<Link href="/mentoria/edital/biblioteca" className="font-semibold text-slate-600 hover:text-indigo-600">Consultar biblioteca de editais</Link><Link href="/mentoria/edital/importados" className="font-semibold text-indigo-600 hover:underline">Meus editais importados</Link></div>}
 
       {/* 5 Cards de Métricas e KPIs Globais */}
       {resumoEdital && (
