@@ -55,6 +55,8 @@ export async function GET(request: NextRequest) {
   const id = new URL(request.url).searchParams.get("edital_usuario_id");
   if (!id) return NextResponse.json({ error: "edital_usuario_id obrigatório" }, { status: 400 });
 
+  const db = createAdminClient() || auth.supabase!;
+
   const { data: registro } = await auth.supabase!
     .from("editais_usuario")
     .select("id,status,erro_processamento,estrutura_extraida,usuario_id,processamento_iniciado_em,created_at")
