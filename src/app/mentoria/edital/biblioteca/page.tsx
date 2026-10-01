@@ -232,7 +232,7 @@ export default function BibliotecaEditaisPage() {
     <header className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
       <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Editais Verticalizados</p>
       <h1 className="mt-1 text-3xl font-black">Biblioteca de concursos policiais</h1>
-      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Editais oficiais publicados nos últimos dois anos permanecem disponíveis mesmo após o encerramento. Editais históricos podem ser usados como referência de estudo.</p>
+      <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Editais oficiais publicados nos últimos dois anos permanecem disponíveis mesmo após o encerramento. Editais históricos podem ser usados como referência de estudo.</p>\n      <div className="mt-4"><a href="/mentoria/edital/importados" className="inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white">Meus Editais Importados</a></div>
     </header>
 
     <section className="rounded-2xl border bg-white dark:bg-slate-900 p-4 space-y-3">
