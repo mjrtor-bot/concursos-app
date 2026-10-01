@@ -204,7 +204,7 @@ export default function BibliotecaEditaisPage() {
     setEnviando(true);
     try{
       const fd=new FormData();
-      fd.set("nome",formValues.nome); fd.set("orgao",formValues.orgao); fd.set("cargo",formValues.cargo); fd.set("uf",formValues.uf); fd.set("arquivo",arquivo);
+      fd.set("nome",formValues.nome); fd.set("orgao",formValues.orgao); fd.set("cargo",formValues.cargo); fd.set("uf",formValues.uf); if (alvo?.edital_id) fd.set("edital_id", alvo.edital_id); fd.set("arquivo",arquivo);
       const r=await fetch("/api/editais/upload",{method:"POST",body:fd});
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha no upload");
