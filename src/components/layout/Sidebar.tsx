@@ -10,6 +10,7 @@ import {
   CheckSquare2,
   AlertTriangle,
   FileSpreadsheet,
+  FileText,
   BarChart3,
   Database,
   Settings,
