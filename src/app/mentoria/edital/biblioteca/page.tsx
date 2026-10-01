@@ -229,6 +229,13 @@ export default function BibliotecaEditaisPage() {
   }
 
   return <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-6">
+    <div className="flex flex-wrap gap-2">
+      <a href="/mentoria/edital" className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-indigo-300 hover:text-indigo-600">Meu edital</a>
+      <a href="/mentoria/edital/biblioteca" className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-indigo-300 hover:text-indigo-600">Biblioteca policial</a>
+      <a href="/mentoria/edital/importados" className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-700">Meus editais importados</a>
+      <a href="/mentoria/edital/biblioteca#importar" className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-600">Importar edital em PDF</a>
+    </div>
+
     <header className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
       <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Editais Verticalizados</p>
       <h1 className="mt-1 text-3xl font-black">Biblioteca de concursos policiais</h1>
