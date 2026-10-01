@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, processing: true, edital_usuario_id: registro.id }, { status: 202 });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Erro inesperado";
-    await auth.supabase!.from("editais_usuario").update({ status: "erro", erro_processamento: message, updated_at: new Date().toISOString() }).eq("id", registro.id);
+    await db.from("editais_usuario").update({ status: "erro", erro_processamento: message, updated_at: new Date().toISOString() }).eq("id", registro.id);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
