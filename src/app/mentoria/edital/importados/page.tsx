@@ -88,6 +88,9 @@ export default function EditaisImportadosPage() {
                 <div className="rounded-xl bg-slate-50 p-3"><p className="text-xs text-slate-500">Assuntos</p><p className="text-xl font-black">{ed.total_topicos}</p></div>
               </div>
               <p className="mt-3 truncate text-xs text-slate-500">{ed.arquivo_nome}</p>
+              <Link href={`/mentoria/edital?importado=${ed.id}`} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-700">
+                <BookOpen className="w-4 h-4" /> Abrir edital verticalizado
+              </Link>
             </article>
           ))}
         </div>
