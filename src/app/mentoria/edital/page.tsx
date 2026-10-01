@@ -86,7 +86,7 @@ export default function MentoriaEditalPage() {
       } else {
         setResumoEdital(edital);
       }
-      if (alvoResp?.alvo) {
+      if (!importedId && alvoResp?.alvo) {
         const c = (alvoResp.concursos || []).find((x: any) => x.id === alvoResp.alvo.concurso_id);
         const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
         const ed = cargo?.editais_concurso?.find((x: any) => x.id === alvoResp.alvo.edital_id);
@@ -95,7 +95,10 @@ export default function MentoriaEditalPage() {
 
       // Abrir todas as disciplinas por padrão
       const abertas: Record<string, boolean> = {};
-      edital.disciplinas.forEach((d) => {
+      const disciplinasBase = importedId
+        ? ((await fetch(`/api/editais/importados/${importedId}/verticalizado`, { cache: "no-store" }).then(r => r.ok ? r.json() : null))?.resumo?.disciplinas || [])
+        : (edital?.disciplinas || []);
+      disciplinasBase.forEach((d: any) => {
         abertas[d.disciplina_id] = true;
       });
       setDisciplinasAbertas(abertas);
