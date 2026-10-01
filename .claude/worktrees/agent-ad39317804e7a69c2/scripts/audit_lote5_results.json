@@ -1,0 +1,1428 @@
+{
+  "lote": 5,
+  "prompt_versao": "v2.5-lote5",
+  "totalQuestoes": 500,
+  "totalAlternativas": 1750,
+  "idsUnicos": 500,
+  "fpsUnicos": 500,
+  "colisoesFpComDb": 0,
+  "colisoesIdComDb": 0,
+  "distDisciplina": {
+    "direito_penal": 70,
+    "direito_processual_penal": 70,
+    "legislacao_extravagante": 70,
+    "direito_constitucional": 60,
+    "direito_administrativo": 60,
+    "lingua_portuguesa": 60,
+    "direitos_humanos": 35,
+    "informatica_tecnologia": 30,
+    "criminologia": 25,
+    "raciocinio_logico": 20
+  },
+  "distModalidade": {
+    "certo_errado": 250,
+    "multipla_escolha": 250
+  },
+  "distDificuldade": {
+    "medio": 132,
+    "dificil": 359,
+    "facil": 9
+  },
+  "similaridade": {
+    "totalPares": 124750,
+    "pares80": 0,
+    "pares90": 0,
+    "pares95": 0,
+    "pct80": "0.0000",
+    "pct90": "0.0000",
+    "pct95": "0.0000"
+  },
+  "amostra50Count": 50,
+  "amostra50": [
+    {
+      "disciplina": "direito_penal",
+      "id": "34d2f004-02ce-58a0-994f-bde71c243e7a",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "Cebraspe",
+      "enunciado": "Considere que determinado agente cometa crime permanente cuja consumação se prolongue no tempo entre janeiro e julho de determinado ano. Se em maio desse mesmo ano entrar em vigor lei penal que majore a pena cominada ao delito, a lei nova mais severa deverá ser aplicada ao caso concreto, em estrita consonância com a jurisprudência sumulada do Supremo Tribunal Federal.",
+      "explicacao": "CORRETO. Aplica-se a Súmula 711 do STF: 'A lei penal mais grave aplica-se ao crime continuado ou ao crime permanente, se a sua vigência é anterior à cessação da continuidade ou da permanência'. Como a consumação persistiu até julho e a lei nova entrou em vigor em maio, incide a lei nova mais severa.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "84cb547a-7b18-5b97-b6a8-9f6a1c1305ae",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Investigador de Polícia",
+      "banca": "FCC",
+      "enunciado": "No sistema trifásico de dosimetria da pena privativa de liberdade adotado pelo Código Penal (art. 68 do CP), a fixação ocorre na seguinte ordem sucessiva:",
+      "explicacao": "Gabarito: A. Art. 68 do CP: O juiz fixa a pena-base com base nas circunstâncias judiciais do art. 59 (1ª fase); em seguida calcula as agravantes e atenuantes genéricas (2ª fase); e, por fim, aplica as causas de aumento (majorantes) e de diminuição (minorantes) da pena (3ª fase).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "1ª fase: circunstâncias judiciais (art. 59); 2ª fase: atenuantes e agravantes; 3ª fase: causas de diminuição e aumento de pena.",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "1ª fase: atenuantes e agravantes; 2ª fase: causas de aumento e diminuição; 3ª fase: circunstâncias judiciais.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "1ª fase: causas de aumento e diminuição; 2ª fase: circunstâncias judiciais; 3ª fase: atenuantes e agravantes.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "1ª fase: fixação da pena definitiva; 2ª fase: substituição por restritiva de direitos; 3ª fase: regime prisional.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "1ª fase: culpabilidade e dolo; 2ª fase: reincidência e confissão; 3ª fase: cálculo da fração do sursis.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "4418c3d0-7cdb-5414-a0ef-91a1b556eefc",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FCC",
+      "enunciado": "Sobre os crimes contra a administração da justiça praticados por particular ou agente público, é correto afirmar:",
+      "explicacao": "Gabarito: D. A autoacusação falsa (art. 341 do CP) exige que o agente acuse a si mesmo de crime inexistente ou praticado por outrem. No falso testemunho (art. 342, § 2º), o fato deixa de ser punível se, antes da sentença no processo em que ocorreu o ilícito, o agente se retrata ou declara a verdade.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O crime de denunciação caluniosa admite retratação com efeito extintivo de punibilidade a qualquer tempo.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "A fraude processual configura crime material, exigindo dano irreversível aos autos judiciais para sua consumação.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "O favorecimento pessoal consiste em prestar a criminoso auxílio destinado a tornar seguro o proveito do crime patrimonial.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "No crime de falso testemunho ou falsa perícia, a retratação do agente antes da sentença no processo em que ocorreu o ilícito extingue a punibilidade.",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "O crime de desobediência admite a modalidade culposa quando o agente desconhece a ordem do oficial de justiça.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "4e8e0116-3ffc-5003-8b25-3e8dabe54afc",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "No crime de descaminho (art. 334 do CP), o parâmetro econômico-tributário fixado pela jurisprudência do STF e do STJ para a incidência do princípio da insignificância criminal corresponde ao valor de tributos sonegados de até:",
+      "explicacao": "Gabarito: C. Conforme pacificado pelo STF e pela 3ª Seção do STJ (Tema Repetitivo 157/STJ), o valor paradigma para a insignificância no crime de descaminho é de até R$ 20.000,00 (vinte mil reais), conforme Portarias nº 75/2012 e 130/2012 do Ministério da Fazenda.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "R$ 5.000,00 (cinco mil reais).",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "R$ 10.000,00 (dez mil reais).",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "R$ 20.000,00 (vinte mil reais).",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "R$ 50.000,00 (cinquenta mil reais).",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "R$ 100.000,00 (cem mil reais).",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_penal",
+      "id": "685debb9-1c7d-5249-94e4-913cccb4dc96",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "Instituto AOCP",
+      "enunciado": "Nos crimes patrimoniais, as imunidades penais absolutas (escusas absolutórias, art. 181 do CP) tornam o agente isento de pena quando o crime é cometido em prejuízo:",
+      "explicacao": "Gabarito: B. Conforme art. 181 do CP: É isento de pena quem comete qualquer dos crimes patrimoniais (sem violência ou grave ameaça) em prejuízo: I - do cônjuge, na constância da sociedade conjugal; II - de ascendente ou descendente, seja o parentesco legítimo ou ilegítimo, seja civil ou natural.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "De irmão legítimo ou ilegítimo que com ele coabita.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Do cônjuge, na constância da sociedade conjugal, ou de ascendente ou descendente.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "De tio ou sobrinho com quem o agente mantém vínculo empregatício.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "De pessoa idosa com mais de sessenta anos sob curatela do agente.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "De companheiro em união estável dissolvida judicialmente.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "8c787fc5-b51b-5804-bd95-f201f86e1b63",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Acerca das características e da sistemática do inquérito policial no ordenamento jurídico brasileiro, assinale a opção correta.",
+      "explicacao": "Gabarito: B. O inquérito policial é marcado pela discricionariedade mitigada (art. 14, CPP), indisponibilidade para a autoridade policial (art. 17, CPP) e natureza inquisitorial preparatória, sendo ato privativo do Delegado de Polícia o indiciamento fundamentado (Lei 12.830/2013, art. 2º, § 6º).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "A autoridade policial pode, motivadamente e com base no princípio da insignificância comprovado de plano, determinar o arquivamento dos autos do inquérito policial.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O inquérito policial é procedimento administrativo de natureza inquisitiva, inexistindo ampla defesa e contraditório plenos, o que autoriza a autoridade policial a indeferir fundamentadamente diligências requeridas pelo ofendido ou pelo indiciado, ressalvado o exame de corpo de delito.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "O vício ocorrido durante a fase investigatória do inquérito policial nulifica de pleno direito a ação penal subsequente caso a denúncia tenha se baseado nos elementos informativos do procedimento viciado.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "O indiciamento é ato complexo e concorrente, podendo ser determinado diretamente pelo magistrado ou pelo Ministério Público ao requisitarem a instauração do inquérito policial.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A notitia criminis inqualificada (denúncia anônima) basta, por si só e de modo isolado, para a imediata instauração do inquérito policial formal e indiciamento do denunciado.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "01480730-5211-55eb-bb74-cbb48d2b5b1b",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Agentes de polícia civil receberam denúncia anônima de tráfico de drogas em uma residência. Sem mandado judicial e sem realizar investigação preliminar prévia ou campana que comprovasse movimentação típica, os policiais ingressaram na casa após o morador correr para os fundos ao avistar a viatura. No interior, apreenderam 2 kg de cocaína. À luz da jurisprudência do STF (Tema 280 da Repercussão Geral) e do STJ, a diligência policial:",
+      "explicacao": "Gabarito: B. De acordo com o STF (Tema 280): 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'. A mera fuga ao avistar a polícia e denúncia anônima não configuram justa causa antecedente (STJ, REsp 1.871.856/SE e HC 598.051/SP).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "É plenamente lícita, pois o crime de tráfico de drogas na modalidade 'guardar' ou 'ter em depósito' é permanente, autorizando a entrada a qualquer hora do dia ou da noite independentemente de justificação prévia.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "É nula e ilícita, pois a simples fuga do indivíduo ao avistar a polícia somada a denúncia anônima não constituem fundadas razões prévias (justa causa) para o ingresso forçado em domicílio.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "É lícita somente se a autoridade policial ratificar o flagrante e o Ministério Público concordar expressamente no oferecimento da denúncia.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "É válida em virtude do princípio do resultado útil, já que a efetiva apreensão de drogas convalida retroativamente a entrada forçada na residência.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Pode ser convalidada por consentimento tácito caso o morador não ofereça resistência física armada aos policiais no interior da residência.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "cce5b1c7-6b64-5f47-895f-5d741554046d",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "No âmbito do Tribunal do Júri, a soberania dos veredictos é garantia constitucional absoluta que impede qualquer controle jurisdicional pelo Tribunal de Justiça em grau de apelação quando a decisão dos jurados for manifestamente contrária à prova dos autos.",
+      "explicacao": "Gabarito: Errado. Embora a soberania dos veredictos seja garantia fundamental (art. 5º, XXXVIII, 'c', CF), ela não é absoluta a ponto de inviabilizar o duplo grau de jurisdição. Conforme o art. 593, III, 'd' e § 3º, do CPP, se a decisão dos jurados for manifestamente contrária à prova dos autos, o Tribunal de apelação pode cassar a decisão e mandar o réu a novo julgamento pelo Tribunal do Júri (não podendo o Tribunal substituir o veredicto no mérito).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "af46104b-1cce-5790-ab4b-fe03710d872b",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "FGV",
+      "enunciado": "A respeito do desaforamento no procedimento do Tribunal do Júri (art. 427 do CPP), assinale a afirmativa correta.",
+      "explicacao": "Gabarito: B. O art. 427 do CPP prevê o desaforamento (deslocamento do julgamento do Júri para comarca da mesma região) quando houver: 1) interesse da ordem pública; 2) dúvida sobre a imparcialidade do júri; 3) risco à segurança pessoal do acusado; ou 4) comprovado excesso de serviço/prazo (art. 428 CPP).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O desaforamento consiste no deslocamento da competência para o Tribunal de Justiça processar e julgar os jurados que cometerem prevaricação.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Pode ser determinado pelo Tribunal competente em virtude de fundadas dúvidas sobre a imparcialidade do júri, interesse da ordem pública ou segurança pessoal do acusado.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "É ato privativo do juiz presidente da comarca de origem, sendo incabível requerimento formulado pela defesa técnica.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Pode ser determinado a qualquer momento durante a primeira fase do júri (judicium accusationis) antes da prolação da pronúncia.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A interposição do pedido de desaforamento suspende de modo automático e obrigatório a realização do julgamento em plenário.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_processual_penal",
+      "id": "75a4d8f7-2af8-5400-88dc-4cae7aea7fe0",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Civil",
+      "banca": "CEBRASPE",
+      "enunciado": "A gravação ambiental realizada clandestinamente por um dos interlocutores, sem o conhecimento do outro, é considerada prova lícita caso seja utilizada em sede de legítima defesa para comprovar inocência ou afastar imputação criminosa indevida.",
+      "explicacao": "Gabarito: Certo. Segundo o STF (Tema 979 e AI 560.223 QO/STF), a gravação clandestina efetuada por um dos interlocutores, ainda que sem o conhecimento do outro, é meio lícito de prova quando utilizada em legítima defesa ou quando não existir dever legal específico de preservação de segredo.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "3951d21e-28a0-5d32-9cdd-eca0a5cca8d2",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O Plenário do Supremo Tribunal Federal, ao julgar o Recurso Extraordinário com Repercussão Geral nº 635.659/SP (Tema 506), fixou entendimento sobre a tipicidade do porte de maconha (Cannabis sativa) para consumo pessoal (art. 28 da Lei nº 11.343/2006). A respeito dessa tese fixada, assinale a opção correta.",
+      "explicacao": "Gabarito: B. No julgamento do RE 635.659/SP (Tema 506), o STF assentou que o porte de maconha para consumo pessoal (art. 28 da Lei 11.343/2006) não tem natureza penal, mas sim de ilícito administrativo, estabelecendo o parâmetro de até 40g ou 6 plantas fêmeas para diferenciar o usuário do traficante (presunção relativa), mantendo-se o dever policial de apreender a droga.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O porte de maconha para consumo pessoal foi plenamente legalizado no território nacional, tornando lícita a comercialização e distribuição da substância em estabelecimentos credenciados.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O porte de maconha para consumo pessoal (até 40 gramas ou 6 plantas fêmeas) foi despenalizado sob a forma de ilícito administrativo desprovido de repercussão penal, mantendo-se a apreensão da droga e a aplicação de sanções administrativas.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A apreensão policial da droga para uso pessoal foi expressamente proibida, devendo a autoridade policial devolver a substância ao possuidor.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A posse de qualquer quantidade de maconha, mesmo acima de 100 gramas, gera presunção absoluta de usuário pessoal, vedada a lavratura de flagrante por tráfico.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A decisão do STF no Tema 506 aplicou-se indistintamente a todas as drogas ilícitas, inclusive cocaína, crack e drogas sintéticas.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "83a07527-64c2-56ea-8911-a26a706c086e",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "A respeito do instituto da colaboração premiada previsto na Lei nº 12.850/2013 (com as alterações introduzidas pela Lei nº 13.964/2019), assinale a opção correta.",
+      "explicacao": "Gabarito: C. O art. 3º-A da Lei nº 12.850/2013 (incluído pelo Pacote Anticrime) estabelece: 'O acordo de colaboração premiada é negócio jurídico processual e meio de obtenção de prova, que pressupõe a utilidade e o interesse públicos'.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O magistrado competente participa diretamente das tratativas e negociações do acordo de colaboração para garantir a legalidade do ato.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "As declarações do colaborador desacompanhadas de outros elementos probatórios idôneos de corroboração são suficientes para fundamentar sentença penal condenatória.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "O acordo de colaboração premiada é negócio jurídico processual e meio de obtenção de prova, que pressupõe a utilidade e o interesse públicos.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "O Delegado de Polícia não possui legitimidade para conduzir tratativas ou celebrar acordo de colaboração premiada na fase investigatória.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "O colaborador perde de forma automática e irrevogável o direito de ser assistido por advogado durante a celebração e cumprimento do acordo.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "3fb2c329-214e-5962-9fcc-447a6110ada6",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "FGV",
+      "enunciado": "No tocante às fases doutrinárias do processo de lavagem de capitais (money laundering), assinale a opção que descreve corretamente a etapa da ocultação ou dissimulação (layering/estratificação).",
+      "explicacao": "Gabarito: B. O processo de lavagem de dinheiro desdobra-se classicamente em três fases: 1) Colocação (placement) - introdução dos ativos no sistema econômico; 2) Ocultação/Estratificação (layering/dissimulação) - sucessão de operações financeiras complexas para apagar o rastro da origem criminosa; e 3) Integração (integration) - incorporação formal dos bens à economia como se fossem oriundos de fontes legítimas.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Consiste na introdução física inicial dos recursos ilícitos no sistema financeiro, normalmente mediante depósitos fracionados (smurfing) em contas bancárias diversas.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Consiste na realização de múltiplas, complexas e sucessivas transações financeiras, transferências internacionais e negócios fictícios destinados a dificultar o rastreamento da origem ilícita e romper a cadeia de evidências dos fundos.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Consiste no investimento formal dos recursos, já com aparência lícita definitiva, na economia formal, por meio de aquisição de imóveis, empresas comerciais ou participações societárias.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Consiste na prisão em flagrante dos membros da organização criminosa pela autoridade policial.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Consiste na confissão espontânea perante o Conselho de Controle de Atividades Financeiras (COAF).",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "bd0d895c-2a07-53b7-8cb1-199f958f1eae",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "Em matéria de competência jurisdicional, a Lei Maria da Penha (Lei nº 11.340/2006, alterada pela Lei nº 13.894/2019) confere aos Juizados de Violência Doméstica e Familiar contra a Mulher:",
+      "explicacao": "Gabarito: A. Os arts. 14 e 14-A da Lei nº 11.340/2006 consagram a competência híbrida (cumulativa cível e criminal) dos Juizados de Violência Doméstica e Familiar contra a Mulher para a apreciação das medidas protetivas e dos pedidos de divórcio, separação ou dissolução de união estável, ressalvada expressamente pelo art. 14-A, § 1º, a partilha de bens, que tramitará no juízo de família competente.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Competência cumulativa (híbrida) cível e criminal para conhecer e julgar as causas decorrentes da prática de violência doméstica e familiar, inclusive a ação de divórcio, separação, anulação de casamento ou dissolução de união estável, excluída a partilha de bens.",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "Competência exclusivamente penal, sendo nula qualquer decisão proferida pelo juizado que verse sobre matéria civil protetiva.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Competência plena e obrigatória para proceder à partilha de bens imóveis e litígios societários entre os cônjuges.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Atribuição para homologar acordos de deserdação unilateral de filhos comuns do casal.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Subordinação funcional direta aos Conselhos Tutelares municipais.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_extravagante",
+      "id": "613fb473-3a52-5fde-a6bd-70dd871db11d",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "A respeito do homicídio culposo na direção de veículo automotor praticado sob a influência de álcool ou qualquer outra substância psicoativa que determine dependência (art. 302, § 3º, do CTB, incluído pela Lei nº 13.546/2017), assinale a opção correta.",
+      "explicacao": "Gabarito: A. O art. 302, § 3º, do CTB comina pena de reclusão, de 5 (cinco) a 8 (oito) anos, e suspensão ou proibição do direito de obter habilitação. Em virtude de a pena máxima abstrata (8 anos) superar o patamar de 4 anos previsto no art. 322 do Código de Processo Penal, a autoridade policial não possui competência para arbitrar fiança em sede de flagrante delito, cuja apreciação competirá privativamente ao magistrado na audiência de custódia.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "A pena privativa de liberdade cominada em abstrato é de reclusão de cinco a oito anos e suspensão ou proibição do direito de se obter a permissão ou a habilitação para dirigir veículo automotor, não cabendo ao Delegado de Polícia arbitrar fiança na fase policial.",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "A autoridade policial pode arbitrar fiança imediatamente no plantão por se tratar de delito de menor potencial ofensivo regido pela Lei nº 9.099/1995.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "A conduta foi descriminalizada pela Lei nº 14.071/2020, respondendo o agente exclusivamente na esfera cível.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "O condutor responde obrigatoriamente por homicídio doloso qualificado (art. 121, § 2º, CP), sendo vedada a capitulação como culposa no CTB.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A recusa ao teste do etilômetro impede qualquer tipo de persecução penal pela ausência de corpo de delito tarifado.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "5c272bb1-62e8-5c30-8951-42e222fce52a",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "As guardas municipais, embora não estejam arroladas nos incisos I a VI do art. 144 da Constituição Federal como polícias em sentido estrito, integram o Sistema Único de Segurança Pública (SUSP) e possuem atribuições de segurança pública ampla, podendo realizar policiamento preventivo comunitário e efetuar prisões em flagrante delito por qualquer infração penal, conforme jurisprudência vinculante do Supremo Tribunal Federal (ADPF 1.070 e ADIs 5.538 e 5.948).",
+      "explicacao": "Gabarito: Certo. No julgamento da ADPF 1.070/DF, o Plenário do Supremo Tribunal Federal reconheceu que as Guardas Municipais executam atividade típica de segurança pública e integram formalmente o Sistema Único de Segurança Pública (SUSP - Lei nº 13.675/2018), possuindo atribuição para realizar policiamento preventivo e lavrar prisões em flagrante delito, além de gozarem do porte de arma funcional (ADIs 5.538 e 5.948).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "59e9e170-4a3d-5991-9d8a-abbab5d5dc51",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O Supremo Tribunal Federal, no julgamento do Tema nº 990 da Repercussão Geral (RE 1.055.941), fixou a tese de que é constitucional o compartilhamento direto de relatórios de inteligência financeira da UIF (antigo COAF) e da íntegra de procedimentos fiscais da Receita Federal com a Polícia e com o Ministério Público para fins de investigação criminal, prescindindo de prévia autorização judicial.",
+      "explicacao": "Gabarito: Certo. No julgamento do Tema nº 990 (RE 1.055.941/SP), o STF assentou que é constitucional o compartilhamento dos relatórios de inteligência financeira da UIF e da íntegra do procedimento fiscalizatório da Receita Federal do Brasil com os órgãos de persecução penal (Polícia e MP) para fins criminais, sem a obrigatoriedade de prévia autorização judicial, mantendo-se o sigilo dos dados no âmbito da investigação.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "6caf22c8-c96e-5d7e-b6a0-c8d5b386b8df",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Os Deputados e Senadores são invioláveis, civil e penalmente, por quaisquer de suas opiniões, palavras e votos, e, desde a expedição do diploma, os membros do Congresso Nacional não poderão ser presos, salvo em flagrante de crime inafiançável, caso em que os autos serão remetidos dentro de vinte e quatro horas à Casa respectiva, para que, pelo voto da maioria de seus membros, resolva sobre a prisão, nos termos do art. 53, caput e § 2º, da Constituição Federal.",
+      "explicacao": "Gabarito: Certo. Conforme o art. 53, caput e § 2º, da Constituição Federal: 'Os Deputados e Senadores são invioláveis, civil e penalmente, por quaisquer de suas opiniões, palavras e votos. § 2º Desde a expedição do diploma, os membros do Congresso Nacional não poderão ser presos, salvo em flagrante de crime inafiançável, nem processados criminalmente sem prévia licença de sua Casa [licença revogada pela EC 35/2001, mantida a deliberação da Casa sobre a prisão em 24h]'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "18e8b498-8b1f-5e58-b892-9f784effa843",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O direito à proteção dos dados pessoais, inclusive nos meios digitais, foi expressamente elevado à categoria de direito fundamental autônomo no rol do art. 5º da Constituição Federal por meio da Emenda Constitucional nº 115/2022.",
+      "explicacao": "Gabarito: Certo. A Emenda Constitucional nº 115/2022 incluiu o inciso LXXIX no art. 5º da Carta da República, assegurando expressamente que: 'é assegurado, nos termos da lei, o direito à proteção dos dados pessoais, inclusive nos meios digitais'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_constitucional",
+      "id": "2c16da03-5f55-5426-b28a-8aa09a3e7fc0",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Às polícias civis, dirigidas por delegados de polícia de carreira, incumbem, ressalvada a competência da União, as funções de polícia judiciária e a apuração de infrações penais, exceto as militares, nos termos do art. 144, § 4º, da Constituição Federal.",
+      "explicacao": "Gabarito: Certo. O art. 144, § 4º, da Carta da República preceitua: 'Às polícias civis, dirigidas por delegados de polícia de carreira, incumbem, ressalvada a competência da União, as funções de polícia judiciária e a apuração de infrações penais, exceto as militares'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "23b0e1dd-eec8-555f-9271-2e0b5becba15",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Os princípios expressos da Administração Pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios são legalidade, impessoalidade, moralidade, publicidade e eficiência, nos termos do art. 37, caput, da Constituição Federal.",
+      "explicacao": "Gabarito: Certo. O art. 37, caput, consagra o núcleo LIMPE como parâmetro obrigatório de toda atuação administrativa, inclusive nas carreiras policiais.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "dcabb89d-0699-5b5b-a3a2-f404057f504e",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "As pessoas jurídicas de direito público e as de direito privado prestadoras de serviços públicos responderão objetivamente pelos danos que seus agentes, nessa qualidade, causarem a terceiros, assegurado o direito de regresso contra o responsável nos casos de dolo ou culpa.",
+      "explicacao": "Gabarito: Certo. É o texto do art. 37, § 6º, da CF/88, que adota a teoria do risco administrativo.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "8bccdc71-6a28-5a44-94cb-bbd056db8184",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O Presidente da República pode dispor, mediante decreto autônomo (art. 84, inciso VI, da CF/88), sobre organização e funcionamento da administração federal, quando não implicar aumento de despesa nem criação ou extinção de órgãos públicos; e sobre a extinção de funções ou cargos públicos, quando vagos.",
+      "explicacao": "Gabarito: Certo. Conforme o art. 84, VI, da CF/88: 'Compete privativamente ao Presidente da República: VI - dispor, mediante decreto, sobre: a) organização e funcionamento da administração federal, quando não implicar aumento de despesa nem criação ou extinção de órgãos públicos; b) extinção de funções ou cargos públicos, quando vagos'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "2502d281-1120-52ea-a72b-1aed3c1f0636",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A ação para a aplicação das sanções por ato de improbidade administrativa prescreve em oito anos, contados a partir da ocorrência do fato ou, no caso de infrações permanentes, do dia em que tiver cessado a permanência, nos termos do art. 23 da Lei nº 8.429/1992 com redação dada pela Lei nº 14.230/2021.",
+      "explicacao": "Gabarito: Certo. Conforme o art. 23 da Lei nº 8.429/1992 (com redação da Lei nº 14.230/2021): 'A ação para a aplicação das sanções previstas nesta Lei prescreve em 8 (oito) anos, contados a partir da ocorrência do fato ou, no caso de infrações permanentes, do dia em que tiver cessado a permanência'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direito_administrativo",
+      "id": "1900e1f7-5be9-585e-8793-40f156ce6dcb",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Nos processos perante o Tribunal de Contas da União asseguram-se o contraditório e a ampla defesa quando da decisão puder resultar anulação ou revogação de ato administrativo que beneficie o interessado, excetuada a apreciação da legalidade do ato de concessão inicial de aposentadoria, reforma e pensão, consoante a Súmula Vinculante nº 3 do STF.",
+      "explicacao": "Gabarito: Certo. Dispõe a Súmula Vinculante nº 3 do STF: 'Nos processos perante o Tribunal de Contas da União asseguram-se o contraditório e a ampla defesa quando da decisão puder resultar anulação ou revogação de ato administrativo que beneficie o interessado, excetuada a apreciação da legalidade do ato de concessão inicial de aposentadoria, reforma e pensão'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "988d6c23-1f60-53b9-b84b-acbfb0b0004d",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Texto de referência: 'A investigação criminal contemporânea transcende a mera colheita de depoimentos testemunhais. Diante da sofisticação tecnológica das organizações criminosas, a inteligência policial converteu-se em pilar estratégico fundamental, exigindo o cruzamento analítico de dados telemáticos e relatórios de inteligência financeira para desvelar a estrutura hierárquica e a lavagem de capitais.'\n\nCom base no texto, infere-se que a inteligência policial e a análise de dados financeiros substituíram em definitivo a colheita de provas testemunhais nos inquéritos modernos.",
+      "explicacao": "Gabarito: Errado. O texto afirma que a investigação 'transcende a mera colheita' de testemunhos e que a inteligência se converteu em pilar estratégico, o que não significa que os depoimentos tenham sido substituídos ou eliminados, mas sim complementados por métodos mais avançados.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "36182ca3-3326-5b20-862d-f5c8fd825f16",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "No período 'O crime organizado opera em rede; a repressão policial, contudo, deve estruturar-se em moldes simétricos de cooperação institucional', o conectivo 'contudo' tem valor adversativo e poderia ser substituído por 'todavia', 'no entanto' ou 'entretanto', mantendo-se a pontuação e o sentido.",
+      "explicacao": "Gabarito: Certo. 'Contudo', 'todavia', 'no entanto' e 'entretanto' são conjunções coordenativas adversativas intercambiáveis que denotam oposição/contraste entre proposições.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "7ea62fd3-9bc4-566d-932a-e6a06842ea0f",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Na oração 'Tratava-se de investigações complexas envolvendo fraudes bancárias internacionais', o termo 'de investigações complexas' exerce a função de objeto indireto, sendo a partícula 'se' classificada como índice de indeterminação do sujeito.",
+      "explicacao": "Gabarito: Certo. O verbo 'tratar' é transitivo indireto com preposição 'de'; com o pronome 'se', torna o sujeito indeterminado e rege objeto indireto no singular ou plural.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "80406200-7a1e-5825-8aa5-80881310ac6e",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Inspetor de Polícia",
+      "banca": "FGV",
+      "enunciado": "Assinale a alternativa que apresenta oração subordinada adjetiva restritiva.",
+      "explicacao": "Gabarito: A. A oração subordinada adjetiva restritiva delimita e individualiza o sentido do antecedente, não sendo separada por pontuação.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Os agentes penitenciários **que participaram do curso de negociação de crises** foram destacados para a contenção do motim.",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "O Sol, **que ilumina a Terra**, nasce a leste.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "A perícia concluiu **que o incêndio foi criminoso**.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "O policial agiu com coragem, **embora estivesse desarmado**.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Como o trânsito estivesse bloqueado, **chegamos atrasados**.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "lingua_portuguesa",
+      "id": "5f4ae1ad-1a7b-564f-8842-d050513abfc7",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Na oração 'A maioria dos policiais envolvidos na operação foi condecorada com a medalha de bravura', o verbo e o particípio podem ser flexionados tanto no singular ('foi condecorada') quanto no plural ('foram condecorados'), em razão da presença de expressão partitiva seguida de adjunto no plural.",
+      "explicacao": "Gabarito: Certo. Expressões partitivas ('a maioria de', 'grande parte de', 'a metade de') seguidas de substantivo no plural admitem dupla concordância: lógica/gramatical com o núcleo singular ('a maioria foi condecorada') ou atrativa com o especificador plural ('os policiais foram condecorados').",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "31f22dc3-3fb4-5bee-8a64-e41d0aa88996",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O princípio da vedação do retrocesso em matéria de direitos humanos (também denominado efeito *cliquet*) estabelece que os direitos humanos fundamentais, uma vez consagrados no ordenamento jurídico interno ou internacional, não podem ser suprimidos ou desregulamentados em prejuízo dos cidadãos, vinculando o legislador e o aplicador do direito à preservação e ao contínuo aprimoramento dos níveis de proteção já alcançados.",
+      "explicacao": "Gabarito: Certo. O efeito cliquet (vedação do retrocesso) impede que o Estado retroceda nas conquistas de direitos humanos já incorporadas ao patrimônio jurídico social e individual.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "baa0b9a8-3e52-502b-a900-f8bc73f18eeb",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "Em relação aos direitos civis e políticos consagrados no texto da Declaração Universal dos Direitos Humanos de 1948, assinale a opção correta.",
+      "explicacao": "Gabarito: A. Os artigos 3º, 4º e 5º da DUDH consagram a universalidade do direito à vida, a vedação absoluta da escravidão e servidão e a proibição terminante da tortura e tratamentos cruéis, desumanos ou degradantes.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "A DUDH proclama que todo ser humano tem direito à vida, à liberdade e à segurança pessoal, estabelecendo expressamente que ninguém será submetido a tortura, nem a tratamento ou castigo cruel, desumano ou degradante, e que ninguém será mantido em escravidão ou servidão.",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "A DUDH veda de modo absoluto e perpétuo a decretação de estado de defesa em qualquer circunstância.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "A DUDH autorizou expressamente a discriminação fundada em orientação ideológica nas forças policiais.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A DUDH impede o direito de asilo político a estrangeiros perseguidos.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A DUDH restringe a presunção de inocência apenas aos julgamentos perante tribunais militares.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "fac6f001-3d80-5ed2-a3e6-d886875e83e3",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "O Protocolo de Minnesota da ONU (Manual sobre a Prevenção e Investigação Eficaz de Execuções Extralegais, Arbitrárias e Sumárias) estabelece padrões científicos para a investigação de mortes potencialmente ilícitas ocorridas sob custódia estatal ou causadas por agentes públicos, exigindo a preservação rigorosa do local dos fatos, cadeia de custódia balística, necropsia forense independente e participação informada dos familiares da vítima no processo.",
+      "explicacao": "Gabarito: Certo. O Protocolo de Minnesota (revisado em 2016 pela ONU) orienta investigações criminais e periciais de mortes provocadas por agentes do Estado ou ocorridas em estabelecimentos prisionais.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "3cf0b9e1-00ae-5528-91b9-002c13575690",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "O Mecanismo Nacional de Prevenção e Combate à Tortura (MNPCT), instituído pela Lei nº 12.847/2013 em cumprimento ao Protocolo Facultativo à Convenção contra a Tortura da ONU, possui como atribuição essencial:",
+      "explicacao": "Gabarito: D. O Mecanismo Nacional de Prevenção e Combate à Tortura tem a prerrogativa legal de inspecionar qualquer local de privação de liberdade sem aviso prévio, emitindo recomendações e relatórios para prevenir a tortura e outros tratamentos cruéis.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "julgar e condenar criminalmente os agentes policiais envolvidos em abusos em tribunal próprio de exceção.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "restringir suas vistorias apenas a presídios federais de segurança máxima mediante prévia autorização judicial.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "subordinar suas conclusões técnicas à aprovação prévia da cúpula das polícias investigadas.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "realizar visitas periódicas e regulares, sem necessidade de aviso prévio ou consentimento de autoridades, a quaisquer locais de privação de liberdade (estabelecimentos penais, socioeducativos, hospitais de custódia, delegacias de polícia e unidades militares), com livre acesso a pessoas e registros.",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "executar prisões cautelares de delegados e juízes sem participação do Ministério Público.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "ca86a12e-64e4-5463-8c4e-b51ca02f557a",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "A Convenção Interamericana para Prevenir, Punir e Erradicar a Violência contra a Mulher (Convenção de Belém do Pará de 1994) impõe aos Estados-partes a obrigação de agir com a devida diligência (*due diligence*) para prevenir, investigar e punir a violência contra a mulher praticada no âmbito público ou privado, obrigação que fundamentou a Recomendação nº 54 da Comissão Interamericana no Caso Maria da Penha Fernandes vs. Brasil.",
+      "explicacao": "Gabarito: Certo. A Convenção de Belém do Pará e o Caso Maria da Penha (Relatório 54/2001 da CIDH) foram determinantes para o reconhecimento da omissão estatal sistemática e a criação da Lei nº 11.340/2006 (Lei Maria da Penha).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "058241d1-697f-555b-9ab6-11595f8ac118",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Perito Criminal Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "No processo de assinatura digital de um documento eletrônico, o emissor gera um resumo criptográfico (hash) do conteúdo utilizando um algoritmo como o SHA-256 e, em seguida, encripta esse resumo com a sua própria chave privada. O destinatário, de posse da chave pública do emissor, decripta o resumo e o compara com o hash recalculado do documento recebido, garantindo a autenticidade, a integridade e o não repúdio da mensagem.",
+      "explicacao": "Gabarito: Certo. Na assinatura digital assimétrica, a chave privada do autor assina (encripta o hash) e a chave pública correspondente verifica a assinatura, garantindo autenticidade, integridade e irretratabilidade.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "ae06391c-ba84-512d-b5f2-65a37be93e39",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "O protocolo DNS (Domain Name System) utiliza primariamente a porta 53 com o protocolo de transporte UDP para responder a consultas rápidas de resolução de nomes em endereços IP, recorrendo ao protocolo TCP na mesma porta 53 para a transferência de zonas de domínio (*zone transfer*) entre servidores DNS primários e secundários ou quando a resposta ultrapassa o tamanho máximo permitido pelo pacote UDP convencional.",
+      "explicacao": "Gabarito: Certo. O DNS utiliza UDP 53 para consultas de resolução (baixa latência) e TCP 53 para respostas volumosas (> 512 bytes) e sincronização/transferência de zonas entre servidores DNS.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "e6727cb4-277f-5133-aecb-85eff4d9432e",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Em um ataque de negação de serviço distribuído (DDoS) do tipo *SYN Flood*, o atacante envia uma avalanche contínua de pacotes TCP com a flag SYN forjada para o servidor alvo sem jamais responder aos pacotes SYN-ACK correspondentes, exaurindo a tabela de conexões semiabertas (*backlog queue*) do sistema operacional da vítima e impedindo novas conexões de clientes legítimos.",
+      "explicacao": "Gabarito: Certo. O SYN Flood explora o handshake de três vias do TCP ao deixar conexões em estado semiaberto (SYN_RECEIVED), esgotando os buffers de memória do servidor.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "3bfa6207-7b5d-53e8-b5b4-f5748ef1cd71",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Perito Criminal Federal - Área Informática",
+      "banca": "FGV",
+      "enunciado": "Considere duas tabelas em um banco de dados relacional de investigação criminal: `Investigados` e `Apreensoes`. Para obter um relatório contendo todos os investigados cadastrados, independentemente de possuírem ou não registros correspondentes de apreensões na tabela `Apreensoes`, deve-se utilizar a seguinte cláusula de junção SQL:",
+      "explicacao": "Gabarito: A. O LEFT OUTER JOIN (ou LEFT JOIN) retorna todos os registros da tabela da esquerda (Investigados) e os registros correspondentes da tabela da direita (Apreensoes). Caso não haja correspondência na tabela da direita, os valores são exibidos como NULL.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "`SELECT * FROM Investigados LEFT JOIN Apreensoes ON Investigados.id = Apreensoes.investigado_id;`",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "`SELECT * FROM Investigados INNER JOIN Apreensoes ON Investigados.id = Apreensoes.investigado_id;`",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "`SELECT * FROM Investigados RIGHT JOIN Apreensoes ON Investigados.id = Apreensoes.investigado_id;`",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "`SELECT * FROM Investigados CROSS JOIN Apreensoes WHERE Apreensoes.id IS NULL;`",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "`SELECT * FROM Investigados UNION Apreensoes;`",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica_tecnologia",
+      "id": "9052545e-c59e-5822-97de-51c59e39f643",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Perito Criminal Federal - Área Informática",
+      "banca": "FGV",
+      "enunciado": "Em sistemas de gerenciamento de bancos de dados relacionais (SGBD), as propriedades ACID garantem a confiabilidade e integridade das transações. A propriedade que assegura que todas as operações que compõem uma transação sejam executadas com sucesso absoluto ou, em caso de falha de qualquer instrução, que todas as alterações sejam integralmente desfeitas sem deixar estados parciais gravados, denomina-se:",
+      "explicacao": "Gabarito: A. As propriedades ACID são: Atomicidade (tudo ou nada), Consistência (preservação de regras de integridade), Isolamento (transações simultâneas não se corrompem) e Durabilidade (persistência permanente pós-commit).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Atomicidade (*Atomicity*).",
+          "correta": true
+        },
+        {
+          "letra": "B",
+          "texto": "Consistência (*Consistency*).",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Isolamento (*Isolation*).",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Durabilidade (*Durability*).",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Auditoria (*Auditability*).",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "acd63066-157a-5944-99d2-4221379bd3eb",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Criminologia é uma ciência empírica e interdisciplinar que se ocupa do estudo do crime, do criminoso, da vítima e dos mecanismos de controle social da conduta delitiva, diferenciando-se do Direito Penal por adotar o método indutivo e experimental baseado na observação fática da realidade social, enquanto a ciência penal adota o método dedutivo, normativo e axiológico.",
+      "explicacao": "Gabarito: Certo. A Criminologia opera pelo método empírico-indutivo (análise dos fatos e fenômenos sociais), ao passo que o Direito Penal opera pelo método dogmático-dedutivo (análise da norma jurídica abstrata).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "76228843-c172-5b97-9d62-f720c26305f7",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "As 'Técnicas de Neutralização', formuladas por Gresham Sykes e David Matza, explicam os mecanismos psicológicos e discursivos utilizados por delinquentes para justificar moralmente seus atos ilícitos e mitigar a culpa social. Assinale a opção que exemplifica a técnica de 'Condenação dos que condenam':",
+      "explicacao": "Gabarito: C. As 5 técnicas de neutralização de Sykes e Matza são: 1) Negação da responsabilidade; 2) Negação do dano; 3) Negação da vítima; 4) Condenação dos que condenam (desqualificar acusadores e policiais); 5) Apelo a lealdades superiores (lealdade à gangue ou família).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O infrator afirma que praticou o roubo apenas porque estava sob efeito de hipnose forçada.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O autor alega que a seguradora rica cobrirá o prejuízo financeiro e ninguém sofreu dano real.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "O criminoso sustenta que os policiais que o prenderam e os juízes que o processam são todos corruptos e hipócritas, transferindo o foco acusatório para os órgãos de controle formal.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "O agente alega que a vítima merecia ser agredida em virtude de sua vestimenta provocativa.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "O membro de facção afirma que agiu exclusivamente por lealdade incondicional ao estatuto de seus irmãos de grupo.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "6b5b8467-20d6-5da8-bf51-d6996982b63c",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Prevenção Primária do delito atua nas raízes estruturais da criminalidade por meio de políticas públicas de longo prazo voltadas à educação, à saúde, ao emprego, à moradia e à garantia dos direitos sociais universais, dirigindo-se à população em geral antes que qualquer conflito criminoso se manifeste.",
+      "explicacao": "Gabarito: Certo. A prevenção primária foca nas causas profundas da criminalidade através do bem-estar social universal; a secundária foca em grupos e locais de risco; e a terciária foca na reabilitação do apenado para evitar a reincidência.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "f52a7bc6-7d65-52ad-8526-f911c7659686",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A Criminologia Crítica (ou Radical/Dialética), tendo em Alessandro Baratta um de seus principais expoentes, contesta o mito da igualdade do Direito Penal, sustentando que o sistema penal atua como instrumento estrutural de reprodução das desigualdades sociais e manutenção da dominação das classes hegemônicas no modo de produção capitalista, operando por meio de uma seletividade criminalizadora primária e secundária.",
+      "explicacao": "Gabarito: Certo. A Criminologia Crítica desmistifica a neutralidade do Direito Penal e evidencia a seletividade estrutural que pune prioritariamente os estratos sociais marginalizados.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "af332e5d-c7b7-5a59-88b5-950ab79073ce",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "A formulação doutrinária do 'Direito Penal do Inimigo' (*Feindstrafrecht*), desenvolvida pelo jurista Günther Jakobs na década de 1980, caracteriza-se por:",
+      "explicacao": "Gabarito: B. O Direito Penal do Inimigo distingue o 'cidadão' (a quem se aplicam garantias constitucionais) do 'inimigo' (indivíduo perigoso que rompeu com a ordem social e deve ser combatido com antecipação da punição, penas desproporcionais e restrição de garantias).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "estender integralmente as garantias processuais do Estado Democrático de Direito a todos os cidadãos sem exceção.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "estabelecer um tratamento diferenciado para determinados indivíduos que se afastam de forma duradoura da ordem jurídica (como terroristas e membros de facções criminosas organizadas), tratando-os como 'inimigos' da sociedade, aos quais se aplica a antecipação punitiva da tutela penal (atos preparatórios), a supressão de garantias processuais e a aplicação de penas privativas de liberdade desproporcionais voltadas à neutralização física preventiva.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "promover a descriminalização universal de todos os crimes patrimoniais violentos.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "substituir as penas de prisão por mediação comunitária voluntária.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "conceder indulto natalino compulsório a líderes de facções armadas.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "ef78832d-cf4b-5b25-85c2-20e27283772a",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Considere a proposição composta: 'Se o agente federal obtém o mandado judicial, então a busca domiciliar é realizada e as provas digitais são apreendidas'. A negação lógica dessa proposição é expressa corretamente por: 'O agente federal obtém o mandado judicial e a busca domiciliar não é realizada ou as provas digitais não são apreendidas'.",
+      "explicacao": "Gabarito: Certo. A negação de uma condicional P -> (Q e R) é dada por P e ~(Q e R), que pelas Leis de De Morgan resulta em P e (~Q ou ~R). Mantém-se o antecedente e nega-se o consequente disjuntivamente.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "0b63752d-ef4d-5e7a-9e71-e33e681f22aa",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Em uma delegacia de polícia, uma senha de cofre de segurança deve ser criada com 4 dígitos numéricos distintos seguidos de 2 letras distintas escolhidas entre as 26 letras do alfabeto. O número total de senhas possíveis que podem ser criadas é superior a 3.000.000.",
+      "explicacao": "Gabarito: Certo. Para os dígitos numéricos: 10 * 9 * 8 * 7 = 5.040. Para as letras: 26 * 25 = 650. Total de senhas = 5.040 * 650 = 3.276.000. Como 3.276.000 > 3.000.000, o item está Certo.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "41e23d9b-18ef-5f29-8a76-be130eaeb20e",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "O número de anagramas distintos da palavra 'POLICIAL' que começam pela letra 'P' e terminam pela letra 'L' é igual a 720.",
+      "explicacao": "Gabarito: Errado. A palavra POLICIAL tem 8 letras: P, O, L, I, C, I, A, L (com 2 'I' e 2 'L'). Fixando P na primeira posição e um L na última, restam 6 posições internas para as letras O, L, I, C, I, A. Temos 6 letras com repetição de 2 'I': P_6^(2) = 6! / 2! = 720 / 2 = 360 anagramas. O item afirma 720, logo está Errado.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "4312e0c9-6083-50f7-831f-49dbea32705c",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Em um posto da PRF, a probabilidade de um motorista abordado com teste de etilômetro apresentar embriaguez ao volante é de 10% (0,10). Se 4 motoristas forem abordados de forma independente e aleatória, a probabilidade de exatamente um deles apresentar embriaguez é de 29,16%.",
+      "explicacao": "Gabarito: Certo. Trata-se de uma Distribuição Binomial: n = 4 ensaios, k = 1 sucesso, probabilidade de sucesso p = 0,10 e fracasso q = 0,90. P(X = 1) = C(4, 1) * (0,1)^1 * (0,9)^3 = 4 * 0,1 * 0,729 = 0,2916 = 29,16%.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "raciocinio_logico",
+      "id": "fb0de893-af26-5fa9-a4f2-ee53da9ca179",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "A negação lógica de uma proposição bicondicional 'P se e somente se Q' (P <-> Q) é logicamente equivalente à disjunção exclusiva 'Ou P ou Q' (P _v_ Q).",
+      "explicacao": "Gabarito: Certo. A bicondicional (P <-> Q) é verdadeira quando P e Q possuem o mesmo valor lógico (ambas V ou ambas F). Sua negação ~(P <-> Q) será verdadeira exatamente quando P e Q tiverem valores lógicos distintos (uma V e outra F), o que define com exatidão a disjunção exclusiva (P _v_ Q).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    }
+  ]
+}

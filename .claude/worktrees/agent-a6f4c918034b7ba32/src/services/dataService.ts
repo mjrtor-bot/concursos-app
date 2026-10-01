@@ -1,0 +1,993 @@
+﻿import {
+  Concurso,
+  Cargo,
+  Edital,
+  Disciplina,
+  Assunto,
+  Questao,
+  RespostaUsuario,
+  ItemCadernoErros,
+  Simulado,
+  SimuladoTentativa,
+  EstatisticasGerais,
+  FiltroQuestoes,
+  Profile,
+} from "@/types";
+import {
+  MOCK_CONCURSOS,
+  MOCK_CARGOS,
+  MOCK_EDITAIS,
+  MOCK_DISCIPLINAS,
+  MOCK_ASSUNTOS,
+  MOCK_QUESTOES,
+  MOCK_SIMULADOS,
+  MOCK_PROFILE,
+} from "@/data/mockData";
+import { createClient } from "@/lib/supabase/client";
+
+const STORAGE_KEYS = {
+  PROFILE: "concursos_app_profile",
+  RESPOSTAS: "concursos_app_respostas",
+  CADERNO_ERROS: "concursos_app_caderno_erros",
+  FAVORITOS: "concursos_app_favoritos",
+  SIMULADOS_TENTATIVAS: "concursos_app_simulados_tentativas",
+  CONCURSO_ATIVO: "concursos_app_concurso_ativo",
+  ANOTACOES: "concursos_app_anotacoes",
+  SIMULADOS_CUSTOM: "concursos_app_simulados_custom",
+  QUESTOES_CUSTOM: "concursos_app_questoes_custom",
+  TAXONOMIA_DISCIPLINAS: "concursos_app_taxonomia_disciplinas",
+};
+
+export type FonteTaxonomiaDisciplinas = "supabase" | "cache" | "mock" | "indisponivel";
+
+export interface TaxonomiaDisciplinasResultado {
+  disciplinas: Disciplina[];
+  fonte: FonteTaxonomiaDisciplinas;
+}
+
+function normalizarDisciplina(valor: unknown): Disciplina | null {
+  if (!valor || typeof valor !== "object") return null;
+
+  const registro = valor as Partial<Disciplina>;
+  if (typeof registro.id !== "string" || !registro.id.trim()) return null;
+  if (typeof registro.nome !== "string" || !registro.nome.trim()) return null;
+
+  return {
+    id: registro.id,
+    nome: registro.nome,
+    slug: typeof registro.slug === "string" ? registro.slug : registro.id,
+    descricao: typeof registro.descricao === "string" ? registro.descricao : "",
+    icone: typeof registro.icone === "string" ? registro.icone : "BookOpen",
+    cor: typeof registro.cor === "string" ? registro.cor : "#3b82f6",
+    ordem: typeof registro.ordem === "number" ? registro.ordem : 0,
+    created_at: typeof registro.created_at === "string" ? registro.created_at : "",
+  };
+}
+
+// Helper for safe client localStorage
+function getFromStorage<T>(key: string, defaultValue: T): T {
+  if (typeof window === "undefined") return defaultValue;
+  try {
+    const item = window.localStorage.getItem(key);
+    return item ? (JSON.parse(item) as T) : defaultValue;
+  } catch (error) {
+    console.error(`Error reading ${key} from storage:`, error);
+    return defaultValue;
+  }
+}
+
+function setToStorage<T>(key: string, value: T): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Error writing ${key} to storage:`, error);
+  }
+}
+
+// Data service
+export const DataService = {
+  // â”€â”€ Profile & Auth â”€â”€
+  getProfile(): Profile {
+    return getFromStorage<Profile>(STORAGE_KEYS.PROFILE, MOCK_PROFILE);
+  },
+
+  updateProfile(updates: Partial<Profile>): Profile {
+    const current = this.getProfile();
+    const updated = { ...current, ...updates };
+    setToStorage(STORAGE_KEYS.PROFILE, updated);
+    return updated;
+  },
+
+  // â”€â”€ Concurso Ativo â”€â”€
+  getConcursoAtivoId(): string {
+    const profile = this.getProfile();
+    return getFromStorage<string>(
+      STORAGE_KEYS.CONCURSO_ATIVO,
+      profile.concurso_alvo_id || MOCK_CONCURSOS[0].id
+    );
+  },
+
+  setConcursoAtivoId(id: string): void {
+    setToStorage(STORAGE_KEYS.CONCURSO_ATIVO, id);
+    this.updateProfile({ concurso_alvo_id: id });
+  },
+
+  // â”€â”€ Concursos â”€â”€
+  getConcursos(): Concurso[] {
+    return MOCK_CONCURSOS;
+  },
+
+  getConcursoById(id: string): Concurso | undefined {
+    return MOCK_CONCURSOS.find((c) => c.id === id);
+  },
+
+  // â”€â”€ Cargos â”€â”€
+  getCargos(concursoId?: string): Cargo[] {
+    if (concursoId) {
+      return MOCK_CARGOS.filter((c) => c.concurso_id === concursoId);
+    }
+    return MOCK_CARGOS;
+  },
+
+  getCargoById(id: string): Cargo | undefined {
+    return MOCK_CARGOS.find((c) => c.id === id);
+  },
+
+  // â”€â”€ Editais â”€â”€
+  getEditais(concursoId?: string): Edital[] {
+    if (concursoId) {
+      return MOCK_EDITAIS.filter((e) => e.concurso_id === concursoId);
+    }
+    return MOCK_EDITAIS;
+  },
+
+  // â”€â”€ Disciplinas & Assuntos â”€â”€
+  getDisciplinas(): Disciplina[] {
+    return [...MOCK_DISCIPLINAS].sort((a, b) => a.ordem - b.ordem);
+  },
+
+  getDisciplinaById(id: string): Disciplina | undefined {
+    return MOCK_DISCIPLINAS.find((d) => d.id === id);
+  },
+
+  async carregarDisciplinasTaxonomia(): Promise<TaxonomiaDisciplinasResultado> {
+    const disciplinasCacheadas = getFromStorage<Disciplina[]>(
+      STORAGE_KEYS.TAXONOMIA_DISCIPLINAS,
+      []
+    )
+      .map(normalizarDisciplina)
+      .filter((disciplina): disciplina is Disciplina => disciplina !== null)
+      .sort((a, b) => a.ordem - b.ordem);
+
+    if (typeof window === "undefined") {
+      return {
+        disciplinas: disciplinasCacheadas,
+        fonte: disciplinasCacheadas.length > 0 ? "cache" : "indisponivel",
+      };
+    }
+
+    try {
+      const response = await fetch("/api/disciplinas", { cache: "no-store" });
+      if (!response.ok) throw new Error(`Falha ao carregar disciplinas: ${response.status}`);
+
+      const json: { disciplinas?: unknown; fonte?: unknown } = await response.json();
+      const disciplinasBrutas: unknown[] = Array.isArray(json.disciplinas)
+        ? json.disciplinas
+        : [];
+      const disciplinas: Disciplina[] = disciplinasBrutas
+        .map(normalizarDisciplina)
+        .filter((disciplina): disciplina is Disciplina => disciplina !== null)
+        .sort((a, b) => a.ordem - b.ordem);
+      const fonte = json.fonte === "supabase" ? "supabase" : "mock";
+
+      if (fonte === "supabase" && disciplinas.length > 0) {
+        setToStorage(STORAGE_KEYS.TAXONOMIA_DISCIPLINAS, disciplinas);
+      }
+
+      return { disciplinas, fonte };
+    } catch (err) {
+      console.warn("[DataService] Não foi possível carregar a taxonomia:", err);
+      if (disciplinasCacheadas.length > 0) {
+        return { disciplinas: disciplinasCacheadas, fonte: "cache" };
+      }
+      return { disciplinas: [], fonte: "indisponivel" };
+    }
+  },
+
+  getAssuntos(disciplinaId?: string): Assunto[] {
+    if (disciplinaId) {
+      return MOCK_ASSUNTOS.filter((a) => a.disciplina_id === disciplinaId).sort(
+        (a, b) => a.ordem - b.ordem
+      );
+    }
+    return [...MOCK_ASSUNTOS].sort((a, b) => a.ordem - b.ordem);
+  },
+
+  getAssuntoById(id: string): Assunto | undefined {
+    return MOCK_ASSUNTOS.find((a) => a.id === id);
+  },
+
+  // â”€â”€ QuestÃµes â”€â”€
+  getQuestoesCustom(): Questao[] {
+    return getFromStorage<Questao[]>(STORAGE_KEYS.QUESTOES_CUSTOM, []);
+  },
+
+  salvarQuestao(novaQuestao: Questao): Questao {
+    const custom = this.getQuestoesCustom();
+    const index = custom.findIndex(
+      (q) => q.id === novaQuestao.id || (q.fingerprint_hash && q.fingerprint_hash === novaQuestao.fingerprint_hash)
+    );
+
+    if (index >= 0) {
+      custom[index] = { ...custom[index], ...novaQuestao, updated_at: new Date().toISOString() };
+    } else {
+      custom.push(novaQuestao);
+    }
+
+    setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+    return novaQuestao;
+  },
+
+  salvarQuestoesLote(novasQuestoes: Questao[]): number {
+    const custom = this.getQuestoesCustom();
+    const customMap = new Map<string, number>();
+    custom.forEach((q, idx) => {
+      customMap.set(q.id, idx);
+      if (q.fingerprint_hash) {
+        customMap.set(q.fingerprint_hash, idx);
+      }
+    });
+
+    let inseridasOuAtualizadas = 0;
+    novasQuestoes.forEach((nq) => {
+      const idx = customMap.get(nq.id) ?? (nq.fingerprint_hash ? customMap.get(nq.fingerprint_hash) : undefined);
+      if (idx !== undefined) {
+        custom[idx] = { ...custom[idx], ...nq, updated_at: new Date().toISOString() };
+      } else {
+        custom.push(nq);
+        customMap.set(nq.id, custom.length - 1);
+        if (nq.fingerprint_hash) {
+          customMap.set(nq.fingerprint_hash, custom.length - 1);
+        }
+      }
+      inseridasOuAtualizadas++;
+    });
+
+    setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+    return inseridasOuAtualizadas;
+  },
+
+  salvarQuestoesEmLote(novasQuestoes: Questao[]): number {
+    return this.salvarQuestoesLote(novasQuestoes);
+  },
+
+  atualizarQuestao(id: string, updates: Partial<Questao>): Questao | undefined {
+    const custom = this.getQuestoesCustom();
+    const index = custom.findIndex((q) => q.id === id);
+    if (index >= 0) {
+      custom[index] = {
+        ...custom[index],
+        ...updates,
+        versao: (custom[index].versao || 1) + 1,
+        updated_at: new Date().toISOString(),
+      };
+      setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+      return custom[index];
+    }
+
+    // Se for uma mock_questao que estÃ¡ sendo editada pela primeira vez, cria cÃ³pia em custom
+    const mock = MOCK_QUESTOES.find((q) => q.id === id);
+    if (mock) {
+      const nova: Questao = {
+        ...mock,
+        ...updates,
+        versao: (mock.versao || 1) + 1,
+        updated_at: new Date().toISOString(),
+      };
+      custom.push(nova);
+      setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, custom);
+      return nova;
+    }
+
+    return undefined;
+  },
+
+  removerQuestao(id: string): boolean {
+    const custom = this.getQuestoesCustom();
+    const filtrado = custom.filter((q) => q.id !== id);
+    if (filtrado.length !== custom.length) {
+      setToStorage(STORAGE_KEYS.QUESTOES_CUSTOM, filtrado);
+      return true;
+    }
+    return false;
+  },
+
+  getTodasQuestoes(): Questao[] {
+    const custom = this.getQuestoesCustom();
+    const customIds = new Set(custom.map((q) => q.id));
+    const mockRestantes = MOCK_QUESTOES.filter((m) => !customIds.has(m.id));
+    return [...custom, ...mockRestantes];
+  },
+
+  getQuestoes(filtro?: FiltroQuestoes): Questao[] {
+    let result = this.getTodasQuestoes();
+    const respostas = this.getRespostas();
+    const favoritos = this.getFavoritos();
+
+    if (!filtro) return result;
+
+    if (filtro.disciplina_id) {
+      result = result.filter((q) => q.disciplina_id === filtro.disciplina_id);
+    }
+
+    if (filtro.assunto_id) {
+      result = result.filter((q) => q.assunto_id === filtro.assunto_id);
+    }
+
+    if (filtro.subassunto_id) {
+      result = result.filter((q) => q.subassunto_id === filtro.subassunto_id);
+    }
+
+    if (filtro.banca && filtro.banca !== "todas") {
+      result = result.filter((q) =>
+        q.banca.toLowerCase().includes(filtro.banca!.toLowerCase())
+      );
+    }
+
+    if (filtro.ano && filtro.ano !== "todos") {
+      result = result.filter((q) => q.ano === Number(filtro.ano));
+    }
+
+    if (filtro.concurso_id) {
+      result = result.filter((q) => q.concurso_id === filtro.concurso_id);
+    }
+
+    if (filtro.tipo && filtro.tipo !== "todos") {
+      result = result.filter((q) => q.tipo === filtro.tipo);
+    }
+
+    if (filtro.dificuldade && filtro.dificuldade !== "todos") {
+      result = result.filter((q) => q.dificuldade === filtro.dificuldade);
+    }
+
+    // Filtro por Origem (Todas, Oficiais, Autorais IA)
+    if (filtro.origem && filtro.origem !== "todas") {
+      if (filtro.origem === "oficiais") {
+        result = result.filter((q) => !q.is_autoral_ia);
+      } else if (filtro.origem === "autorais_ia") {
+        result = result.filter((q) => Boolean(q.is_autoral_ia));
+      }
+    }
+
+    // Filtros de status anulada / desatualizada
+    if (filtro.anulada !== undefined) {
+      result = result.filter((q) => Boolean(q.anulada) === filtro.anulada);
+    }
+    if (filtro.desatualizada !== undefined) {
+      result = result.filter((q) => Boolean(q.desatualizada) === filtro.desatualizada);
+    }
+
+    if (filtro.termo_busca && filtro.termo_busca.trim() !== "") {
+      const termo = filtro.termo_busca.toLowerCase();
+      result = result.filter(
+        (q) =>
+          q.enunciado.toLowerCase().includes(termo) ||
+          q.orgao.toLowerCase().includes(termo) ||
+          q.banca.toLowerCase().includes(termo) ||
+          (q.cargo && q.cargo.toLowerCase().includes(termo)) ||
+          q.explicacao.toLowerCase().includes(termo)
+      );
+    }
+
+    if (filtro.status && filtro.status !== "todas") {
+      const respostasMap = new Map(respostas.map((r) => [r.questao_id, r]));
+
+      if (filtro.status === "nao_resolvidas") {
+        result = result.filter((q) => !respostasMap.has(q.id));
+      } else if (filtro.status === "acertadas") {
+        result = result.filter(
+          (q) => respostasMap.has(q.id) && respostasMap.get(q.id)!.correta
+        );
+      } else if (filtro.status === "erradas") {
+        result = result.filter(
+          (q) => respostasMap.has(q.id) && !respostasMap.get(q.id)!.correta
+        );
+      } else if (filtro.status === "favoritas") {
+        result = result.filter((q) => favoritos.includes(q.id));
+      }
+    }
+
+    return result;
+  },
+
+  getQuestaoById(id: string): Questao | undefined {
+    return this.getTodasQuestoes().find((q) => q.id === id);
+  },
+
+  // â”€â”€ Respostas do UsuÃ¡rio â”€â”€
+  // Sincroniza o cache de leitura com a fonte autoritativa (Supabase).
+  // Para usuÃ¡rio autenticado, localStorage Ã© somente cache descartÃ¡vel.
+  async sincronizarRespostasSupabase(): Promise<RespostaUsuario[]> {
+    if (typeof window === "undefined") return [];
+    try {
+      const res = await fetch("/api/questoes/resposta", { method: "GET", cache: "no-store" });
+      if (res.status === 401) return this.getRespostas();
+      if (!res.ok) throw new Error(`Falha ao sincronizar respostas: ${res.status}`);
+      const json = await res.json();
+      const respostas = Array.isArray(json.respostas) ? json.respostas : [];
+      setToStorage(STORAGE_KEYS.RESPOSTAS, respostas);
+
+      // Nunca manter identidade/perfil demonstrativo em sessÃ£o autenticada.
+      const supabase = createClient();
+      const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+      if (session?.user) {
+        const profile = getFromStorage<Profile | null>(STORAGE_KEYS.PROFILE, null);
+        if (profile && (profile.id === "user-demo-1" || /Alexandre Silva/i.test(profile.nome || ""))) {
+          window.localStorage.removeItem(STORAGE_KEYS.PROFILE);
+        }
+      }
+      return respostas;
+    } catch (err) {
+      console.warn("[DataService] NÃ£o foi possÃ­vel sincronizar respostas:", err);
+      return this.getRespostas();
+    }
+  },
+
+  getRespostas(): RespostaUsuario[] {
+    return getFromStorage<RespostaUsuario[]>(STORAGE_KEYS.RESPOSTAS, []);
+  },
+
+  getRespostaByQuestaoId(questaoId: string): RespostaUsuario | undefined {
+    const respostas = this.getRespostas();
+    // Return latest answer for this question
+    return respostas
+      .filter((r) => r.questao_id === questaoId)
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )[0];
+  },
+
+  registrarResposta(
+    questaoId: string,
+    alternativaId: string,
+    tempoRespostaSegundos: number = 0,
+    questaoFallback?: Questao
+  ): { resposta: RespostaUsuario; correta: boolean; questao: Questao } {
+    const questao = questaoFallback || this.getQuestaoById(questaoId);
+    if (!questao) throw new Error(`QuestÃ£o ${questaoId} nÃ£o encontrada`);
+
+    // Salva a questÃ£o localmente para que o caderno de erros e histÃ³rico consigam recuperÃ¡-la
+    this.salvarQuestao(questao);
+
+    let correta = false;
+    if (questao.tipo === "multipla_escolha") {
+      const alt = questao.alternativas.find((a) => a.id === alternativaId);
+      correta = Boolean(alt?.correta);
+    } else {
+      // certo_errado
+      const alt = questao.alternativas.find((a) => a.id === alternativaId);
+      correta = Boolean(alt?.correta);
+    }
+
+    const profile = this.getProfile();
+    const novaResposta: RespostaUsuario = {
+      id: `resp-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      usuario_id: profile.id,
+      questao_id: questaoId,
+      alternativa_id: alternativaId,
+      correta,
+      tempo_resposta: tempoRespostaSegundos,
+      created_at: new Date().toISOString(),
+    };
+
+    const respostas = this.getRespostas();
+    respostas.push(novaResposta);
+    setToStorage(STORAGE_KEYS.RESPOSTAS, respostas);
+
+    // Update Caderno de Erros
+    if (!correta) {
+      this.adicionarAoCadernoErros(questaoId);
+    } else {
+      // If user got it right now and it was in error notebook, check if we should mark reviewed
+      this.marcarErroComoRevisado(questaoId);
+    }
+
+    // PersistÃªncia assÃ­ncrona no Supabase caso usuÃ¡rio autenticado
+    this.persistirRespostaSupabase(questao, alternativaId, correta, tempoRespostaSegundos).catch((err) => {
+      console.warn("[DataService] Falha ao persistir resposta no Supabase:", err);
+    });
+
+    return { resposta: novaResposta, correta, questao };
+  },
+
+  async persistirRespostaSupabase(
+    questao: Questao,
+    alternativaId: string,
+    correta: boolean,
+    tempoRespostaSegundos: number
+  ): Promise<void> {
+    if (typeof window === "undefined") return;
+
+    const isUuid = (val?: string) =>
+      Boolean(val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val));
+
+    // Se o ID da questÃ£o nÃ£o Ã© um UUID (ex: questÃ£o mock/teste local), nÃ£o envia para o banco
+    if (!isUuid(questao.id)) return;
+
+    const alt = questao.alternativas.find((a) => a.id === alternativaId);
+
+    // 1. Tenta rota de API segura do Next.js
+    try {
+      const res = await fetch("/api/questoes/resposta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questao_id: questao.id,
+          alternativa_id: isUuid(alternativaId) ? alternativaId : null,
+          correta,
+          tempo_resposta_segundos: tempoRespostaSegundos,
+          tipo: questao.tipo,
+          alternativa_texto: alt?.texto,
+          questao_versao: questao.versao || 1,
+        }),
+      });
+
+      if (res.ok) {
+        return;
+      }
+    } catch {
+      // Continua para fallback do cliente direto
+    }
+
+    // 2. Fallback direto via cliente Supabase se disponÃ­vel
+    try {
+      const supabase = createClient();
+      if (!supabase) return;
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.user) return;
+
+      await supabase.from("respostas_usuarios").insert({
+        usuario_id: session.user.id,
+        questao_id: questao.id,
+        alternativa_id: isUuid(alternativaId) ? alternativaId : null,
+        resposta_certo_errado:
+          questao.tipo === "certo_errado"
+            ? alt?.texto?.toLowerCase() === "certo"
+              ? "certo"
+              : "errado"
+            : null,
+        correta,
+        tempo_resposta_segundos: tempoRespostaSegundos,
+        questao_versao: questao.versao || 1,
+      });
+
+      if (!correta) {
+        await supabase.from("caderno_erros").upsert(
+          {
+            usuario_id: session.user.id,
+            questao_id: questao.id,
+            revisado: false,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "usuario_id, questao_id" }
+        );
+      }
+    } catch (err) {
+      console.warn("[DataService] Erro ao gravar resposta via cliente Supabase:", err);
+    }
+  },
+
+  // â”€â”€ Caderno de Erros â”€â”€
+  getCadernoErros(): ItemCadernoErros[] {
+    const itens = getFromStorage<ItemCadernoErros[]>(
+      STORAGE_KEYS.CADERNO_ERROS,
+      []
+    );
+    // Enrich with question object
+    return itens
+      .map((item) => ({
+        ...item,
+        questao: this.getQuestaoById(item.questao_id),
+      }))
+      .filter((item) => item.questao !== undefined);
+  },
+
+  adicionarAoCadernoErros(questaoId: string): void {
+    const itens = getFromStorage<ItemCadernoErros[]>(
+      STORAGE_KEYS.CADERNO_ERROS,
+      []
+    );
+    const existingIndex = itens.findIndex((i) => i.questao_id === questaoId);
+    const profile = this.getProfile();
+
+    if (existingIndex >= 0) {
+      itens[existingIndex].total_erros += 1;
+      itens[existingIndex].ultimo_erro_em = new Date().toISOString();
+      itens[existingIndex].revisado = false;
+    } else {
+      itens.push({
+        id: `err-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        usuario_id: profile.id,
+        questao_id: questaoId,
+        total_erros: 1,
+        ultimo_erro_em: new Date().toISOString(),
+        revisado: false,
+      });
+    }
+
+    setToStorage(STORAGE_KEYS.CADERNO_ERROS, itens);
+  },
+
+  marcarErroComoRevisado(questaoId: string): void {
+    const itens = getFromStorage<ItemCadernoErros[]>(
+      STORAGE_KEYS.CADERNO_ERROS,
+      []
+    );
+    const existing = itens.find((i) => i.questao_id === questaoId);
+    if (existing) {
+      existing.revisado = true;
+      setToStorage(STORAGE_KEYS.CADERNO_ERROS, itens);
+    }
+  },
+
+  removerDoCadernoErros(questaoId: string): void {
+    const itens = getFromStorage<ItemCadernoErros[]>(
+      STORAGE_KEYS.CADERNO_ERROS,
+      []
+    );
+    const filtrados = itens.filter((i) => i.questao_id !== questaoId);
+    setToStorage(STORAGE_KEYS.CADERNO_ERROS, filtrados);
+  },
+
+  salvarAnotacaoErro(questaoId: string, anotacao: string): void {
+    const itens = getFromStorage<ItemCadernoErros[]>(
+      STORAGE_KEYS.CADERNO_ERROS,
+      []
+    );
+    const item = itens.find((i) => i.questao_id === questaoId);
+    if (item) {
+      item.anotacao = anotacao;
+      setToStorage(STORAGE_KEYS.CADERNO_ERROS, itens);
+    }
+  },
+
+  // â”€â”€ Favoritos â”€â”€
+  getFavoritos(): string[] {
+    return getFromStorage<string[]>(STORAGE_KEYS.FAVORITOS, []);
+  },
+
+  toggleFavorito(questaoId: string): boolean {
+    const favs = this.getFavoritos();
+    const exists = favs.includes(questaoId);
+    let updated: string[];
+
+    if (exists) {
+      updated = favs.filter((id) => id !== questaoId);
+    } else {
+      updated = [...favs, questaoId];
+    }
+
+    setToStorage(STORAGE_KEYS.FAVORITOS, updated);
+    return !exists;
+  },
+
+  isFavorita(questaoId: string): boolean {
+    return this.getFavoritos().includes(questaoId);
+  },
+
+  // â”€â”€ Simulados â”€â”€
+  getSimulados(): Simulado[] {
+    const custom = getFromStorage<Simulado[]>(STORAGE_KEYS.SIMULADOS_CUSTOM, []);
+    return [...custom, ...MOCK_SIMULADOS];
+  },
+
+  getSimuladoById(id: string): Simulado | undefined {
+    return this.getSimulados().find((s) => s.id === id);
+  },
+
+  salvarSimulado(simulado: Simulado): void {
+    const custom = getFromStorage<Simulado[]>(STORAGE_KEYS.SIMULADOS_CUSTOM, []);
+    const index = custom.findIndex((s) => s.id === simulado.id);
+    if (index >= 0) {
+      custom[index] = simulado;
+    } else {
+      custom.unshift(simulado);
+    }
+    setToStorage(STORAGE_KEYS.SIMULADOS_CUSTOM, custom);
+  },
+
+  // â”€â”€ AnotaÃ§Ãµes de Estudo Gerais â”€â”€
+  getAnotacoes(): Record<string, string> {
+    return getFromStorage<Record<string, string>>(STORAGE_KEYS.ANOTACOES, {});
+  },
+
+  getAnotacaoQuestao(questaoId: string): string {
+    const notas = this.getAnotacoes();
+    return notas[questaoId] || "";
+  },
+
+  salvarAnotacaoQuestao(questaoId: string, texto: string): void {
+    const notas = this.getAnotacoes();
+    if (!texto.trim()) {
+      delete notas[questaoId];
+    } else {
+      notas[questaoId] = texto;
+    }
+    setToStorage(STORAGE_KEYS.ANOTACOES, notas);
+  },
+
+  getTentativasSimulado(): SimuladoTentativa[] {
+    return getFromStorage<SimuladoTentativa[]>(
+      STORAGE_KEYS.SIMULADOS_TENTATIVAS,
+      []
+    );
+  },
+
+  getTentativaById(id: string): SimuladoTentativa | undefined {
+    const tentativas = this.getTentativasSimulado();
+    return tentativas.find((t) => t.id === id);
+  },
+
+  salvarTentativaSimulado(tentativa: SimuladoTentativa): void {
+    const tentativas = this.getTentativasSimulado();
+    const index = tentativas.findIndex((t) => t.id === tentativa.id);
+
+    if (index >= 0) {
+      tentativas[index] = tentativa;
+    } else {
+      tentativas.push(tentativa);
+    }
+
+    setToStorage(STORAGE_KEYS.SIMULADOS_TENTATIVAS, tentativas);
+  },
+
+  // â”€â”€ EstatÃ­sticas DinÃ¢micas â”€â”€
+  getEstatisticas(disciplinasTaxonomia?: Disciplina[]): EstatisticasGerais {
+    const respostas = this.getRespostas();
+    const profile = this.getProfile();
+    const cadernoErros = this.getCadernoErros();
+    const simuladosTentativas = this.getTentativasSimulado().filter(
+      (t) => t.status === "concluido"
+    );
+
+    const totalRespondidas = respostas.length;
+    const totalAcertos = respostas.filter((r) => r.correta).length;
+    const totalErros = totalRespondidas - totalAcertos;
+    const taxaAcertoGeral =
+      totalRespondidas > 0 ? Math.round((totalAcertos / totalRespondidas) * 100) : 0;
+
+    const tempoTotal = respostas.reduce((acc, r) => acc + (r.tempo_resposta || 0), 0);
+    const tempoMedio =
+      totalRespondidas > 0 ? Math.round(tempoTotal / totalRespondidas) : 0;
+
+    // SequÃªncia real de dias consecutivos com respostas registradas
+    let sequenciaDias = 0;
+    if (totalRespondidas > 0) {
+      const datasComRespostas = new Set(
+        respostas.filter((r) => r.created_at).map((r) => r.created_at.split("T")[0])
+      );
+      const hoje = new Date();
+      const d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+      const hojeIso = d.toISOString().split("T")[0];
+      if (!datasComRespostas.has(hojeIso)) {
+        d.setDate(d.getDate() - 1);
+      }
+      while (true) {
+        const iso = d.toISOString().split("T")[0];
+        if (datasComRespostas.has(iso)) {
+          sequenciaDias++;
+          d.setDate(d.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+    }
+
+    // Daily count today
+    const hojeStr = new Date().toISOString().split("T")[0];
+    const questoesHoje = respostas.filter(
+      (r) => r.created_at && r.created_at.startsWith(hojeStr)
+    ).length;
+
+    // Respostas sincronizadas já carregam disciplina_id e disciplina_nome do Supabase.
+    // A taxonomia recebida é complementar; mocks só são usados no fluxo local sem resposta.
+    const todasQuestoes = this.getTodasQuestoes();
+    const disciplinas = disciplinasTaxonomia || [];
+    const disciplinasLocais = this.getDisciplinas();
+    const respostaMeta = (r: RespostaUsuario) => {
+      if (r.disciplina_id || r.banca) return r;
+      const q = todasQuestoes.find((item) => item.id === r.questao_id);
+      const disciplinaLocal = q
+        ? disciplinasLocais.find((d) => d.id === q.disciplina_id)
+        : undefined;
+      return {
+        ...r,
+        disciplina_id: q?.disciplina_id,
+        disciplina_nome: disciplinaLocal?.nome,
+        banca: q?.banca,
+      };
+    };
+    const respostasComMeta = respostas.map(respostaMeta).map((resposta) => ({
+      ...resposta,
+      disciplina_id:
+        typeof resposta.disciplina_id === "string" && resposta.disciplina_id.trim()
+          ? resposta.disciplina_id
+          : undefined,
+      disciplina_nome:
+        typeof resposta.disciplina_nome === "string" && resposta.disciplina_nome.trim()
+          ? resposta.disciplina_nome
+          : undefined,
+      banca:
+        typeof resposta.banca === "string" && resposta.banca.trim()
+          ? resposta.banca
+          : undefined,
+    }));
+
+    const disciplinasMap = new Map<string, { nome: string; cor?: string }>();
+    disciplinas.forEach((d) => disciplinasMap.set(d.id, { nome: d.nome, cor: d.cor }));
+    respostasComMeta.forEach((r) => {
+      if (r.disciplina_id && !disciplinasMap.has(r.disciplina_id)) {
+        disciplinasMap.set(r.disciplina_id, {
+          nome:
+            typeof r.disciplina_nome === "string" && r.disciplina_nome.trim()
+              ? r.disciplina_nome
+              : "Disciplina sem identificação",
+        });
+      }
+    });
+
+    if (disciplinasMap.size === 0 && respostasComMeta.length === 0) {
+      disciplinasLocais.forEach((d) =>
+        disciplinasMap.set(d.id, { nome: d.nome, cor: d.cor })
+      );
+    }
+
+    const porDisciplina = Array.from(disciplinasMap.entries()).map(([id, meta]) => {
+      const respostasDisc = respostasComMeta.filter((r) => r.disciplina_id === id);
+      const total = respostasDisc.length;
+      const acertos = respostasDisc.filter((r) => r.correta).length;
+      const erros = total - acertos;
+      const percentual = total > 0 ? Math.round((acertos / total) * 100) : 0;
+      const tempoDisc = respostasDisc.reduce((acc, r) => acc + (r.tempo_resposta || 0), 0);
+      return {
+        disciplina_id: id,
+        disciplina_nome: meta.nome,
+        disciplina_cor: meta.cor || "#3b82f6",
+        total,
+        acertos,
+        erros,
+        percentual,
+        tempo_medio_segundos: total > 0 ? Math.round(tempoDisc / total) : 0,
+      };
+    });
+
+    const bancasMap = new Map<string, RespostaUsuario[]>();
+    respostasComMeta.forEach((r) => {
+      if (!r.banca) return;
+      const lista = bancasMap.get(r.banca) || [];
+      lista.push(r);
+      bancasMap.set(r.banca, lista);
+    });
+    const porBanca = Array.from(bancasMap.entries()).map(([banca, lista]) => {
+      const total = lista.length;
+      const acertos = lista.filter((r) => r.correta).length;
+      return { banca, total, acertos, percentual: total > 0 ? Math.round((acertos / total) * 100) : 0 };
+    });
+
+    // Recent 7 days history
+    const historicoRecente: { data: string; acertos: number; total: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dataIso = d.toISOString().split("T")[0];
+      const diaSemana = d.toLocaleDateString("pt-BR", { weekday: "short" });
+
+      const respDia = respostas.filter((r) => r.created_at.startsWith(dataIso));
+      historicoRecente.push({
+        data: diaSemana.replace(".", ""),
+        acertos: respDia.filter((r) => r.correta).length,
+        total: respDia.length,
+      });
+    }
+
+    const mediaSimulados =
+      simuladosTentativas.length > 0
+        ? Math.round(
+            simuladosTentativas.reduce((acc, t) => acc + t.percentual, 0) /
+              simuladosTentativas.length
+          )
+        : 0;
+
+    return {
+      total_respondidas: totalRespondidas,
+      total_acertos: totalAcertos,
+      total_erros: totalErros,
+      taxa_acerto_geral: taxaAcertoGeral,
+      tempo_medio_questao_segundos: tempoMedio,
+      sequencia_dias: sequenciaDias,
+      questoes_hoje: questoesHoje,
+      meta_diaria: profile.meta_diaria_questoes || 30,
+      simulados_concluidos: simuladosTentativas.length,
+      media_simulados: mediaSimulados,
+      total_no_caderno_erros: cadernoErros.length,
+      erros_revisados: cadernoErros.filter((e) => e.revisado).length,
+      por_disciplina: porDisciplina,
+      por_banca: porBanca,
+      historico_recente: historicoRecente,
+    };
+  },
+
+  // â”€â”€ Limpeza e inicializaÃ§Ã£o limpa â”€â”€
+  inicializarDadosDemonstracaoSeNecessario(): void {
+    if (typeof window === "undefined") return;
+
+    // Purga automÃ¡tica de respostas mock/seed antigas do navegador do usuÃ¡rio
+    try {
+      const respostasRaw = window.localStorage.getItem(STORAGE_KEYS.RESPOSTAS);
+      if (respostasRaw) {
+        const respostas = JSON.parse(respostasRaw) as RespostaUsuario[];
+        const respostasLimpa = respostas.filter(
+          (r) => !r.id.startsWith("seed-") && r.usuario_id !== "user-demo-1"
+        );
+        if (respostasLimpa.length !== respostas.length) {
+          window.localStorage.setItem(
+            STORAGE_KEYS.RESPOSTAS,
+            JSON.stringify(respostasLimpa)
+          );
+        }
+      }
+
+      const errosRaw = window.localStorage.getItem(STORAGE_KEYS.CADERNO_ERROS);
+      if (errosRaw) {
+        const erros = JSON.parse(errosRaw) as ItemCadernoErros[];
+        const errosLimpos = erros.filter(
+          (e) => !e.id.startsWith("err-seed-") && e.usuario_id !== "user-demo-1"
+        );
+        if (errosLimpos.length !== erros.length) {
+          window.localStorage.setItem(
+            STORAGE_KEYS.CADERNO_ERROS,
+            JSON.stringify(errosLimpos)
+          );
+        }
+      }
+    } catch {
+      // Ignorar erros de parse se houver
+    }
+  },
+
+  resetarDadosParaPadrao(): void {
+    if (typeof window === "undefined") return;
+    window.localStorage.removeItem(STORAGE_KEYS.RESPOSTAS);
+    window.localStorage.removeItem(STORAGE_KEYS.CADERNO_ERROS);
+    window.localStorage.removeItem(STORAGE_KEYS.FAVORITOS);
+    window.localStorage.removeItem(STORAGE_KEYS.SIMULADOS_TENTATIVAS);
+    window.localStorage.removeItem(STORAGE_KEYS.PROFILE);
+    window.localStorage.removeItem(STORAGE_KEYS.CONCURSO_ATIVO);
+    window.localStorage.removeItem(STORAGE_KEYS.ANOTACOES);
+    window.localStorage.removeItem(STORAGE_KEYS.SIMULADOS_CUSTOM);
+  },
+
+  // Reset total: remove todas as respostas mas mantÃ©m perfil
+  resetarRespostas(): void {
+    if (typeof window === "undefined") return;
+    window.localStorage.removeItem(STORAGE_KEYS.RESPOSTAS);
+    window.localStorage.removeItem(STORAGE_KEYS.CADERNO_ERROS);
+    window.localStorage.removeItem(STORAGE_KEYS.FAVORITOS);
+  },
+
+  // Inicializar sem respostas seed (para comeÃ§ar do zero)
+  inicializarSemRespostas(): void {
+    if (typeof window === "undefined") return;
+    const respostasExistentes = this.getRespostas();
+    if (respostasExistentes.length === 0) {
+      setToStorage(STORAGE_KEYS.PROFILE, MOCK_PROFILE);
+    }
+  },
+};
+

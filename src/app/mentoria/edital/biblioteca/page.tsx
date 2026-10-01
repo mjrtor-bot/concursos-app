@@ -175,6 +175,8 @@ export default function BibliotecaEditaisPage() {
       if(!sync.ok)throw new Error(sj.error||"Conteúdo confirmado, mas a sincronização do planejamento falhou.");
 
       await recarregarConcursoAlvo();
+      await carregar(); // Recarrega a lista de editais para refletir as mudanças
+
       if(user?.id){
         const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
         if(!ciclo.success)throw new Error(ciclo.error||"Conteúdo importado, mas o ciclo não pôde ser recalculado.");
@@ -182,7 +184,14 @@ export default function BibliotecaEditaisPage() {
 
       setConfirmado(true);
       setMensagem(`Conteúdo confirmado: ${j.total_topicos} tópicos importados e sincronizados com o planejamento.`);
-    }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao confirmar a prévia");}
+      // Limpa os estados de preview/upload para permitir novos processamentos e não travar a UI
+      setUploadId(null);
+      setPreview(null);
+      setMostrarPreview(false);
+    }catch(err){
+        setMensagem(err instanceof Error?err.message:"Falha ao confirmar a prévia");
+        setConfirmando(false); // Garante que o loading para em caso de erro
+    }
     finally{setConfirmando(false);}
   }
 

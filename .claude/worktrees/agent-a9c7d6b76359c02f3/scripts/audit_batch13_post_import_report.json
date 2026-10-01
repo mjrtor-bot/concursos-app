@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-09-27T14:59:21.576Z",
+  "status": "SUCESSO_TOTAL",
+  "banco": {
+    "totalQuestoes": 7760,
+    "totalAlternativas": 28366,
+    "totalLote13Questoes": 500,
+    "totalLote13Alternativas": 1282,
+    "deltaQuestoes": 500,
+    "deltaAlternativas": 1282
+  },
+  "integridade": {
+    "errosEstruturais": 0,
+    "questoesSemGabarito": 0,
+    "alternativasOrfas": 0,
+    "duplicidadeFingerprint": 0
+  },
+  "distribuicaoDisciplinas": {
+    "Raciocínio Lógico-Matemático": 40,
+    "Direito Penal": 55,
+    "Direito Processual Penal": 55,
+    "Direito Constitucional": 40,
+    "Direito Administrativo": 40,
+    "Legislação Especial": 55,
+    "Legislação de Trânsito": 50,
+    "Informática e Tecnologia": 45,
+    "Criminologia": 45,
+    "Direitos Humanos": 45,
+    "Língua Portuguesa": 30
+  },
+  "simulado120Itens": {
+    "totalQuestoes": 120,
+    "totalAlternativas": 288,
+    "status": "VALIDADO_E_PRONTO_PARA_USO"
+  }
+}

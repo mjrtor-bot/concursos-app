@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-09-27T01:56:19.779Z",
+  "bancoInicial": {
+    "questoes": 6760,
+    "alternativas": 25358
+  },
+  "lote12": {
+    "questoes": 500,
+    "alternativas": 1726,
+    "maxSimInterna": 77.32,
+    "maxSimCruzada": 28.21,
+    "paresInternosGte80": 0,
+    "paresCruzadosGte80": 0,
+    "topInternalPairs": [
+      {
+        "qA": "b12-const01-004",
+        "qB": "b12-adm02-004",
+        "sim": 77.32
+      },
+      {
+        "qA": "b12-crim02-018",
+        "qB": "b12-const01-018",
+        "sim": 77.08
+      },
+      {
+        "qA": "b12-crim02-006",
+        "qB": "b12-const01-006",
+        "sim": 76.34
+      },
+      {
+        "qA": "b12-const01-010",
+        "qB": "b12-adm02-010",
+        "sim": 75.82
+      },
+      {
+        "qA": "b12-const01-016",
+        "qB": "b12-adm02-016",
+        "sim": 75.56
+      },
+      {
+        "qA": "b12-crim02-012",
+        "qB": "b12-const01-012",
+        "sim": 75.28
+      },
+      {
+        "qA": "b12-proc01-014",
+        "qB": "b12-adm01-014",
+        "sim": 73
+      },
+      {
+        "qA": "b12-crim02-014",
+        "qB": "b12-const01-014",
+        "sim": 72.63
+      },
+      {
+        "qA": "b12-crim02-014",
+        "qB": "b12-adm02-014",
+        "sim": 72.63
+      },
+      {
+        "qA": "b12-const01-014",
+        "qB": "b12-adm02-014",
+        "sim": 72.63
+      }
+    ],
+    "topCrossPairs": []
+  },
+  "status": "APROVADO_PARA_INGESTAO"
+}

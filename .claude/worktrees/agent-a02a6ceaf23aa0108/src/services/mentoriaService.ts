@@ -1,0 +1,1082 @@
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
+import {
+  MentoriaPerfil,
+  MentoriaDisponibilidade,
+  MentoriaEditalTopico,
+  MentoriaPlano,
+  MentoriaTarefa,
+  MentoriaSessaoEstudo,
+  MentoriaRevisao,
+  MentoriaDashboardStats,
+  MentoriaDiaProgresso,
+  MentoriaNivel,
+  MentoriaHorario,
+  MentoriaPrioridade,
+  ActivityHeatmapPoint,
+  ConstanciaTelemetria,
+  MetasEstudoConfig,
+  MissaoDiariaItem,
+  GradeSemanalDia,
+  MentoriaTarefaTipo,
+  MentoriaTarefaPrioridade,
+  MentoriaTarefaStatus,
+  EditalVerticalizadoItem,
+  EditalVerticalizadoResumo,
+} from "@/types";
+import { MentoriaCicloService } from "./mentoriaCicloService";
+import { MOCK_DISCIPLINAS, MOCK_ASSUNTOS, DISCIPLINAS_MASSIVAS, ASSUNTOS_MASSIVOS } from "@/data/mockData";
+
+// ── Chaves de Armazenamento Local de Contingência ─────────────────────────────
+const STORAGE_KEYS = {
+  PERFIL: "concursos_app_mentoria_perfil",
+  DISPONIBILIDADE: "concursos_app_mentoria_disp",
+  TOPICOS: "concursos_app_mentoria_topicos",
+  PLANOS: "concursos_app_mentoria_planos",
+  TAREFAS: "concursos_app_mentoria_tarefas",
+  SESSOES: "concursos_app_mentoria_sessoes",
+  REVISOES: "concursos_app_mentoria_revisoes",
+};
+
+/**
+ * Retorna a data no fuso horário oficial de Brasília (America/Sao_Paulo / UTC-3) no formato YYYY-MM-DD
+ */
+export function getDataBrasilia(dateInput: Date | string = new Date()): string {
+  try {
+    const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(d);
+  } catch {
+    const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    return d.toISOString().split("T")[0];
+  }
+}
+
+export class MentoriaService {
+  // ── Helper: Obter cliente Supabase ─────────────────────────────────────────
+  private static getClient() {
+    if (!isSupabaseConfigured) return null;
+    return createClient();
+  }
+
+  private static getFromStorage<T>(key: string, defaultValue: T): T {
+    if (typeof window === "undefined") return defaultValue;
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? (JSON.parse(raw) as T) : defaultValue;
+    } catch {
+      return defaultValue;
+    }
+  }
+
+  private static setToStorage<T>(key: string, value: T): void {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // Ignore
+    }
+  }
+
+  // ── 1. PERFIL DO ESTUDANTE ─────────────────────────────────────────────────
+  static async getPerfil(usuarioId: string): Promise<MentoriaPerfil | null> {
+    if (!usuarioId) return null;
+
+    const supabase = this.getClient();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("mentoria_perfis")
+          .select("*")
+          .eq("usuario_id", usuarioId)
+          .eq("ativo", true)
+          .maybeSingle();
+
+        if (!error && data) {
+          // Atualiza cache local
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`, JSON.stringify(data));
+            } catch {
+              // Ignore storage errors
+            }
+          }
+          return data as MentoriaPerfil;
+        }
+      } catch (err) {
+        console.warn("[MentoriaService] Falha ao consultar Supabase, consultando cache local:", err);
+      }
+    }
+
+    // Fallback de cache local
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`);
+        if (raw) return JSON.parse(raw) as MentoriaPerfil;
+      } catch {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  static async salvarPerfil(
+    usuarioId: string,
+    perfilData: {
+      concurso_id?: string | null;
+      concurso_nome: string;
+      cargo_id?: string | null;
+      cargo_nome: string;
+      data_prova?: string | null;
+      nivel: MentoriaNivel;
+      horario_preferido: MentoriaHorario;
+      duracao_bloco_minutos: number;
+      quantidade_questoes_bloco: number;
+      dias_descanso: string[];
+      prioridade_estudo: MentoriaPrioridade;
+      meta_horas_semana?: number;
+    },
+    disponibilidadeGrade?: { dia_semana: number; minutos_disponiveis: number; horario_preferido?: MentoriaHorario }[]
+  ): Promise<{ success: boolean; perfil?: MentoriaPerfil; error?: string }> {
+    if (!usuarioId) return { success: false, error: "Usuário não autenticado." };
+
+    // Calcular meta de horas semanais a partir da grade
+    let metaHoras = perfilData.meta_horas_semana || 0;
+    if (disponibilidadeGrade && disponibilidadeGrade.length > 0) {
+      const totalMinutos = disponibilidadeGrade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0);
+      metaHoras = Number((totalMinutos / 60).toFixed(1));
+    }
+
+    const payload: Partial<MentoriaPerfil> = {
+      usuario_id: usuarioId,
+      concurso_id: perfilData.concurso_id || null,
+      concurso_nome: perfilData.concurso_nome.trim(),
+      cargo_id: perfilData.cargo_id || null,
+      cargo_nome: perfilData.cargo_nome.trim(),
+      data_prova: perfilData.data_prova || null,
+      nivel: perfilData.nivel,
+      horario_preferido: perfilData.horario_preferido,
+      duracao_bloco_minutos: perfilData.duracao_bloco_minutos,
+      quantidade_questoes_bloco: perfilData.quantidade_questoes_bloco,
+      dias_descanso: perfilData.dias_descanso || [],
+      prioridade_estudo: perfilData.prioridade_estudo,
+      meta_horas_semana: metaHoras,
+      ativo: true,
+      updated_at: new Date().toISOString(),
+    };
+
+    let savedPerfil: MentoriaPerfil | null = null;
+    const supabase = this.getClient();
+
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("mentoria_perfis")
+          .upsert(payload, { onConflict: "usuario_id" })
+          .select()
+          .single();
+
+        if (error) {
+          console.error("[MentoriaService] Erro ao salvar perfil no Supabase:", error.message);
+        } else if (data) {
+          savedPerfil = data as MentoriaPerfil;
+        }
+      } catch (err) {
+        console.error("[MentoriaService] Exceção ao salvar perfil no Supabase:", err);
+      }
+    }
+
+    // Se falhou no Supabase ou está offline, cria objeto local
+    if (!savedPerfil) {
+      savedPerfil = {
+        id: `local-perfil-${usuarioId}`,
+        usuario_id: usuarioId,
+        concurso_id: payload.concurso_id ?? null,
+        concurso_nome: payload.concurso_nome ?? "",
+        cargo_id: payload.cargo_id ?? null,
+        cargo_nome: payload.cargo_nome ?? "",
+        data_prova: payload.data_prova ?? null,
+        nivel: payload.nivel ?? "intermediario",
+        meta_horas_semana: payload.meta_horas_semana ?? 0,
+        horario_preferido: payload.horario_preferido ?? "noite",
+        duracao_bloco_minutos: payload.duracao_bloco_minutos ?? 40,
+        quantidade_questoes_bloco: payload.quantidade_questoes_bloco ?? 15,
+        dias_descanso: payload.dias_descanso ?? [],
+        prioridade_estudo: payload.prioridade_estudo ?? "equilibrado",
+        ativo: true,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+    }
+
+    // Salva no localStorage
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`, JSON.stringify(savedPerfil));
+      } catch {
+        // Ignore
+      }
+    }
+
+    // Salvar grade de disponibilidade se fornecida
+    if (disponibilidadeGrade && disponibilidadeGrade.length > 0) {
+      await this.salvarDisponibilidade(usuarioId, disponibilidadeGrade);
+    }
+
+    return { success: true, perfil: savedPerfil };
+  }
+
+  // ── 2. DISPONIBILIDADE SEMANAL ─────────────────────────────────────────────
+  static async getDisponibilidade(usuarioId: string): Promise<MentoriaDisponibilidade[]> {
+    if (!usuarioId) return [];
+
+    const supabase = this.getClient();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("mentoria_disponibilidade")
+          .select("*")
+          .eq("usuario_id", usuarioId)
+          .order("dia_semana", { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          if (typeof window !== "undefined") {
+            try {
+              localStorage.setItem(`${STORAGE_KEYS.DISPONIBILIDADE}_${usuarioId}`, JSON.stringify(data));
+            } catch {
+              // Ignore
+            }
+          }
+          return data as MentoriaDisponibilidade[];
+        }
+      } catch (err) {
+        console.warn("[MentoriaService] Erro ao buscar disponibilidade no Supabase:", err);
+      }
+    }
+
+    // Fallback de cache local
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem(`${STORAGE_KEYS.DISPONIBILIDADE}_${usuarioId}`);
+        if (raw) return JSON.parse(raw) as MentoriaDisponibilidade[];
+      } catch {
+        return [];
+      }
+    }
+
+    // Retorna grade padrão zerada de 7 dias
+    return [
+      { id: "0", usuario_id: usuarioId, dia_semana: 0, minutos_disponiveis: 0, created_at: "", updated_at: "" },
+      { id: "1", usuario_id: usuarioId, dia_semana: 1, minutos_disponiveis: 120, created_at: "", updated_at: "" },
+      { id: "2", usuario_id: usuarioId, dia_semana: 2, minutos_disponiveis: 120, created_at: "", updated_at: "" },
+      { id: "3", usuario_id: usuarioId, dia_semana: 3, minutos_disponiveis: 120, created_at: "", updated_at: "" },
+      { id: "4", usuario_id: usuarioId, dia_semana: 4, minutos_disponiveis: 120, created_at: "", updated_at: "" },
+      { id: "5", usuario_id: usuarioId, dia_semana: 5, minutos_disponiveis: 120, created_at: "", updated_at: "" },
+      { id: "6", usuario_id: usuarioId, dia_semana: 6, minutos_disponiveis: 180, created_at: "", updated_at: "" },
+    ];
+  }
+
+  static async salvarDisponibilidade(
+    usuarioId: string,
+    grade: { dia_semana: number; minutos_disponiveis: number; horario_preferido?: MentoriaHorario }[]
+  ): Promise<{ success: boolean; error?: string }> {
+    if (!usuarioId) return { success: false, error: "Usuário não autenticado." };
+
+    const payload = grade.map((g) => ({
+      usuario_id: usuarioId,
+      dia_semana: g.dia_semana,
+      minutos_disponiveis: Math.max(0, Math.min(1440, g.minutos_disponiveis)),
+      horario_preferido: g.horario_preferido || "noite",
+      updated_at: new Date().toISOString(),
+    }));
+
+    const supabase = this.getClient();
+    if (supabase) {
+      try {
+        const { error } = await supabase
+          .from("mentoria_disponibilidade")
+          .upsert(payload, { onConflict: "usuario_id,dia_semana" });
+
+        if (error) {
+          console.error("[MentoriaService] Erro ao salvar disponibilidade no Supabase:", error.message);
+        }
+      } catch (err) {
+        console.error("[MentoriaService] Exceção ao salvar disponibilidade no Supabase:", err);
+      }
+    }
+
+    // Salva no localStorage
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(`${STORAGE_KEYS.DISPONIBILIDADE}_${usuarioId}`, JSON.stringify(payload));
+      } catch {
+        // Ignore
+      }
+    }
+
+    return { success: true };
+  }
+
+  // ── 3. DASHBOARD STATS (ZERO-MOCK REAL DATA) ───────────────────────────────
+  static async getDashboardStats(usuarioId: string): Promise<MentoriaDashboardStats> {
+    if (!usuarioId) {
+      return this.getEmptyStats();
+    }
+
+    const perfil = await this.getPerfil(usuarioId);
+    if (!perfil) {
+      return this.getEmptyStats();
+    }
+
+    const disponibilidade = await this.getDisponibilidade(usuarioId);
+
+    // 1. Dias restantes até a prova
+    let diasRestantes: number | null = null;
+    if (perfil.data_prova) {
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      const dataProva = new Date(perfil.data_prova + "T00:00:00");
+      const diffTime = dataProva.getTime() - hoje.getTime();
+      diasRestantes = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    // 2. Metas diária e semanal reais
+    const hojeDiaSemana = new Date().getDay(); // 0 = Dom, 1 = Seg...
+    const dispHoje = disponibilidade.find((d) => d.dia_semana === hojeDiaSemana);
+    const metaDiariaMinutos = dispHoje ? dispHoje.minutos_disponiveis : 0;
+    const metaSemanalMinutos = disponibilidade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0);
+
+    // 3. Questões e acertos reais da semana corrente
+    let questoesSemana = 0;
+    let acertosSemana = 0;
+    let minutosEstudadosSemana = 0;
+
+    // Calcular início da semana atual (Domingo ou Segunda)
+    const agora = new Date();
+    const inicioSemana = new Date(agora);
+    inicioSemana.setDate(agora.getDate() - agora.getDay());
+    inicioSemana.setHours(0, 0, 0, 0);
+
+    const supabase = this.getClient();
+    if (supabase) {
+      try {
+        // Respostas da semana
+        const { data: respostas } = await supabase
+          .from("respostas_usuarios")
+          .select("correta, tempo_resposta_segundos, created_at")
+          .eq("usuario_id", usuarioId)
+          .gte("created_at", inicioSemana.toISOString());
+
+        if (respostas && respostas.length > 0) {
+          questoesSemana = respostas.length;
+          acertosSemana = respostas.filter((r) => r.correta).length;
+          const tempoSegundos = respostas.reduce((acc, curr) => acc + (curr.tempo_resposta_segundos || 0), 0);
+          minutosEstudadosSemana += Math.round(tempoSegundos / 60);
+        }
+
+        // Sessões de estudo da semana
+        const { data: sessoes } = await supabase
+          .from("mentoria_sessoes_estudo")
+          .select("segundos_liquidos")
+          .eq("usuario_id", usuarioId)
+          .gte("inicio", inicioSemana.toISOString());
+
+        if (sessoes && sessoes.length > 0) {
+          const segs = sessoes.reduce((acc, curr) => acc + (curr.segundos_liquidos || 0), 0);
+          minutosEstudadosSemana += Math.round(segs / 60);
+        }
+      } catch (err) {
+        console.warn("[MentoriaService] Falha ao consultar métricas da semana no Supabase:", err);
+      }
+    }
+
+    // 4. Taxa de acerto real
+    const taxaAcertoSemana = questoesSemana > 0 ? Math.round((acertosSemana / questoesSemana) * 100) : 0;
+
+    // 5. Revisões pendentes
+    let revisoesPendentes = 0;
+    if (supabase) {
+      try {
+        const { count } = await supabase
+          .from("mentoria_revisoes")
+          .select("*", { count: "exact", head: true })
+          .eq("usuario_id", usuarioId)
+          .in("status", ["pendente", "atrasada"]);
+
+        revisoesPendentes = count || 0;
+      } catch {
+        // Fallback
+      }
+    }
+
+    // 6. Cobertura do edital
+    let topicosEstudados = 0;
+    let topicosTotal = 0;
+    if (supabase) {
+      try {
+        const { data: topicos } = await supabase
+          .from("mentoria_edital_topicos")
+          .select("estudado, status")
+          .eq("usuario_id", usuarioId);
+
+        if (topicos && topicos.length > 0) {
+          topicosTotal = topicos.length;
+          topicosEstudados = topicos.filter((t) => t.estudado || t.status === "dominado").length;
+        }
+      } catch {
+        // Fallback
+      }
+    }
+    const coberturaPercentual = topicosTotal > 0 ? Math.round((topicosEstudados / topicosTotal) * 100) : 0;
+
+    // 7. Progresso semanal por dia
+    const nomesDias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    const progressoSemana: MentoriaDiaProgresso[] = [];
+
+    for (let i = 0; i < 7; i++) {
+      const dispDia = disponibilidade.find((d) => d.dia_semana === i);
+      const metaMin = dispDia ? dispDia.minutos_disponiveis : 0;
+      // Dia atual ou passado: se o dia já passou e cumpriu
+      const minutosReal = i === hojeDiaSemana ? minutosEstudadosSemana : 0;
+      progressoSemana.push({
+        dia_semana: i,
+        nome_curto: nomesDias[i],
+        minutos_meta: metaMin,
+        minutos_estudados: minutosReal,
+        concluido: metaMin > 0 && minutosReal >= metaMin,
+      });
+    }
+
+    return {
+      tem_perfil: true,
+      perfil,
+      dias_restantes_prova: diasRestantes,
+      meta_diaria_minutos: metaDiariaMinutos,
+      meta_semanal_minutos: metaSemanalMinutos,
+      minutos_estudados_semana: minutosEstudadosSemana,
+      questoes_resolvidas_semana: questoesSemana,
+      taxa_acerto_semana: taxaAcertoSemana,
+      revisoes_pendentes_count: revisoesPendentes,
+      cobertura_edital_percentual: coberturaPercentual,
+      topicos_estudados_count: topicosEstudados,
+      topicos_total_count: topicosTotal,
+      progresso_semana: progressoSemana,
+    };
+  }
+
+  // Helper para empty state
+  private static getEmptyStats(): MentoriaDashboardStats {
+    const nomesDias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    return {
+      tem_perfil: false,
+      perfil: null,
+      dias_restantes_prova: null,
+      meta_diaria_minutos: 0,
+      meta_semanal_minutos: 0,
+      minutos_estudados_semana: 0,
+      questoes_resolvidas_semana: 0,
+      taxa_acerto_semana: 0,
+      revisoes_pendentes_count: 0,
+      cobertura_edital_percentual: 0,
+      topicos_estudados_count: 0,
+      topicos_total_count: 0,
+      progresso_semana: nomesDias.map((nome, i) => ({
+        dia_semana: i,
+        nome_curto: nome,
+        minutos_meta: 0,
+        minutos_estudados: 0,
+        concluido: false,
+      })),
+    };
+  }
+
+  // ── 4. CONSTÂNCIA E TELEMETRIA DE 90 DIAS (HEATMAP REAL) ───────────────────
+  static async getConstanciaTelemetria(usuarioId: string): Promise<ConstanciaTelemetria> {
+    const diasMapa = new Map<string, { minutos: number; questoes: number }>();
+    const hojeRef = new Date();
+
+    // Inicializar os últimos 90 dias com fuso horário de Brasília
+    const datasOrdenadas: string[] = [];
+    for (let i = 89; i >= 0; i--) {
+      const d = new Date(hojeRef);
+      d.setDate(hojeRef.getDate() - i);
+      const dataIso = getDataBrasilia(d);
+      datasOrdenadas.push(dataIso);
+      diasMapa.set(dataIso, { minutos: 0, questoes: 0 });
+    }
+
+    const dataInicio90Dias = datasOrdenadas[0];
+
+    // 1. Respostas reais do Supabase
+    const supabase = this.getClient();
+    if (supabase && usuarioId) {
+      try {
+        const { data: respostas } = await supabase
+          .from("respostas_usuarios")
+          .select("created_at, tempo_resposta_segundos")
+          .eq("usuario_id", usuarioId)
+          .gte("created_at", dataInicio90Dias + "T00:00:00");
+
+        if (respostas) {
+          for (const r of respostas) {
+            const dataIso = r.created_at ? getDataBrasilia(r.created_at) : "";
+            if (diasMapa.has(dataIso)) {
+              const entry = diasMapa.get(dataIso)!;
+              entry.questoes += 1;
+              entry.minutos += Math.round((r.tempo_resposta_segundos || 60) / 60);
+            }
+          }
+        }
+
+        // Sessões de estudo reais
+        const { data: sessoes } = await supabase
+          .from("mentoria_sessoes_estudo")
+          .select("inicio, segundos_liquidos")
+          .eq("usuario_id", usuarioId)
+          .gte("inicio", dataInicio90Dias + "T00:00:00");
+
+        if (sessoes) {
+          for (const s of sessoes) {
+            const dataIso = s.inicio ? getDataBrasilia(s.inicio) : "";
+            if (diasMapa.has(dataIso)) {
+              const entry = diasMapa.get(dataIso)!;
+              entry.minutos += Math.round((s.segundos_liquidos || 0) / 60);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("[MentoriaService] Falha ao consultar telemetria no Supabase:", err);
+      }
+    }
+
+    // 2. Integração com dados locais se no navegador (Zero data loss)
+    if (typeof window !== "undefined") {
+      try {
+        const rawRespostas = localStorage.getItem("concursos_app_respostas");
+        if (rawRespostas) {
+          const locais = JSON.parse(rawRespostas);
+          if (Array.isArray(locais)) {
+            for (const r of locais) {
+              const dataIso = r.created_at ? getDataBrasilia(r.created_at) : "";
+              if (diasMapa.has(dataIso) && (!usuarioId || r.usuario_id === usuarioId || !r.usuario_id)) {
+                const entry = diasMapa.get(dataIso)!;
+                // Só incrementa se não veio do Supabase
+                if (!supabase) {
+                  entry.questoes += 1;
+                  entry.minutos += Math.round((r.tempo_resposta || 60) / 60);
+                }
+              }
+            }
+          }
+        }
+      } catch {
+        // Ignore local parse errors
+      }
+    }
+
+    // 3. Montar Heatmap e calcular intensidades
+    const heatmap: ActivityHeatmapPoint[] = datasOrdenadas.map((dataIso) => {
+      const { minutos, questoes } = diasMapa.get(dataIso) || { minutos: 0, questoes: 0 };
+      let intensidade: 0 | 1 | 2 | 3 | 4 = 0;
+
+      if (minutos >= 120 || questoes >= 50) {
+        intensidade = 4;
+      } else if (minutos >= 60 || questoes >= 30) {
+        intensidade = 3;
+      } else if (minutos >= 30 || questoes >= 15) {
+        intensidade = 2;
+      } else if (minutos > 0 || questoes > 0) {
+        intensidade = 1;
+      }
+
+      return {
+        data: dataIso,
+        minutos_estudados: minutos,
+        questoes_resolvidas: questoes,
+        intensidade,
+      };
+    });
+
+    // 4. Calcular Métricas de Constância (Streaks)
+    let totalDiasEstudados = 0;
+    let streakAtual = 0;
+    let melhorStreak = 0;
+    let currentRun = 0;
+
+    for (let i = 0; i < heatmap.length; i++) {
+      const pt = heatmap[i];
+      if (pt.intensidade > 0) {
+        totalDiasEstudados++;
+        currentRun++;
+        if (currentRun > melhorStreak) {
+          melhorStreak = currentRun;
+        }
+      } else {
+        currentRun = 0;
+      }
+    }
+
+    // Streak atual: contar de hoje para trás no fuso de Brasília
+    const hojeIso = getDataBrasilia(new Date());
+    const indexHoje = datasOrdenadas.indexOf(hojeIso);
+    if (indexHoje !== -1) {
+      let i = indexHoje;
+      // Se hoje ainda não estudou, verifica se ontem estudou para manter o streak ativo
+      if (heatmap[i].intensidade === 0 && i > 0 && heatmap[i - 1].intensidade > 0) {
+        i = i - 1;
+      }
+      while (i >= 0 && heatmap[i].intensidade > 0) {
+        streakAtual++;
+        i--;
+      }
+    }
+
+    // Taxa de constância nos últimos 30 dias
+    const ultimos30 = heatmap.slice(-30);
+    const diasEstudados30 = ultimos30.filter((pt) => pt.intensidade > 0).length;
+    const taxaConstancia30 = Math.round((diasEstudados30 / 30) * 100);
+
+    return {
+      sequencia_atual_dias: streakAtual,
+      melhor_sequencia_dias: Math.max(melhorStreak, streakAtual),
+      total_dias_estudados: totalDiasEstudados,
+      taxa_constancia_ultimos_30_dias: taxaConstancia30,
+      heatmap_90_dias: heatmap,
+    };
+  }
+
+  // ── 5. METAS DE ESTUDO DIÁRIAS E SEMANAIS ──────────────────────────────────
+  static async getMetasEstudo(usuarioId: string): Promise<MetasEstudoConfig> {
+    const perfil = await this.getPerfil(usuarioId);
+    const disponibilidade = await this.getDisponibilidade(usuarioId);
+
+    const hojeDiaSemana = new Date().getDay();
+    const dispHoje = disponibilidade.find((d) => d.dia_semana === hojeDiaSemana);
+
+    const metaDiariaQuestoes = perfil?.quantidade_questoes_bloco ? perfil.quantidade_questoes_bloco * 2 : 30;
+    const metaDiariaMinutos = dispHoje ? dispHoje.minutos_disponiveis : 120;
+
+    const metaSemanalQuestoes = metaDiariaQuestoes * 6;
+    const metaSemanalMinutos = disponibilidade.reduce((acc, curr) => acc + curr.minutos_disponiveis, 0) || 720;
+
+    const hojeIso = getDataBrasilia(new Date());
+    let questoesHoje = 0;
+    let minutosLiquidosHoje = 0;
+
+    const supabase = this.getClient();
+    if (supabase && usuarioId) {
+      try {
+        const { data: respostasHoje } = await supabase
+          .from("respostas_usuarios")
+          .select("tempo_resposta_segundos")
+          .eq("usuario_id", usuarioId)
+          .gte("created_at", hojeIso + "T00:00:00");
+
+        if (respostasHoje) {
+          questoesHoje = respostasHoje.length;
+          const tempoSegundos = respostasHoje.reduce((acc, r) => acc + (r.tempo_resposta_segundos || 60), 0);
+          minutosLiquidosHoje += Math.round(tempoSegundos / 60);
+        }
+
+        const { data: sessoesHoje } = await supabase
+          .from("mentoria_sessoes_estudo")
+          .select("segundos_liquidos")
+          .eq("usuario_id", usuarioId)
+          .gte("inicio", hojeIso + "T00:00:00");
+
+        if (sessoesHoje) {
+          const segs = sessoesHoje.reduce((acc, s) => acc + (s.segundos_liquidos || 0), 0);
+          minutosLiquidosHoje += Math.round(segs / 60);
+        }
+      } catch (err) {
+        console.warn("[MentoriaService] Falha ao consultar metas no Supabase:", err);
+      }
+    }
+
+
+
+    const pctQuestoes = metaDiariaQuestoes > 0 ? Math.min(100, Math.round((questoesHoje / metaDiariaQuestoes) * 100)) : 0;
+    const pctMinutos = metaDiariaMinutos > 0 ? Math.min(100, Math.round((minutosLiquidosHoje / metaDiariaMinutos) * 100)) : 0;
+
+    return {
+      meta_diaria_questoes: metaDiariaQuestoes,
+      meta_diaria_minutos: metaDiariaMinutos,
+      meta_semanal_questoes: metaSemanalQuestoes,
+      meta_semanal_minutos: metaSemanalMinutos,
+      questoes_concluidas_hoje: questoesHoje,
+      minutos_liquidos_hoje: minutosLiquidosHoje,
+      percentual_questoes_hoje: pctQuestoes,
+      percentual_minutos_hoje: pctMinutos,
+      atingiu_meta_questoes_hoje: questoesHoje >= metaDiariaQuestoes,
+      atingiu_meta_horas_hoje: metaDiariaMinutos > 0 && minutosLiquidosHoje >= metaDiariaMinutos,
+    };
+  }
+
+  // ── 6. GRADE SEMANAL DISTRIBUÍDA COM BLOCOS DE ESTUDO ──────────────────────
+  static async getGradeSemanalDistribuida(usuarioId: string): Promise<GradeSemanalDia[]> {
+    const disponibilidade = await this.getDisponibilidade(usuarioId);
+    const plano = await MentoriaCicloService.obterPlanoCiclo(usuarioId);
+
+    const nomesDias = [
+      { nome: "Domingo", curto: "Dom" },
+      { nome: "Segunda-feira", curto: "Seg" },
+      { nome: "Terça-feira", curto: "Ter" },
+      { nome: "Quarta-feira", curto: "Qua" },
+      { nome: "Quinta-feira", curto: "Qui" },
+      { nome: "Sexta-feira", curto: "Sex" },
+      { nome: "Sábado", curto: "Sáb" },
+    ];
+
+    const blocosDisponiveis = plano?.blocos || [];
+    let blocoPointer = 0;
+
+    return nomesDias.map((diaInfo, diaIndex) => {
+      const disp = disponibilidade.find((d) => d.dia_semana === diaIndex);
+      const minutosDisponiveis = disp ? disp.minutos_disponiveis : 0;
+      const duracaoBloco = plano?.duracao_bloco_minutos || 40;
+      const numBlocosDia = minutosDisponiveis > 0 ? Math.max(1, Math.floor(minutosDisponiveis / duracaoBloco)) : 0;
+
+      const blocosDia: GradeSemanalDia["blocos"] = [];
+
+      if (numBlocosDia > 0 && blocosDisponiveis.length > 0) {
+        for (let b = 0; b < numBlocosDia; b++) {
+          const blocoModelo = blocosDisponiveis[blocoPointer % blocosDisponiveis.length];
+          blocoPointer++;
+
+          blocosDia.push({
+            id: `grade-${diaIndex}-${b}-${blocoModelo.disciplina_id.slice(0, 8)}`,
+            ordem: b + 1,
+            disciplina_id: blocoModelo.disciplina_id,
+            disciplina_nome: blocoModelo.disciplina_nome,
+            assunto_id: blocoModelo.assunto_id,
+            assunto_nome: blocoModelo.assunto_nome,
+            tipo: blocoModelo.tipo,
+            duracao_minutos: duracaoBloco,
+            prioridade_nivel: blocoModelo.prioridade_nivel,
+          });
+        }
+      }
+
+      return {
+        dia_semana: diaIndex,
+        nome_dia: diaInfo.nome,
+        nome_curto: diaInfo.curto,
+        minutos_disponiveis: minutosDisponiveis,
+        blocos: blocosDia,
+      };
+    });
+  }
+
+  // ── 7. MISSÕES DO DIA COM FILA CONTÍNUA E PROGRESSO REAL ───────────────────
+  static async getMissoesDoDia(usuarioId: string): Promise<MissaoDiariaItem[]> {
+    const plano = await MentoriaCicloService.obterPlanoCiclo(usuarioId);
+    if (!plano || plano.blocos.length === 0) {
+      return [];
+    }
+
+    const hojeDiaSemana = new Date().getDay();
+    const disponibilidade = await this.getDisponibilidade(usuarioId);
+    const dispHoje = disponibilidade.find((d) => d.dia_semana === hojeDiaSemana);
+    const minutosHoje = dispHoje ? dispHoje.minutos_disponiveis : 120;
+    const duracaoBloco = plano.duracao_bloco_minutos || 40;
+    const qtdBlocosHoje = Math.max(1, Math.min(6, Math.floor(minutosHoje / duracaoBloco)));
+
+    const missoes: MissaoDiariaItem[] = [];
+    const posAtual = plano.posicao_atual_index;
+
+    // Buscar respostas de hoje para calcular progresso real por disciplina
+    const hojeIso = new Date().toISOString().split("T")[0];
+    let respostasHojeDiscMap = new Map<string, number>();
+
+    const supabase = this.getClient();
+    if (supabase && usuarioId) {
+      try {
+        const { data: respostas } = await supabase
+          .from("respostas_usuarios")
+          .select("disciplina_id")
+          .eq("usuario_id", usuarioId)
+          .gte("created_at", hojeIso + "T00:00:00");
+
+        if (respostas) {
+          for (const r of respostas) {
+            if (r.disciplina_id) {
+              respostasHojeDiscMap.set(r.disciplina_id, (respostasHojeDiscMap.get(r.disciplina_id) || 0) + 1);
+            }
+          }
+        }
+      } catch {
+        // Ignore
+      }
+    }
+
+    for (let i = 0; i < qtdBlocosHoje; i++) {
+      const index = (posAtual + i) % plano.blocos.length;
+      const bloco = plano.blocos[index];
+      const isPrimeiroBloco = i === 0;
+
+      // Calcular status e progresso
+      let status: MentoriaTarefaStatus = isPrimeiroBloco ? "em_andamento" : "pendente";
+      let progresso = 0;
+
+      const questoesFeitas = respostasHojeDiscMap.get(bloco.disciplina_id) || 0;
+      if (bloco.tipo === "QUESTOES") {
+        progresso = Math.min(100, Math.round((questoesFeitas / (bloco.quantidade_questoes_sugerida || 15)) * 100));
+        if (progresso >= 100) status = "concluida";
+      }
+
+      missoes.push({
+        id: bloco.id || `missao-${i + 1}-${bloco.disciplina_id.slice(0, 8)}`,
+        plano_id: plano.plano_id,
+        bloco_ordem: i + 1,
+        tipo: bloco.tipo,
+        disciplina_id: bloco.disciplina_id,
+        disciplina_nome: bloco.disciplina_nome,
+        assunto_id: bloco.assunto_id,
+        assunto_nome: bloco.assunto_nome,
+        duracao_minutos: bloco.duracao_minutos,
+        quantidade_questoes: bloco.quantidade_questoes_sugerida || 15,
+        prioridade: bloco.prioridade_nivel,
+        status,
+        motivo_explicabilidade: bloco.motivo_explicabilidade || [],
+        progresso_percentual: progresso,
+      });
+    }
+
+    return missoes;
+  }
+
+  // ── 8. EDITAL VERTICALIZADO E MATRIZ DE DOMÍNIO DE TÓPICOS ─────────────────
+  static async getEditalVerticalizado(usuarioId: string): Promise<EditalVerticalizadoResumo> {
+    const supabase = this.getClient();
+
+    // 1. Buscar status salvo de tópicos, respostas e taxonomia dinâmica
+    let topicosSalvos: MentoriaEditalTopico[] = [];
+    let respostasUsuario: { assunto_id: string; correta: boolean; created_at: string }[] = [];
+    let disciplinasFonte: any[] = DISCIPLINAS_MASSIVAS;
+    let assuntosFonte: any[] = ASSUNTOS_MASSIVOS;
+
+    if (supabase) {
+      try {
+        const promises: PromiseLike<any>[] = [
+          supabase.from("disciplinas").select("*").order("ordem", { ascending: true }),
+          supabase.from("assuntos").select("*").order("ordem", { ascending: true }),
+        ];
+
+        if (usuarioId) {
+          promises.push(
+            supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
+            supabase.from("respostas_usuarios").select("assunto_id, correta, created_at").eq("usuario_id", usuarioId)
+          );
+        }
+
+        const resultados = await Promise.all(promises);
+        const resDisc = resultados[0];
+        const resAss = resultados[1];
+        if (resDisc?.data && resDisc.data.length > 0) {
+          disciplinasFonte = resDisc.data;
+        }
+        if (resAss?.data && resAss.data.length > 0) {
+          assuntosFonte = resAss.data;
+        }
+
+        if (usuarioId && resultados.length >= 4) {
+          const resTopicos = resultados[2];
+          const resRespostas = resultados[3];
+          if (resTopicos?.data) topicosSalvos = resTopicos.data;
+          if (resRespostas?.data) respostasUsuario = resRespostas.data;
+        }
+      } catch (err) {
+        console.error("Erro ao buscar dados do edital verticalizado no Supabase:", err);
+      }
+    }
+
+    // Se estiver offline ou sem Supabase, pegar do localStorage
+    if (topicosSalvos.length === 0 && usuarioId) {
+      topicosSalvos = this.getFromStorage<MentoriaEditalTopico[]>(`${STORAGE_KEYS.TOPICOS}_${usuarioId}`, []);
+    }
+
+    // 2. Mapear estatísticas por assunto
+    const statsPorAssunto = new Map<string, { total: number; acertos: number; ultimaData?: string }>();
+    for (const r of respostasUsuario) {
+      if (!r.assunto_id) continue;
+      const cur = statsPorAssunto.get(r.assunto_id) || { total: 0, acertos: 0 };
+      cur.total += 1;
+      if (r.correta) cur.acertos += 1;
+      if (!cur.ultimaData || (r.created_at && r.created_at > cur.ultimaData)) {
+        cur.ultimaData = r.created_at;
+      }
+      statsPorAssunto.set(r.assunto_id, cur);
+    }
+
+    const mapaTopicosSalvos = new Map<string, MentoriaEditalTopico>();
+    for (const t of topicosSalvos) {
+      mapaTopicosSalvos.set(t.assunto_id, t);
+    }
+
+    // 3. Montar matriz agrupada por disciplina
+    let totalTopicosGeral = 0;
+    let topicosEstudadosGeral = 0;
+    let topicosDominadosGeral = 0;
+    let totalQuestoesGeral = 0;
+    let totalAcertosGeral = 0;
+
+    const disciplinasAgrupadas = disciplinasFonte.map((disc) => {
+      const assuntosDaDisc = assuntosFonte.filter((a) => a.disciplina_id === disc.id).sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+
+      let estudadosNaDisc = 0;
+      let dominadosNaDisc = 0;
+      let totalQuestoesDisc = 0;
+      let totalAcertosDisc = 0;
+
+      const topicos: EditalVerticalizadoItem[] = assuntosDaDisc.map((assunto) => {
+        totalTopicosGeral++;
+        const salvo = mapaTopicosSalvos.get(assunto.id);
+        const stats = statsPorAssunto.get(assunto.id) || { total: 0, acertos: 0 };
+
+        totalQuestoesGeral += stats.total;
+        totalAcertosGeral += stats.acertos;
+        totalQuestoesDisc += stats.total;
+        totalAcertosDisc += stats.acertos;
+
+        const taxaAcerto = stats.total > 0 ? Math.round((stats.acertos / stats.total) * 100) : 0;
+
+        // Determinar status: priorizar manual, senão inferir por questões
+        let status: "nao_iniciado" | "estudando" | "revisando" | "dominado" = "nao_iniciado";
+        let estudado = false;
+        let percentualDominio = 0;
+
+        if (salvo) {
+          status = salvo.status;
+          estudado = salvo.estudado || salvo.status !== "nao_iniciado";
+          percentualDominio = salvo.percentual_dominio || (status === "dominado" ? 100 : taxaAcerto);
+        } else if (stats.total >= 15 && taxaAcerto >= 80) {
+          status = "dominado";
+          estudado = true;
+          percentualDominio = Math.min(100, taxaAcerto);
+        } else if (stats.total >= 5) {
+          status = "revisando";
+          estudado = true;
+          percentualDominio = Math.min(80, Math.round(taxaAcerto * 0.8));
+        } else if (stats.total > 0) {
+          status = "estudando";
+          estudado = true;
+          percentualDominio = Math.min(50, Math.round((stats.total / 10) * 50));
+        }
+
+        if (estudado || status !== "nao_iniciado") {
+          estudadosNaDisc++;
+          topicosEstudadosGeral++;
+        }
+        if (status === "dominado") {
+          dominadosNaDisc++;
+          topicosDominadosGeral++;
+        }
+
+        return {
+          id: salvo?.id || `topico-${disc.id}-${assunto.id}`,
+          disciplina_id: disc.id,
+          disciplina_nome: disc.nome,
+          assunto_id: assunto.id,
+          assunto_nome: assunto.nome,
+          peso: (salvo?.peso || "medio") as "baixo" | "medio" | "alto" | "critico",
+          incidencia_percentual: salvo?.incidencia || Math.max(5, Math.min(25, (assuntosDaDisc.length > 0 ? Math.round(100 / assuntosDaDisc.length) : 10))),
+          estudado,
+          status,
+          percentual_dominio: percentualDominio,
+          questoes_respondidas: stats.total,
+          questoes_acertadas: stats.acertos,
+          taxa_acerto: taxaAcerto,
+          ultima_atividade: stats.ultimaData || salvo?.updated_at || null,
+        };
+      });
+
+      const percConclusaoDisc = assuntosDaDisc.length > 0 ? Math.round((estudadosNaDisc / assuntosDaDisc.length) * 100) : 0;
+      const taxaAcertoMediaDisc = totalQuestoesDisc > 0 ? Math.round((totalAcertosDisc / totalQuestoesDisc) * 100) : 0;
+
+      return {
+        disciplina_id: disc.id,
+        disciplina_nome: disc.nome,
+        total_topicos: assuntosDaDisc.length,
+        topicos_estudados: estudadosNaDisc,
+        topicos_dominados: dominadosNaDisc,
+        percentual_conclusao: percConclusaoDisc,
+        taxa_acerto_media: taxaAcertoMediaDisc,
+        topicos,
+      };
+    });
+
+    const percentualConclusaoGeral = totalTopicosGeral > 0 ? Math.round((topicosEstudadosGeral / totalTopicosGeral) * 100) : 0;
+    const taxaAcertoGlobal = totalQuestoesGeral > 0 ? Math.round((totalAcertosGeral / totalQuestoesGeral) * 100) : 0;
+
+    return {
+      total_topicos: totalTopicosGeral,
+      topicos_estudados: topicosEstudadosGeral,
+      topicos_dominados: topicosDominadosGeral,
+      percentual_conclusao: percentualConclusaoGeral,
+      taxa_acerto_global: taxaAcertoGlobal,
+      disciplinas: disciplinasAgrupadas,
+    };
+  }
+
+  static async atualizarTopicoStatus(
+    usuarioId: string,
+    disciplinaId: string,
+    assuntoId: string,
+    novoStatus: "nao_iniciado" | "estudando" | "revisando" | "dominado"
+  ): Promise<boolean> {
+    const supabase = this.getClient();
+    const estudado = novoStatus !== "nao_iniciado";
+    const percentual = novoStatus === "dominado" ? 100 : novoStatus === "revisando" ? 75 : novoStatus === "estudando" ? 40 : 0;
+    const now = new Date().toISOString();
+
+    if (supabase && usuarioId) {
+      try {
+        const { error } = await supabase.from("mentoria_edital_topicos").upsert(
+          {
+            usuario_id: usuarioId,
+            disciplina_id: disciplinaId,
+            assunto_id: assuntoId,
+            status: novoStatus,
+            estudado,
+            percentual_dominio: percentual,
+            updated_at: now,
+          },
+          { onConflict: "usuario_id,assunto_id" }
+        );
+        if (!error) return true;
+      } catch {
+        // Fallback local
+      }
+    }
+
+    // Salvar localmente
+    const storageKey = `${STORAGE_KEYS.TOPICOS}_${usuarioId}`;
+    const topicos = this.getFromStorage<MentoriaEditalTopico[]>(storageKey, []);
+    const idx = topicos.findIndex((t: MentoriaEditalTopico) => t.assunto_id === assuntoId);
+    if (idx >= 0) {
+      topicos[idx].status = novoStatus;
+      topicos[idx].estudado = estudado;
+      topicos[idx].percentual_dominio = percentual;
+      topicos[idx].updated_at = now;
+    } else {
+      topicos.push({
+        id: `topico-${Date.now()}`,
+        usuario_id: usuarioId,
+        disciplina_id: disciplinaId,
+        assunto_id: assuntoId,
+        peso: "medio",
+        incidencia: 10,
+        estudado,
+        percentual_dominio: percentual,
+        status: novoStatus,
+        questoes_respondidas: 0,
+        taxa_acerto: 0,
+        created_at: now,
+        updated_at: now,
+      });
+    }
+    this.setToStorage(storageKey, topicos);
+    return true;
+  }
+}
+
+

@@ -6,8 +6,6 @@ export async function POST(request: NextRequest) {
   if (!supabase) return NextResponse.json({ error: "Supabase indisponível" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-  if (!profile || !["admin", "editor"].includes(profile.role)) return NextResponse.json({ error: "Sem permissão" }, { status: 403 });
 
   const body = await request.json().catch(() => null);
   const uploadId = body?.edital_usuario_id, editalId = body?.edital_id;

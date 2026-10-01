@@ -1,0 +1,108 @@
+{
+  "timestamp": "2026-09-27T14:44:59.406Z",
+  "lote": "Lote 13",
+  "totalQuestoes": 500,
+  "totalAlternativas": 1282,
+  "paresInternosAvaliados": 124750,
+  "paresCruzadosAvaliados": 3630000,
+  "interna": {
+    "maxSimilaridade": 0.6296296296296297,
+    "parMaximo": {
+      "id1": "ef9ecd88-3006-56c4-9f44-8829e22df8d1",
+      "slug1": "l13-proc-010-representacao-prazo-decadencial",
+      "id2": "bdcd2a4d-b04f-5e8a-890f-2d7dd4aad967",
+      "slug2": "l13-proc-015-anpp-requisitos-cumulativos",
+      "similaridade": 0.6296296296296297
+    },
+    "faixas": {
+      "abaixo70": 124750,
+      "de70a79": [],
+      "de80a89": [],
+      "acima90": []
+    }
+  },
+  "cruzada": {
+    "maxSimilaridade": 0.8620689655172413,
+    "parMaximo": {
+      "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+      "idProd": "c07a2e68-3ffa-5675-9fc5-d4bb772263a7",
+      "banca": "CEBRASPE",
+      "ano": 2025,
+      "similaridade": 0.8620689655172413
+    },
+    "faixas": {
+      "abaixo70": 3629989,
+      "de70a79": [
+        {
+          "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+          "idProd": "f9c655ba-f5de-5344-8b89-79eb26e9321e",
+          "banca": "CEBRASPE (CESPE)",
+          "sim": 0.75
+        },
+        {
+          "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+          "idProd": "59656292-9e0f-5cba-92ce-4987b3a28460",
+          "banca": "CEBRASPE (CESPE)",
+          "sim": 0.75
+        },
+        {
+          "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+          "idProd": "cc413156-3216-53c6-90e4-97f9b0ecf3f7",
+          "banca": "CEBRASPE (CESPE)",
+          "sim": 0.75
+        },
+        {
+          "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+          "idProd": "eeeecdd2-6496-595d-9379-b6ef3dfa4268",
+          "banca": "CEBRASPE (CESPE)",
+          "sim": 0.75
+        },
+        {
+          "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+          "idProd": "9622d53e-742c-5c90-8a41-7d4fdc57a7f5",
+          "banca": "CEBRASPE (CESPE)",
+          "sim": 0.75
+        },
+        {
+          "slugLote13": "l13-const-con-008-clausula-reserva-plenario-sumula-vinculante-10",
+          "idProd": "cd3d8510-f9e6-527f-951c-42f0ef4507ff",
+          "banca": "CEBRASPE (CESPE)",
+          "sim": 0.7959183673469388
+        },
+        {
+          "slugLote13": "l13-adm-prin-003-autotutela-sumula-473-stf-revogacao-anulacao",
+          "idProd": "1aa37508-78b3-5ee9-b8c6-a5e20f6876e9",
+          "banca": "CEBRASPE",
+          "sim": 0.782608695652174
+        },
+        {
+          "slugLote13": "l13-adm-resp-001-responsabilidade-civil-objetiva-art37-par6",
+          "idProd": "dcabb89d-0699-5b5b-a3a2-f404057f504e",
+          "banca": "CEBRASPE",
+          "sim": 0.7346938775510204
+        }
+      ],
+      "de80a89": [
+        {
+          "slugLote13": "l13-011-org-criminosa-requisitos-estruturais",
+          "idProd": "c07a2e68-3ffa-5675-9fc5-d4bb772263a7",
+          "banca": "CEBRASPE",
+          "sim": 0.8620689655172413
+        },
+        {
+          "slugLote13": "l13-adm-prin-003-autotutela-sumula-473-stf-revogacao-anulacao",
+          "idProd": "0d444e04-9bed-5345-8417-bbb26e03bd2c",
+          "banca": "FGV",
+          "sim": 0.8571428571428571
+        },
+        {
+          "slugLote13": "l13-adm-resp-001-responsabilidade-civil-objetiva-art37-par6",
+          "idProd": "2ec9e834-365a-5d22-8247-c7bc00688828",
+          "banca": "Inédita / Estilo CEBRASPE",
+          "sim": 0.8260869565217391
+        }
+      ],
+      "acima90": []
+    }
+  }
+}

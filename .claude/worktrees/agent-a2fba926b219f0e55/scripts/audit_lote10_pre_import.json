@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-09-26T21:51:04.929Z",
+  "bancoInicial": {
+    "questoes": 5760,
+    "alternativas": 22212
+  },
+  "lote10": {
+    "questoes": 500,
+    "alternativas": 1408,
+    "maxSimInterna": 33.71,
+    "maxSimCruzada": 83.72,
+    "paresInternosGte80": 0,
+    "paresCruzadosGte80": 3
+  },
+  "status": "APROVADO_PARA_INGESTAO"
+}

@@ -1,0 +1,1476 @@
+{
+  "totalQ": 2260,
+  "totalA": 9641,
+  "versoesPrompt": {
+    "v2.1": 1760,
+    "v2.2-lote2": 500
+  },
+  "lote2QCount": 500,
+  "lote2ACount": 1714,
+  "distinctFpLote2": 500,
+  "colisoesInternasLote2": 0,
+  "colisoesComLote1": 0,
+  "colisoesComOriginais": 0,
+  "countIsAutoralIA": 500,
+  "countRevisadaFalse": 500,
+  "countAnuladaFalse": 500,
+  "countDesatualizadaFalse": 500,
+  "countTodasFlagsOk": 500,
+  "distDisciplina": {
+    "rlm": 20,
+    "penal": 70,
+    "processo_penal": 70,
+    "direitos_humanos": 35,
+    "legislacao_especial": 70,
+    "constitucional": 60,
+    "administrativo": 60,
+    "criminologia": 25,
+    "informatica": 30,
+    "portugues": 60
+  },
+  "distCarreira": {
+    "Investigador de Polícia": 81,
+    "Delegado de Polícia": 54,
+    "Médico Legista": 1,
+    "Agente de Polícia Federal": 33,
+    "Policial Rodoviário Federal": 80,
+    "Investigador Policial": 4,
+    "Escrivão de Polícia": 69,
+    "Papiloscopista Policial Federal": 5,
+    "Agente de Polícia": 53,
+    "Policial Penal": 57,
+    "Soldado PM": 13,
+    "Oficial PM": 10,
+    "Oficial da PM": 2,
+    "Perito Criminal Federal": 4,
+    "Papiloscopista": 10,
+    "Perito Criminal": 13,
+    "Delegado de Polícia Federal": 2,
+    "Inspetor de Polícia": 2,
+    "Médico Legista / Perito Criminal": 1,
+    "Perito Legista": 1,
+    "Guarda Municipal": 2,
+    "Escrivão de Polícia Federal": 3
+  },
+  "distOrgao": {
+    "Polícia Civil de São Paulo (PC-SP)": 14,
+    "Polícia Civil de Minas Gerais (PC-MG)": 2,
+    "Polícia Federal (PF)": 95,
+    "Polícia Rodoviária Federal (PRF)": 80,
+    "Polícia Civil do Estado do Rio de Janeiro (PC-RJ)": 9,
+    "PC-SP": 72,
+    "PC-MG": 43,
+    "PC-RJ": 72,
+    "Polícia Penal": 41,
+    "Polícia Penal Federal": 18,
+    "PC-DF": 12,
+    "PM-DF": 10,
+    "PM-SP": 10,
+    "Polícia Militar de São Paulo (PM-SP)": 1,
+    "Polícia Civil do Paraná (PC-PR)": 1,
+    "Polícia Civil de Goiás (PC-GO)": 4,
+    "Polícia Militar da Bahia (PM-BA)": 2,
+    "Polícia Penal do Distrito Federal (PP-DF)": 2,
+    "Polícia Civil da Bahia (PC-BA)": 2,
+    "Polícia Civil de Alagoas (PC-AL)": 1,
+    "Polícia Militar de Santa Catarina (PM-SC)": 1,
+    "Polícia Civil do Ceará (PC-CE)": 1,
+    "Guarda Municipal de Belo Horizonte (GM-BH)": 1,
+    "Polícia Penal de Minas Gerais (PP-MG)": 1,
+    "Polícia Militar de Minas Gerais (PM-MG)": 1,
+    "Polícia Penal do Estado de Minas Gerais": 2,
+    "Polícia Penal de Minas Gerais": 1,
+    "Guarda Municipal de Curitiba (GM-Curitiba)": 1
+  },
+  "distModalidade": {
+    "certo_errado": 262,
+    "multipla_escolha": 238
+  },
+  "distDificuldade": {
+    "medio": 347,
+    "dificil": 104,
+    "facil": 49
+  },
+  "similaridade": {
+    "totalPares": 124750,
+    "pares80": 129,
+    "pares90": 42,
+    "pares95": 0,
+    "pct80": "0.1034",
+    "pct90": "0.0337",
+    "pct95": "0.0000"
+  },
+  "amostra50Count": 50,
+  "amostra50": [
+    {
+      "disciplina": "rlm",
+      "id": "087ede67-6ad9-5271-972d-0d7d2af0dcea",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "A negação lógica da proposição condicional 'Se o agente investiga com rigor, então a quadrilha é desarticulada' é:",
+      "explicacao": "GABARITO: 'O agente investiga com rigor e a quadrilha não é desarticulada'. A regra de negação da condicional é o MANÉ (Mantém a primeira E Nega a segunda): ~(P → Q) ≡ P ∧ ~Q.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Se o agente não investiga com rigor, então a quadrilha não é desarticulada.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O agente investiga com rigor e a quadrilha não é desarticulada.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Se a quadrilha foi desarticulada, então o agente investigou com rigor.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "O agente não investiga com rigor ou a quadrilha é desarticulada.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A quadrilha não é desarticulada e o agente não investiga com rigor.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "ac2e8822-570d-570e-b3c9-80dfb7fd9050",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "Uma proposição composta que resulta verdadeira para todas as possíveis combinações de valores lógicos de suas proposições simples componentes é classificada como:",
+      "explicacao": "GABARITO: Tautologia. Tautologia é uma proposição logicamente sempre verdadeira.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Contradição.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Contingência.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Tautologia.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Falácia formal simples.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Paradoxo lógico irresolúvel.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "237b2bb6-be0d-5c52-b127-fea1f34c74df",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A proposição condicional 'Se o motorista ultrapassou a velocidade máxima, então ele será multado' é logicamente falsa somente na hipótese em que o antecedente é verdadeiro e o consequente é falso.",
+      "explicacao": "GABARITO: CERTO. A condicional (P → Q) é falsa apenas no caso 'V → F = F' (Vera Fischer é Falsa). Em todas as outras combinações (V→V, F→V, F→F) ela é verdadeira.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "f14ce270-8be5-59e1-8f24-45821e1d6ab5",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Perito Criminal",
+      "banca": "FGV",
+      "enunciado": "Para criar uma senha de segurança de 4 dígitos numéricos distintos (sem repetição de algarismos), utilizando apenas os algarismos de 1 a 6, o número total de senhas possíveis é igual a:",
+      "explicacao": "GABARITO: Arranjo simples de 6 elementos tomados 4 a 4: A(6,4) = 6 × 5 × 4 × 3 = 360 senhas.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "15",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "120",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "360",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "720",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "1.296",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "905d0456-3351-57a1-9f29-b35ada1cecf1",
+      "tipo": "multipla_escolha",
+      "dificuldade": "facil",
+      "cargo": "Soldado PM",
+      "banca": "IBFC",
+      "enunciado": "Em uma fiscalização policial de trânsito, 100 veículos foram abordados. Verificou-se que 20 estavam com documentação irregular e 10 apresentavam pneus carecas, sendo que 5 estavam com ambas as irregularidades. Escolhendo-se ao acaso um desses veículos, a probabilidade de ele apresentar pelo menos uma dessas duas irregularidades é:",
+      "explicacao": "GABARITO: Regra da união de eventos: P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = 20/100 + 10/100 - 5/100 = 25/100 = 25% (ou 1/4).",
+      "alternativas": [
+        {
+          "letra": "D",
+          "texto": "35%",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "5%",
+          "correta": false
+        },
+        {
+          "letra": "A",
+          "texto": "15%",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "25%",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "30%",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "177c19e9-9a00-5c5d-9660-ebf11841a25a",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Em relação ao conceito analítico de crime e seus elementos integrantes, caso um agente atue acobertado por coação moral irresistível, haverá exclusão da culpabilidade em razão da inexigibilidade de conduta diversa, respondendo pelo delito apenas o autor da coação.\n\n[Contexto autoral Lote 2 - penal2-01] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. A coação moral irresistível (vis compulsiva) exclui a culpabilidade pela inexigibilidade de conduta diversa (art. 22 do Código Penal: 'Se o fato é cometido sob coação irresistível ou em estrita obediência a ordem, não manifestamente ilegal, de superior hierárquico, só é punível o autor da coação ou da ordem'). Já a coação física irresistível (vis absoluta) elimina a própria conduta, afastando o fato típico.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "17700295-51ac-5f7e-9d94-8818336cbe4f",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A prescrição da pretensão punitiva antes de transitar em julgado a sentença final regula-se pelo máximo da pena privativa de liberdade cominada ao crime, verificando-se em vinte anos se o máximo da pena é superior a doze anos.\n\n[Contexto autoral Lote 2 - penal2-15] Considere, especificamente para este item, que a providência ocorreu após a conclusão das diligências preliminares e antes da revisão humana especialista do banco de questões.",
+      "explicacao": "GABARITO: CERTO (art. 109, I, do CP). O art. 109 do CP estabelece a tabela de prescrição em abstrato: I - em 20 anos, se o máximo da pena é superior a 12; II - em 16 anos, se o máximo é superior a 8 e não excede a 12; III - em 12 anos, se o máximo é superior a 4 e não excede a 8; IV - em 8 anos, se o máximo é superior a 2 e não excede a 4; V - em 4 anos, se o máximo é de 1 ano até 2; VI - em 3 anos, se o máximo é inferior a 1 ano.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "560d5239-cb84-5367-a97b-6f64808e5dda",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No crime de latrocínio (art. 157, § 3º, II, do CP), se da violência resulta a morte da vítima mas a subtração patrimonial não se consuma por circunstâncias alheias à vontade do agente, resta configurado o crime de latrocínio consumado, conforme entendimento sumulado do Supremo Tribunal Federal.\n\n[Contexto autoral Lote 2 - penal2-29] Para fins pedagógicos, o item exige leitura sistemática do tema e aplicação objetiva ao contexto de segurança pública.",
+      "explicacao": "GABARITO: CERTO. Aplica-se a Súmula 610 do STF: 'Há crime de latrocínio, quando o homicídio se consuma, ainda que não realize o agente a subtração de bens da vítima'. O bem jurídico vida prepondera para fins de consumação da forma qualificada.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "742a07d1-b43d-5059-87a2-529256495789",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Acerca dos crimes praticados por funcionário público contra a administração em geral, se um policial exige para si, diretamente, em razão de sua função pública, vantagem indevida antes mesmo de assumir o cargo, comete o crime de concussão (art. 316 do CP), cuja consumação ocorre de forma formal com a mera exigência, independentemente do recebimento efetivo do valor.\n\n[Contexto autoral Lote 2 - penal2-43] A hipótese foi reformulada para banca policial: a equipe responsável atuou em plantão ordinário, preservou os vestígios relevantes e submeteu o ato ao controle competente.",
+      "explicacao": "GABARITO: CERTO. O crime de concussão (art. 316 do CP) consiste em 'exigir, para si ou para outrem, direta ou indiretamente, ainda que fora da função ou antes de assumi-la, mas em razão dela, vantagem indevida'. É crime formal (Súmula 96 do STJ: 'O crime de concussão consuma-se com a exigência da vantagem indevida, independentemente do auferimento do proveito').\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "3fd1b7a0-b6e5-511e-b8fc-583cdcacff26",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "De acordo com o Código Penal brasileiro, considera-se praticado o crime no momento da ação ou omissão, ainda que outro seja o momento do resultado (Teoria da Atividade), enquanto quanto ao lugar do crime adotou-se a Teoria da Ubiquidade.\n\n[Contexto autoral Lote 2 - penal2-57] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: CERTO. Macete clássico do Direito Penal Policial: LUTA (Lugar = Ubiquidade; Tempo = Atividade). Art. 4º: 'Considera-se praticado o crime no momento da ação ou omissão, ainda que outro seja o momento do resultado'. Art. 6º: 'Considera-se praticado o crime no lugar em que ocorreu a ação ou omissão, no todo ou em parte, bem como onde se produziu ou deveria produzir-se o resultado'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "ce4d7d67-21e4-5194-a31d-2ee8110122a3",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Com o advento do Pacote Anticrime (Lei nº 13.964/2019), é vedada ao magistrado a decretação de prisão preventiva de ofício, tanto na fase de investigação policial quanto no curso do processo penal, sendo indispensável requerimento do Ministério Público ou representação da autoridade policial.\n\n[Contexto autoral Lote 2 - dpp2-31] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. O art. 311 do CPP foi alterado pela Lei 13.964/2019 suprimindo a decretação 'de ofício' pelo juiz: 'Em qualquer fase da investigação policial ou do processo penal, caberá a prisão preventiva decretada pelo juiz, a requerimento do Ministério Público, do querelante ou do assistente, ou por representação da autoridade policial'. O STF e o STJ consolidaram que o juiz não pode decretar prisão preventiva de ofício em nenhuma fase.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "64fd0690-b071-5ba4-bbd9-60ec187b1bd4",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "INSTITUTO AOCP",
+      "enunciado": "Nos termos do Código de Processo Penal e da jurisprudência consolidada do STF e STJ, sobre o Inquérito Policial, é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-14] No cenário de treinamento, inexistem peculiaridades não mencionadas: a resposta deve decorrer apenas do texto legal, da doutrina majoritária e da jurisprudência consolidada.",
+      "explicacao": "GABARITO: O inquérito policial é dispensável para a propositura da ação penal se o titular da ação já possuir elementos suficientes de autoria e materialidade.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "A autoridade policial pode arquivar o inquérito policial quando verificar a manifesta atipicidade da conduta.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O inquérito policial é peça indispensável para o oferecimento da denúncia ou queixa-crime.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "O inquérito policial é dispensável para o oferecimento da denúncia, bastando que o Ministério Público disponha de elementos de informação suficientes sobre a autoria e materialidade.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "O advogado não tem direito de examinar os autos de investigação em nenhuma hipótese durante a fase inquisitorial.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A incomunicabilidade do indiciado pode ser decretada pelo Delegado de Polícia sem necessidade de autorização judicial.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "ae200947-d8a5-5d5e-b4ef-2b4a96534185",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "IBFC",
+      "enunciado": "A prisão temporária (Lei nº 7.960/1989), cabível estritamente durante a fase de inquérito policial, tem prazo geral de:\n\n[Contexto autoral Lote 2 - dpp2-28] A situação descrita pressupõe atuação regular de agentes públicos e ausência de nulidade diversa daquela expressamente indicada no enunciado.",
+      "explicacao": "GABARITO: 5 dias prorrogáveis por igual período em crimes comuns, e 30 dias prorrogáveis por igual período em caso de crimes hediondos ou equiparados (art. 2º, § 4º da Lei 8.072/1990).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "10 dias improrrogáveis para crimes comuns e 60 dias para crimes hediondos.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "5 dias, prorrogável por igual período em caso de extrema e comprovada necessidade, e de 30 dias, prorrogável por igual período, em crimes hediondos e equiparados.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "15 dias prorrogáveis por mais 15 dias, mediante decisão motivada do Delegado de Polícia.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "30 dias para qualquer espécie de crime, sendo vedada a prorrogação.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Prazo indeterminado enquanto durar a investigação do inquérito policial.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "fda0a7ef-dde0-5f63-bcaf-7009a063ecb3",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A cadeia de custódia, disciplinada no Código de Processo Penal, inicia-se com a preservação do local de crime ou com a apreensão dos vestígios, e compreende as etapas de reconhecimento, isolamento, fixação, coleta, acondicionamento, transporte, recebimento, processamento, armazenamento e descarte.\n\n[Contexto autoral Lote 2 - dpp2-43] A hipótese foi reformulada para banca policial: a equipe responsável atuou em plantão ordinário, preservou os vestígios relevantes e submeteu o ato ao controle competente.",
+      "explicacao": "GABARITO: CERTO (art. 158-A e 158-B do CPP). Art. 158-B do CPP lista as 10 etapas da cadeia de custódia introduzidas pela Lei 13.964/2019: I - reconhecimento; II - isolamento; III - fixação; IV - coleta; V - acondicionamento; VI - transporte; VII - recebimento; VIII - processamento; IX - armazenamento; X - descarte.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "8715a6ea-902a-51b0-b1da-2c1f1245625d",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O Acordo de Não Persecução Penal (ANPP), previsto no art. 28-A do CPP, é cabível quando não for o caso de arquivamento e o investigado tiver confessado formal e circunstancialmente a prática de infração penal sem violência ou grave ameaça e com pena mínima inferior a 4 (quatro) anos.\n\n[Contexto autoral Lote 2 - dpp2-57] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: CERTO. Art. 28-A, caput, do CPP: 'Não sendo caso de arquivamento e tendo o investigado confessado formal e circunstancialmente a prática de infração penal sem violência ou grave ameaça e com pena mínima inferior a 4 (quatro) anos, o Ministério Público poderá propor acordo de não persecução penal...'\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "6633d3d9-5a93-5316-a11c-70ce79095170",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A audiência de custódia, instituto pelo qual toda pessoa presa deve ser conduzida, sem demora, à presença de um juiz ou outra autoridade autorizada pela lei a exercer funções judiciais, tem como fundamento internacional precípuo:\n\n[Contexto autoral Lote 2 - dh2-20] Na narrativa do Lote 2, os envolvidos foram identificados previamente e a cadeia decisória foi formalmente documentada pela autoridade competente.",
+      "explicacao": "GABARITO: O Artigo 7º, item 5 da Convenção Americana sobre Direitos Humanos (Pacto de San José da Costa Rica) e o Artigo 9º, item 3 do Pacto Internacional sobre Direitos Civis e Políticos (PIDCP), posteriormente incorporada expressamente ao art. 310 do CPP pela Lei 13.964/2019.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O Tratado de Versalhes de 1919.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O Artigo 7º, item 5 da Convenção Americana sobre Direitos Humanos (Pacto de San José da Costa Rica).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A Convenção de Viena sobre Relações Consulares exclusivamente.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A Declaração de Direitos do Bom Povo da Virgínia.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "O Estatuto de Roma do Tribunal Penal Internacional em Haia.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "d642b08d-8a4b-593e-bfb6-edc896aa98c4",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Delegado de Polícia",
+      "banca": "INSTITUTO AOCP",
+      "enunciado": "A audiência de custódia, instituto pelo qual toda pessoa presa deve ser conduzida, sem demora, à presença de um juiz ou outra autoridade autorizada pela lei a exercer funções judiciais, tem como fundamento internacional precípuo:\n\n[Contexto autoral Lote 2 - dh2-24] No cenário de treinamento, inexistem peculiaridades não mencionadas: a resposta deve decorrer apenas do texto legal, da doutrina majoritária e da jurisprudência consolidada.",
+      "explicacao": "GABARITO: O Artigo 7º, item 5 da Convenção Americana sobre Direitos Humanos (Pacto de San José da Costa Rica) e o Artigo 9º, item 3 do Pacto Internacional sobre Direitos Civis e Políticos (PIDCP), posteriormente incorporada expressamente ao art. 310 do CPP pela Lei 13.964/2019.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O Tratado de Versalhes de 1919.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O Artigo 7º, item 5 da Convenção Americana sobre Direitos Humanos (Pacto de San José da Costa Rica).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A Convenção de Viena sobre Relações Consulares exclusivamente.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A Declaração de Direitos do Bom Povo da Virgínia.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "O Estatuto de Roma do Tribunal Penal Internacional em Haia.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "84ea0153-6c36-5b7f-aa75-724f8d09f155",
+      "tipo": "multipla_escolha",
+      "dificuldade": "facil",
+      "cargo": "Policial Penal",
+      "banca": "IBFC",
+      "enunciado": "Os direitos humanos de segunda geração têm como valor fundamental a:\n\n[Contexto autoral Lote 2 - dh2-28] A situação descrita pressupõe atuação regular de agentes públicos e ausência de nulidade diversa daquela expressamente indicada no enunciado.",
+      "explicacao": "GABARITO: Igualdade (direitos sociais, econômicos e culturais - prestações positivas do Estado). Classificação clássica de Karel Vasak inspirada no lema da Revolução Francesa: 1ª geração = Liberdade (civis e políticos, abstenção estatal); 2ª geração = Igualdade (sociais, econômicos e culturais, prestação estatal); 3ª geração = Fraternidade/Solidariedade (meio ambiente, paz, patrimônio comum).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Liberdade individual negativa estrita.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Igualdade material (direitos sociais, econômicos e culturais).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Fraternidade e direitos difusos ao meio ambiente equilibrado.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Globalização dos direitos políticos e bioética.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Paz universal perpétua entre os povos soberanos.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "67279fa4-52f3-5697-ac2f-6703acbf8804",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Investigador de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A Declaração Universal dos Direitos Humanos (DUDH) de 1948 foi adotada pela Assembleia Geral da ONU sob a forma de Resolução (Resolução 217 A III), possuindo historicamente natureza de recomendação (soft law), tendo adquirido ao longo do tempo status consuetudinário e força moral vinculante para a comunidade internacional.\n\n[Contexto autoral Lote 2 - dh2-07] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: CERTO. A DUDH foi proclamada como Resolução 217-A da AGNU e não como tratado formal (portanto, formalmente soft law), mas doutrina e cortes internacionais reconhecem que seus preceitos integraram o direito internacional consuetudinário e princípios gerais do direito internacional.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "b3cd95d4-895f-5ec6-8cc8-b36294ccc99c",
+      "tipo": "multipla_escolha",
+      "dificuldade": "facil",
+      "cargo": "Investigador de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "Os direitos humanos de segunda geração têm como valor fundamental a:\n\n[Contexto autoral Lote 2 - dh2-32] Para a resolução deste item autoral, adote como premissa que todos os fatos narrados foram comprovados documentalmente e que a legislação vigente em 2026 deve ser aplicada.",
+      "explicacao": "GABARITO: Igualdade (direitos sociais, econômicos e culturais - prestações positivas do Estado). Classificação clássica de Karel Vasak inspirada no lema da Revolução Francesa: 1ª geração = Liberdade (civis e políticos, abstenção estatal); 2ª geração = Igualdade (sociais, econômicos e culturais, prestação estatal); 3ª geração = Fraternidade/Solidariedade (meio ambiente, paz, patrimônio comum).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Liberdade individual negativa estrita.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Igualdade material (direitos sociais, econômicos e culturais).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Fraternidade e direitos difusos ao meio ambiente equilibrado.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Globalização dos direitos políticos e bioética.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Paz universal perpétua entre os povos soberanos.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "2f9a7a09-699e-5b33-aad8-3ffbbf9440aa",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Para a caracterização do crime de tráfico de drogas privilegiado (art. 33, § 4º, da Lei nº 11.343/2006), exige-se que o agente seja primário, de bons antecedentes, não se dedique às atividades criminosas nem integre organização criminosa, hipótese em que as penas poderão ser reduzidas de um sexto a dois terços, não sendo mais considerado crime hediondo ou equiparado.\n\n[Contexto autoral Lote 2 - legesp2-01] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. O art. 33, § 4º da Lei 11.343/2006 estabelece os 4 requisitos cumulativos para o tráfico privilegiado. Além disso, o STF e a Lei 13.964/2019 (art. 112, § 5º da LEP) pacificaram que o tráfico privilegiado NÃO tem natureza de crime hediondo nem equiparado.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "dca2da2a-3e53-5319-92cc-60c902bd9d08",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Para a caracterização do crime de tráfico de drogas privilegiado (art. 33, § 4º, da Lei nº 11.343/2006), exige-se que o agente seja primário, de bons antecedentes, não se dedique às atividades criminosas nem integre organização criminosa, hipótese em que as penas poderão ser reduzidas de um sexto a dois terços, não sendo mais considerado crime hediondo ou equiparado.\n\n[Caso policial leg-drogas-13] Na situação hipotética, a equipe policial registrou a ocorrência em relatório circunstanciado e preservou os elementos de prova.\n\n[Contexto autoral Lote 2 - legesp2-13] A hipótese foi reformulada para banca policial: a equipe responsável atuou em plantão ordinário, preservou os vestígios relevantes e submeteu o ato ao controle competente.",
+      "explicacao": "GABARITO: CERTO. O art. 33, § 4º da Lei 11.343/2006 estabelece os 4 requisitos cumulativos para o tráfico privilegiado. Além disso, o STF e a Lei 13.964/2019 (art. 112, § 5º da LEP) pacificaram que o tráfico privilegiado NÃO tem natureza de crime hediondo nem equiparado.\n\nObservação pedagógica: o acréscimo contextual delimita a hipótese concreta (leg-drogas-13) sem alterar o gabarito, reforçando a aplicação do instituto ao caso narrado.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "a6529253-9694-5798-884f-0365f294b56f",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O porte ilegal de arma de fogo de uso permitido (art. 14 da Lei nº 10.826/2003) é crime de mera conduta e de perigo abstrato, consumando-se independentemente da demonstração de perigo concreto a terceiros ou de intenção de disparo.\n\n[Contexto autoral Lote 2 - legesp2-27] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: CERTO. A jurisprudência pacífica do STJ e do STF estabelece que os crimes previstos no Estatuto do Desarmamento são de mera conduta e de perigo abstrato, tutelando a incolumidade pública e a segurança coletiva.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "5bf5c339-a2de-5484-903b-b06941c2d5c8",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Na Lei de Abuso de Autoridade (Lei nº 13.869/2019), os crimes são punidos exclusivamente a título de dolo, exigindo-se elemento subjetivo específico consistente na finalidade de prejudicar outrem ou beneficiar a si mesmo ou a terceiro, ou, ainda, por mero capricho ou satisfação pessoal, sendo expressamente vedado o crime de abuso de autoridade por mera divergência na interpretação de lei ou na avaliação de fatos e provas.\n\n[Contexto autoral Lote 2 - legesp2-41] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. Art. 1º, §§ 1º e 2º da Lei 13.869/2019: § 1º As condutas tipificadas nesta Lei constituem crime de abuso de autoridade quando praticadas pelo agente com a finalidade específica de prejudicar outrem ou beneficiar a si mesmo ou a terceiro, ou, ainda, por mero capricho ou satisfação pessoal. § 2º A divergência na interpretação de lei ou na avaliação de fatos e provas não configura abuso de autoridade (veda o crime de hermenêutica).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "858a186c-7b9b-5ebd-90b4-9ab3b51fb388",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Na Lei Maria da Penha (Lei nº 11.340/2006), é vedada a aplicação de penas de cesta básica ou outras de prestação pecuniária, bem como a substituição de pena que implique o pagamento isolado de multa.\n\n[Contexto autoral Lote 2 - legesp2-55] Considere, especificamente para este item, que a providência ocorreu após a conclusão das diligências preliminares e antes da revisão humana especialista do banco de questões.",
+      "explicacao": "GABARITO: CERTO (art. 17 da Lei 11.340/2006 e Súmula 588 do STJ). Art. 17 da Lei Maria da Penha proíbe expressamente penas de cesta básica e prestação pecuniária; Súmula 588/STJ veda substituição de pena por restritiva de direitos nos delitos com violência/ameaça à mulher. Na Lei dos Crimes Hediondos, o art. 1º, II inclui o roubo com arma de fogo e qualificado por lesão grave ou morte.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "604d83db-b703-501a-8967-b37d1628b33d",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Compete privativamente à União legislar sobre direito penal, processual penal, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho.\n\n[Contexto autoral Lote 2 - const2-41] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO (art. 22, I da CF/88). Art. 22, I: competência privativa da União (Direito Penal e Processual Penal). Art. 24, I: competência concorrente da União, Estados e DF (Direito Penitenciário, Financeiro, Tributário, Econômico e Urbanístico - mnemônico PUTOFE).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "63b3c75b-0127-5f6c-bc0c-96ec02edfff3",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "Nos termos do art. 5º da CF/88, a extradição de brasileiro:\n\n[Contexto autoral Lote 2 - const2-12] Para a resolução deste item autoral, adote como premissa que todos os fatos narrados foram comprovados documentalmente e que a legislação vigente em 2026 deve ser aplicada.",
+      "explicacao": "GABARITO: Nenhum brasileiro será extraditado, salvo o naturalizado, em caso de crime comum praticado antes da naturalização, ou de comprovado envolvimento em tráfico ilícito de entorpecentes e drogas afins, na forma da lei (art. 5º, LI, CF/88).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Pode ser concedida para brasileiro nato em casos de crimes hediondos.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "É vedada para o brasileiro nato, admitindo-se a do naturalizado em caso de crime comum praticado antes da naturalização ou de comprovado envolvimento em tráfico ilícito de entorpecentes.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "É permitida ao brasileiro naturalizado para qualquer crime comum praticado a qualquer tempo.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Depende de autorização do Congresso Nacional mediante decreto legislativo.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "É admitida para crimes políticos ou de opinião cometidos no estrangeiro.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "f3d6161e-20f1-5c24-bdaa-5e5cf65f39fb",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "INSTITUTO AOCP",
+      "enunciado": "Nos termos do art. 5º da CF/88, a extradição de brasileiro:\n\n[Contexto autoral Lote 2 - const2-24] No cenário de treinamento, inexistem peculiaridades não mencionadas: a resposta deve decorrer apenas do texto legal, da doutrina majoritária e da jurisprudência consolidada.",
+      "explicacao": "GABARITO: Nenhum brasileiro será extraditado, salvo o naturalizado, em caso de crime comum praticado antes da naturalização, ou de comprovado envolvimento em tráfico ilícito de entorpecentes e drogas afins, na forma da lei (art. 5º, LI, CF/88).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Pode ser concedida para brasileiro nato em casos de crimes hediondos.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "É vedada para o brasileiro nato, admitindo-se a do naturalizado em caso de crime comum praticado antes da naturalização ou de comprovado envolvimento em tráfico ilícito de entorpecentes.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "É permitida ao brasileiro naturalizado para qualquer crime comum praticado a qualquer tempo.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Depende de autorização do Congresso Nacional mediante decreto legislativo.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "É admitida para crimes políticos ou de opinião cometidos no estrangeiro.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "922fb8db-84e0-53f2-a350-e50023736e6e",
+      "tipo": "multipla_escolha",
+      "dificuldade": "facil",
+      "cargo": "Agente de Polícia",
+      "banca": "FGV",
+      "enunciado": "Segundo o art. 144, § 1º da Constituição Federal de 1988, é órgão permanente, estruturado em carreira e destinado a exercer com exclusividade as funções de polícia judiciária da União:\n\n[Contexto autoral Lote 2 - const2-36] A banca espera distinção técnica entre regra geral, exceção expressa e consequência jurídica prática para concursos policiais.",
+      "explicacao": "GABARITO: Polícia Federal (art. 144, § 1º, IV da CF/88: 'exercer, com exclusividade, as funções de polícia judiciária da União').\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Polícia Rodoviária Federal.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Polícia Ferroviária Federal.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Polícia Federal.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Força Nacional de Segurança Pública.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Polícia Penal Federal.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "763988a5-8fc1-5bd8-8ddd-2f5744444a52",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Compete privativamente à União legislar sobre direito penal, processual penal, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho.\n\n[Contexto autoral Lote 2 - const2-49] Para fins pedagógicos, o item exige leitura sistemática do tema e aplicação objetiva ao contexto de segurança pública.",
+      "explicacao": "GABARITO: CERTO (art. 22, I da CF/88). Art. 22, I: competência privativa da União (Direito Penal e Processual Penal). Art. 24, I: competência concorrente da União, Estados e DF (Direito Penitenciário, Financeiro, Tributário, Econômico e Urbanístico - mnemônico PUTOFE).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "ee009eac-d3f0-5d40-8668-1347f0c32186",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Nos termos do art. 37, § 6º da Constituição Federal e da jurisprudência do STF (Tema 940 da Repercussão Geral), a ação de indenização por danos causados por agente público deve ser proposta diretamente contra a pessoa jurídica de direito público, sendo inadmissível o ajuizamento direto em face do servidor ou a sua inclusão no polo passivo em litisconsórcio.\n\n[Contexto autoral Lote 2 - adm2-31] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. Tese do Tema 940/STF: 'A teor do disposto no art. 37, § 6º, da Constituição Federal, a ação por danos causados por agente público deve ser ajuizada exclusivamente em face da pessoa jurídica de direito público ou da pessoa jurídica de direito privado prestadora de serviço público, sendo parte ilegítima para figurar no polo passivo o autor do ato, assegurado o direito de regresso contra o responsável nos casos de dolo ou culpa'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "85964681-cbd1-5b9a-894a-1cecac97c196",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O poder de polícia administrativa ostenta como atributos a discricionariedade, a autoexecutoriedade e a coercibilidade, sendo que a autoexecutoriedade não está presente em todas as medidas de polícia, a exemplo da cobrança judicial de multas já aplicadas.\n\n[Contexto autoral Lote 2 - adm2-09] Para fins pedagógicos, o item exige leitura sistemática do tema e aplicação objetiva ao contexto de segurança pública.",
+      "explicacao": "GABARITO: CERTO. Os atributos do poder de polícia são DAC (Discricionariedade, Autoexecutoriedade e Coercibilidade). A autoexecutoriedade permite à Administração agir sem necessidade de autorização judicial prévia, mas NÃO é universal: a cobrança de multa pecuniária exige processo de execução fiscal judicial (ausência de autoexecutoriedade na fase executiva da multa).\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "0f7788e9-af09-5197-9dd0-2478d5c0fed6",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Após as alterações introduzidas pela Lei nº 14.230/2021 na Lei de Improbidade Administrativa (Lei nº 8.429/1992), todos os atos de improbidade administrativa exigem dolo específico para sua configuração, tendo sido expressamente revogada a modalidade culposa no dano ao erário.\n\n[Contexto autoral Lote 2 - adm2-21] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO (art. 1º, §§ 1º, 2º e 3º da Lei 8.429/92 com redação da Lei 14.230/21). Na Lei 14.230/21, passou a se exigir dolo para todas as espécies de atos de improbidade (arts. 9º, 10 e 11), abolindo a culpa. Os 5 elementos de validade dos atos administrativos são Competência, Finalidade, Forma, Motivo e Objeto.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "c2d90a37-4fd7-5256-8014-9d94ec4f568c",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Nos termos do art. 37, § 6º da Constituição Federal e da jurisprudência do STF (Tema 940 da Repercussão Geral), a ação de indenização por danos causados por agente público deve ser proposta diretamente contra a pessoa jurídica de direito público, sendo inadmissível o ajuizamento direto em face do servidor ou a sua inclusão no polo passivo em litisconsórcio.\n\n[Contexto autoral Lote 2 - adm2-37] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: CERTO. Tese do Tema 940/STF: 'A teor do disposto no art. 37, § 6º, da Constituição Federal, a ação por danos causados por agente público deve ser ajuizada exclusivamente em face da pessoa jurídica de direito público ou da pessoa jurídica de direito privado prestadora de serviço público, sendo parte ilegítima para figurar no polo passivo o autor do ato, assegurado o direito de regresso contra o responsável nos casos de dolo ou culpa'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "b2c4b36b-4842-579b-a774-11c1ad255cf4",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Após as alterações introduzidas pela Lei nº 14.230/2021 na Lei de Improbidade Administrativa (Lei nº 8.429/1992), todos os atos de improbidade administrativa exigem dolo específico para sua configuração, tendo sido expressamente revogada a modalidade culposa no dano ao erário.\n\n[Caso policial adm-geral-49] Na situação hipotética, a equipe policial registrou a ocorrência em relatório circunstanciado e preservou os elementos de prova.\n\n[Contexto autoral Lote 2 - adm2-49] Para fins pedagógicos, o item exige leitura sistemática do tema e aplicação objetiva ao contexto de segurança pública.",
+      "explicacao": "GABARITO: CERTO (art. 1º, §§ 1º, 2º e 3º da Lei 8.429/92 com redação da Lei 14.230/21). Na Lei 14.230/21, passou a se exigir dolo para todas as espécies de atos de improbidade (arts. 9º, 10 e 11), abolindo a culpa. Os 5 elementos de validade dos atos administrativos são Competência, Finalidade, Forma, Motivo e Objeto.\n\nObservação pedagógica: o acréscimo contextual delimita a hipótese concreta (adm-geral-49) sem alterar o gabarito, reforçando a aplicação do instituto ao caso narrado.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "071fcd95-75cb-506a-9fd2-97563a74808d",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Oficial da PM",
+      "banca": "VUNESP",
+      "enunciado": "O policiamento ostensivo em áreas de alto índice criminal e a instalação de câmeras de videomonitoramento em locais de risco constituem exemplos típicos de:",
+      "explicacao": "GABARITO: Prevenção secundária. Atua no momento em que o risco se manifesta ou sobre grupos/locais específicos.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Prevenção primária universal.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Prevenção secundária situacional e policial.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Prevenção terciária penitenciária.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Abolicionismo penal preventivo.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Vitimização quaternária.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "8aa7189f-4acf-51a0-b771-e11354a7bf14",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "Instituto AOCP",
+      "enunciado": "A teoria das 'Janelas Quebradas' (Broken Windows Theory), desenvolvida por James Q. Wilson e George Kelling, fundamentou a política de segurança pública conhecida como:",
+      "explicacao": "GABARITO: Tolerância Zero. A teoria defende que a desordem urbana visível gera sentimento de impunidade, devendo haver repressão rápida mesmo a pequenas infrações.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Direito Penal Mínimo.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Tolerância Zero (Zero Tolerance).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Abolicionismo Penal Radical.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Justiça Restaurativa Pura.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Criminologia Crítica Marxista.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "54305fe9-c0a3-5952-858a-ffb1273a12a2",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "FGV",
+      "enunciado": "As agências de controle social da criminalidade dividem-se em instâncias formais e informais. Constitui exemplo típico de controle social informal:",
+      "explicacao": "GABARITO: Família, escola, religião e comunidade. As instâncias formais são a polícia, ministério público, judiciário e sistema prisional.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Polícia Judiciária e Forças de Segurança.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Ministério Público e Defensoria Pública.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Núcleo familiar, ambiência escolar e grupos comunitários.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Poder Judiciário e Tribunais de Justiça.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Administração Penitenciária e Juízo das Execuções.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "895186d5-3918-5c60-b9aa-63a0de2376ad",
+      "tipo": "multipla_escolha",
+      "dificuldade": "facil",
+      "cargo": "Soldado PM",
+      "banca": "Instituto AOCP",
+      "enunciado": "Na criminologia, a 'cifra dourada' diz respeito a qual segmento da criminalidade?",
+      "explicacao": "GABARITO: Crimes praticados por indivíduos de alto poder econômico e político (crimes de colarinho branco / financeiros / tributários) que contam com baixa taxa de persecução e punição formal.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Crimes cometidos contra pessoas idosas.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Crimes ambientais não fiscalizados.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Crimes de colarinho branco, econômicos e financeiros de classes dominantes com elevada taxa de impunidade.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Crimes passionais com uso de armas brancas.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Crimes militares de deserção em tempo de paz.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "5d1b29ce-4718-55fc-92ca-214604d33aa5",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Penal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A prevenção terciária do crime é direcionada à população carcerária e aos egressos do sistema prisional, visando à ressocialização, à reinserção social e à prevenção específica da reincidência criminal.",
+      "explicacao": "GABARITO: CERTO. A prevenção terciária tem destinatário certo (o condenado/egresso) e objetiva impedir a reiteração criminosa por meio do tratamento penitenciário e apoio pós-cárcere.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "5a723abf-8500-513b-9e6d-fba92150bc42",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O ransomware é um tipo de código malicioso que restringe o acesso ao sistema ou criptografa arquivos da vítima, exigindo subsequentemente pagamento de resgate para restabelecimento do acesso.\n\n[Contexto autoral Lote 2 - info2-01] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. Ransomware é o malware de extorsão que utiliza cifras criptográficas para bloquear arquivos ou sistemas, demandando compensação financeira.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "499e3435-40fc-510f-8cdc-05620d04c466",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Policial Penal",
+      "banca": "IBFC",
+      "enunciado": "Qual algoritmo criptográfico a seguir é classificado como de chave simétrica?\n\n[Contexto autoral Lote 2 - info2-07] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: AES (Advanced Encryption Standard). RSA, ECC e DSA são assimétricos. SHA-256 é função hash criptográfica.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "RSA.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "AES.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "ECC.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "DSA.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "SHA-256.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "6c634f75-656a-5e73-8597-14eb4b0c3708",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O protocolo DHCP é responsável por atribuir dinamicamente configurações de rede aos hosts clientes, incluindo endereço IP, máscara de sub-rede, gateway padrão e servidores DNS.\n\n[Contexto autoral Lote 2 - info2-13] A hipótese foi reformulada para banca policial: a equipe responsável atuou em plantão ordinário, preservou os vestígios relevantes e submeteu o ato ao controle competente.",
+      "explicacao": "GABARITO: CERTO. DHCP (Dynamic Host Configuration Protocol) automatiza a distribuição de parâmetros de rede IP.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "0de21078-6540-59c5-8ae4-6ffe10522423",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No sistema operacional Linux, o comando 'chmod 755 arquivo.sh' concede permissão de leitura, escrita e execução para o proprietário, e apenas permissões de leitura e execução para o grupo e outros usuários.\n\n[Contexto autoral Lote 2 - info2-19] Para fins pedagógicos, o item exige leitura sistemática do tema e aplicação objetiva ao contexto de segurança pública.",
+      "explicacao": "GABARITO: CERTO. Notação octal: 7 = 4(r) + 2(w) + 1(x) [rwx]; 5 = 4(r) + 0 + 1(x) [r-x]. Logo: dono=rwx, grupo=r-x, outros=r-x.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "21bd6531-0da8-5196-a956-8085a40af3be",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Perito Criminal Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Em bancos de dados relacionais, o comando SQL 'SELECT DISTINCT departamento FROM policiais' retorna uma lista dos departamentos eliminando linhas duplicadas do conjunto de resultados.\n\n[Contexto autoral Lote 2 - info2-25] Considere, especificamente para este item, que a providência ocorreu após a conclusão das diligências preliminares e antes da revisão humana especialista do banco de questões.",
+      "explicacao": "GABARITO: CERTO. A cláusula DISTINCT na instrução SELECT suprime registros duplicados da projeção.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "88afa19d-e86e-5ed2-ae60-b512428ca6a4",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No período \"Conquanto a perícia técnica tenha sido conclusiva, a autoridade policial requisitou novas diligências complementares\", a conjunção \"Conquanto\" introduz oração subordinada adverbial concessiva, podendo ser substituída por \"Embora\" sem prejuízo do sentido e da correção gramatical.\n\n[Contexto autoral Lote 2 - port2-01] No novo caso do Lote 2, considere que a situação ocorreu em operação policial integrada, com registro formal em relatório circunstanciado e controle posterior de legalidade.",
+      "explicacao": "GABARITO: CERTO. \"Conquanto\" é conjunção subordinativa concessiva por excelência (conquanto, embora, ainda que, se bem que, posto que + subjuntivo). Na oração subjetiva, a oração funciona como sujeito do verbo da oração principal (Ex: \"É necessário que...\").\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "e07a9b9d-f9c0-5abf-8fd7-a361dabb45ca",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No período \"Conquanto a perícia técnica tenha sido conclusiva, a autoridade policial requisitou novas diligências complementares\", a conjunção \"Conquanto\" introduz oração subordinada adverbial concessiva, podendo ser substituída por \"Embora\" sem prejuízo do sentido e da correção gramatical.\n\n[Caso policial port-geral-13] Na situação hipotética, a equipe policial registrou a ocorrência em relatório circunstanciado e preservou os elementos de prova.\n\n[Contexto autoral Lote 2 - port2-13] A hipótese foi reformulada para banca policial: a equipe responsável atuou em plantão ordinário, preservou os vestígios relevantes e submeteu o ato ao controle competente.",
+      "explicacao": "GABARITO: CERTO. \"Conquanto\" é conjunção subordinativa concessiva por excelência (conquanto, embora, ainda que, se bem que, posto que + subjuntivo). Na oração subjetiva, a oração funciona como sujeito do verbo da oração principal (Ex: \"É necessário que...\").\n\nObservação pedagógica: o acréscimo contextual delimita a hipótese concreta (port-geral-13) sem alterar o gabarito, reforçando a aplicação do instituto ao caso narrado.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "9655fcda-d8f7-575f-a23d-df7237c676e1",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No período \"Conquanto a perícia técnica tenha sido conclusiva, a autoridade policial requisitou novas diligências complementares\", a conjunção \"Conquanto\" introduz oração subordinada adverbial concessiva, podendo ser substituída por \"Embora\" sem prejuízo do sentido e da correção gramatical.\n\n[Caso policial port-geral-25] A questão deve ser resolvida à luz da jurisprudência dominante dos tribunais superiores e da legislação vigente em 2026.\n\n[Contexto autoral Lote 2 - port2-25] Considere, especificamente para este item, que a providência ocorreu após a conclusão das diligências preliminares e antes da revisão humana especialista do banco de questões.",
+      "explicacao": "GABARITO: CERTO. \"Conquanto\" é conjunção subordinativa concessiva por excelência (conquanto, embora, ainda que, se bem que, posto que + subjuntivo). Na oração subjetiva, a oração funciona como sujeito do verbo da oração principal (Ex: \"É necessário que...\").\n\nObservação pedagógica: o acréscimo contextual delimita a hipótese concreta (port-geral-25) sem alterar o gabarito, reforçando a aplicação do instituto ao caso narrado.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "faaac7d8-a1b9-5ac8-9b6e-e9bc194cd4a6",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Na oração \"Haviam muitos mandados de busca a serem cumpridos pela equipe operacional\", a forma verbal \"Haviam\" preserva a correção gramatical por concordar com o termo plural \"muitos mandados\".\n\n[Contexto autoral Lote 2 - port2-37] O caso hipotético foi adaptado para seleção policial em 2026, sem alterar o núcleo normativo do instituto cobrado.",
+      "explicacao": "GABARITO: ERRADO. O verbo \"haver\" no sentido de existir, ocorrer ou acontecer é impessoal, não possuindo sujeito. Portanto, deve permanecer obrigatoriamente na 3ª pessoa do singular: \"Havia muitos mandados...\". \"Muitos mandados\" funciona como objeto direto.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "5f4fdbe1-58d8-5f76-9f2d-4ac9b7fbaf98",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No período \"Conquanto a perícia técnica tenha sido conclusiva, a autoridade policial requisitou novas diligências complementares\", a conjunção \"Conquanto\" introduz oração subordinada adverbial concessiva, podendo ser substituída por \"Embora\" sem prejuízo do sentido e da correção gramatical.\n\n[Caso policial port-geral-49] O caso envolve atuação policial em plantão noturno, com posterior controle administrativo e judicial dos atos praticados.\n\n[Contexto autoral Lote 2 - port2-49] Para fins pedagógicos, o item exige leitura sistemática do tema e aplicação objetiva ao contexto de segurança pública.",
+      "explicacao": "GABARITO: CERTO. \"Conquanto\" é conjunção subordinativa concessiva por excelência (conquanto, embora, ainda que, se bem que, posto que + subjuntivo). Na oração subjetiva, a oração funciona como sujeito do verbo da oração principal (Ex: \"É necessário que...\").\n\nObservação pedagógica: o acréscimo contextual delimita a hipótese concreta (port-geral-49) sem alterar o gabarito, reforçando a aplicação do instituto ao caso narrado.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    }
+  ]
+}

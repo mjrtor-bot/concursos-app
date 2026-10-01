@@ -1,0 +1,1278 @@
+{
+  "lote": 3,
+  "prompt_versao": "v2.3-lote3",
+  "totalQuestoes": 500,
+  "totalAlternativas": 1753,
+  "idsUnicos": 500,
+  "fpsUnicos": 500,
+  "colisoesFpComDb": 0,
+  "colisoesIdComDb": 0,
+  "distDisciplina": {
+    "penal": 70,
+    "processo_penal": 70,
+    "legislacao_especial": 70,
+    "constitucional": 60,
+    "administrativo": 60,
+    "portugues": 60,
+    "direitos_humanos": 35,
+    "informatica": 30,
+    "criminologia": 25,
+    "rlm": 20
+  },
+  "distModalidade": {
+    "certo_errado": 249,
+    "multipla_escolha": 251
+  },
+  "distDificuldade": {
+    "medio": 288,
+    "dificil": 169,
+    "facil": 43
+  },
+  "similaridade": {
+    "totalPares": 124750,
+    "pares80": 0,
+    "pares90": 0,
+    "pares95": 0,
+    "pct80": "0.0000",
+    "pct90": "0.0000",
+    "pct95": "0.0000"
+  },
+  "amostra50Count": 50,
+  "amostra50": [
+    {
+      "disciplina": "penal",
+      "id": "8c903ee1-1faa-5e4a-9437-70b4a46f0e8e",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Em matéria de aplicação da lei penal no tempo, a lei posterior que de qualquer modo favorecer o agente aplica-se aos fatos anteriores, ainda que decididos por sentença condenatória transitada em julgado, operando o fenômeno da retroatividade da lex mitior.",
+      "explicacao": "GABARITO: CERTO. O art. 2º, parágrafo único, do Código Penal consagra expressamente a retroatividade da lei penal mais benéfica: 'A lei posterior, que de qualquer modo favorecer o agente, aplica-se aos fatos anteriores, ainda que decididos por sentença condenatória transitada em julgado'. O preceito tem matriz constitucional no art. 5º, inciso XL, da CF/88. Conforme a Súmula 611 do STF, transitada em julgado a sentença condenatória, a competência para aplicar a lei mais benigna é do juízo das execuções penais.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "32d44ead-1175-5114-91c7-dcebfe79c70a",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "Nos termos do art. 15 do Código Penal, tanto na desistência voluntária quanto no arrependimento eficaz, afasta-se a punição pelo crime inicialmente cogitado a título de tentativa, respondendo o agente exclusivamente pelos atos típicos já praticados (tipicidade residual).",
+      "explicacao": "GABARITO: CERTO. O art. 15 do CP estabelece a chamada 'ponte de ouro' (Frank): 'O agente que, voluntariamente, desiste de prosseguir na execução ou impede que o resultado se produza, só responde pelos atos já praticados'. Nessas duas hipóteses legais (desistência voluntária durante a execução ou arrependimento eficaz após esgotada a execução com impedimento do resultado), a lei exclui a tipicidade da tentativa do crime-fim, remanescendo apenas a punição dos fatos pretéritos que configurem delitos autônomos (tipicidade residual).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "863409aa-f3e9-50a3-9d34-b7a8ce12fbfa",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "Em uma ação criminosa de roubo a banco, quatro indivíduos dividem tarefas: dois invadem a agência armados e rendem os seguranças; o terceiro arromba o cofre principal; e o quarto indivíduo, vizinho da agência, apenas informou previamente aos comparsas que a agência não possuía alarme silencioso no pavimento superior, auxílio este que não foi determinante para o sucesso do roubo. À luz da Teoria do Domínio do Fato e do art. 29 do Código Penal, assinale a opção correta:",
+      "explicacao": "GABARITO: Letra B. Pela Teoria do Domínio do Fato (Claus Roxin), é coautor aquele que possui o domínio funcional do fato, desempenhando papel essencial e relevante na execução do plano delitivo global (como os que renderam os seguranças e arrombaram o cofre). Já aquele que presta contribuição causal acessória, secundária e dispensável (sem domínio funcional do fato) atua como partícipe de menor importância, fazendo jus à causa de diminuição de pena de um sexto a um terço prevista no art. 29, § 1º, do Código Penal.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Todos os quatro indivíduos devem ser classificados obrigatoriamente como coautores funcionais com idêntica dosimetria de pena, ante a indivisibilidade da autoria.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Os três executores armados ostentam coautoria funcional por deterem o domínio do fato, enquanto o informante atuou como partícipe de menor importância, incidindo a causa de diminuição do art. 29, § 1º, do Código Penal.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A participação de menor importância deve ser reconhecida apenas para os dois agentes que renderam os seguranças, por não terem tocado no numerário.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "O informante responderá exclusivamente pelo crime de favorecimento real, afastando o concurso de pessoas no roubo.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A conduta do informante é atípica pela ausência de contato físico com o patrimônio da instituição financeira.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "44793555-89c1-56d8-8ad6-4b1571c1599f",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "AOCP",
+      "enunciado": "O Supremo Tribunal Federal, ao julgar o Tema 788 de Repercussão Geral (ARE 848.107/DF), fixou tese vinculante definitiva a respeito do termo inicial da contagem da prescrição da pretensão executória (PPE) estatal. Conforme o entendimento vinculante firmado pela Suprema Corte:",
+      "explicacao": "GABARITO: Letra B. O Plenário do STF, no Tema 788 (Rel. Min. Dias Toffoli e Rel. p/ acórdão Min. Roberto Barroso), fixou a seguinte tese de repercussão geral: 'O prazo para a prescrição da pretensão executória é contado a partir do trânsito em julgado para a acusação e para a defesa'. Superou-se, assim, a literalidade anterior do art. 112, I, do CP, pois a pretensão executória da pena somente pode ser exercida quando a condenação se torna definitiva para ambas as partes, ante o princípio constitucional da presunção de não culpabilidade.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O prazo prescricional executório inicia-se unicamente com o trânsito em julgado para a acusação, mantendo-se a literalidade do art. 112, I, do Código Penal.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "O prazo para a prescrição da pretensão executória é contado a partir do trânsito em julgado para ambas as partes (acusação e defesa).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "O termo a quo da pretensão executória retroage à data do oferecimento da peça acusatória inaugural.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A prescrição executória inicia-se na data da expedição do mandado de prisão preventiva no inquérito policial.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A prescrição da pretensão executória é imprescritível para crimes punidos com reclusão superior a oito anos.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "penal",
+      "id": "3dbaca57-7b63-56c4-88b2-155cc6fd850f",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE",
+      "enunciado": "O crime de extorsão (art. 158 do Código Penal) é delito formal de consumação antecipada, consumando-se no exato momento em que o constrangimento mediante violência ou grave ameaça é imposto à vítima, sendo o auferimento da vantagem econômica indevida mero exaurimento do crime.",
+      "explicacao": "GABARITO: CERTO. Nos termos da Súmula 96 do Superior Tribunal de Justiça: 'O crime de extorsão consuma-se independentemente da obtenção da vantagem indevida'. A extorsão é crime formal (de consumação antecipada): consuma-se no momento em que a vítima é coagida pelo agente a fazer, tolerar que se faça ou deixar de fazer alguma coisa para proporcionar a indevida vantagem econômica. O efetivo recebimento do valor ou benefício configura mero exaurimento da conduta punível.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "3a834fa9-2b71-5df9-931a-787a0b8c22ba",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Após a conclusão das investigações que apuravam crime de peculato em autarquia federal, o Ministério Público Federal deliberou pelo arquivamento do inquérito policial por ausência de justa causa. Em consonância com a novel disciplina do art. 28 do Código de Processo Penal e a interpretação conferida pelo Supremo Tribunal Federal na ADI 6.298/DF, o ato de arquivamento decorre de deliberação privativa do próprio órgão ministerial no modelo acusatório, competindo ao Ministério Público comunicar a decisão à vítima, ao investigado e à autoridade policial, cabendo à vítima a faculdade de submeter a matéria, no prazo de trinta dias, à apreciação da instância de revisão ministerial competente.",
+      "explicacao": "GABARITO: CERTO. Nos termos do art. 28 do CPP, com a eficácia delimitada pelo STF no julgamento da ADI 6.298/DF, o arquivamento do inquérito policial passa a ser ato interno do Ministério Público (titular da ação penal pública), que, ao ordenar o arquivamento, comunicará à autoridade policial, ao investigado e à vítima. Esta última (ou seu representante) poderá submeter a decisão, no prazo de 30 dias após a comunicação, à revisão pelo órgão superior do MP (Câmara de Coordenação e Revisão ou PGJ). O magistrado não homologa o arquivamento de plano, preservando-se a estrutura acusatória estrita.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "6593d7fd-db24-5c2c-8bd3-475fd7d01e4c",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "VUNESP",
+      "enunciado": "Na audiência de custódia realizada no prazo de 24 horas após a prisão em flagrante, caso o Ministério Público pugne expressamente pela concessão de liberdade provisória com medidas cautelares diversas e a defesa requeira o mesmo benefício, o magistrado não pode, de ofício e em dissonância com os requerimentos ministeriais e defensivos, convolar o flagrante em prisão preventiva, em face da vedação de atuação de ofício consolidada no sistema acusatório (arts. 282, § 2º e 311 do CPP).",
+      "explicacao": "GABARITO: CERTO. Com as alterações introduzidas pela Lei nº 13.964/2019 nos arts. 282, § 2º e 311 do CPP e a jurisprudência pacífica do STJ (RHC 131.263) e STF (HC 186.421), restou abolida a conversão da prisão em flagrante em prisão preventiva de ofício pelo magistrado. Se o titular da ação penal pública (MP) não requerer a prisão preventiva, o juiz não pode decretá-la ex officio na audiência de custódia.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "04c44132-c7d7-5080-9aba-9022cecbf985",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Perito Legista",
+      "banca": "FGV",
+      "enunciado": "Em processo penal que apurava tráfico interestadual de drogas, a defesa pleiteou a declaração de nulidade absoluta e o desentranhamento imediato do laudo químico toxicológico, alegando irregularidade no preenchimento do formulário de controle de cadeia de custódia durante o transporte das amostras. De acordo com a orientação pacificada no Superior Tribunal de Justiça e no Supremo Tribunal Federal, a eventual inobservância de formalidades na cadeia de custódia (quebra da cadeia de custódia) não conduz, por si só e de modo automático, à ilicitude e inadmissibilidade peremptória da prova pericial, devendo o vício ser valorado pelo magistrado quanto à higidez, credibilidade e força probante do elemento material em cotejo com o restante do conjunto probatório.",
+      "explicacao": "GABARITO: CERTO. Jurisprudência consolidada do STJ (HC 653.515/RJ, AgRg no REsp 1.947.014/SP) e STF: o descumprimento das etapas da cadeia de custódia (arts. 158-A a 158-F do CPP) não acarreta a nulidade absoluta automática ou a imprestabilidade imediata da prova, ensejando a avaliação do seu valor probatório e de sua confiabilidade diante das demais provas produzidas sob o contraditório.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "8eaf7f50-00a8-5e19-97a6-6da3047e12a5",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Segundo a orientação paradigmática fixada pela Sexta Turma do Superior Tribunal de Justiça (HC nº 598.051/SP) e ratificada pela Quinta Turma, o consentimento do morador para o ingresso de policiais em sua residência sem mandado judicial deve ser voluntário, livre de coação e cabalmente registrado pelo Estado, competindo aos agentes de segurança documentar a autorização por escrito e mediante registro em áudio e vídeo, sob pena de ilicitude da busca domiciliar e contaminação das provas correlatas.",
+      "explicacao": "GABARITO: CERTO. STJ, HC 598.051/SP (Rel. Min. Rogério Schietti Cruz): O consentimento do morador deve ser comprovado pelo Estado por meio de declaração assinada com testemunhas e registro audiovisual da operação, incumbindo ao Poder Público o ônus probatório da higidez do consentimento.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "processo_penal",
+      "id": "df6442f8-f9f9-5803-aa26-1ad748a3fe9f",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Nos crimes de ação penal exclusivamente privada, vigora o princípio da indivisibilidade, razão pela qual a queixa-crime contra qualquer dos autores do crime obrigará ao processo de todos, e o perdão ou a renúncia concedida a um dos querelados a todos aproveitará (arts. 48 e 49 do CPP).",
+      "explicacao": "GABARITO: CERTO. Arts. 48 e 49 do CPP c/c art. 51 do CPP e art. 106, I do CP: O princípio da indivisibilidade impõe que o ofendido proponha a queixa contra todos os coautores e partícipes conhecidos; a renúncia ao direito de queixa ou o perdão concedido a um deles estende-se a todos os demais.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "4486e81e-e559-54d5-bda8-eea387ba09c9",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Em operação da Polícia Federal deflagrada em rodovia interestadual, foi preso em flagrante indivíduo transportando 15 kg de pasta-base de cocaína. Verificou-se que o réu é primário e possui bons antecedentes criminais, mas há registros de inquéritos policiais em andamento sem condenação transitada em julgado. Nessa situação, conforme a jurisprudência sumulada do Superior Tribunal de Justiça (Súmula 444) e o entendimento sobre o art. 33, § 4º, da Lei nº 11.343/2006, a existência de inquéritos policiais ou ações penais em andamento, por si só, não pode ser utilizada para afastar a causa de diminuição de pena do tráfico privilegiado sob o argumento de que o agente se dedica a atividades criminosas.",
+      "explicacao": "GABARITO: CERTO. A jurisprudência pacífica do STF e do STJ (inclusive em teses de recursos repetitivos e na Súmula 444/STJ) consagra que inquéritos policiais ou ações penais em curso, desprovidos de condenação definitiva, não podem fundamentar a presunção de dedicação a atividades criminosas para afastar a aplicação do tráfico privilegiado (art. 33, § 4º, da Lei 11.343/2006), sob pena de manifesta violação ao princípio da presunção de não culpabilidade (art. 5º, LVII, CF/88).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "e46a9d21-458c-548d-94d1-542d05298b64",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Com a entrada em vigor do Pacote Anticrime (Lei nº 13.964/2019), o art. 112 da Lei de Execução Penal passou a disciplinar de forma exaustiva a progressão de regime prisional por percentuais, restando revogadas as frações de 2/5 e 3/5 anteriormente fixadas na Lei de Crimes Hediondos (Lei nº 8.072/1990).",
+      "explicacao": "GABARITO: CERTO. A Lei nº 13.964/2019 revogou tacitamente o art. 2º, § 2º, da Lei nº 8.072/1990 e estabeleceu novos lapsos percentuais para progressão de regime no art. 112 da LEP (40% para primário em hediondo sem morte; 50% em hediondo com morte sendo primário; 60% para reincidente em hediondo sem morte; e 70% para reincidente em hediondo com morte).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "2658ccee-a8a1-564a-8d1b-f3e0c965784a",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Perito Criminal Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O crime de lavagem de dinheiro (Lei nº 9.613/1998) ostenta autonomia dogmática e processual em relação à infração penal antecedente, sendo a ação penal de lavagem punível ainda que o autor do delito prévio seja desconhecido ou isento de pena, ou mesmo que esteja extinta a punibilidade da infração antecedente.",
+      "explicacao": "GABARITO: CERTO. Nos termos do art. 2º, inciso II, e § 1º, da Lei nº 9.613/1998, o processo e julgamento dos crimes de lavagem de capitais independem do processo e julgamento da infração penal antecedente, sendo a punibilidade autônoma ainda que o autor seja desconhecido, isento de pena ou extinta a punibilidade da infração antecedente.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "31a0c861-5d52-50ac-abd3-9550dfd00c19",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Delegado de Polícia Civil",
+      "banca": "VUNESP",
+      "enunciado": "O art. 41 da Lei nº 11.343/2006 prevê causa específica de diminuição de pena para o agente que colaborar voluntariamente com a investigação policial ou o processo criminal. A respeito da colaboração premiada na Lei de Drogas, assinale a alternativa correta:",
+      "explicacao": "GABARITO: C. O art. 41 da Lei 11.343/2006 estabelece que o indiciado ou acusado que colaborar voluntariamente com a investigação policial e o processo criminal na identificação dos demais coautores ou partícipes do crime e na recuperação total ou parcial do produto do crime, no caso de condenação, terá sua pena reduzida de um terço a dois terços.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Garante compulsoriamente a concessão de perdão judicial extintivo da punibilidade pelo Delegado de Polícia.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Aplica-se exclusivamente aos crimes culposos de porte de drogas para consumo pessoal.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Permite a redução da pena privativa de liberdade de um terço a dois terços se a colaboração voluntária resultar na identificação de coautores ou partícipes e na recuperação total ou parcial do produto do crime.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "Exige que a colaboração seja prestada unicamente após o trânsito em julgado da condenação criminal.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Apenas produz efeitos se o colaborador confessar crimes cometidos por autoridades com prerrogativa de foro.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "legislacao_especial",
+      "id": "c949ce00-4246-5028-8a06-4a9e202af0ed",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No curso de operação de infiltração policial devidamente autorizada pelo juízo competente para desarticular facção criminosa violenta, o policial infiltrado é compelido a praticar uma infração penal para manter seu disfarce e salvaguardar sua vida. Conforme o art. 13 da Lei nº 12.850/2013, o policial infiltrado:",
+      "explicacao": "GABARITO: D. O art. 13 da Lei nº 12.850/2013 dispõe que: 'O agente que não guardar, em sua atuação, a devida proporcionalidade com a finalidade da investigação, responderá pelos excessos praticados', estabelecendo a regra de que o policial que atua nos estritos limites da necessidade e proporcionalidade da infiltração não é punível pela prática das infrações estritamente necessárias ao cumprimento de sua missão policial (inexigibilidade de conduta diversa / causa especial de justificação).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Responderá criminalmente por todas as condutas praticadas, com pena privativa de liberdade aumentada do dobro em razão de sua condição de policial.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Gozará de imunidade penal absoluta e perpétua, inclusive para a prática dolosa de crimes de homicídio e tortura.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "Somente será isento de pena caso obtenha indulto presidencial assinado previamente ao início da missão.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Não é punível pelas infrações cometidas no âmbito da missão quando guardar a devida proporcionalidade com os fins da investigação e a preservação de sua vida, respondendo apenas pelos excessos praticados.",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Ficará sujeito à perda automática do cargo civil independente de apuração de excesso.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "1ac92965-3a1e-5b7a-94e5-a90143894f84",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Em julgamento de repercussão geral e controle concentrado (ADPF 995 e RE 846.854), o Supremo Tribunal Federal assentou que as Guardas Municipais integram o Sistema Único de Segurança Pública (SUSP) e detêm competência para realizar policiamento preventivo e comunitário, bem como efetuar prisões em flagrante delito e apreensões decorrentes de fundada suspeita em vias públicas, não estando suas atividades limitadas à estrita vigilância de prédios e patrimônio dos municípios.",
+      "explicacao": "GABARITO: CERTO. O STF, ao julgar a ADPF 995 e o Tema 1017 da Repercussão Geral (RE 846.854), fixou que as Guardas Municipais são órgãos integrantes do Sistema de Segurança Pública (SUSP), executando atividade de segurança pública com atribuição preventiva, ostensiva e comunitária no âmbito local. Assim, é legítima a realização de patrulhamento preventivo, abordagens e prisões em flagrante em flagrante delito ou fundada suspeita nas vias públicas.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "2efc9ce3-a5ef-5439-b562-0bc795f7e73e",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Oficial da Polícia Militar",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Embora a Polícia Civil, a Polícia Penal, a Polícia Militar e o Corpo de Bombeiros Militar do Distrito Federal sejam organizados e mantidos pela União, subordinam-se diretamente ao Governador do Distrito Federal.",
+      "explicacao": "GABARITO: CERTO. A organização e manutenção das forças de segurança do DF incumbem à União (art. 21, XIV, da CF/88), mas a subordinação funcional e administrativa cabe ao Governador do Distrito Federal (art. 144, § 6º, da CF/88).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "eb812d96-c894-54a2-85ca-53cfc473e954",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Nos termos do art. 5º, LVI, da Constituição Federal, são inadmissíveis, no processo, as provas obtidas por meios ilícitos. A teoria da contaminação (ou dos frutos da árvore envenenada) estende essa nulidade às provas derivadas da ilícita, salvo quando não evidenciado o nexo de causalidade entre umas e outras, ou quando as derivadas puderem ser obtidas por uma fonte independente.",
+      "explicacao": "GABARITO: CERTO. Art. 5º, LVI da CF/88 c/c art. 157, §§ 1º e 2º do Código de Processo Penal. A inadmissibilidade das provas ilícitas abrange as provas derivadas (fruits of the poisonous tree), ressalvando-se expressamente a inexistência de nexo causal e a hipótese de fonte independente ou descoberta inevitável.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "5cad9ecb-3c61-5a99-91f8-d2c6e787d7dc",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Decretada a intervenção federal pelo Presidente da República em um Estado-membro para pôr termo a grave comprometimento da ordem pública, o decreto interventivo deverá ser submetido à apreciação do Congresso Nacional no prazo de vinte e quatro horas, ficando o Congresso dispensado de convocação extraordinária se estiver em recesso.",
+      "explicacao": "GABARITO: ERRADO. O art. 36, § 1º c/c § 2º da CF estabelece que o decreto de intervenção será submetido à apreciação do Congresso Nacional no prazo de vinte e quatro horas e, se o Congresso estiver em recesso, será feita convocação extraordinária no mesmo prazo de 24 horas.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "constitucional",
+      "id": "130ac269-d826-59a2-9850-c4ce57bd5330",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Os Deputados e Senadores são invioláveis, civil e penalmente, por quaisquer de suas opiniões, palavras e votos. Conforme jurisprudência do STF, as declarações proferidas fora do recinto do Congresso Nacional exigem a demonstração do nexo de pertinência direta entre as manifestações e o desempenho do mandato representativo.",
+      "explicacao": "GABARITO: CERTO. Art. 53, caput da CF/88. O STF pacificou que, enquanto as manifestações proferidas no recinto parlamentar gozam de presunção absoluta de conexão com o mandato, as palavras emitidas em entrevistas ou redes sociais fora do parlamento exigem vínculo direto e funcional com o exercício do mandato legislativo para atrair a imunidade material.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "3b725fca-ad2b-58b8-8927-7a4ca7388388",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Embora a publicidade seja a regra geral que rege os atos da Administração Pública, o ordenamento jurídico admite a decretação de sigilo em procedimentos investigatórios policiais quando a medida for imprescindível à segurança da sociedade e do Estado ou ao êxito das diligências investigativas, sem que isso configure ofensa ao princípio constitucional da publicidade.",
+      "explicacao": "GABARITO: CERTO. O princípio da publicidade (art. 37, caput, da CF/88) não possui caráter absoluto. O art. 5º, incisos XXXIII e LX, da CF/88 autoriza expressamente a restrição da publicidade dos atos administrativos quando a defesa da intimidade ou o interesse social e a segurança da sociedade/Estado o exigirem. No âmbito policial, o art. 20 do Código de Processo Penal estabelece que a autoridade assegurará no inquérito o sigilo necessário à elucidação do fato ou exigido pelo interesse da sociedade, ressalvado ao defensor o acesso aos elementos de prova já documentados (Súmula Vinculante 14 do STF).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "fee24370-c06a-59cc-b4f2-ef49dd85cfc0",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No exercício do poder hierárquico, a autoridade administrativa pode delegar parte de sua competência a outros órgãos ou agentes públicos, ainda que não lhe sejam hierarquicamente subordinados. Todavia, a legislação de processo administrativo federal proíbe expressamente a delegação da edição de atos de caráter normativo, da decisão de recursos administrativos e das matérias de competência exclusiva.",
+      "explicacao": "GABARITO: CERTO. A regra é disciplinada nos arts. 12 e 13 da Lei nº 9.784/1999. O art. 12 permite a delegação de competência mesmo entre órgãos sem subordinação hierárquica. O art. 13 elenca as matérias indelegáveis (mnemônico CE-NO-RA): I - edição de atos de caráter normativo; II - decisão de recursos administrativos; III - matérias de competência exclusiva do órgão ou autoridade.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "910123c8-fb9c-500d-8b0c-409f48bfb7f4",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O atributo da imperatividade está presente em todos os atos administrativos, inclusive naqueles que conferem direitos a pedido do particular (atos negociais, como a concessão de uma certidão ou autorização).",
+      "explicacao": "GABARITO: ERRADO. O atributo da imperatividade (prerrogativa pela qual os atos administrativos impõem obrigações aos administrados independentemente de sua concordância) NÃO está presente em todos os atos administrativos. Ele não existe nos atos enunciativos (como certidões e atestados) nem nos atos negociais/ampliativos (como autorizações e licenças solicitadas voluntariamente pelo administrado).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "3308a8f7-b9f8-5d0c-a598-8e4a720e9a68",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O servidor policial responde civil, penal e administrativamente pelo exercício irregular de suas atribuições, sendo que as sanções civis, penais e administrativas poderão cumular-se, sendo independentes entre si, ressalvada a hipótese de absolvição penal que declare a inexistência material do fato ou a negativa de sua autoria, a qual extingue a responsabilidade administrativa.",
+      "explicacao": "GABARITO: CERTO. O preceito sintetiza a disciplina dos arts. 121 a 126 da Lei nº 8.112/1990. O art. 125 dispõe que 'As sanções civis, penais e administrativas poderão cumular-se, sendo independentes entre si'. O art. 126 ressalva: 'A responsabilidade administrativa do servidor será afastada no caso de absolvição criminal que negue a existência do fato ou sua autoria'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "administrativo",
+      "id": "0c6c36fd-26bb-557e-80c7-236af9abe105",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Com a reforma da Lei nº 14.230/2021, enquanto os atos de improbidade que importam enriquecimento ilícito (art. 9º) e os que causam prejuízo ao erário (art. 10) mantiveram rol meramente exemplificativo, os atos de improbidade que atentam contra os princípios da administração pública (art. 11) passaram a constituir rol taxativo (numerus clausus).",
+      "explicacao": "GABARITO: CERTO. A Lei 14.230/2021 manteve a cláusula aberta exemplificativa nos arts. 9º e 10 ('constitui ato de improbidade... e notadamente...'), porém alterou o caput do art. 11 para estabelecer um rol taxativo: 'constitui ato de improbidade administrativa que atenta contra os princípios da administração pública a ação ou omissão dolosa que viole os deveres de honestidade, de imparcialidade e de legalidade, caracterizada por UMA DAS SEGUINTES CONDUTAS:'. Assim, apenas as condutas expressamente tipificadas nos incisos do art. 11 configuram improbidade por violação a princípios.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "78d28a7e-1045-56f9-9863-460ce03ec6f5",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE",
+      "enunciado": "Infere-se do texto que a chefia reconheceu a possibilidade de relação entre policiamento ostensivo e redução dos roubos, mas evitou afirmar causalidade única.",
+      "explicacao": "O advérbio 'exclusivamente' e a recomendação de cautela afastam leitura de causa única, sem negar possível relação entre os fatos.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "e8c0ffc8-96f9-5422-9790-7895a48ceba4",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Soldado",
+      "banca": "IBFC",
+      "enunciado": "A palavra 'discriminar' foi empregada adequadamente no sentido de distinguir ou relacionar minuciosamente.",
+      "explicacao": "'Discriminar' significa distinguir, separar ou especificar; 'descriminar' significa deixar de considerar crime.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "18baa029-c5fa-5d07-a100-227159aaf410",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão",
+      "banca": "FCC",
+      "enunciado": "A oração 'que a autoridade registre a justificativa da busca' exerce função de sujeito da forma verbal 'convém'.",
+      "explicacao": "Com verbos unipessoais como 'convém', a oração substantiva subjetiva funciona como sujeito oracional.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "a8f1384b-fd33-54b9-b8b6-f58c141c48de",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Auxiliar de Autópsia",
+      "banca": "FCC",
+      "enunciado": "O 'que' inicial introduz oração substantiva subjetiva.",
+      "explicacao": "A oração 'Que a cadeia...' funciona como sujeito de 'é condição'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "portugues",
+      "id": "daabb47e-a81f-5aa8-9b39-421fd1f9557f",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Penal",
+      "banca": "IBFC",
+      "enunciado": "A ausência de vírgulas indica que apenas determinada cela, entre outras possíveis, passou por manutenção e será reaberta.",
+      "explicacao": "A oração adjetiva restritiva delimita o referente 'cela'.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "4e57a183-12de-51f7-81eb-5a343dd24fd2",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Adotada em 1948 pela Assembleia Geral das Nações Unidas por meio da Resolução 217-A (III), a Declaração Universal dos Direitos Humanos (DUDH) não possui a forma formal de tratado internacional, tendo sido concebida originalmente sob a roupagem de 'soft law' (recomendação). Não obstante, a doutrina jusinternacionalista e as cortes internacionais consagram que grande parte de suas disposições adquiriu status de direito internacional consuetudinário e de princípios gerais do direito internacional, possuindo inquestionável força cogente e orientadora global.",
+      "explicacao": "GABARITO: CERTO. A DUDH foi proclamada como Resolução 217-A (III) da Assembleia Geral da ONU, não ostentando natureza originária de tratado em sentido estrito (ausência de ratificação formal). Contudo, em decorrência da prática reiterada e da opinio juris dos Estados ao longo das décadas, seus preceitos foram alçados à categoria de direito internacional costumeiro (consuetudinário) e princípios gerais de direito, irradiando força vinculante e servindo de matriz interpretativa de direitos humanos em escala universal.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "a60a4069-1a68-5bf0-943c-b838b653788e",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia",
+      "banca": "FGV",
+      "enunciado": "O Artigo 4º da Convenção Americana sobre Direitos Humanos (Pacto de San José da Costa Rica) disciplina de forma minudente o direito à vida. Acerca das regras sobre a pena de morte e a tutela do direito à vida na CADH, assinale a opção correta.",
+      "explicacao": "GABARITO: O Artigo 4º da CADH traz três diretrizes fundamentais: 1) o direito à vida é protegido pela lei e, em geral, desde a concepção (art. 4.1); 2) nos países que não tenham abolido a pena de morte, esta só poderá ser imposta para os delitos mais graves e nunca por delitos políticos ou conexos (art. 4.2 e 4.4); 3) a cláusula de não retrocesso / vedação do efeito guilhotina (art. 4.3): não se pode restabelecer a pena de morte nos Estados que a hajam abolido.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Os Estados que hajam abolido a pena de morte podem restabelecê-la posteriormente mediante emenda constitucional aprovada por maioria absoluta em situações de guerra civil interna.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "A pena de morte pode ser aplicada a pessoas que tenham menos de dezoito anos de idade na data do delito, desde que imputáveis penalmente segundo a lei local.",
+          "correta": false
+        },
+        {
+          "letra": "C",
+          "texto": "O direito à vida deve ser protegido pela lei e, em geral, desde a concepção, sendo vedado restabelecer a pena de morte nos Estados-Partes que a tenham abolido.",
+          "correta": true
+        },
+        {
+          "letra": "D",
+          "texto": "A CADH autoriza a aplicação da pena de morte para qualquer crime hediondo ou contra a administração pública, mesmo que ausente violência real contra pessoas.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A CADH assegura a aplicação de pena capital para delitos políticos e comuns conexos em razão de sua gravidade institucional contra o Estado.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "d5303980-e8fe-52f9-883d-3e4b517ca43b",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No âmbito do Sistema Interamericano de Proteção aos Direitos Humanos, as vítimas individuais de violações de direitos humanos não possuem legitimidade processual direta (jus postulandi) para demandar perante a Corte Interamericana de Direitos Humanos, competindo unicamente aos Estados-Partes e à Comissão Interamericana de Direitos Humanos submeter casos contenciosos ao julgamento daquela Corte.",
+      "explicacao": "GABARITO: CERTO. O Artigo 61, item 1, da Convenção Americana sobre Direitos Humanos prescreve categoricamente: 'Somente os Estados-Partes e a Comissão têm direito de submeter um caso à decisão da Corte'. As pessoas físicas, grupos de indivíduos ou ONGs apresentam a petição inicial perante a Comissão Interamericana (CIDH - Washington). Se o caso não for solucionado e o Estado for reconhecedor da competência contenciosa da Corte (San José da Costa Rica), a Comissão ou outro Estado submeterá a demanda à Corte IDH.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "1896f5dd-e41b-5b05-adc7-9ba4cf4779ab",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Inspetor de Polícia Civil",
+      "banca": "FGV",
+      "enunciado": "No emblemático Caso Gomes Lund e outros ('Guerrilha do Araguaia') vs. Brasil (sentença de 2010), a Corte Interamericana de Direitos Humanos condenou o Estado brasileiro por violações perpetradas durante o regime militar. Em sua decisão vinculante, a Corte IDH estabeleceu que:",
+      "explicacao": "GABARITO: No Caso Gomes Lund vs. Brasil (2010), a Corte IDH firmou que as disposições da Lei de Anistia brasileira (Lei nº 6.683/1979) que impedem a investigação e sanção de graves violações de direitos humanos (como tortura e desaparecimentos forçados) são incompatíveis com a Convenção Americana sobre Direitos Humanos, carecem de efeitos jurídicos e não podem representar obstáculo à persecução penal, haja vista o dever estatal inderrogável de investigar, processar e punir crimes contra a humanidade.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "A Lei de Anistia de 1979 é plenamente compatível com o Pacto de San José da Costa Rica por constituir fruto de acordo político soberano aprovado pelo Parlamento brasileiro.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "As disposições da Lei de Anistia que impedem a investigação e punição de graves violações de direitos humanos carecem de efeitos jurídicos por violarem a CADH, subsistindo o dever de investigar e punir os responsáveis.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "O desaparecimento forçado de pessoas prescreve no prazo improrrogável de vinte anos a contar da data presumida da morte da vítima.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "A indenização financeira paga aos familiares das vítimas supre integralmente a obrigação estatal, dispensando a abertura de arquivos militares.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "A jurisdição militar possui competência privativa para apurar crimes de desaparecimento forçado praticados por agentes das Forças Armadas.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "direitos_humanos",
+      "id": "532e47b8-aa9e-532e-a61a-076c9cdc7920",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "O conceito dogmático de 'controle de convencionalidade' foi expressamente formulado pela Corte Interamericana de Direitos Humanos a partir do Caso Almonacid Arellano e outros vs. Chile (2006). Segundo essa diretriz, quando um Estado ratifica um tratado de direitos humanos como a CADH, os seus juízes e órgãos vinculados à administração da justiça (inclusive autoridades policiais) estão submetidos ao dever de exercer o controle de convencionalidade ex officio, velando para que as normas e atos internos não sejam contrários aos preceitos da Convenção e à interpretação conferida pela Corte Interamericana.",
+      "explicacao": "GABARITO: CERTO. No Caso Almonacid Arellano vs. Chile (2006, voto do Juiz Sergio García Ramírez e corpo do acórdão), a Corte IDH cunhou a doutrina do Controle de Convencionalidade. A Corte assentou que o Poder Judiciário e todos os órgãos de aplicação do direito devem exercer, ex officio, o confronto entre o direito interno e os tratados internacionais de direitos humanos ratificados, bem como a interpretação autêntica fixada pela jurisprudência da Corte Interamericana.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "9e749645-99b1-5d37-94f9-832375cbdbbb",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Perito Criminal Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Um rootkit é um conjunto de programas maliciosos projetado fundamentalmente para obter e manter acesso privilegiado (root ou administrador) a um sistema computacional de forma oculta, modificando estruturas do sistema operacional ou chamadas de sistema (syscalls/API hooking) para mascarar a presença de processos, arquivos e conexões de rede ativas.",
+      "explicacao": "GABARITO: CERTO. O rootkit é uma coleção de ferramentas que visa assegurar e manter o acesso de nível de administrador/root a um sistema comprometido, ocultando ativamente as evidências de invasão (como processos em execução, chaves de registro, arquivos e conexões de rede ativas) por meio de técnicas de hooking ou intervenção no kernel do sistema operacional.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "2e9439f2-ebf4-5f5e-a136-00cc2f8eebbb",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No modelo de segurança Zero Trust (Confiança Zero), uma vez que o dispositivo corporativo do policial ultrapassa com sucesso a autenticação inicial na borda da rede local (intranet), estabelece-se uma relação de confiança implícita que dispensa novas verificações de identidade ou privilégios para acessar bancos de dados e sistemas internos.",
+      "explicacao": "GABARITO: ERRADO. O princípio fundamental da arquitetura Zero Trust é 'nunca confiar, sempre verificar' (never trust, always verify). Sob esse modelo, não existe perímetro de confiança implícita; mesmo dispositivos e usuários localizados dentro da rede local corporativa devem ser continuamente autenticados, autorizados e validados a cada requisição de acesso a recursos específicos.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "12915c14-bb90-5986-a91e-0fc8bbec5280",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Uma VPN (Virtual Private Network) permite trafegar dados sigilosos por meio de tunelamento criptografado sobre redes públicas desprotegidas. No protocolo IPsec, quando configurado em modo túnel (tunnel mode), o pacote IP original inteiro (incluindo seu cabeçalho original e carga útil) é cifrado e encapsulado dentro de um novo pacote IP com um novo cabeçalho externo de roteamento.",
+      "explicacao": "GABARITO: CERTO. No IPsec, existem dois modos de operação: no modo transporte, apenas a carga útil (payload) do pacote IP é cifrada, mantendo-se o cabeçalho original; no modo túnel (típico de conexões gateway-to-gateway e VPNs corporativas), todo o pacote IP original é protegido e encapsulado dentro de um novo pacote IP com novo cabeçalho.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "b264b014-dc93-5624-b17d-8620bbc18726",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Perito Criminal Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "No sistema operacional Linux, o comando `grep -rni \"fraude\" /var/log/` executa uma busca recursiva em todos os arquivos e subdiretórios presentes em `/var/log/`, ignorando a diferença entre letras maiúsculas e minúsculas e exibindo o número da linha correspondente em cada ocorrência do termo localizado.",
+      "explicacao": "GABARITO: CERTO. No utilitário `grep`: o parâmetro `-r` (ou `-R`) habilita a busca recursiva em diretórios e subdiretórios; `-n` instrui a exibição do número da linha no arquivo onde o casamento de padrão ocorreu; e `-i` ativa o modo case-insensitive (ignora a distinção entre maiúsculas e minúsculas).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "informatica",
+      "id": "e1ea3509-a7a7-503b-b26a-405637246fe5",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Em um banco de dados relacional, uma tabela pode possuir múltiplas chaves primárias (Primary Keys) ativas simultaneamente, sendo expressamente permitido que os atributos integrantes da chave primária recebam valores nulos (NULL) quando o registro cadastrado representar uma entidade em caráter provisório.",
+      "explicacao": "GABARITO: ERRADO. No modelo relacional, cada tabela pode possuir apenas UMA chave primária (que pode ser simples ou composta por múltiplos atributos). Além disso, a regra fundamental de integridade de entidade (Entity Integrity) estabelece categoricamente que nenhum atributo integrante de uma chave primária pode aceitar valores nulos (NULL).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "54f16066-0dcc-5f72-bdaa-62a1103dc232",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "cargo": "Delegado de Polícia Civil",
+      "banca": "VUNESP",
+      "enunciado": "No desenvolvimento histórico do pensamento criminológico, a Escola Clássica (período filosófico-humanitário) marcou a transição para a modernidade penal. Sobre os postulados e principais expoentes da Escola Clássica, assinale a alternativa correta:",
+      "explicacao": "GABARITO: B. Cesare Beccaria (1738–1794), autor de 'Dos Delitos e das Penas' (1764), fundamentou o direito de punir no contrato social e na legalidade estrita, consagrando a prevenção geral e a proporcionalidade da pena contra os excessos do absolutismo.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Francesco Carrara formulou a teoria do criminoso nato a partir de estigmas morfológicos atávicos, refutando a ideia de livre-arbítrio.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Cesare Beccaria, em 'Dos Delitos e das Penas', fundamentou a legitimidade da pena na teoria do contrato social e no princípio da legalidade estrita, sustentando que a finalidade da sanção penal é impedir o réu de causar novos danos e dissuadir os demais cidadãos.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A Escola Clássica adotou como método precípuo o indutivo-experimental (empírico), fundamentando a responsabilidade penal na periculosidade social do agente.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Enrico Ferri e Raffaele Garofalo estabeleceram que o crime é uma entidade puramente jurídica, rejeitando a concepção de delito natural ou fatores biológicos.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Jeremy Bentham rejeitou a teoria utilitarista da pena, afirmando que o castigo estatal possui finalidade exclusivamente retributiva e metafísica.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "82965c62-19f7-5fa5-8f52-d6f614a0be0f",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Escrivão de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Segundo a Teoria da Associação Diferencial de Edwin Sutherland, a conduta desviante decorre do aprendizado de técnicas de execução e de um excesso de definições favoráveis à violação da lei em relação às definições desfavoráveis, transmitidas no interior de grupos primários íntimos de convivência, rechaçando a premissa de que a criminalidade seja causada exclusivamente pela pobreza ou por patologias individuais.",
+      "explicacao": "GABARITO: CERTO. Sutherland formulou a Teoria da Associação Diferencial enfatizando que o crime é um comportamento aprendido socialmente por meio de processos comunicativos em grupos íntimos. Essa teoria permitiu explicar também a prática de delitos econômicos e corporativos por pessoas de alto status social (crimes de colarinho branco).",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "3c3f7435-4431-58d9-9176-45a50dcf3579",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Perito Criminal",
+      "banca": "VUNESP",
+      "enunciado": "A Teoria do Controle Social (ou Vínculo Social), formulada por Travis Hirschi em 1969 ('Causes of Delinquency'), inverte a pergunta criminológica tradicional: em vez de indagar por que as pessoas cometem crimes, busca compreender por que a maioria das pessoas não comete crimes. Para Hirschi, o vínculo que une o indivíduo à sociedade e impede o desvio é composto por quatro elementos essenciais:",
+      "explicacao": "GABARITO: B. Para Travis Hirschi, o controle social reside na força de quatro elementos do vínculo social: 1) Apego / Attachment (laços afetivos com pais e comunidade); 2) Compromisso / Commitment (investimento em metas convencionais como estudos e carreira); 3) Envolvimento / Involvement (tempo gasto em atividades legítimas que impede o ócio); 4) Crença / Belief (respeito às normas e autoridade da lei).",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "Atavismo, periculosidade, estigmatização e sanção carcerária exemplar.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "Apego (attachment), compromisso (commitment), envolvimento (involvement) e crença (belief).",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "Desorganização espacial, anomia estrutural, associação diferencial e rotulação formal.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "Coação física, coação psicológica, recompensa financeira e punição retributiva.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Delinquência primária, delinquência secundária, desvio de conduta e estigma de carreira.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "515e4232-07a1-5427-be2c-5d0212af7a14",
+      "tipo": "multipla_escolha",
+      "dificuldade": "dificil",
+      "cargo": "Delegado de Polícia Civil",
+      "banca": "VUNESP",
+      "enunciado": "No estudo da Vitimodogmática, ramo dogmático-penal que analisa o papel da vítima na configuração do injusto penal e na graduação da culpabilidade, o 'princípio da autorresponsabilidade da vítima' sustenta que:",
+      "explicacao": "GABARITO: B. A Vitimodogmática e a teoria da imputação objetiva (Roxin, Jakobs) postulam que, quando a vítima atua de forma plenamente capaz, voluntária e consciente do perigo, assumindo o risco ou criando a situação de dano sem dever de proteção alheio (autocolocação em risco consentida), a imputação penal em desfavor do autor pode ser afastada ou mitigada.",
+      "alternativas": [
+        {
+          "letra": "A",
+          "texto": "O Estado deve transferir integralmente para a vítima o encargo financeiro da apuração penal e das custas processuais nos crimes de ação pública incondicionada.",
+          "correta": false
+        },
+        {
+          "letra": "B",
+          "texto": "A conduta voluntária e consciente da própria vítima, que se expõe livremente ao perigo ou cria o risco proibido em situação de plena capacidade de discernimento, pode afastar ou mitigar a imputação objetiva do resultado ao autor do fato.",
+          "correta": true
+        },
+        {
+          "letra": "C",
+          "texto": "A vítima é considerada coautora necessária em todos os crimes patrimoniais perpetrados sem emprego de violência física.",
+          "correta": false
+        },
+        {
+          "letra": "D",
+          "texto": "O consentimento do ofendido em bens jurídicos personalíssimos indisponíveis (como a vida) elide a tipicidade formal do crime de homicídio.",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Todo delinquente reincidente deve ser concebido como vítima primária da opressão estatal, extinguindo-se sua responsabilidade penal.",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "criminologia",
+      "id": "ede247fc-e886-5c64-8a58-1ae4969c6ca6",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "cargo": "Investigador de Polícia",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "A prevenção situacional do delito, formulada por Ronald V. Clarke, prescinde da alteração prévia das disposições morais ou de reformas estruturais do indivíduo e concentra-se na modificação do ambiente físico imediato para reduzir as oportunidades criminosas, estruturando-se em técnicas que buscam: aumentar o esforço percebido para a prática do delito, aumentar o risco de detecção, reduzir as recompensas esperadas, reduzir as provocações ambientais e remover as justificativas ou desculpas racionais do infrator.",
+      "explicacao": "GABARITO: CERTO. A Teoria da Prevenção Situacional (Clarke) foca no contexto espacial e circunstancial imediato (bloqueio de alvos, vigilância, controle de acessos), aumentando os custos e riscos da conduta criminosa e diminuindo os ganhos da oportunidade delitiva calculada pelo infrator racional.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "c8ecb844-5788-5894-8b32-f214c49a9d36",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Considere como referência as seguintes proposições simples relacionadas a uma diligência policial:\n\np: \"O mandado de busca e apreensão foi expedido pelo juiz competente.\" (Valor lógico: Verdadeiro)\nq: \"A equipe policial apreendeu os computadores do investigado.\" (Valor lógico: Falso)\n\nNessa situação hipotética, a proposição composta \"Se o mandado de busca e apreensão foi expedido pelo juiz competente, então a equipe policial apreendeu os computadores do investigado\" possui valor lógico Falso.",
+      "explicacao": "GABARITO: CERTO.\n\nPasso a passo analítico:\n1. A proposição composta apresentada é uma condicional do tipo \"Se p, então q\", simbolizada por p → q.\n2. Conforme o enunciado:\n   - Valor de p = V (Verdadeiro);\n   - Valor de q = F (Falso).\n3. Pela tabela-verdade do conectivo condicional (→), a proposição só é FALSA quando o antecedente é verdadeiro e o consequente é falso (V → F = F).\n4. Como temos V → F, o valor lógico resultante é Falso, tornando a afirmativa do item correta.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "0cffd463-fe9d-51d8-9570-a610b8c275b1",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Papiloscopista Policial Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Julgue o item a seguir, referente às propriedades de equivalência lógica no raciocínio dedutivo.\n\nA proposição \"Se o fragmento papilar coletado no local do crime é nítido, então o laudo pericial identifica a autoria do delito\" é logicamente equivalente a \"Se o laudo pericial não identifica a autoria do delito, então o fragmento papilar coletado no local do crime não é nítido\".",
+      "explicacao": "GABARITO: CERTO.\n\nPasso a passo analítico:\n1. Seja P: \"O fragmento papilar coletado no local do crime é nítido\".\n2. Seja Q: \"O laudo pericial identifica a autoria do delito\".\n3. A proposição original é uma condicional: P → Q.\n4. Uma das equivalências fundamentais da condicional é a contrapositiva (ou transposição lógica), dada por:\n   (P → Q) ≡ (~Q → ~P)\n5. Na segunda proposição temos:\n   - ~Q: \"O laudo pericial não identifica a autoria do delito\";\n   - ~P: \"O fragmento papilar coletado no local do crime não é nítido\".\n   Estrutura: ~Q → ~P.\n6. Sendo a contrapositiva rigorosamente equivalente à condicional direta, o item está correto.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "b8332690-424c-51a0-9d3d-cd14c6c13fe5",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Agente de Polícia Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Considere verdadeiras as seguintes premissas lógicas:\n\n1. Todos os agentes do Grupo de Pronta Intervenção (GPI) são exímios atiradores.\n2. Nenhum indivíduo indisciplinado é exímio atirador.\n3. Alguns instrutores da Academia Nacional de Polícia são agentes do Grupo de Pronta Intervenção (GPI).\n\nA partir dessas premissas, julgue o item a seguir:\nConclui-se, como consequência lógica e necessária, que alguns instrutores da Academia Nacional de Polícia não são indivíduos indisciplinados.",
+      "explicacao": "GABARITO: CERTO.\n\nPasso a passo analítico:\n1. Análise por conjuntos (Diagramas de Venn):\n   - P1: GPI ⊂ Atiradores (O conjunto GPI está totalmente contido no conjunto dos Atiradores).\n   - P2: Indisciplinados ∩ Atiradores = ∅ (Conjuntos disjuntos). Logo, Indisciplinados ∩ GPI = ∅.\n   - P3: Instrutores ∩ GPI ≠ ∅ (Existe pelo menos um instrutor x que pertence ao GPI).\n2. Como x ∈ GPI e GPI ⊂ Atiradores, segue que x é Atirador.\n3. Como nenhum Atirador é Indisciplinado, segue que x ∉ Indisciplinados.\n4. Sendo x um Instrutor que não é Indisciplinado, fica demonstrado de forma irrefutável que \"Alguns instrutores da Academia Nacional de Polícia não são indivíduos indisciplinados\".\n5. Conclusão válida e necessária.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "f780c61e-eefb-5c80-9f52-82d13cb6818b",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Para padronizar o código de acesso das viaturas operacionais a um sistema criptografado de radiocomunicação, a PRF estipulou senhas alfanuméricas de 5 posições, formadas obrigatoriamente por 2 letras distintas (escolhidas entre as 26 letras do alfabeto) nas duas primeiras posições, seguidas por 3 algarismos distintos (escolhidos entre os 10 algarismos de 0 a 9) nas três últimas posições.\n\nNessas condições, o total de senhas distintas que podem ser criadas é superior a 500.000.",
+      "explicacao": "GABARITO: ERRADO.\n\nPasso a passo analítico:\n1. Aplicação do Princípio Fundamental da Contagem (PFC):\n   - Posição 1 (1ª letra): 26 opções;\n   - Posição 2 (2ª letra, distinta da primeira): 25 opções;\n   - Posição 3 (1º algarismo): 10 opções;\n   - Posição 4 (2º algarismo, distinto do primeiro): 9 opções;\n   - Posição 5 (3º algarismo, distinto dos anteriores): 8 opções.\n2. Cálculo do número total de senhas:\n   Total = 26 × 25 × 10 × 9 × 8\n   Total = 650 × 720 = 468.000 senhas distintas.\n3. Como 468.000 é MENOR que 500.000, a afirmativa do item de que o total é superior a 500.000 está ERRADA.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": false
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": true
+        }
+      ]
+    },
+    {
+      "disciplina": "rlm",
+      "id": "d3d48409-22ec-5e6c-ab06-59c21e1e1262",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "cargo": "Policial Rodoviário Federal",
+      "banca": "CEBRASPE (CESPE)",
+      "enunciado": "Registros estatísticos de fiscalização da PRF indicam que, em um determinado trecho rodoviário, a probabilidade de um caminhão abordado apresentar pneus em mau estado de conservação é de 20% (0,20) e a probabilidade de apresentar excesso de carga é de 15% (0,15). Supondo que essas duas infrações ocorram de forma estatisticamente independente, a probabilidade de um caminhão abordado aleatoriamente apresentar pelo menos uma dessas duas infrações é igual a 32% (0,32).",
+      "explicacao": "GABARITO: CERTO.\n\nPasso a passo analítico:\n1. Sejam os eventos:\n   - A: apresentar irregularidade nos pneus → P(A) = 0,20.\n   - B: apresentar excesso de carga → P(B) = 0,15.\n2. Como os eventos são independentes, a probabilidade da interseção é:\n   P(A ∩ B) = P(A) × P(B) = 0,20 × 0,15 = 0,03 (3%).\n3. A probabilidade de apresentar pelo menos uma das infrações corresponde à união P(A ∪ B):\n   P(A ∪ B) = P(A) + P(B) - P(A ∩ B)\n   P(A ∪ B) = 0,20 + 0,15 - 0,03 = 0,35 - 0,03 = 0,32 (32%).\n4. Método pelo evento complementar:\n   P(nenhuma infração) = (1 - 0,20) × (1 - 0,15) = 0,80 × 0,85 = 0,68.\n   P(pelo menos uma) = 1 - 0,68 = 0,32 (32%).\n5. Portanto, o item está CERTO.",
+      "alternativas": [
+        {
+          "letra": "C",
+          "texto": "Certo",
+          "correta": true
+        },
+        {
+          "letra": "E",
+          "texto": "Errado",
+          "correta": false
+        }
+      ]
+    }
+  ]
+}

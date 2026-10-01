@@ -1,0 +1,860 @@
+{
+  "disciplinas": [
+    {
+      "id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Língua Portuguesa",
+      "slug": "lingua-portuguesa",
+      "descricao": "Interpretação de textos, gramática, concordância, regência, crase e pontuação.",
+      "icone": "BookOpen",
+      "cor": "#3b82f6",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Direito Constitucional",
+      "slug": "direito-constitucional",
+      "descricao": "Direitos fundamentais, organização do Estado, Poderes e controle de constitucionalidade.",
+      "icone": "Scale",
+      "cor": "#8b5cf6",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Direito Administrativo",
+      "slug": "direito-administrativo",
+      "descricao": "Princípios, atos administrativos, Lei 14.133/21, poderes e responsabilidade civil.",
+      "icone": "Building2",
+      "cor": "#ec4899",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Direito Penal",
+      "slug": "direito-penal",
+      "descricao": "Teoria do crime, tipicidade, culpabilidade, crimes contra a pessoa, patrimônio e administração pública.",
+      "icone": "ShieldAlert",
+      "cor": "#f59e0b",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Direito Processual Penal",
+      "slug": "direito-processual-penal",
+      "descricao": "Inquérito policial, ação penal, provas, prisões cautelares, competência e recursos.",
+      "icone": "FileCheck2",
+      "cor": "#e11d48",
+      "ordem": 5,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Legislação Especial",
+      "slug": "legislacao-especial",
+      "descricao": "Lei de Abuso de Autoridade, Drogas, Desarmamento, Crimes Hediondos e Maria da Penha.",
+      "icone": "Gavel",
+      "cor": "#d97706",
+      "ordem": 6,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "nome": "Direitos Humanos",
+      "slug": "direitos-humanos",
+      "descricao": "DUDH, Pacto de San José da Costa Rica, tratados internacionais e garantias fundamentais.",
+      "icone": "HeartHandshake",
+      "cor": "#9333ea",
+      "ordem": 7,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Informática e Tecnologia",
+      "slug": "informatica-ti",
+      "descricao": "Segurança da informação, redes, computação em nuvem, bancos de dados e sistemas operacionais.",
+      "icone": "Laptop",
+      "cor": "#06b6d4",
+      "ordem": 8,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Raciocínio Lógico-Matemático",
+      "slug": "raciocinio-logico",
+      "descricao": "Lógica proposicional, equivalências, diagramas lógicos, análise combinatória e probabilidade.",
+      "icone": "BrainCircuit",
+      "cor": "#10b981",
+      "ordem": 9,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "2ad23a1d-b039-5195-aab6-03545f246714",
+      "nome": "Administração Pública",
+      "slug": "administracao-publica",
+      "descricao": "Gestão por processos, governança pública, planejamento estratégico e orçamento público.",
+      "icone": "Briefcase",
+      "cor": "#0ea5e9",
+      "ordem": 10,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "361812e8-bd80-51a9-95c8-db3e7679e12e",
+      "nome": "Contabilidade Geral e Pública",
+      "slug": "contabilidade",
+      "descricao": "Balanço patrimonial, DRE, lançamentos contábeis, regimes contábeis e CASP.",
+      "icone": "Calculator",
+      "cor": "#14b8a6",
+      "ordem": 11,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "ac8f26fa-9f99-50a0-aa50-853311a06745",
+      "nome": "Atualidades e Realidade Brasileira",
+      "slug": "atualidades-brasil",
+      "descricao": "Desenvolvimento sustentável, geopolítica, economia brasileira, sociedade e cidadania.",
+      "icone": "Globe",
+      "cor": "#84cc16",
+      "ordem": 12,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "efc9595d-8a5e-5de8-82f2-c6cf36640f2f",
+      "nome": "Ética no Serviço Público",
+      "slug": "etica-servico-publico",
+      "descricao": "Decreto nº 1.171/1994, Lei 8.112/90, deveres e vedações dos agentes públicos.",
+      "icone": "Users",
+      "cor": "#4ade80",
+      "ordem": 13,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "48346eab-1c2c-5ee0-90ea-d294a270625a",
+      "nome": "Direito Previdenciário",
+      "slug": "direito-previdenciario",
+      "descricao": "Seguridade social, segurados do RGPS, benefícios em espécie e custeio.",
+      "icone": "Shield",
+      "cor": "#6366f1",
+      "ordem": 14,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "f645496c-2320-542b-bc84-8c93fa0d08f0",
+      "nome": "Direito Tributário",
+      "slug": "direito-tributario",
+      "descricao": "Sistema Tributário Nacional, competências, limitações ao poder de tributar e CTN.",
+      "icone": "Coins",
+      "cor": "#f97316",
+      "ordem": 15,
+      "created_at": "2026-09-24T18:26:45.072264+00:00"
+    },
+    {
+      "id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "nome": "Criminologia",
+      "slug": "criminologia",
+      "descricao": "Escolas criminológicas, teorias sociológicas, vitimologia, prevenção criminal e estatísticas do crime.",
+      "icone": "Fingerprint",
+      "cor": "#059669",
+      "ordem": 16,
+      "created_at": "2026-09-25T18:50:06.984144+00:00"
+    },
+    {
+      "id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "nome": "Legislação de Trânsito",
+      "slug": "legislacao-transito",
+      "descricao": "Código de Trânsito Brasileiro (Lei 9.503/1997), normas de circulação, infrações, penalidades e resoluções do CONTRAN.",
+      "icone": "Truck",
+      "cor": "#eab308",
+      "ordem": 17,
+      "created_at": "2026-09-25T18:50:07.525633+00:00"
+    }
+  ],
+  "assuntos": [
+    {
+      "id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "nome": "Declaração Universal dos Direitos Humanos (1948)",
+      "slug": "dudh-1948",
+      "descricao": "Declaração Universal dos Direitos Humanos (1948)",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Lei de Abuso de Autoridade (Lei nº 13.869/2019)",
+      "slug": "abuso-autoridade-13869",
+      "descricao": "Lei de Abuso de Autoridade (Lei nº 13.869/2019)",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Inquérito Policial: Características e Instauração",
+      "slug": "inquerito-policial",
+      "descricao": "Inquérito Policial: Características e Instauração",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Teoria do Crime: Tipicidade, Ilicitude e Culpabilidade",
+      "slug": "teoria-crime",
+      "descricao": "Teoria do Crime: Tipicidade, Ilicitude e Culpabilidade",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "c8df4d38-8727-5a6f-baf6-c0bab7303a94",
+      "disciplina_id": "f645496c-2320-542b-bc84-8c93fa0d08f0",
+      "nome": "Espécies Tributárias e Princípios Constitucionais Tributários",
+      "slug": "especies-tributarias",
+      "descricao": "Espécies Tributárias e Princípios Constitucionais Tributários",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "545f732b-63fa-5549-9ae6-a0bc7ae62111",
+      "disciplina_id": "48346eab-1c2c-5ee0-90ea-d294a270625a",
+      "nome": "Benefícios Previdenciários do RGPS",
+      "slug": "beneficios-rgps",
+      "descricao": "Benefícios Previdenciários do RGPS",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "a4bebe26-2051-5cf0-a7ae-4ad5d7ae803c",
+      "disciplina_id": "efc9595d-8a5e-5de8-82f2-c6cf36640f2f",
+      "nome": "Código de Ética Profissional do Servidor Civil (Dec. 1.171/94)",
+      "slug": "decreto-1171-94",
+      "descricao": "Código de Ética Profissional do Servidor Civil (Dec. 1.171/94)",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Direitos e Garantias Fundamentais (Art. 5º)",
+      "slug": "artigo-5-cf",
+      "descricao": "Direitos e Garantias Fundamentais (Art. 5º)",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "nome": "Normas Gerais de Circulação e Conduta (CTB)",
+      "slug": "ctb-normas-circulacao",
+      "descricao": null,
+      "ordem": 1,
+      "created_at": "2026-09-25T18:50:08.353317+00:00"
+    },
+    {
+      "id": "38437a4b-63d6-5683-96e6-4f94126080d4",
+      "disciplina_id": "ac8f26fa-9f99-50a0-aa50-853311a06745",
+      "nome": "Meio Ambiente, Mudanças Climáticas e Sustentabilidade",
+      "slug": "sustentabilidade-clima",
+      "descricao": "Meio Ambiente, Mudanças Climáticas e Sustentabilidade",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "62d0d5ae-344e-5bee-976f-e3f0f13c1914",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e",
+      "nome": "Balanço Patrimonial e Estrutura das Contas",
+      "slug": "balanco-patrimonial",
+      "descricao": "Balanço Patrimonial e Estrutura das Contas",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "2d20c170-3c4e-5171-91d2-fe97c4b92480",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Sintaxe do Período e Orações",
+      "slug": "sintaxe-periodo",
+      "descricao": "Sintaxe do Período e Orações",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "ea7e6e37-8f6b-5070-a93a-13d5d54fbab9",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714",
+      "nome": "Gestão por Processos e Indicadores de Desempenho",
+      "slug": "gestao-processos",
+      "descricao": "Gestão por Processos e Indicadores de Desempenho",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "ec12a7a2-bb3e-57c5-adfc-fade7c66bcfc",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Lógica Proposicional e Conectivos",
+      "slug": "logica-proposicional",
+      "descricao": "Lógica Proposicional e Conectivos",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "e45db358-4e84-595b-9769-2957d83a9e54",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Princípios da Administração Pública (LIMPE e Implícitos)",
+      "slug": "principios-administracao",
+      "descricao": "Princípios da Administração Pública (LIMPE e Implícitos)",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "nome": "Escolas Criminológicas e Teorias Sociológicas",
+      "slug": "escolas-criminologicas",
+      "descricao": null,
+      "ordem": 1,
+      "created_at": "2026-09-25T18:50:07.795404+00:00"
+    },
+    {
+      "id": "afa6fc9a-58eb-5b53-bf8a-f56021b629e4",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Segurança da Informação, Criptografia e Malware",
+      "slug": "seguranca-informacao",
+      "descricao": "Segurança da Informação, Criptografia e Malware",
+      "ordem": 1,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "2fa224ab-80ab-51e1-a931-65155de2a973",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714",
+      "nome": "Governança Pública, Transparência e Accountability",
+      "slug": "governanca-publica",
+      "descricao": "Governança Pública, Transparência e Accountability",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "874b8ded-33c7-575d-8339-7a2f42e85e25",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Concordância Verbal e Nominal",
+      "slug": "concordancia",
+      "descricao": "Concordância Verbal e Nominal",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Organização Político-Administrativa do Estado",
+      "slug": "organizacao-estado",
+      "descricao": "Organização Político-Administrativa do Estado",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "50f75ddd-0ec6-5666-b08f-fa2179657fe1",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Atos Administrativos: Elementos, Atributos e Extinção",
+      "slug": "atos-administrativos",
+      "descricao": "Atos Administrativos: Elementos, Atributos e Extinção",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Crimes Contra a Administração Pública",
+      "slug": "crimes-funcionario-publico",
+      "descricao": "Crimes Contra a Administração Pública",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Provas no Processo Penal e Cadeia de Custódia",
+      "slug": "provas-processo-penal",
+      "descricao": "Provas no Processo Penal e Cadeia de Custódia",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Lei de Drogas (Lei nº 11.343/2006)",
+      "slug": "lei-drogas-11343",
+      "descricao": "Lei de Drogas (Lei nº 11.343/2006)",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "nome": "Pacto de San José da Costa Rica (CADH)",
+      "slug": "pacto-san-jose",
+      "descricao": "Pacto de San José da Costa Rica (CADH)",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "0f3e684d-8133-528d-97ac-a8b175acb75d",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Redes de Computadores, Protocolos e Nuvem",
+      "slug": "redes-nuvem",
+      "descricao": "Redes de Computadores, Protocolos e Nuvem",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "671e06a6-a523-512a-a333-08f2542f694f",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Equivalências Lógicas e Negação de Proposições",
+      "slug": "equivalencias-negacoes",
+      "descricao": "Equivalências Lógicas e Negação de Proposições",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "cfd2e13d-04df-54e9-af73-8d3fb14b28ad",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e",
+      "nome": "Demonstração do Resultado do Exercício (DRE)",
+      "slug": "dre-contabilidade",
+      "descricao": "Demonstração do Resultado do Exercício (DRE)",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "81aa27d3-7e0c-5ea2-bda3-7ba68fb38908",
+      "disciplina_id": "ac8f26fa-9f99-50a0-aa50-853311a06745",
+      "nome": "Geopolítica, Comércio Global e Economia Brasileira",
+      "slug": "geopolitica-economia",
+      "descricao": "Geopolítica, Comércio Global e Economia Brasileira",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "9ffc2560-d36d-593c-bc34-9525676b0417",
+      "disciplina_id": "efc9595d-8a5e-5de8-82f2-c6cf36640f2f",
+      "nome": "Comissões de Ética e Processo Ético",
+      "slug": "comissoes-etica",
+      "descricao": "Comissões de Ética e Processo Ético",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "38efe4ee-d2fa-5c4a-b18e-8fb2cf3b1ef8",
+      "disciplina_id": "48346eab-1c2c-5ee0-90ea-d294a270625a",
+      "nome": "Segurados Obrigatórios e Facultativos do RGPS",
+      "slug": "segurados-rgps",
+      "descricao": "Segurados Obrigatórios e Facultativos do RGPS",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "9520998f-ee8b-5186-8ccd-11d57459d8d0",
+      "disciplina_id": "f645496c-2320-542b-bc84-8c93fa0d08f0",
+      "nome": "Obrigação, Crédito e Lançamento Tributário",
+      "slug": "obrigacao-tributaria",
+      "descricao": "Obrigação, Crédito e Lançamento Tributário",
+      "ordem": 2,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "nome": "Vitimologia, Processos de Vitimização e Cifras Criminais",
+      "slug": "vitimologia-cifras",
+      "descricao": null,
+      "ordem": 2,
+      "created_at": "2026-09-25T18:50:08.016804+00:00"
+    },
+    {
+      "id": "e74dc693-757f-5086-97a0-0710b9473007",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "nome": "Crimes e Infrações de Trânsito (CTB)",
+      "slug": "ctb-crimes-infracoes",
+      "descricao": null,
+      "ordem": 2,
+      "created_at": "2026-09-25T18:50:08.55051+00:00"
+    },
+    {
+      "id": "a01b567c-b2bb-52e1-8432-74eeab03d579",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e",
+      "nome": "Regime de Competência e Regime de Caixa",
+      "slug": "regimes-contabeis",
+      "descricao": "Regime de Competência e Regime de Caixa",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "06d77ffe-e5eb-5d77-a088-ec385a531bad",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714",
+      "nome": "Planejamento Estratégico e Gestão de Riscos",
+      "slug": "planejamento-estrategico",
+      "descricao": "Planejamento Estratégico e Gestão de Riscos",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Licitações e Contratos (Nova Lei 14.133/2021)",
+      "slug": "licitacoes-14133",
+      "descricao": "Licitações e Contratos (Nova Lei 14.133/2021)",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Estatuto do Desarmamento (Lei nº 10.826/2003)",
+      "slug": "estatuto-desarmamento-10826",
+      "descricao": "Estatuto do Desarmamento (Lei nº 10.826/2003)",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "8550393a-d3fa-5069-82b3-55256cde307b",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Bancos de Dados Relacionais e SQL",
+      "slug": "bancos-dados-sql",
+      "descricao": "Bancos de Dados Relacionais e SQL",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "nome": "Gerações e Dimensões dos Direitos Humanos",
+      "slug": "geracoes-direitos-humanos",
+      "descricao": "Gerações e Dimensões dos Direitos Humanos",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "ff763285-f3a8-5836-83d0-b07fc54b7d29",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "nome": "Prevenção Delitiva e Modelos de Reação ao Crime",
+      "slug": "prevencao-criminal",
+      "descricao": null,
+      "ordem": 3,
+      "created_at": "2026-09-25T18:50:08.193975+00:00"
+    },
+    {
+      "id": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Prisões Cautelares, Flagrante e Liberdade Provisória",
+      "slug": "prisoes-cautelares",
+      "descricao": "Prisões Cautelares, Flagrante e Liberdade Provisória",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Crimes Contra a Pessoa e o Patrimônio",
+      "slug": "crimes-pessoa-patrimonio",
+      "descricao": "Crimes Contra a Pessoa e o Patrimônio",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "791c7278-7511-50df-bddf-600d9b818aaf",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Análise Combinatória e Princípio da Contagem",
+      "slug": "analise-combinatoria",
+      "descricao": "Análise Combinatória e Princípio da Contagem",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "2eb8117f-c746-5029-9842-dcd698598a16",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Regência e Crase",
+      "slug": "regencia-crase",
+      "descricao": "Regência e Crase",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "737169f0-3964-5fee-bdce-864bdee06a7c",
+      "disciplina_id": "ac8f26fa-9f99-50a0-aa50-853311a06745",
+      "nome": "Transformação Digital, IA e Sociedade da Informação",
+      "slug": "tecnologia-sociedade",
+      "descricao": "Transformação Digital, IA e Sociedade da Informação",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Poder Executivo e Presidência da República",
+      "slug": "poder-executivo",
+      "descricao": "Poder Executivo e Presidência da República",
+      "ordem": 3,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "48745dac-cbf3-5f1d-a0a2-1767a7d44429",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Probabilidade e Estatística Básica",
+      "slug": "probabilidade",
+      "descricao": "Probabilidade e Estatística Básica",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "b4ed475a-eda4-5383-a1a8-b0316ae4c653",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Sistemas Operacionais (Linux e Windows)",
+      "slug": "sistemas-operacionais",
+      "descricao": "Sistemas Operacionais (Linux e Windows)",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "024bdd12-277b-5ef2-b170-5bc93646345c",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714",
+      "nome": "Orçamento Público (PPA, LDO e LOA)",
+      "slug": "orcamento-publico",
+      "descricao": "Orçamento Público (PPA, LDO e LOA)",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Poder Legislativo e Processo Legislativo",
+      "slug": "poder-legislativo",
+      "descricao": "Poder Legislativo e Processo Legislativo",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "55f3207c-f3fb-5bf5-9dfa-372af950c159",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e",
+      "nome": "Contabilidade Aplicada ao Setor Público (CASP)",
+      "slug": "casp-setor-publico",
+      "descricao": "Contabilidade Aplicada ao Setor Público (CASP)",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.951345+00:00"
+    },
+    {
+      "id": "aae93c82-cbf2-5cb0-ae75-d341448be61d",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Interpretação e Tipologia Textual",
+      "slug": "interpretacao-texto",
+      "descricao": "Interpretação e Tipologia Textual",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Aplicação da Lei Penal no Tempo e no Espaço",
+      "slug": "aplicacao-lei-penal",
+      "descricao": "Aplicação da Lei Penal no Tempo e no Espaço",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Ação Penal Pública e Privada",
+      "slug": "acao-penal",
+      "descricao": "Ação Penal Pública e Privada",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Lei Maria da Penha (Lei nº 11.340/2006)",
+      "slug": "lei-maria-da-penha",
+      "descricao": "Lei Maria da Penha (Lei nº 11.340/2006)",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Agentes Públicos e Regime Jurídico (Lei 8.112/90)",
+      "slug": "agentes-publicos-8112",
+      "descricao": "Agentes Públicos e Regime Jurídico (Lei 8.112/90)",
+      "ordem": 4,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Diagramas Lógicos e Teoria dos Conjuntos",
+      "slug": "diagramas-logicos",
+      "descricao": "Diagramas Lógicos e Teoria dos Conjuntos",
+      "ordem": 5,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Organizações Criminosas (Lei nº 12.850/2013)",
+      "slug": "organizacoes-criminosas-12850",
+      "descricao": null,
+      "ordem": 5,
+      "created_at": "2026-09-25T18:50:09.715468+00:00"
+    },
+    {
+      "id": "52c47954-6d8a-52d6-8c4f-7525aaa751a1",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Pontuação e Emprego dos Sinais",
+      "slug": "pontuacao",
+      "descricao": "Pontuação e Emprego dos Sinais",
+      "ordem": 5,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Improbidade Administrativa (Lei 8.429/92 alterada)",
+      "slug": "improbidade-administrativa",
+      "descricao": "Improbidade Administrativa (Lei 8.429/92 alterada)",
+      "ordem": 5,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Concurso de Pessoas e Concurso de Crimes",
+      "slug": "concurso-pessoas-crimes",
+      "descricao": null,
+      "ordem": 5,
+      "created_at": "2026-09-25T18:50:09.005827+00:00"
+    },
+    {
+      "id": "4017743b-0f76-5c01-9385-265485a38e47",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Suítes de Escritório (Calc/Excel, Writer/Word)",
+      "slug": "ferramentas-escritorio",
+      "descricao": "Suítes de Escritório (Calc/Excel, Writer/Word)",
+      "ordem": 5,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Poder Judiciário e Funções Essenciais à Justiça",
+      "slug": "poder-judiciario",
+      "descricao": "Poder Judiciário e Funções Essenciais à Justiça",
+      "ordem": 5,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Jurisdição e Competência Penal",
+      "slug": "jurisdicao-competencia-penal",
+      "descricao": null,
+      "ordem": 5,
+      "created_at": "2026-09-25T18:50:09.368223+00:00"
+    },
+    {
+      "id": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Responsabilidade Civil do Estado",
+      "slug": "responsabilidade-civil-estado",
+      "descricao": "Responsabilidade Civil do Estado",
+      "ordem": 6,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "e54c36d6-6d7f-5e1c-891d-4625bbeccd80",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Penas, Medidas de Segurança e Extinção da Punibilidade",
+      "slug": "penas-extincao-punibilidade",
+      "descricao": null,
+      "ordem": 6,
+      "created_at": "2026-09-25T18:50:09.192109+00:00"
+    },
+    {
+      "id": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Crimes Hediondos (Lei nº 8.072/1990)",
+      "slug": "crimes-hediondos-8072",
+      "descricao": null,
+      "ordem": 6,
+      "created_at": "2026-09-25T18:50:10.142131+00:00"
+    },
+    {
+      "id": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Controle de Constitucionalidade",
+      "slug": "controle-constitucionalidade",
+      "descricao": "Controle de Constitucionalidade",
+      "ordem": 6,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Busca e Apreensão, Medidas Cautelares e Procedimentos",
+      "slug": "busca-apreensao-procedimentos",
+      "descricao": null,
+      "ordem": 6,
+      "created_at": "2026-09-25T18:50:09.538518+00:00"
+    },
+    {
+      "id": "fceeaf5d-d6c4-5ef9-887c-9d7290725828",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Ortografia e Acentuação Gráfica",
+      "slug": "ortografia-acentuacao",
+      "descricao": "Ortografia e Acentuação Gráfica",
+      "ordem": 6,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "ae0cb1a9-da13-5d87-92b8-c498b65f5f17",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Morfologia e Classes de Palavras",
+      "slug": "morfologia-classes",
+      "descricao": "Morfologia e Classes de Palavras",
+      "ordem": 7,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Lavagem de Dinheiro (Lei nº 9.613/1998)",
+      "slug": "lavagem-dinheiro-9613",
+      "descricao": null,
+      "ordem": 7,
+      "created_at": "2026-09-25T18:50:10.355914+00:00"
+    },
+    {
+      "id": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Segurança Pública (Art. 144)",
+      "slug": "seguranca-publica",
+      "descricao": "Segurança Pública (Art. 144)",
+      "ordem": 7,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Poderes Administrativos (Hierárquico, Disciplinar, Polícia)",
+      "slug": "poderes-administrativos",
+      "descricao": "Poderes Administrativos (Hierárquico, Disciplinar, Polícia)",
+      "ordem": 7,
+      "created_at": "2026-09-24T18:26:45.441646+00:00"
+    },
+    {
+      "id": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Lei de Tortura e Interceptação Telefônica",
+      "slug": "tortura-interceptacao",
+      "descricao": null,
+      "ordem": 8,
+      "created_at": "2026-09-25T18:50:10.56086+00:00"
+    }
+  ]
+}

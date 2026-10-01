@@ -1,0 +1,844 @@
+{
+  "totalQuestoes": 4760,
+  "totalAlternativas": 18412,
+  "porLote": {
+    "v2.1": 1760,
+    "v2.3-lote3": 500,
+    "v2.2-lote2": 500,
+    "v2.7-lote7": 500,
+    "v2.6-lote6": 500,
+    "v2.5-lote5": 500,
+    "v2.4-lote4": 500
+  },
+  "porDisciplina": {
+    "Língua Portuguesa": 505,
+    "Informática e Tecnologia": 258,
+    "Direito Constitucional": 535,
+    "Direitos Humanos": 310,
+    "Raciocínio Lógico-Matemático": 252,
+    "Direito Administrativo": 530,
+    "Direito Penal": 670,
+    "Direito Processual Penal": 550,
+    "Legislação Especial": 540,
+    "Legislação de Trânsito": 100,
+    "Administração Pública": 80,
+    "Contabilidade Geral e Pública": 80,
+    "Atualidades e Realidade Brasileira": 60,
+    "Ética no Serviço Público": 40,
+    "Direito Previdenciário": 40,
+    "Direito Tributário": 40,
+    "Criminologia": 170
+  },
+  "porAssunto": {
+    "Língua Portuguesa -> Sintaxe do Período e Orações": 91,
+    "Língua Portuguesa -> Concordância Verbal e Nominal": 69,
+    "Informática e Tecnologia -> Segurança da Informação, Criptografia e Malware": 80,
+    "Língua Portuguesa -> Regência e Crase": 77,
+    "Língua Portuguesa -> Interpretação e Tipologia Textual": 111,
+    "Informática e Tecnologia -> Redes de Computadores, Protocolos e Nuvem": 62,
+    "Língua Portuguesa -> Pontuação e Emprego dos Sinais": 56,
+    "Língua Portuguesa -> Ortografia e Acentuação Gráfica": 43,
+    "Língua Portuguesa -> Morfologia e Classes de Palavras": 58,
+    "Direito Constitucional -> Direitos e Garantias Fundamentais (Art. 5º)": 172,
+    "Direito Constitucional -> Organização Político-Administrativa do Estado": 83,
+    "Direito Constitucional -> Poder Executivo e Presidência da República": 34,
+    "Direito Constitucional -> Poder Legislativo e Processo Legislativo": 34,
+    "Direito Constitucional -> Poder Judiciário e Funções Essenciais à Justiça": 37,
+    "Direito Constitucional -> Controle de Constitucionalidade": 30,
+    "Direito Constitucional -> Segurança Pública (Art. 144)": 144,
+    "Informática e Tecnologia -> Bancos de Dados Relacionais e SQL": 50,
+    "Direitos Humanos -> Declaração Universal dos Direitos Humanos (1948)": 72,
+    "Raciocínio Lógico-Matemático -> Equivalências Lógicas e Negação de Proposições": 51,
+    "Direito Administrativo -> Princípios da Administração Pública (LIMPE e Implícitos)": 65,
+    "Direito Administrativo -> Responsabilidade Civil do Estado": 75,
+    "Direito Administrativo -> Agentes Públicos e Regime Jurídico (Lei 8.112/90)": 85,
+    "Direito Administrativo -> Atos Administrativos: Elementos, Atributos e Extinção": 100,
+    "Direito Administrativo -> Licitações e Contratos (Nova Lei 14.133/2021)": 41,
+    "Direito Penal -> Penas, Medidas de Segurança e Extinção da Punibilidade": 141,
+    "Direito Administrativo -> Improbidade Administrativa (Lei 8.429/92 alterada)": 64,
+    "Direito Administrativo -> Poderes Administrativos (Hierárquico, Disciplinar, Polícia)": 100,
+    "Direito Penal -> Teoria do Crime: Tipicidade, Ilicitude e Culpabilidade": 150,
+    "Direito Processual Penal -> Inquérito Policial: Características e Instauração": 133,
+    "Direito Penal -> Crimes Contra a Administração Pública": 116,
+    "Direito Penal -> Crimes Contra a Pessoa e o Patrimônio": 175,
+    "Direito Penal -> Aplicação da Lei Penal no Tempo e no Espaço": 59,
+    "Direito Processual Penal -> Provas no Processo Penal e Cadeia de Custódia": 133,
+    "Direito Processual Penal -> Prisões Cautelares, Flagrante e Liberdade Provisória": 129,
+    "Direito Processual Penal -> Ação Penal Pública e Privada": 96,
+    "Legislação Especial -> Lei de Abuso de Autoridade (Lei nº 13.869/2019)": 62,
+    "Legislação Especial -> Lei de Drogas (Lei nº 11.343/2006)": 91,
+    "Legislação Especial -> Estatuto do Desarmamento (Lei nº 10.826/2003)": 105,
+    "Legislação Especial -> Lei Maria da Penha (Lei nº 11.340/2006)": 58,
+    "Direitos Humanos -> Pacto de San José da Costa Rica (CADH)": 118,
+    "Legislação de Trânsito -> Crimes e Infrações de Trânsito (CTB)": 51,
+    "Direitos Humanos -> Gerações e Dimensões dos Direitos Humanos": 120,
+    "Informática e Tecnologia -> Sistemas Operacionais (Linux e Windows)": 46,
+    "Raciocínio Lógico-Matemático -> Probabilidade e Estatística Básica": 62,
+    "Informática e Tecnologia -> Suítes de Escritório (Calc/Excel, Writer/Word)": 20,
+    "Raciocínio Lógico-Matemático -> Lógica Proposicional e Conectivos": 52,
+    "Raciocínio Lógico-Matemático -> Análise Combinatória e Princípio da Contagem": 48,
+    "Raciocínio Lógico-Matemático -> Diagramas Lógicos e Teoria dos Conjuntos": 39,
+    "Administração Pública -> Gestão por Processos e Indicadores de Desempenho": 20,
+    "Administração Pública -> Governança Pública, Transparência e Accountability": 20,
+    "Administração Pública -> Planejamento Estratégico e Gestão de Riscos": 20,
+    "Administração Pública -> Orçamento Público (PPA, LDO e LOA)": 20,
+    "Contabilidade Geral e Pública -> Balanço Patrimonial e Estrutura das Contas": 20,
+    "Contabilidade Geral e Pública -> Demonstração do Resultado do Exercício (DRE)": 20,
+    "Contabilidade Geral e Pública -> Regime de Competência e Regime de Caixa": 20,
+    "Contabilidade Geral e Pública -> Contabilidade Aplicada ao Setor Público (CASP)": 20,
+    "Atualidades e Realidade Brasileira -> Meio Ambiente, Mudanças Climáticas e Sustentabilidade": 20,
+    "Atualidades e Realidade Brasileira -> Geopolítica, Comércio Global e Economia Brasileira": 20,
+    "Atualidades e Realidade Brasileira -> Transformação Digital, IA e Sociedade da Informação": 20,
+    "Ética no Serviço Público -> Código de Ética Profissional do Servidor Civil (Dec. 1.171/94)": 20,
+    "Ética no Serviço Público -> Comissões de Ética e Processo Ético": 20,
+    "Direito Previdenciário -> Benefícios Previdenciários do RGPS": 20,
+    "Direito Previdenciário -> Segurados Obrigatórios e Facultativos do RGPS": 20,
+    "Direito Tributário -> Espécies Tributárias e Princípios Constitucionais Tributários": 20,
+    "Direito Tributário -> Obrigação, Crédito e Lançamento Tributário": 20,
+    "Legislação Especial -> Organizações Criminosas (Lei nº 12.850/2013)": 150,
+    "Direito Penal -> Concurso de Pessoas e Concurso de Crimes": 29,
+    "Direito Processual Penal -> Jurisdição e Competência Penal": 31,
+    "Direito Processual Penal -> Busca e Apreensão, Medidas Cautelares e Procedimentos": 28,
+    "Legislação Especial -> Crimes Hediondos (Lei nº 8.072/1990)": 27,
+    "Legislação Especial -> Lavagem de Dinheiro (Lei nº 9.613/1998)": 18,
+    "Legislação Especial -> Lei de Tortura e Interceptação Telefônica": 24,
+    "Criminologia -> Prevenção Delitiva e Modelos de Reação ao Crime": 36,
+    "Criminologia -> Escolas Criminológicas e Teorias Sociológicas": 88,
+    "Criminologia -> Vitimologia, Processos de Vitimização e Cifras Criminais": 46,
+    "Legislação Especial -> Crimes e Infrações de Trânsito (CTB)": 5,
+    "Direito Constitucional -> Princípios da Administração Pública (LIMPE e Implícitos)": 1,
+    "Legislação de Trânsito -> Normas Gerais de Circulação e Conduta (CTB)": 49
+  },
+  "porSubassunto": {
+    "Nenhum/Null": 4760
+  },
+  "porOrgao": {
+    "MGI / CNU": 96,
+    "RFB": 90,
+    "PF": 86,
+    "PRF": 85,
+    "TJ-SP": 83,
+    "Polícia Civil de São Paulo (PC-SP)": 55,
+    "Polícia Federal (PF)": 293,
+    "Polícia Civil do Estado do Rio de Janeiro (PC-RJ)": 20,
+    "TCU": 82,
+    "INSS": 82,
+    "BB": 82,
+    "CEF": 82,
+    "CGU": 82,
+    "MPU": 82,
+    "BACEN": 82,
+    "ANVISA": 82,
+    "STF": 82,
+    "STJ": 82,
+    "Polícia Federal": 260,
+    "Polícia Civil do Ceará": 2,
+    "Polícia Civil de Minas Gerais (PC-MG)": 17,
+    "Polícia Militar de Pernambuco": 1,
+    "Guarda Civil Municipal de São José dos Campos": 1,
+    "Polícia Científica do Paraná": 1,
+    "Polícia Penal": 245,
+    "PC-SP": 176,
+    "PM-SP": 20,
+    "Polícia Civil": 494,
+    "Polícia Militar": 296,
+    "Polícia Civil da Bahia": 1,
+    "Departamento Penitenciário Nacional": 1,
+    "Guarda Municipal": 137,
+    "Polícia Civil/SP": 15,
+    "Polícia Rodoviária Federal (PRF)": 203,
+    "PC-MG": 89,
+    "Guarda Civil Metropolitana": 1,
+    "Polícia Militar de Alagoas": 1,
+    "Polícia Civil do Pará": 1,
+    "Polícia Civil do Espírito Santo": 1,
+    "Polícia Civil de Alagoas": 1,
+    "Polícia Penal da Bahia": 1,
+    "Polícia Rodoviária Federal": 271,
+    "Polícia Científica de Goiás": 1,
+    "Polícia Militar do Rio de Janeiro": 1,
+    "Polícia Civil de Roraima": 1,
+    "PC-DF": 33,
+    "Guarda Municipal de Campinas": 1,
+    "Polícia Militar de Goiás": 1,
+    "PC-RJ": 158,
+    "Polícia Penal Federal": 44,
+    "Polícia Civil do Paraná": 1,
+    "PC-AP": 9,
+    "Secretaria Nacional de Segurança Pública": 1,
+    "PM-DF": 20,
+    "Tribunal de Justiça Militar": 1,
+    "Polícia Militar de São Paulo (PM-SP)": 3,
+    "Polícia Civil do Distrito Federal (PCDF)": 11,
+    "Polícia Penal do Estado de Minas Gerais": 6,
+    "Polícia Militar de São Paulo": 1,
+    "PC-BA": 6,
+    "Polícia Civil de Goiás (PC-GO)": 11,
+    "Polícia Civil da Bahia (PC-BA)": 8,
+    "Polícia Civil de Pernambuco (PC-PE)": 7,
+    "Polícia Civil do Estado do Ceará (PC-CE)": 2,
+    "Polícia Civil do Estado do Amazonas (PC-AM)": 1,
+    "Polícia Penal de Minas Gerais": 4,
+    "Polícia Civil do Paraná (PC-PR)": 1,
+    "Polícia Militar da Bahia (PM-BA)": 3,
+    "Polícia Penal do Distrito Federal (PP-DF)": 2,
+    "Polícia Civil de Alagoas (PC-AL)": 2,
+    "Polícia Militar de Santa Catarina (PM-SC)": 1,
+    "Polícia Civil do Ceará (PC-CE)": 8,
+    "Guarda Municipal de Belo Horizonte (GM-BH)": 1,
+    "Polícia Penal de Minas Gerais (PP-MG)": 1,
+    "Polícia Militar de Minas Gerais (PM-MG)": 1,
+    "Guarda Municipal de Curitiba (GM-Curitiba)": 1,
+    "Polícia Civil/DF": 9,
+    "Polícia Civil/MG": 6,
+    "Polícia Civil/BA": 3,
+    "Polícia Civil/GO": 4,
+    "Polícia Civil/RJ": 4,
+    "Polícia Civil/PA": 1,
+    "Polícia Civil/SC": 1,
+    "Polícia Civil/PR": 2,
+    "Polícia Penal do Distrito Federal": 1,
+    "Polícia Civil do Distrito Federal (PC-DF)": 6,
+    "Polícia Civil da Paraíba (PC-PB)": 2,
+    "PC-GO": 10,
+    "PC-SC": 7,
+    "Polícia Militar do Distrito Federal (PMDF)": 3,
+    "Polícia Civil do Estado do Rio de Janeiro (PCERJ)": 14,
+    "Polícia Militar do Ceará (PMCE)": 2,
+    "Polícia Civil do Estado de São Paulo (PC-SP)": 37,
+    "PC-AC": 1,
+    "PC-PA": 2,
+    "Polícia Militar da Bahia": 1,
+    "Polícia Civil do Estado de Alagoas (PC-AL)": 3,
+    "Polícia Civil do Estado de Pernambuco (PC-PE)": 4,
+    "Guarda Civil Municipal": 1,
+    "Polícia Civil de Pernambuco": 1,
+    "Polícia Civil de Santa Catarina": 1,
+    "Polícia Militar do Pará": 1,
+    "Polícia Penal do Estado de São Paulo (PP-SP)": 1,
+    "Guarda Municipal de Fortaleza (GMF)": 1,
+    "Polícia Civil de Santa Catarina (PC-SC)": 3,
+    "Polícia Civil do Rio de Janeiro (PC-RJ)": 3,
+    "Polícia Civil do Amazonas": 1,
+    "Polícia Civil do Acre (PC-AC)": 1,
+    "Polícia Penal do Espírito Santo": 1,
+    "Polícia Civil do Amapá (PC-AP)": 1,
+    "Polícia Civil do Rio Grande do Norte (PC-RN)": 1,
+    "Polícia Civil do Estado de Minas Gerais (PC-MG)": 3,
+    "Polícia Militar do Paraná": 2,
+    "Polícia Civil do Estado da Bahia (PC-BA)": 4,
+    "Polícia Civil de Minas Gerais": 1,
+    "Polícia Civil do Estado da Paraíba (PC-PB)": 1,
+    "Polícia Civil do Estado de Goiás (PC-GO)": 3,
+    "Polícia Civil do Rio de Janeiro": 1,
+    "Polícia Civil do Maranhão": 1,
+    "Polícia Militar do Amazonas": 1,
+    "Polícia Civil do Rio Grande do Sul": 1,
+    "Polícia Civil de Sergipe": 1,
+    "Polícia Civil do Distrito Federal": 1,
+    "Polícia Militar de Minas Gerais": 1,
+    "Polícia Científica de Santa Catarina": 1,
+    "SENAPPEN / DEPEN": 1,
+    "PC-PB": 1,
+    "PC-CE": 5,
+    "PC-AL": 4,
+    "Polícia Civil do Paraná (PCPR)": 1,
+    "Polícia Civil RJ": 68,
+    "Polícia Civil do Estado de Santa Catarina (PCSC)": 1,
+    "Polícia Civil SP": 99,
+    "Polícia Civil do Estado do Amapá (PC-AP)": 2,
+    "Polícia Civil de Minas Gerais (PCMG)": 2,
+    "PC-PE": 2,
+    "PC-RN": 1,
+    "PC-AM": 1,
+    "PC-RR": 1,
+    "Polícia Civil SC": 1,
+    "Polícia Civil DF": 44,
+    "Polícia Civil PB": 1,
+    "Polícia Civil BA": 41,
+    "Polícia Civil MG": 3,
+    "Polícia Civil CE": 3,
+    "Polícia Civil AL": 7,
+    "Polícia Civil AP": 1,
+    "Polícia Civil PR": 30,
+    "Corpo de Bombeiros Militar": 53,
+    "Corpo de Bombeiros": 8
+  },
+  "porBanca": {
+    "Cebraspe": 172,
+    "FGV": 630,
+    "FCC": 209,
+    "Cesgranrio": 126,
+    "Vunesp": 135,
+    "VUNESP": 258,
+    "CEBRASPE (CESPE)": 803,
+    "IBFC": 273,
+    "Quadrix": 123,
+    "Instituto AOCP": 137,
+    "Selecon": 123,
+    "IADES": 123,
+    "CEBRASPE": 540,
+    "AOCP": 16,
+    "Inédita / Estilo VUNESP": 133,
+    "Inédita / Estilo CEBRASPE": 486,
+    "Inédita / Estilo FGV": 252,
+    "Inédita / Estilo IBFC": 69,
+    "INSTITUTO AOCP": 86,
+    "IDECAN": 6,
+    "Inédita / Estilo AOCP": 60
+  },
+  "porDificuldade": {
+    "facil": 774,
+    "medio": 2421,
+    "dificil": 1565
+  },
+  "porTipo": {
+    "multipla_escolha": 2966,
+    "certo_errado": 1794
+  },
+  "disciplinasRaw": [
+    {
+      "id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "nome": "Língua Portuguesa",
+      "slug": "lingua-portuguesa"
+    },
+    {
+      "id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "nome": "Direito Constitucional",
+      "slug": "direito-constitucional"
+    },
+    {
+      "id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "nome": "Direito Administrativo",
+      "slug": "direito-administrativo"
+    },
+    {
+      "id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "nome": "Direito Penal",
+      "slug": "direito-penal"
+    },
+    {
+      "id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "nome": "Direito Processual Penal",
+      "slug": "direito-processual-penal"
+    },
+    {
+      "id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "nome": "Legislação Especial",
+      "slug": "legislacao-especial"
+    },
+    {
+      "id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "nome": "Direitos Humanos",
+      "slug": "direitos-humanos"
+    },
+    {
+      "id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "nome": "Informática e Tecnologia",
+      "slug": "informatica-ti"
+    },
+    {
+      "id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "nome": "Raciocínio Lógico-Matemático",
+      "slug": "raciocinio-logico"
+    },
+    {
+      "id": "2ad23a1d-b039-5195-aab6-03545f246714",
+      "nome": "Administração Pública",
+      "slug": "administracao-publica"
+    },
+    {
+      "id": "361812e8-bd80-51a9-95c8-db3e7679e12e",
+      "nome": "Contabilidade Geral e Pública",
+      "slug": "contabilidade"
+    },
+    {
+      "id": "ac8f26fa-9f99-50a0-aa50-853311a06745",
+      "nome": "Atualidades e Realidade Brasileira",
+      "slug": "atualidades-brasil"
+    },
+    {
+      "id": "efc9595d-8a5e-5de8-82f2-c6cf36640f2f",
+      "nome": "Ética no Serviço Público",
+      "slug": "etica-servico-publico"
+    },
+    {
+      "id": "48346eab-1c2c-5ee0-90ea-d294a270625a",
+      "nome": "Direito Previdenciário",
+      "slug": "direito-previdenciario"
+    },
+    {
+      "id": "f645496c-2320-542b-bc84-8c93fa0d08f0",
+      "nome": "Direito Tributário",
+      "slug": "direito-tributario"
+    },
+    {
+      "id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "nome": "Criminologia",
+      "slug": "criminologia"
+    },
+    {
+      "id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "nome": "Legislação de Trânsito",
+      "slug": "legislacao-transito"
+    }
+  ],
+  "assuntosRaw": [
+    {
+      "id": "2d20c170-3c4e-5171-91d2-fe97c4b92480",
+      "nome": "Sintaxe do Período e Orações",
+      "slug": "sintaxe-periodo",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "874b8ded-33c7-575d-8339-7a2f42e85e25",
+      "nome": "Concordância Verbal e Nominal",
+      "slug": "concordancia",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "2eb8117f-c746-5029-9842-dcd698598a16",
+      "nome": "Regência e Crase",
+      "slug": "regencia-crase",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "aae93c82-cbf2-5cb0-ae75-d341448be61d",
+      "nome": "Interpretação e Tipologia Textual",
+      "slug": "interpretacao-texto",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "52c47954-6d8a-52d6-8c4f-7525aaa751a1",
+      "nome": "Pontuação e Emprego dos Sinais",
+      "slug": "pontuacao",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "fceeaf5d-d6c4-5ef9-887c-9d7290725828",
+      "nome": "Ortografia e Acentuação Gráfica",
+      "slug": "ortografia-acentuacao",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "ae0cb1a9-da13-5d87-92b8-c498b65f5f17",
+      "nome": "Morfologia e Classes de Palavras",
+      "slug": "morfologia-classes",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633"
+    },
+    {
+      "id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "nome": "Direitos e Garantias Fundamentais (Art. 5º)",
+      "slug": "artigo-5-cf",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "nome": "Organização Político-Administrativa do Estado",
+      "slug": "organizacao-estado",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "nome": "Poder Executivo e Presidência da República",
+      "slug": "poder-executivo",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "nome": "Poder Legislativo e Processo Legislativo",
+      "slug": "poder-legislativo",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "nome": "Poder Judiciário e Funções Essenciais à Justiça",
+      "slug": "poder-judiciario",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "nome": "Controle de Constitucionalidade",
+      "slug": "controle-constitucionalidade",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "nome": "Segurança Pública (Art. 144)",
+      "slug": "seguranca-publica",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9"
+    },
+    {
+      "id": "e45db358-4e84-595b-9769-2957d83a9e54",
+      "nome": "Princípios da Administração Pública (LIMPE e Implícitos)",
+      "slug": "principios-administracao",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "50f75ddd-0ec6-5666-b08f-fa2179657fe1",
+      "nome": "Atos Administrativos: Elementos, Atributos e Extinção",
+      "slug": "atos-administrativos",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "nome": "Licitações e Contratos (Nova Lei 14.133/2021)",
+      "slug": "licitacoes-14133",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "nome": "Agentes Públicos e Regime Jurídico (Lei 8.112/90)",
+      "slug": "agentes-publicos-8112",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "nome": "Improbidade Administrativa (Lei 8.429/92 alterada)",
+      "slug": "improbidade-administrativa",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "nome": "Responsabilidade Civil do Estado",
+      "slug": "responsabilidade-civil-estado",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "nome": "Poderes Administrativos (Hierárquico, Disciplinar, Polícia)",
+      "slug": "poderes-administrativos",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c"
+    },
+    {
+      "id": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "nome": "Teoria do Crime: Tipicidade, Ilicitude e Culpabilidade",
+      "slug": "teoria-crime",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6"
+    },
+    {
+      "id": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "nome": "Crimes Contra a Administração Pública",
+      "slug": "crimes-funcionario-publico",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6"
+    },
+    {
+      "id": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "nome": "Crimes Contra a Pessoa e o Patrimônio",
+      "slug": "crimes-pessoa-patrimonio",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6"
+    },
+    {
+      "id": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "nome": "Aplicação da Lei Penal no Tempo e no Espaço",
+      "slug": "aplicacao-lei-penal",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6"
+    },
+    {
+      "id": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "nome": "Inquérito Policial: Características e Instauração",
+      "slug": "inquerito-policial",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8"
+    },
+    {
+      "id": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "nome": "Provas no Processo Penal e Cadeia de Custódia",
+      "slug": "provas-processo-penal",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8"
+    },
+    {
+      "id": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "nome": "Prisões Cautelares, Flagrante e Liberdade Provisória",
+      "slug": "prisoes-cautelares",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8"
+    },
+    {
+      "id": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "nome": "Ação Penal Pública e Privada",
+      "slug": "acao-penal",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8"
+    },
+    {
+      "id": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "nome": "Lei de Abuso de Autoridade (Lei nº 13.869/2019)",
+      "slug": "abuso-autoridade-13869",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "nome": "Lei de Drogas (Lei nº 11.343/2006)",
+      "slug": "lei-drogas-11343",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "nome": "Estatuto do Desarmamento (Lei nº 10.826/2003)",
+      "slug": "estatuto-desarmamento-10826",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "nome": "Lei Maria da Penha (Lei nº 11.340/2006)",
+      "slug": "lei-maria-da-penha",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "nome": "Declaração Universal dos Direitos Humanos (1948)",
+      "slug": "dudh-1948",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294"
+    },
+    {
+      "id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "nome": "Pacto de San José da Costa Rica (CADH)",
+      "slug": "pacto-san-jose",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294"
+    },
+    {
+      "id": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "nome": "Gerações e Dimensões dos Direitos Humanos",
+      "slug": "geracoes-direitos-humanos",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294"
+    },
+    {
+      "id": "afa6fc9a-58eb-5b53-bf8a-f56021b629e4",
+      "nome": "Segurança da Informação, Criptografia e Malware",
+      "slug": "seguranca-informacao",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6"
+    },
+    {
+      "id": "0f3e684d-8133-528d-97ac-a8b175acb75d",
+      "nome": "Redes de Computadores, Protocolos e Nuvem",
+      "slug": "redes-nuvem",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6"
+    },
+    {
+      "id": "8550393a-d3fa-5069-82b3-55256cde307b",
+      "nome": "Bancos de Dados Relacionais e SQL",
+      "slug": "bancos-dados-sql",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6"
+    },
+    {
+      "id": "b4ed475a-eda4-5383-a1a8-b0316ae4c653",
+      "nome": "Sistemas Operacionais (Linux e Windows)",
+      "slug": "sistemas-operacionais",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6"
+    },
+    {
+      "id": "4017743b-0f76-5c01-9385-265485a38e47",
+      "nome": "Suítes de Escritório (Calc/Excel, Writer/Word)",
+      "slug": "ferramentas-escritorio",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6"
+    },
+    {
+      "id": "ec12a7a2-bb3e-57c5-adfc-fade7c66bcfc",
+      "nome": "Lógica Proposicional e Conectivos",
+      "slug": "logica-proposicional",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff"
+    },
+    {
+      "id": "671e06a6-a523-512a-a333-08f2542f694f",
+      "nome": "Equivalências Lógicas e Negação de Proposições",
+      "slug": "equivalencias-negacoes",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff"
+    },
+    {
+      "id": "791c7278-7511-50df-bddf-600d9b818aaf",
+      "nome": "Análise Combinatória e Princípio da Contagem",
+      "slug": "analise-combinatoria",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff"
+    },
+    {
+      "id": "48745dac-cbf3-5f1d-a0a2-1767a7d44429",
+      "nome": "Probabilidade e Estatística Básica",
+      "slug": "probabilidade",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff"
+    },
+    {
+      "id": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "nome": "Diagramas Lógicos e Teoria dos Conjuntos",
+      "slug": "diagramas-logicos",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff"
+    },
+    {
+      "id": "ea7e6e37-8f6b-5070-a93a-13d5d54fbab9",
+      "nome": "Gestão por Processos e Indicadores de Desempenho",
+      "slug": "gestao-processos",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714"
+    },
+    {
+      "id": "2fa224ab-80ab-51e1-a931-65155de2a973",
+      "nome": "Governança Pública, Transparência e Accountability",
+      "slug": "governanca-publica",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714"
+    },
+    {
+      "id": "06d77ffe-e5eb-5d77-a088-ec385a531bad",
+      "nome": "Planejamento Estratégico e Gestão de Riscos",
+      "slug": "planejamento-estrategico",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714"
+    },
+    {
+      "id": "024bdd12-277b-5ef2-b170-5bc93646345c",
+      "nome": "Orçamento Público (PPA, LDO e LOA)",
+      "slug": "orcamento-publico",
+      "disciplina_id": "2ad23a1d-b039-5195-aab6-03545f246714"
+    },
+    {
+      "id": "62d0d5ae-344e-5bee-976f-e3f0f13c1914",
+      "nome": "Balanço Patrimonial e Estrutura das Contas",
+      "slug": "balanco-patrimonial",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e"
+    },
+    {
+      "id": "cfd2e13d-04df-54e9-af73-8d3fb14b28ad",
+      "nome": "Demonstração do Resultado do Exercício (DRE)",
+      "slug": "dre-contabilidade",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e"
+    },
+    {
+      "id": "a01b567c-b2bb-52e1-8432-74eeab03d579",
+      "nome": "Regime de Competência e Regime de Caixa",
+      "slug": "regimes-contabeis",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e"
+    },
+    {
+      "id": "55f3207c-f3fb-5bf5-9dfa-372af950c159",
+      "nome": "Contabilidade Aplicada ao Setor Público (CASP)",
+      "slug": "casp-setor-publico",
+      "disciplina_id": "361812e8-bd80-51a9-95c8-db3e7679e12e"
+    },
+    {
+      "id": "38437a4b-63d6-5683-96e6-4f94126080d4",
+      "nome": "Meio Ambiente, Mudanças Climáticas e Sustentabilidade",
+      "slug": "sustentabilidade-clima",
+      "disciplina_id": "ac8f26fa-9f99-50a0-aa50-853311a06745"
+    },
+    {
+      "id": "81aa27d3-7e0c-5ea2-bda3-7ba68fb38908",
+      "nome": "Geopolítica, Comércio Global e Economia Brasileira",
+      "slug": "geopolitica-economia",
+      "disciplina_id": "ac8f26fa-9f99-50a0-aa50-853311a06745"
+    },
+    {
+      "id": "737169f0-3964-5fee-bdce-864bdee06a7c",
+      "nome": "Transformação Digital, IA e Sociedade da Informação",
+      "slug": "tecnologia-sociedade",
+      "disciplina_id": "ac8f26fa-9f99-50a0-aa50-853311a06745"
+    },
+    {
+      "id": "a4bebe26-2051-5cf0-a7ae-4ad5d7ae803c",
+      "nome": "Código de Ética Profissional do Servidor Civil (Dec. 1.171/94)",
+      "slug": "decreto-1171-94",
+      "disciplina_id": "efc9595d-8a5e-5de8-82f2-c6cf36640f2f"
+    },
+    {
+      "id": "9ffc2560-d36d-593c-bc34-9525676b0417",
+      "nome": "Comissões de Ética e Processo Ético",
+      "slug": "comissoes-etica",
+      "disciplina_id": "efc9595d-8a5e-5de8-82f2-c6cf36640f2f"
+    },
+    {
+      "id": "545f732b-63fa-5549-9ae6-a0bc7ae62111",
+      "nome": "Benefícios Previdenciários do RGPS",
+      "slug": "beneficios-rgps",
+      "disciplina_id": "48346eab-1c2c-5ee0-90ea-d294a270625a"
+    },
+    {
+      "id": "38efe4ee-d2fa-5c4a-b18e-8fb2cf3b1ef8",
+      "nome": "Segurados Obrigatórios e Facultativos do RGPS",
+      "slug": "segurados-rgps",
+      "disciplina_id": "48346eab-1c2c-5ee0-90ea-d294a270625a"
+    },
+    {
+      "id": "c8df4d38-8727-5a6f-baf6-c0bab7303a94",
+      "nome": "Espécies Tributárias e Princípios Constitucionais Tributários",
+      "slug": "especies-tributarias",
+      "disciplina_id": "f645496c-2320-542b-bc84-8c93fa0d08f0"
+    },
+    {
+      "id": "9520998f-ee8b-5186-8ccd-11d57459d8d0",
+      "nome": "Obrigação, Crédito e Lançamento Tributário",
+      "slug": "obrigacao-tributaria",
+      "disciplina_id": "f645496c-2320-542b-bc84-8c93fa0d08f0"
+    },
+    {
+      "id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "nome": "Escolas Criminológicas e Teorias Sociológicas",
+      "slug": "escolas-criminologicas",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d"
+    },
+    {
+      "id": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+      "nome": "Vitimologia, Processos de Vitimização e Cifras Criminais",
+      "slug": "vitimologia-cifras",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d"
+    },
+    {
+      "id": "ff763285-f3a8-5836-83d0-b07fc54b7d29",
+      "nome": "Prevenção Delitiva e Modelos de Reação ao Crime",
+      "slug": "prevencao-criminal",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d"
+    },
+    {
+      "id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "nome": "Normas Gerais de Circulação e Conduta (CTB)",
+      "slug": "ctb-normas-circulacao",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6"
+    },
+    {
+      "id": "e74dc693-757f-5086-97a0-0710b9473007",
+      "nome": "Crimes e Infrações de Trânsito (CTB)",
+      "slug": "ctb-crimes-infracoes",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6"
+    },
+    {
+      "id": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "nome": "Concurso de Pessoas e Concurso de Crimes",
+      "slug": "concurso-pessoas-crimes",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6"
+    },
+    {
+      "id": "e54c36d6-6d7f-5e1c-891d-4625bbeccd80",
+      "nome": "Penas, Medidas de Segurança e Extinção da Punibilidade",
+      "slug": "penas-extincao-punibilidade",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6"
+    },
+    {
+      "id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "nome": "Jurisdição e Competência Penal",
+      "slug": "jurisdicao-competencia-penal",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8"
+    },
+    {
+      "id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "nome": "Busca e Apreensão, Medidas Cautelares e Procedimentos",
+      "slug": "busca-apreensao-procedimentos",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8"
+    },
+    {
+      "id": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "nome": "Organizações Criminosas (Lei nº 12.850/2013)",
+      "slug": "organizacoes-criminosas-12850",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "nome": "Crimes Hediondos (Lei nº 8.072/1990)",
+      "slug": "crimes-hediondos-8072",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "nome": "Lavagem de Dinheiro (Lei nº 9.613/1998)",
+      "slug": "lavagem-dinheiro-9613",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    },
+    {
+      "id": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "nome": "Lei de Tortura e Interceptação Telefônica",
+      "slug": "tortura-interceptacao",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9"
+    }
+  ]
+}

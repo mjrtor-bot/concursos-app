@@ -1,0 +1,1808 @@
+{
+  "timestamp": "2026-09-27T01:54:20.527Z",
+  "amostraTamanho": 100,
+  "totalAprovadas": 100,
+  "taxaAprovacao": "100.0%",
+  "itens": [
+    {
+      "idSlug": "b12-trans01-001",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Policial Rodoviário Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans01-006",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Polícia Civil",
+      "cargo": "Investigador de Polícia Civil",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans01-011",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "certo_errado",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Policial Rodoviário Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans01-016",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "e74dc693-757f-5086-97a0-0710b9473007",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Polícia Civil",
+      "cargo": "Delegado de Polícia Civil",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans01-021",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Policial Rodoviário Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans01-026",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "e74dc693-757f-5086-97a0-0710b9473007",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Polícia Civil",
+      "cargo": "Delegado de Polícia Civil",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans02-005",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo FGV",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Policial Rodoviário Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans02-010",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Polícia Civil",
+      "cargo": "Escrivão de Polícia Civil",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans02-015",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "e74dc693-757f-5086-97a0-0710b9473007",
+      "tipo": "multipla_escolha",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo FCC",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Policial Rodoviário Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-trans02-020",
+      "disciplina_id": "589019e2-64df-583b-88f5-dc2e0eeb60e6",
+      "assunto_id": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Policial Rodoviário Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim01-001",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim01-006",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim01-011",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim01-016",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim01-021",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim02-001",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "ff763285-f3a8-5836-83d0-b07fc54b7d29",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim02-006",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim02-011",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "ff763285-f3a8-5836-83d0-b07fc54b7d29",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim02-016",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-crim02-021",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "ff763285-f3a8-5836-83d0-b07fc54b7d29",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info01-001",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "0f3e684d-8133-528d-97ac-a8b175acb75d",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info01-006",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "afa6fc9a-58eb-5b53-bf8a-f56021b629e4",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info01-011",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "0f3e684d-8133-528d-97ac-a8b175acb75d",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info01-016",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "afa6fc9a-58eb-5b53-bf8a-f56021b629e4",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info01-021",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "0f3e684d-8133-528d-97ac-a8b175acb75d",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info02-001",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "8550393a-d3fa-5069-82b3-55256cde307b",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info02-006",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "4017743b-0f76-5c01-9385-265485a38e47",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info02-011",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "b4ed475a-eda4-5383-a1a8-b0316ae4c653",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info02-016",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "8550393a-d3fa-5069-82b3-55256cde307b",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-info02-021",
+      "disciplina_id": "4598b6df-6e9d-5916-aa39-bb82ec4f41a6",
+      "assunto_id": "4017743b-0f76-5c01-9385-265485a38e47",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm01-001",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "ec12a7a2-bb3e-57c5-adfc-fade7c66bcfc",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm01-006",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm01-011",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm01-016",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "ec12a7a2-bb3e-57c5-adfc-fade7c66bcfc",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm01-021",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm02-001",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "791c7278-7511-50df-bddf-600d9b818aaf",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm02-006",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm02-011",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "48745dac-cbf3-5f1d-a0a2-1767a7d44429",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm02-016",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "791c7278-7511-50df-bddf-600d9b818aaf",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-rlm02-021",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh01-001",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh01-006",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh01-011",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh01-016",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh01-021",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh02-001",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh02-006",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh02-011",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh02-016",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-dh02-021",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal01-001",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal01-006",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal01-011",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal01-016",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal01-021",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal02-001",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal02-006",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "e54c36d6-6d7f-5e1c-891d-4625bbeccd80",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal02-011",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal02-016",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-penal02-021",
+      "disciplina_id": "29f5164e-c850-5fa5-a29b-3c0b5d6e41e6",
+      "assunto_id": "e54c36d6-6d7f-5e1c-891d-4625bbeccd80",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc01-001",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc01-006",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc01-011",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc01-016",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc01-021",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc02-001",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc02-006",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc02-011",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc02-016",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-proc02-021",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Quadrix",
+      "orgao": "Corpo de Bombeiros Militar",
+      "cargo": "Delegado de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const01-001",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const01-006",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const01-011",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const01-016",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const02-001",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const02-006",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const02-011",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-const02-016",
+      "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+      "assunto_id": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm01-001",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "50f75ddd-0ec6-5666-b08f-fa2179657fe1",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm01-006",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "e45db358-4e84-595b-9769-2957d83a9e54",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm01-011",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm01-016",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "50f75ddd-0ec6-5666-b08f-fa2179657fe1",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm02-001",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm02-006",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm02-011",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-adm02-016",
+      "disciplina_id": "0ba958a0-7e2b-5f29-aec6-9578fa2d6b1c",
+      "assunto_id": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg01-001",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg01-006",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg01-011",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg01-016",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg02-001",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg02-006",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg02-011",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-leg02-016",
+      "disciplina_id": "f54b2f9a-3916-5409-a431-a93ce24510e9",
+      "assunto_id": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Instituto AOCP",
+      "orgao": "Polícia Rodoviária Federal",
+      "cargo": "Guarda Municipal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-port01-001",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "fceeaf5d-d6c4-5ef9-887c-9d7290725828",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-port01-006",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "52c47954-6d8a-52d6-8c4f-7525aaa751a1",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-port01-011",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "2eb8117f-c746-5029-9842-dcd698598a16",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-port02-001",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "874b8ded-33c7-575d-8339-7a2f42e85e25",
+      "tipo": "certo_errado",
+      "dificuldade": "facil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Federal",
+      "cargo": "Agente de Polícia Federal",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-port02-006",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "2d20c170-3c4e-5171-91d2-fe97c4b92480",
+      "tipo": "multipla_escolha",
+      "dificuldade": "medio",
+      "banca": "Inédita / Estilo Vunesp",
+      "orgao": "Guarda Municipal",
+      "cargo": "Soldado da Polícia Militar",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    },
+    {
+      "idSlug": "b12-port02-011",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "aae93c82-cbf2-5cb0-ae75-d341448be61d",
+      "tipo": "certo_errado",
+      "dificuldade": "dificil",
+      "banca": "Inédita / Estilo Cebraspe",
+      "orgao": "Polícia Militar",
+      "cargo": "Investigador de Polícia",
+      "checks": {
+        "temEnunciado": true,
+        "temExplicacao": true,
+        "temGabaritoDefinido": true,
+        "distratoresValidos": true,
+        "fundamentacaoNormativa": true
+      },
+      "status": "APROVADO"
+    }
+  ]
+}

@@ -1,0 +1,622 @@
+{
+  "list": [
+    {
+      "disciplina": "Administração Pública",
+      "assunto": "Gestão por Processos e Indicadores de Desempenho",
+      "assuntoSlug": "gestao-processos",
+      "assuntoId": "ea7e6e37-8f6b-5070-a93a-13d5d54fbab9",
+      "qtd": 20,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Administração Pública",
+      "assunto": "Governança Pública, Transparência e Accountability",
+      "assuntoSlug": "governanca-publica",
+      "assuntoId": "2fa224ab-80ab-51e1-a931-65155de2a973",
+      "qtd": 20,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Administração Pública",
+      "assunto": "Planejamento Estratégico e Gestão de Riscos",
+      "assuntoSlug": "planejamento-estrategico",
+      "assuntoId": "06d77ffe-e5eb-5d77-a088-ec385a531bad",
+      "qtd": 20,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Administração Pública",
+      "assunto": "Orçamento Público (PPA, LDO e LOA)",
+      "assuntoSlug": "orcamento-publico",
+      "assuntoId": "024bdd12-277b-5ef2-b170-5bc93646345c",
+      "qtd": 20,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Atualidades e Realidade Brasileira",
+      "assunto": "Meio Ambiente, Mudanças Climáticas e Sustentabilidade",
+      "assuntoSlug": "sustentabilidade-clima",
+      "assuntoId": "38437a4b-63d6-5683-96e6-4f94126080d4",
+      "qtd": 20,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Atualidades e Realidade Brasileira",
+      "assunto": "Geopolítica, Comércio Global e Economia Brasileira",
+      "assuntoSlug": "geopolitica-economia",
+      "assuntoId": "81aa27d3-7e0c-5ea2-bda3-7ba68fb38908",
+      "qtd": 20,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Atualidades e Realidade Brasileira",
+      "assunto": "Transformação Digital, IA e Sociedade da Informação",
+      "assuntoSlug": "tecnologia-sociedade",
+      "assuntoId": "737169f0-3964-5fee-bdce-864bdee06a7c",
+      "qtd": 20,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Contabilidade Geral e Pública",
+      "assunto": "Balanço Patrimonial e Estrutura das Contas",
+      "assuntoSlug": "balanco-patrimonial",
+      "assuntoId": "62d0d5ae-344e-5bee-976f-e3f0f13c1914",
+      "qtd": 20,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Contabilidade Geral e Pública",
+      "assunto": "Demonstração do Resultado do Exercício (DRE)",
+      "assuntoSlug": "dre-contabilidade",
+      "assuntoId": "cfd2e13d-04df-54e9-af73-8d3fb14b28ad",
+      "qtd": 20,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Contabilidade Geral e Pública",
+      "assunto": "Regime de Competência e Regime de Caixa",
+      "assuntoSlug": "regimes-contabeis",
+      "assuntoId": "a01b567c-b2bb-52e1-8432-74eeab03d579",
+      "qtd": 20,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Contabilidade Geral e Pública",
+      "assunto": "Contabilidade Aplicada ao Setor Público (CASP)",
+      "assuntoSlug": "casp-setor-publico",
+      "assuntoId": "55f3207c-f3fb-5bf5-9dfa-372af950c159",
+      "qtd": 20,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Criminologia",
+      "assunto": "Prevenção Delitiva e Modelos de Reação ao Crime",
+      "assuntoSlug": "prevencao-criminal",
+      "assuntoId": "ff763285-f3a8-5836-83d0-b07fc54b7d29",
+      "qtd": 36,
+      "carreiras": "Polícia Militar de São Paulo (PM-SP), Polícia Civil do Distrito Federal (PCDF), Polícia Civil do Estado do Rio de Janeiro (PC-RJ), Polícia Federal (PF)"
+    },
+    {
+      "disciplina": "Criminologia",
+      "assunto": "Vitimologia, Processos de Vitimização e Cifras Criminais",
+      "assuntoSlug": "vitimologia-cifras",
+      "assuntoId": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+      "qtd": 46,
+      "carreiras": "Polícia Federal (PF), Polícia Civil de São Paulo (PC-SP), Polícia Civil do Estado do Ceará (PC-CE), Polícia Civil do Estado do Amazonas (PC-AM)"
+    },
+    {
+      "disciplina": "Criminologia",
+      "assunto": "Escolas Criminológicas e Teorias Sociológicas",
+      "assuntoSlug": "escolas-criminologicas",
+      "assuntoId": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "qtd": 88,
+      "carreiras": "Polícia Federal (PF), Polícia Civil de São Paulo (PC-SP), Polícia Civil do Distrito Federal (PCDF), Polícia Civil do Estado do Rio de Janeiro (PC-RJ)"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Licitações e Contratos (Nova Lei 14.133/2021)",
+      "assuntoSlug": "licitacoes-14133",
+      "assuntoId": "25c0e38d-9020-5c46-849e-8c796fed3d27",
+      "qtd": 41,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Improbidade Administrativa (Lei 8.429/92 alterada)",
+      "assuntoSlug": "improbidade-administrativa",
+      "assuntoId": "d9c11f93-08be-5a97-8c6b-5a32724f83bb",
+      "qtd": 64,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Princípios da Administração Pública (LIMPE e Implícitos)",
+      "assuntoSlug": "principios-administracao",
+      "assuntoId": "e45db358-4e84-595b-9769-2957d83a9e54",
+      "qtd": 66,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Responsabilidade Civil do Estado",
+      "assuntoSlug": "responsabilidade-civil-estado",
+      "assuntoId": "80853bc8-d70e-55bb-8ad2-b4439f7079b9",
+      "qtd": 75,
+      "carreiras": "ANVISA, MPU, BACEN, INSS"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Agentes Públicos e Regime Jurídico (Lei 8.112/90)",
+      "assuntoSlug": "agentes-publicos-8112",
+      "assuntoId": "f53e41f4-2792-53ab-8bc8-b6810fb944c0",
+      "qtd": 85,
+      "carreiras": "RFB, BACEN, ANVISA, STF"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Atos Administrativos: Elementos, Atributos e Extinção",
+      "assuntoSlug": "atos-administrativos",
+      "assuntoId": "50f75ddd-0ec6-5666-b08f-fa2179657fe1",
+      "qtd": 100,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Administrativo",
+      "assunto": "Poderes Administrativos (Hierárquico, Disciplinar, Polícia)",
+      "assuntoSlug": "poderes-administrativos",
+      "assuntoId": "983f1a52-f054-5492-8318-d892e697f8f7",
+      "qtd": 100,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Controle de Constitucionalidade",
+      "assuntoSlug": "controle-constitucionalidade",
+      "assuntoId": "f5742ead-d502-5d7b-953f-2117f3fba269",
+      "qtd": 30,
+      "carreiras": "MGI / CNU, PRF, TJ-SP, TCU"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Poder Executivo e Presidência da República",
+      "assuntoSlug": "poder-executivo",
+      "assuntoId": "65d20117-d7d7-5139-9eeb-cb59ee770070",
+      "qtd": 34,
+      "carreiras": "MGI / CNU, INSS, BB, CEF"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Poder Legislativo e Processo Legislativo",
+      "assuntoSlug": "poder-legislativo",
+      "assuntoId": "7a887c87-f2d3-504f-8ccf-3f7fe67c1812",
+      "qtd": 34,
+      "carreiras": "MGI / CNU, MPU, BACEN, ANVISA"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Poder Judiciário e Funções Essenciais à Justiça",
+      "assuntoSlug": "poder-judiciario",
+      "assuntoId": "0bbb16e6-3694-512f-8c61-a96893588f7f",
+      "qtd": 37,
+      "carreiras": "MGI / CNU, STJ, RFB, PF"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Organização Político-Administrativa do Estado",
+      "assuntoSlug": "organizacao-estado",
+      "assuntoId": "66dd36a8-5e55-5f5c-8ae8-36501eab3e3b",
+      "qtd": 83,
+      "carreiras": "MGI / CNU, RFB, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Segurança Pública (Art. 144)",
+      "assuntoSlug": "seguranca-publica",
+      "assuntoId": "b4e97d01-0196-55df-bf1d-9b0964a7d91c",
+      "qtd": 144,
+      "carreiras": "MGI / CNU, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Direito Constitucional",
+      "assunto": "Direitos e Garantias Fundamentais (Art. 5º)",
+      "assuntoSlug": "artigo-5-cf",
+      "assuntoId": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+      "qtd": 172,
+      "carreiras": "MGI / CNU, RFB, PF, PRF"
+    },
+    {
+      "disciplina": "Direito Penal",
+      "assunto": "Concurso de Pessoas e Concurso de Crimes",
+      "assuntoSlug": "concurso-pessoas-crimes",
+      "assuntoId": "a432cde8-af56-5530-8700-5bdf6e425b6b",
+      "qtd": 29,
+      "carreiras": "Polícia Rodoviária Federal (PRF), PC-SP, PC-MG, PC-RJ"
+    },
+    {
+      "disciplina": "Direito Penal",
+      "assunto": "Aplicação da Lei Penal no Tempo e no Espaço",
+      "assuntoSlug": "aplicacao-lei-penal",
+      "assuntoId": "daca98a7-4f3f-5498-b313-6ab5c0da1539",
+      "qtd": 59,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Penal",
+      "assunto": "Crimes Contra a Administração Pública",
+      "assuntoSlug": "crimes-funcionario-publico",
+      "assuntoId": "1e4abd8c-ee06-5498-b128-c3904c4c6696",
+      "qtd": 116,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Direito Penal",
+      "assunto": "Penas, Medidas de Segurança e Extinção da Punibilidade",
+      "assuntoSlug": "penas-extincao-punibilidade",
+      "assuntoId": "e54c36d6-6d7f-5e1c-891d-4625bbeccd80",
+      "qtd": 141,
+      "carreiras": "Polícia Penal, Polícia Federal (PF), Polícia Rodoviária Federal (PRF), PC-SP"
+    },
+    {
+      "disciplina": "Direito Penal",
+      "assunto": "Teoria do Crime: Tipicidade, Ilicitude e Culpabilidade",
+      "assuntoSlug": "teoria-crime",
+      "assuntoId": "9d987ff6-bcd4-5ea7-8594-c1123af1384b",
+      "qtd": 150,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Penal",
+      "assunto": "Crimes Contra a Pessoa e o Patrimônio",
+      "assuntoSlug": "crimes-pessoa-patrimonio",
+      "assuntoId": "d7c9580a-8d0c-5a7d-a7fe-44e0c53b4968",
+      "qtd": 175,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Direito Previdenciário",
+      "assunto": "Benefícios Previdenciários do RGPS",
+      "assuntoSlug": "beneficios-rgps",
+      "assuntoId": "545f732b-63fa-5549-9ae6-a0bc7ae62111",
+      "qtd": 20,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Direito Previdenciário",
+      "assunto": "Segurados Obrigatórios e Facultativos do RGPS",
+      "assuntoSlug": "segurados-rgps",
+      "assuntoId": "38efe4ee-d2fa-5c4a-b18e-8fb2cf3b1ef8",
+      "qtd": 20,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Processual Penal",
+      "assunto": "Busca e Apreensão, Medidas Cautelares e Procedimentos",
+      "assuntoSlug": "busca-apreensao-procedimentos",
+      "assuntoId": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "qtd": 28,
+      "carreiras": "Polícia Federal (PF), Polícia Rodoviária Federal (PRF), PC-SP, PC-RJ"
+    },
+    {
+      "disciplina": "Direito Processual Penal",
+      "assunto": "Jurisdição e Competência Penal",
+      "assuntoSlug": "jurisdicao-competencia-penal",
+      "assuntoId": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "qtd": 31,
+      "carreiras": "Polícia Rodoviária Federal (PRF), PC-SP, PC-RJ, PC-MG"
+    },
+    {
+      "disciplina": "Direito Processual Penal",
+      "assunto": "Ação Penal Pública e Privada",
+      "assuntoSlug": "acao-penal",
+      "assuntoId": "3b2a1eda-d272-53f8-b66a-41ef31036863",
+      "qtd": 96,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Direito Processual Penal",
+      "assunto": "Prisões Cautelares, Flagrante e Liberdade Provisória",
+      "assuntoSlug": "prisoes-cautelares",
+      "assuntoId": "d95ec26f-26ee-5577-acb4-68fdd36c43a1",
+      "qtd": 129,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Direito Processual Penal",
+      "assunto": "Inquérito Policial: Características e Instauração",
+      "assuntoSlug": "inquerito-policial",
+      "assuntoId": "ba014b79-7c6e-5279-a517-abaeceb2771f",
+      "qtd": 133,
+      "carreiras": "PC-SP, INSS, BB, CEF"
+    },
+    {
+      "disciplina": "Direito Processual Penal",
+      "assunto": "Provas no Processo Penal e Cadeia de Custódia",
+      "assuntoSlug": "provas-processo-penal",
+      "assuntoId": "444c1f05-b62a-5238-9644-956b3a7cc28e",
+      "qtd": 133,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Direito Tributário",
+      "assunto": "Espécies Tributárias e Princípios Constitucionais Tributários",
+      "assuntoSlug": "especies-tributarias",
+      "assuntoId": "c8df4d38-8727-5a6f-baf6-c0bab7303a94",
+      "qtd": 20,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Direito Tributário",
+      "assunto": "Obrigação, Crédito e Lançamento Tributário",
+      "assuntoSlug": "obrigacao-tributaria",
+      "assuntoId": "9520998f-ee8b-5186-8ccd-11d57459d8d0",
+      "qtd": 20,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Direitos Humanos",
+      "assunto": "Declaração Universal dos Direitos Humanos (1948)",
+      "assuntoSlug": "dudh-1948",
+      "assuntoId": "b2751cb8-3bc4-5af1-9af0-98d0a85e8a31",
+      "qtd": 72,
+      "carreiras": "BACEN, ANVISA, STF, BB"
+    },
+    {
+      "disciplina": "Direitos Humanos",
+      "assunto": "Pacto de San José da Costa Rica (CADH)",
+      "assuntoSlug": "pacto-san-jose",
+      "assuntoId": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "qtd": 118,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Direitos Humanos",
+      "assunto": "Gerações e Dimensões dos Direitos Humanos",
+      "assuntoSlug": "geracoes-direitos-humanos",
+      "assuntoId": "48a9085d-50c8-52a7-bfd1-6b5fbdb29430",
+      "qtd": 120,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Ética no Serviço Público",
+      "assunto": "Código de Ética Profissional do Servidor Civil (Dec. 1.171/94)",
+      "assuntoSlug": "decreto-1171-94",
+      "assuntoId": "a4bebe26-2051-5cf0-a7ae-4ad5d7ae803c",
+      "qtd": 20,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Ética no Serviço Público",
+      "assunto": "Comissões de Ética e Processo Ético",
+      "assuntoSlug": "comissoes-etica",
+      "assuntoId": "9ffc2560-d36d-593c-bc34-9525676b0417",
+      "qtd": 20,
+      "carreiras": "BACEN, INSS, BB, CEF"
+    },
+    {
+      "disciplina": "Informática e Tecnologia",
+      "assunto": "Suítes de Escritório (Calc/Excel, Writer/Word)",
+      "assuntoSlug": "ferramentas-escritorio",
+      "assuntoId": "4017743b-0f76-5c01-9385-265485a38e47",
+      "qtd": 20,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Informática e Tecnologia",
+      "assunto": "Sistemas Operacionais (Linux e Windows)",
+      "assuntoSlug": "sistemas-operacionais",
+      "assuntoId": "b4ed475a-eda4-5383-a1a8-b0316ae4c653",
+      "qtd": 46,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Informática e Tecnologia",
+      "assunto": "Bancos de Dados Relacionais e SQL",
+      "assuntoSlug": "bancos-dados-sql",
+      "assuntoId": "8550393a-d3fa-5069-82b3-55256cde307b",
+      "qtd": 50,
+      "carreiras": "TJ-SP, TCU, INSS, BB"
+    },
+    {
+      "disciplina": "Informática e Tecnologia",
+      "assunto": "Redes de Computadores, Protocolos e Nuvem",
+      "assuntoSlug": "redes-nuvem",
+      "assuntoId": "0f3e684d-8133-528d-97ac-a8b175acb75d",
+      "qtd": 62,
+      "carreiras": "Polícia Federal (PF), Polícia Civil do Estado do Rio de Janeiro (PC-RJ), MPU, INSS"
+    },
+    {
+      "disciplina": "Informática e Tecnologia",
+      "assunto": "Segurança da Informação, Criptografia e Malware",
+      "assuntoSlug": "seguranca-informacao",
+      "assuntoId": "afa6fc9a-58eb-5b53-bf8a-f56021b629e4",
+      "qtd": 80,
+      "carreiras": "Polícia Civil de São Paulo (PC-SP), RFB, PF, PRF"
+    },
+    {
+      "disciplina": "Legislação de Trânsito",
+      "assunto": "Normas Gerais de Circulação e Conduta (CTB)",
+      "assuntoSlug": "ctb-normas-circulacao",
+      "assuntoId": "a059f9e2-aaa6-5d07-ae38-56d8024c3b23",
+      "qtd": 49,
+      "carreiras": "Polícia Rodoviária Federal, Polícia Militar, Guarda Municipal"
+    },
+    {
+      "disciplina": "Legislação de Trânsito",
+      "assunto": "Crimes e Infrações de Trânsito (CTB)",
+      "assuntoSlug": "ctb-crimes-infracoes",
+      "assuntoId": "e74dc693-757f-5086-97a0-0710b9473007",
+      "qtd": 56,
+      "carreiras": "Polícia Militar, Polícia Rodoviária Federal, Polícia Civil, Guarda Municipal"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Lavagem de Dinheiro (Lei nº 9.613/1998)",
+      "assuntoSlug": "lavagem-dinheiro-9613",
+      "assuntoId": "0551bd35-dcb3-5809-8a12-f9a40e1c0b83",
+      "qtd": 18,
+      "carreiras": "PC-DF, Polícia Penal, Polícia Federal (PF), Polícia Rodoviária Federal (PRF)"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Lei de Tortura e Interceptação Telefônica",
+      "assuntoSlug": "tortura-interceptacao",
+      "assuntoId": "f8e100c9-16c7-52dc-87d3-4e111e52d81a",
+      "qtd": 24,
+      "carreiras": "PC-SP, PC-RJ, PC-DF, Polícia Rodoviária Federal (PRF)"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Crimes Hediondos (Lei nº 8.072/1990)",
+      "assuntoSlug": "crimes-hediondos-8072",
+      "assuntoId": "9ee8346f-7a1c-5ecd-95b5-0a9a6d29ff67",
+      "qtd": 27,
+      "carreiras": "Polícia Rodoviária Federal (PRF), PC-SP, Polícia Penal, Polícia Federal (PF)"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Lei Maria da Penha (Lei nº 11.340/2006)",
+      "assuntoSlug": "lei-maria-da-penha",
+      "assuntoId": "0c686bc8-7d6f-54b7-991f-b34086393aba",
+      "qtd": 58,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Lei de Abuso de Autoridade (Lei nº 13.869/2019)",
+      "assuntoSlug": "abuso-autoridade-13869",
+      "assuntoId": "a8ddf09b-39eb-5a8b-b538-0c5dc1eaf457",
+      "qtd": 62,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Lei de Drogas (Lei nº 11.343/2006)",
+      "assuntoSlug": "lei-drogas-11343",
+      "assuntoId": "2104a0a6-1d8a-5f25-89b9-01eb94f91057",
+      "qtd": 91,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Estatuto do Desarmamento (Lei nº 10.826/2003)",
+      "assuntoSlug": "estatuto-desarmamento-10826",
+      "assuntoId": "dc244c93-245b-53ce-b721-bcdc9eae0e5f",
+      "qtd": 105,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Legislação Especial",
+      "assunto": "Organizações Criminosas (Lei nº 12.850/2013)",
+      "assuntoSlug": "organizacoes-criminosas-12850",
+      "assuntoId": "26565bb2-215d-59c8-b3c6-185e5765b6a0",
+      "qtd": 150,
+      "carreiras": "PC-DF, Polícia Rodoviária Federal (PRF), PC-SP, PC-RJ"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Ortografia e Acentuação Gráfica",
+      "assuntoSlug": "ortografia-acentuacao",
+      "assuntoId": "fceeaf5d-d6c4-5ef9-887c-9d7290725828",
+      "qtd": 43,
+      "carreiras": "MGI / CNU, RFB, BACEN, ANVISA"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Pontuação e Emprego dos Sinais",
+      "assuntoSlug": "pontuacao",
+      "assuntoId": "52c47954-6d8a-52d6-8c4f-7525aaa751a1",
+      "qtd": 56,
+      "carreiras": "MGI / CNU, RFB, CEF, CGU"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Morfologia e Classes de Palavras",
+      "assuntoSlug": "morfologia-classes",
+      "assuntoId": "ae0cb1a9-da13-5d87-92b8-c498b65f5f17",
+      "qtd": 58,
+      "carreiras": "MGI / CNU, RFB, STJ, PF"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Concordância Verbal e Nominal",
+      "assuntoSlug": "concordancia",
+      "assuntoId": "874b8ded-33c7-575d-8339-7a2f42e85e25",
+      "qtd": 69,
+      "carreiras": "MGI / CNU, RFB, PF, PRF"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Regência e Crase",
+      "assuntoSlug": "regencia-crase",
+      "assuntoId": "2eb8117f-c746-5029-9842-dcd698598a16",
+      "qtd": 77,
+      "carreiras": "MGI / CNU, RFB, PF, PRF"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Sintaxe do Período e Orações",
+      "assuntoSlug": "sintaxe-periodo",
+      "assuntoId": "2d20c170-3c4e-5171-91d2-fe97c4b92480",
+      "qtd": 91,
+      "carreiras": "MGI / CNU, RFB, PF, PRF"
+    },
+    {
+      "disciplina": "Língua Portuguesa",
+      "assunto": "Interpretação e Tipologia Textual",
+      "assuntoSlug": "interpretacao-texto",
+      "assuntoId": "aae93c82-cbf2-5cb0-ae75-d341448be61d",
+      "qtd": 111,
+      "carreiras": "MGI / CNU, RFB, TCU, INSS"
+    },
+    {
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "assunto": "Diagramas Lógicos e Teoria dos Conjuntos",
+      "assuntoSlug": "diagramas-logicos",
+      "assuntoId": "79d058d3-3b1a-5aa3-98ce-f0232fc612d3",
+      "qtd": 39,
+      "carreiras": "RFB, PF, PRF, TJ-SP"
+    },
+    {
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "assunto": "Análise Combinatória e Princípio da Contagem",
+      "assuntoSlug": "analise-combinatoria",
+      "assuntoId": "791c7278-7511-50df-bddf-600d9b818aaf",
+      "qtd": 48,
+      "carreiras": "INSS, BB, CEF, CGU"
+    },
+    {
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "assunto": "Equivalências Lógicas e Negação de Proposições",
+      "assuntoSlug": "equivalencias-negacoes",
+      "assuntoId": "671e06a6-a523-512a-a333-08f2542f694f",
+      "qtd": 51,
+      "carreiras": "Polícia Civil de São Paulo (PC-SP), Polícia Civil de Minas Gerais (PC-MG), Polícia Federal (PF), RFB"
+    },
+    {
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "assunto": "Lógica Proposicional e Conectivos",
+      "assuntoSlug": "logica-proposicional",
+      "assuntoId": "ec12a7a2-bb3e-57c5-adfc-fade7c66bcfc",
+      "qtd": 52,
+      "carreiras": "BACEN, ANVISA, STF, STJ"
+    },
+    {
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "assunto": "Probabilidade e Estatística Básica",
+      "assuntoSlug": "probabilidade",
+      "assuntoId": "48745dac-cbf3-5f1d-a0a2-1767a7d44429",
+      "qtd": 62,
+      "carreiras": "Polícia Civil de São Paulo (PC-SP), BACEN, ANVISA, STF"
+    }
+  ],
+  "carreirasNorm": {
+    "PF": 574,
+    "PRF": 559,
+    "PC": 1577,
+    "PM": 358,
+    "PP": 307,
+    "GM": 144,
+    "CBM": 61,
+    "Outros": 1180
+  }
+}

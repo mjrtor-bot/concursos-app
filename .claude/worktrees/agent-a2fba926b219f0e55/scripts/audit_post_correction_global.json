@@ -1,0 +1,26 @@
+{
+  "metadata": {
+    "timestamp": "2026-09-27T18:07:21.666Z",
+    "supabaseUrl": "https://xvpqcibdarcelvcwnglq.supabase.co",
+    "totalQuestoes": 7760,
+    "totalAlternativas": 28366
+  },
+  "resumoProblemas": {
+    "semAlternativas": 0,
+    "qtdInvalidaAlternativas": 0,
+    "semGabaritoCorreto": 0,
+    "multiplosGabaritosCorretos": 0,
+    "alternativaTextoVazio": 0,
+    "disciplinaInvalidaOuNula": 0,
+    "assuntoInvalidoOuNulo": 0,
+    "assuntoForaDaDisciplina": 0,
+    "enunciadoVazio": 0,
+    "explicacaoVazia": 0,
+    "placeholdersDetectados": 0,
+    "divergenciasGabaritoExplicacao": 0,
+    "totalQuestoesComInconsistencia": 0
+  },
+  "inconsistenciasPorLote": {},
+  "inconsistenciasPorDisciplina": {},
+  "questoesInconsistentes": []
+}

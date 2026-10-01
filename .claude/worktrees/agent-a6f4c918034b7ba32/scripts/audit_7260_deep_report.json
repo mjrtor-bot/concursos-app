@@ -1,0 +1,781 @@
+{
+  "totalQuestoes": 7760,
+  "totalAlternativas": 28366,
+  "classificacaoGeral": {
+    "OK": 7229,
+    "CORRIGIR": 0,
+    "DESATUALIZADA": 0,
+    "QUARENTENA": 531
+  },
+  "problemasPorSeveridade": {
+    "BAIXA": 0,
+    "MEDIA": 0,
+    "ALTA": 0,
+    "CRITICA": 1075
+  },
+  "problemasPorTipo": {
+    "PLACEHOLDER_NO_ENUNCIADO": 1044,
+    "INCOMPATIBILIDADE_GABARITO_EXPLICACAO": 31
+  },
+  "problemasPorLote": {
+    "v2.1": {
+      "total": 1760,
+      "OK": 1760,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.3-lote3": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.9-lote9": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.2-lote2": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.7-lote7": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.6-lote6": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v3.0-lote10": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.5-lote5": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.4-lote4": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v2.8-lote8": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v3.3-lote13": {
+      "total": 500,
+      "OK": 500,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "v3.2-lote12": {
+      "total": 500,
+      "OK": 0,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 500,
+      "problemas": []
+    },
+    "v3.1-lote11": {
+      "total": 500,
+      "OK": 469,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 31,
+      "problemas": []
+    }
+  },
+  "problemasPorDisciplina": {
+    "Língua Portuguesa": {
+      "total": 750,
+      "OK": 717,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 33,
+      "problemas": []
+    },
+    "Informática e Tecnologia": {
+      "total": 498,
+      "OK": 448,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 50,
+      "problemas": []
+    },
+    "Direito Constitucional": {
+      "total": 819,
+      "OK": 776,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 43,
+      "problemas": []
+    },
+    "Direitos Humanos": {
+      "total": 535,
+      "OK": 480,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 55,
+      "problemas": []
+    },
+    "Direito Processual Penal": {
+      "total": 872,
+      "OK": 819,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 53,
+      "problemas": []
+    },
+    "Raciocínio Lógico-Matemático": {
+      "total": 467,
+      "OK": 415,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 52,
+      "problemas": []
+    },
+    "Direito Administrativo": {
+      "total": 809,
+      "OK": 764,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 45,
+      "problemas": []
+    },
+    "Direito Penal": {
+      "total": 990,
+      "OK": 940,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 50,
+      "problemas": []
+    },
+    "Legislação Especial": {
+      "total": 865,
+      "OK": 821,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 44,
+      "problemas": []
+    },
+    "Legislação de Trânsito": {
+      "total": 410,
+      "OK": 360,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 50,
+      "problemas": []
+    },
+    "Administração Pública": {
+      "total": 80,
+      "OK": 80,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "Contabilidade Geral e Pública": {
+      "total": 80,
+      "OK": 80,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "Atualidades e Realidade Brasileira": {
+      "total": 60,
+      "OK": 60,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "Ética no Serviço Público": {
+      "total": 40,
+      "OK": 40,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "Direito Previdenciário": {
+      "total": 40,
+      "OK": 40,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "Direito Tributário": {
+      "total": 40,
+      "OK": 40,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 0,
+      "problemas": []
+    },
+    "Criminologia": {
+      "total": 405,
+      "OK": 349,
+      "CORRIGIR": 0,
+      "DESATUALIZADA": 0,
+      "QUARENTENA": 56,
+      "problemas": []
+    }
+  },
+  "exemplosProblemas": [
+    {
+      "id": "0e21caf8-21fd-51b7-9438-a79b8dfdd57c",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A respeito do crime de participação em disputa automobilística não autorizada ('racha'), previsto no art. 308 do CTB, é correto afirmar que:\n\nDelimita...",
+      "explicacao": "GABARITO: B. O art. 308, § 2º do CTB prevê pena de reclusão de 5 a 10 anos se da prática de racha resultar morte na modalidade preterdolosa (culposa n..."
+    },
+    {
+      "id": "1564ee13-84c5-5915-9601-1333fdcea965",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "No tocante à fixação da pena de suspensão da habilitação nos crimes de trânsito, a imposição judicial dessa penalidade:\n\nQuadro fático suplementar de ...",
+      "explicacao": "GABARITO: B. O art. 292 do CTB prevê que 'a suspensão ou a proibição de se obter a permissão ou a habilitação para dirigir veículo automotor pode ser ..."
+    },
+    {
+      "id": "23e866a6-e092-5dd9-847c-83381326a999",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "O art. 309 do CTB tipifica a conduta de dirigir veículo automotor em via pública sem a devida Permissão para Dirigir ou Habilitação ou se cassado o di...",
+      "explicacao": "GABARITO: B. Conforme pacífica jurisprudência e Súmula 720 do STF, o art. 309 do CTB exige expressamente a 'geração de perigo de dano' concreto para a..."
+    },
+    {
+      "id": "fc91f5f0-86a7-5270-ab1f-6ee73b709292",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "De acordo com o CTB, antes de iniciar qualquer manobra que implique um deslocamento lateral do veículo, o condutor deverá obrigatoriamente:\n\nFundament...",
+      "explicacao": "GABARITO: C. O art. 35 do CTB dispõe que antes de iniciar qualquer manobra que implique um deslocamento lateral, o condutor deve indicar seu propósito..."
+    },
+    {
+      "id": "d5a3898d-0b6a-512c-b04c-a8420d15fb94",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A cassação do documento de habilitação é penalidade administrativa aplicada compulsoriamente pela autoridade de trânsito quando:\n\nRelato descritivo de...",
+      "explicacao": "GABARITO: B. O art. 263, I do CTB determina expressamente que a cassação da CNH dar-se-á 'quando, suspenso o direito de dirigir, o infrator conduzir q..."
+    },
+    {
+      "id": "f439d565-2943-5953-9c79-3207296b20a0",
+      "lote": "v3.2-lote12",
+      "disciplina": "Criminologia",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "Sobre vitimologia contemporânea, assinale a correta.\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requisição peri...",
+      "explicacao": "GABARITO: D. A vitimologia atual orienta proteção e compreensão do fenômeno vitimal, não responsabilização indevida. Fundamentação: Doutrina criminoló..."
+    },
+    {
+      "id": "768efd54-f123-5053-b7ec-fe0d052a28a7",
+      "lote": "v3.2-lote12",
+      "disciplina": "Criminologia",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A escola positiva da criminologia substituiu a abstração clássica pelo estudo empírico do delinquente e dos fatores determinantes do comportamento cri...",
+      "explicacao": "GABARITO: CERTO. A escola positiva valorizou observação, causalidade e periculosidade, em contraste com a matriz clássica. Fundamentação: Doutrina cri..."
+    },
+    {
+      "id": "548395e7-9b7b-5678-9803-8558ce7c7fb6",
+      "lote": "v3.2-lote12",
+      "disciplina": "Informática e Tecnologia",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /narrativa de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "Sobre bancos relacionais, assinale a opção correta.\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requisição peric...",
+      "explicacao": "GABARITO: D. Restrição relacional e otimização de consulta são mecanismos diferentes. Fundamentação: Padrões técnicos de segurança da informação (ISO/..."
+    },
+    {
+      "id": "638bdfe9-3ebf-5fc3-8f77-3e640b6bca86",
+      "lote": "v3.2-lote12",
+      "disciplina": "Informática e Tecnologia",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "Em nuvem, o modelo IaaS transfere ao provedor a infraestrutura física, mas mantém com o cliente deveres de configuração segura, identidades e dados.\n\n...",
+      "explicacao": "GABARITO: CERTO. Nuvem pública opera com matriz de responsabilidade compartilhada, variável por modelo de serviço. Fundamentação: Padrões técnicos de ..."
+    },
+    {
+      "id": "4764e4ce-4ec0-5f2d-99a2-a13849b0af9c",
+      "lote": "v3.2-lote12",
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "O princípio fundamental da contagem indica que:\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requisição pericial,...",
+      "explicacao": "GABARITO: D. O princípio multiplicativo estrutura problemas de etapas sucessivas. Fundamentação: Princípios da lógica formal proposicional, teoria dos..."
+    },
+    {
+      "id": "52326c5d-37be-5b07-8ec9-14f866248600",
+      "lote": "v3.2-lote12",
+      "disciplina": "Raciocínio Lógico-Matemático",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A negação de 'todos os investigados compareceram' é 'ao menos um investigado não compareceu', e não 'nenhum investigado compareceu'.\n\nContexto policia...",
+      "explicacao": "GABARITO: CERTO. Negar quantificador universal exige existência de contraexemplo. Fundamentação: Princípios da lógica formal proposicional, teoria dos..."
+    },
+    {
+      "id": "242e0809-8188-5922-b0a3-1c84425d0b3c",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direitos Humanos",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "No sistema interamericano, o Pacto de San José:\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requisição pericial,...",
+      "explicacao": "GABARITO: D. A Convenção Americana equilibra proteção, legalidade, necessidade e proporcionalidade. Fundamentação: Declaração Universal dos Direitos H..."
+    },
+    {
+      "id": "c683c0d4-0c27-534b-917b-36a0d3128357",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direitos Humanos",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /narrativa de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A Declaração Universal de 1948 consagra dignidade, igualdade e direitos civis, políticos, sociais, econômicos e culturais, embora não seja tratado int...",
+      "explicacao": "GABARITO: CERTO. A DUDH orienta interpretação e consolida parâmetros universais de proteção. Fundamentação: Declaração Universal dos Direitos Humanos,..."
+    },
+    {
+      "id": "24b13a75-038b-5e3f-9906-426690afb0a5",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direito Penal",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A extinção da punibilidade afasta a pretensão punitiva ou executória, mas não apaga automaticamente todos os efeitos civis do fato.\n\nContexto policial...",
+      "explicacao": "GABARITO: CERTO. As causas extintivas incidem sobre a punibilidade, com efeitos próprios conforme a hipótese. Fundamentação: Código Penal (Decreto-Lei..."
+    },
+    {
+      "id": "b7848f27-2156-55fd-855c-dd3b083c5b54",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direito Processual Penal",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /narrativa de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A busca domiciliar, como regra, depende de mandado judicial durante o dia, salvo consentimento válido, flagrante delito, desastre ou socorro, nos term...",
+      "explicacao": "GABARITO: ERRADO. A inviolabilidade domiciliar comporta exceções constitucionais taxativas e controle de legalidade. Fundamentação: Código de Processo..."
+    },
+    {
+      "id": "339364d9-0773-578a-804f-f6b33d178402",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direito Processual Penal",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A prisão preventiva, segundo o CPP e a jurisprudência, exige:\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requis...",
+      "explicacao": "GABARITO: D. Medidas cautelares pessoais exigem necessidade, adequação, legalidade e motivação concreta. Fundamentação: Código de Processo Penal (Decr..."
+    },
+    {
+      "id": "7d785a85-0d27-57dc-bf2d-29f975fc6ca8",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direito Processual Penal",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A cadeia de custódia documenta reconhecimento, isolamento, fixação, coleta, acondicionamento, transporte, recebimento, processamento, armazenamento e ...",
+      "explicacao": "GABARITO: CERTO. Cadeia de custódia busca integridade e documentação do percurso do vestígio. Fundamentação: Código de Processo Penal (Decreto-Lei nº ..."
+    },
+    {
+      "id": "49cf67c1-f6d3-5a86-b526-83a2a4058b95",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direito Administrativo",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /narrativa de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A motivação explicita pressupostos de fato e de direito do ato administrativo, viabilizando controle de legalidade e legitimidade.\n\nContexto policial:...",
+      "explicacao": "GABARITO: ERRADO. Motivação integra dever de transparência e racionalidade administrativa. Fundamentação: Princípios constitucionais da Administração ..."
+    },
+    {
+      "id": "74488407-6808-587c-aa31-9315cd0804ef",
+      "lote": "v3.2-lote12",
+      "disciplina": "Direito Administrativo",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A Lei 14.133/2021 valoriza:\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requisição pericial, oitiva qualificada ...",
+      "explicacao": "GABARITO: C. A nova lei de licitações enfatiza governança, planejamento e controles preventivos. Fundamentação: Princípios constitucionais da Administ..."
+    },
+    {
+      "id": "4e884c2f-6a4f-58a4-be2e-64afb6c99100",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação Especial",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-leg\\d+-\\d+/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "Sobre crimes hediondos, é correto afirmar que:\n\nCenário prático-operacional: delegacia especializada com atendimento humanizado, requisição pericial, ...",
+      "explicacao": "GABARITO: A. A Lei 8.072/1990 define hipóteses e efeitos, sob controle constitucional. Fundamentação: Microssistema penal extravagante e legislação de..."
+    },
+    {
+      "id": "c8a96ad1-ef85-5ecb-a3d1-1e6fd5104279",
+      "lote": "v3.2-lote12",
+      "disciplina": "Língua Portuguesa",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "Quanto à concordância verbal, é correto afirmar que:\n\nCenário prático-operacional: unidade prisional com revista procedimental, registro de incidente,...",
+      "explicacao": "GABARITO: B. A norma-padrão estabelece concordância entre sujeito e verbo, com regras específicas. Fundamentação: Norma-padrão da Língua Portuguesa, g..."
+    },
+    {
+      "id": "81da5749-cc46-5daa-a7a4-6c3a0994af59",
+      "lote": "v3.2-lote12",
+      "disciplina": "Língua Portuguesa",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /identificador de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "A crase resulta, em regra, da fusão da preposição 'a' com artigo feminino 'a' ou com pronomes demonstrativos iniciados por 'a'.\n\nContexto policial: ga...",
+      "explicacao": "GABARITO: CERTO. A crase depende de regência e determinação feminina compatível. Fundamentação: Norma-padrão da Língua Portuguesa, gramática normativa..."
+    },
+    {
+      "id": "bc134672-b445-56c1-aeab-7f9f1a3295ae",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "Em rodovia federal de pista dupla desprovida de sinalização regulamentadora de velocidade, a velocidade máxima permitida para automóveis, camionetas, ...",
+      "explicacao": "GABARITO: CERTO. Conforme o art. 61, § 1º, II, 'a', 1 e 2 do CTB, em rodovias de pista dupla onde não houver sinalização regulamentadora, a velocidade..."
+    },
+    {
+      "id": "ec77a0d3-b8f2-5873-88db-69889794cb54",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /narrativa de controle/i",
+          "sev": "CRITICA"
+        },
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "O condutor que estiver transitando pela faixa da esquerda, ao perceber que o veículo que o segue tem o propósito de ultrapassá-lo, deve manter-se em s...",
+      "explicacao": "GABARITO: ERRADO. Segundo o art. 30, I do CTB, todo condutor, ao perceber que outro que o segue tem o propósito de ultrapassá-lo, deverá, se estiver c..."
+    },
+    {
+      "id": "4cf7c020-dd1d-50c6-857d-28d62ed0eda2",
+      "lote": "v3.2-lote12",
+      "disciplina": "Legislação de Trânsito",
+      "status": "QUARENTENA",
+      "severidade": "CRITICA",
+      "issues": [
+        {
+          "tipo": "PLACEHOLDER_NO_ENUNCIADO",
+          "desc": "Padrão suspeito no enunciado: /b\\d+-[a-z]+\\d+-\\d+/i",
+          "sev": "CRITICA"
+        }
+      ],
+      "enunciado": "O uso de luz baixa dos faróis durante o dia é obrigatório para todos os veículos automotores em rodovias de pista simples situadas fora dos perímetros...",
+      "explicacao": "GABARITO: CERTO. Nos termos do art. 40, I, 'b' do CTB (com a redação dada pela Lei nº 14.071/2020), o uso de farol de luz baixa durante o dia é exigid..."
+    }
+  ]
+}

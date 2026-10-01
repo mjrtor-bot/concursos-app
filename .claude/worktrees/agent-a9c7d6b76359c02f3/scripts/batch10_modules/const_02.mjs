@@ -1,0 +1,500 @@
+import { TAXONOMIA } from "./taxonomia.mjs";
+
+export const const02Questoes = [
+  {
+    "idSlug": "b10-const-02-001",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Agente de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "Um cidadão estrangeiro adquiriu a nacionalidade brasileira por naturalização originária em 2022. Em 2025, o governo de seu país de origem formulou pedido formal de extradição ao STF em duas frentes: uma apuração por estelionato praticado no exterior em 2020 (antes da naturalização) e uma condenação por tráfico internacional de drogas ocorrido no exterior em 2024 (após a naturalização). Segundo o regime constitucional brasileiro, a extradição desse brasileiro naturalizado é juridicamente admissível em ambas as hipóteses ventiladas.",
+    "explicacao": "GABARITO: CERTO. Art. 5º, LI, da CF: brasileiro nato nunca é extraditado; o naturalizado só pode ser extraditado por crime comum antes da naturalização ou tráfico a qualquer tempo.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-002",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Escrivão de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "dificil",
+    "enunciado": "Com a Emenda Constitucional nº 131/2023, o brasileiro que adquire outra nacionalidade por naturalização voluntária não perde automaticamente a nacionalidade brasileira, salvo se fizer pedido expresso de renúncia perante autoridade brasileira competente.",
+    "explicacao": "GABARITO: CERTO. A EC 131/2023 alterou o art. 12, § 4º, da CF, acabando com a perda automática da nacionalidade pela naturalização voluntária, exigindo pedido expresso e formal de renúncia.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-003",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo FGV",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Delegado de Polícia",
+    "ano": 2026,
+    "tipo": "multipla_escolha",
+    "dificuldade": "medio",
+    "enunciado": "São cargos privativos de brasileiro nato, expressamente previstos no art. 12, § 3º, da Constituição Federal, EXCETO:",
+    "explicacao": "GABARITO: E. Os cargos privativos de brasileiro nato são: Presidente e Vice da República, Presidente da Câmara dos Deputados, Presidente do Senado Federal, Ministro do STF, Carreira diplomática, Oficial das Forças Armadas e Ministro de Estado da Defesa. Ministro do STJ e Delegado de Polícia podem ser ocupados por brasileiro naturalizado.",
+    "alternativas": [
+      {
+        "texto": "Presidente e Vice-Presidente da República.",
+        "correta": false
+      },
+      {
+        "texto": "Presidente da Câmara dos Deputados e Presidente do Senado Federal.",
+        "correta": false
+      },
+      {
+        "texto": "Ministro do Supremo Tribunal Federal e Ministro de Estado da Defesa.",
+        "correta": false
+      },
+      {
+        "texto": "Oficial das Forças Armadas e membro da Carreira Diplomática.",
+        "correta": false
+      },
+      {
+        "texto": "Ministro do Superior Tribunal de Justiça e Delegado de Polícia.",
+        "correta": true
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-004",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Rodoviária Federal",
+    "cargo_nome": "Policial Rodoviário Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "facil",
+    "enunciado": "O alistamento eleitoral e o voto são obrigatórios para os maiores de dezoito anos e facultativos para os analfabetos, os maiores de setenta anos e os maiores de dezesseis e menores de dezoito anos.",
+    "explicacao": "GABARITO: CERTO. Art. 14, § 1º, da CF prevê a obrigatoriedade e as faculdades do alistamento e do voto.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-005",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Investigador de Polícia",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "São inelegíveis para os mesmos cargos, no período subsequente, o cônjuge e os parentes consanguíneos ou afins, até o segundo grau ou por adoção, do Presidente da República, de Governador de Estado ou Território, do Distrito Federal, de Prefeito ou de quem os haja substituído dentro dos seis meses anteriores ao pleito, salvo se já titular de mandato eletivo e candidato à reeleição.",
+    "explicacao": "GABARITO: CERTO. Art. 14, § 7º, da CF define a inelegibilidade reflexa ou relativa por parentesco.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-006",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Militar",
+    "cargo_nome": "Oficial da Polícia Militar",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "dificil",
+    "enunciado": "O militar alistável é elegível. Se contar menos de dez anos de serviço, deverá afastar-se da atividade; se contar mais de dez anos de serviço, será agregado pela autoridade superior e, se eleito, passará automaticamente, no ato da diplomação, para a inatividade.",
+    "explicacao": "GABARITO: CERTO. Art. 14, § 8º, I e II, da CF: regras de elegibilidade militar conforme tempo de serviço.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-007",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Agente de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "A condenação criminal transitada em julgado acarreta a perda ou suspensão dos direitos políticos enquanto durarem seus efeitos, independentemente da natureza da pena privativa de liberdade ou restritiva de direitos.",
+    "explicacao": "GABARITO: CERTO. Art. 15, III, da CF e Súmula 9 do TSE / STF: a suspensão dos direitos políticos decorre de forma automática da condenação transitada em julgado enquanto durarem seus efeitos, mesmo com pena restritiva de direitos ou sursis.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-008",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Agente de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "Compete privativamente à União legislar sobre direito civil, comercial, penal, processual, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho.",
+    "explicacao": "GABARITO: CERTO. Art. 22, I, da CF elenca a competência legislativa privativa da União sobre direito penal e processual.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-009",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Rodoviária Federal",
+    "cargo_nome": "Policial Rodoviário Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "Compete à União, aos Estados e ao Distrito Federal legislar concorrentemente sobre direito tributário, financeiro, penitenciário, econômico e urbanístico.",
+    "explicacao": "GABARITO: CERTO. Art. 24, I, da CF prevê competência legislativa concorrente entre União, Estados e DF sobre direito penitenciário.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-010",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo FGV",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Delegado de Polícia",
+    "ano": 2026,
+    "tipo": "multipla_escolha",
+    "dificuldade": "dificil",
+    "enunciado": "Determinado Estado da Federação promulgou lei estadual disciplinando novos tipos penais para condutas praticadas contra agentes de segurança pública estaduais. Essa lei estadual é:",
+    "explicacao": "GABARITO: B. A competência para legislar sobre direito penal é privativa da União (art. 22, I, da CF). Lei estadual que cria crimes padece de inconstitucionalidade formal orgânica insanável.",
+    "alternativas": [
+      {
+        "texto": "Constitucional, pois compete concorrentemente aos Estados legislar sobre segurança pública estadual.",
+        "correta": false
+      },
+      {
+        "texto": "Inconstitucional por vício formal orgânico, pois compete privativamente à União legislar sobre direito penal.",
+        "correta": true
+      },
+      {
+        "texto": "Constitucional, desde que autorizada por decreto do Governador do Estado.",
+        "correta": false
+      },
+      {
+        "texto": "Válida apenas no âmbito das infrações de menor potencial ofensivo.",
+        "correta": false
+      },
+      {
+        "texto": "Inconstitucional apenas se cominar penas em regime fechado superior a dez anos.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-011",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Investigador de Polícia",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "No âmbito da legislação concorrente, a competência da União limitar-se-á a estabelecer normas gerais, cabendo aos Estados a competência suplementar.",
+    "explicacao": "GABARITO: CERTO. Art. 24, § 1º e § 2º, da CF: normas gerais pela União e competência suplementar pelos Estados.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-012",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Agente de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "dificil",
+    "enunciado": "A superveniência de lei federal sobre normas gerais suspende a eficácia da lei estadual, no que lhe for contrário.",
+    "explicacao": "GABARITO: CERTO. Art. 24, § 4º, da CF: a superveniência de lei federal suspende (não revoga) a eficácia da lei estadual no que for com ela incompatível.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-013",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Agente de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "O Supremo Tribunal Federal compõe-se de onze Ministros, escolhidos dentre cidadãos com mais de trinta e cinco e menos de setenta anos de idade, de notável saber jurídico e reputação ilibada, nomeados pelo Presidente da República após aprovação pela maioria absoluta do Senado Federal.",
+    "explicacao": "GABARITO: CERTO. Art. 101 da CF (com a EC 122/2022 elevando a idade máxima para menos de setenta anos).",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-014",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Delegado de Polícia",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "dificil",
+    "enunciado": "Compete ao Superior Tribunal de Justiça processar e julgar, originariamente, nos crimes comuns, os Governadores dos Estados e do Distrito Federal, e, nestes e nos de responsabilidade, os desembargadores dos Tribunais de Justiça dos Estados e do Distrito Federal.",
+    "explicacao": "GABARITO: CERTO. Art. 105, I, a, da CF fixa a competência originária do STJ para julgamento de Governadores (crimes comuns) e Desembargadores (crimes comuns e de responsabilidade).",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-015",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Escrivão de Polícia Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "O Ministério Público é instituição permanente, essencial à função jurisdicional do Estado, incumbindo-lhe a defesa da ordem jurídica, do regime democrático e dos interesses sociais e individuais indisponíveis.",
+    "explicacao": "GABARITO: CERTO. Art. 127, caput, da Constituição Federal traz a definição constitucional do Ministério Público.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-016",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Investigador de Polícia",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "São funções institucionais do Ministério Público exercer o controle externo da atividade policial, na forma da lei complementar, e promover privativamente a ação penal pública, na forma da lei.",
+    "explicacao": "GABARITO: CERTO. Art. 129, I e VII, da CF estabelece a titularidade privativa da ação penal pública e o controle externo da atividade policial pelo MP.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-017",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo FGV",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Delegado de Polícia Federal",
+    "ano": 2026,
+    "tipo": "multipla_escolha",
+    "dificuldade": "dificil",
+    "enunciado": "Sobre a legitimidade investigatória criminal do Ministério Público e a jurisprudência fixada pelo STF no Tema 188 da Repercussão Geral:",
+    "explicacao": "GABARITO: B. O STF fixou a tese de que o Ministério Público dispõe de competência para promover, por autoridade própria e por prazo razoável, investigações de natureza penal, respeitadas as garantias constitucionais e as reservas de jurisdição.",
+    "alternativas": [
+      {
+        "texto": "O MP não possui poderes investigatórios próprios, dependendo sempre da instauração de inquérito policial.",
+        "correta": false
+      },
+      {
+        "texto": "O MP dispõe de competência constitucional para realizar investigação criminal própria por procedimento investigatório criminal (PIC), respeitadas as garantias do investigado e a reserva de jurisdição.",
+        "correta": true
+      },
+      {
+        "texto": "A investigação pelo MP só é permitida em crimes militares de competência federal.",
+        "correta": false
+      },
+      {
+        "texto": "Apenas o Procurador-Geral da República pode presidir atos investigatórios de natureza penal.",
+        "correta": false
+      },
+      {
+        "texto": "O MP pode decretar diretamente quebra de sigilo bancário e busca domiciliar noturna.",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-018",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Rodoviária Federal",
+    "cargo_nome": "Policial Rodoviário Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "medio",
+    "enunciado": "A Defensoria Pública é instituição permanente, essencial à função jurisdicional do Estado, incumbindo-lhe a orientação jurídica, a promoção dos direitos humanos e a defesa dos direitos individuais e coletivos dos necessitados.",
+    "explicacao": "GABARITO: CERTO. Art. 134, caput, da CF: função institucional da Defensoria Pública.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-019",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Civil",
+    "cargo_nome": "Agente de Polícia",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "facil",
+    "enunciado": "O advogado é indispensável à administração da justiça, sendo inviolável por seus atos e manifestações no exercício da profissão, nos limites da lei.",
+    "explicacao": "GABARITO: CERTO. Art. 133 da Constituição Federal: inviolabilidade do advogado no exercício da profissão.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  },
+  {
+    "idSlug": "b10-const-02-020",
+    "disciplina_id": "8a5fd46c-e3ab-5e99-b338-3a17eafa50e9",
+    "assunto_id": "9498f43b-89c2-5133-93e8-b9930358bb4a",
+    "banca_nome": "Inédita / Estilo CEBRASPE",
+    "orgao_nome": "Polícia Federal",
+    "cargo_nome": "Perito Criminal Federal",
+    "ano": 2026,
+    "tipo": "certo_errado",
+    "dificuldade": "dificil",
+    "enunciado": "A Advocacia-Geral da União é a instituição que, diretamente ou através de órgão vinculado, representa a União, judicial e extrajudicialmente, cabendo-lhe as atividades de consultoria e assessoramento jurídico do Poder Executivo.",
+    "explicacao": "GABARITO: CERTO. Art. 131, caput, da CF define a estrutura e missão da Advocacia-Geral da União.",
+    "alternativas": [
+      {
+        "texto": "Certo",
+        "correta": true
+      },
+      {
+        "texto": "Errado",
+        "correta": false
+      }
+    ]
+  }
+];

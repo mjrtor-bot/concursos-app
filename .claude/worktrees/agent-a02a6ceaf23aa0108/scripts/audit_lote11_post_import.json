@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-09-27T00:29:03.634Z",
+  "bancoFinal": {
+    "questoesTotal": 6760,
+    "alternativasTotal": 25358,
+    "lote11Questoes": 500,
+    "lotesAnterioresPreservados": 6260
+  },
+  "validacaoLote11": {
+    "questoesAuditadas": 500,
+    "alternativasAuditadas": 1738,
+    "gabaritoUnico": 500,
+    "explicacaoPreenchida": 500,
+    "status": "100%_HOMOLOGADO"
+  }
+}

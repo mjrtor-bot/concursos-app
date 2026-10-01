@@ -1,0 +1,12 @@
+{
+  "questoesLote13": 500,
+  "alternativasLote13": 1282,
+  "questoes2Alts": 406,
+  "questoes4Alts": 0,
+  "questoes5Alts": 94,
+  "calculoMatematico": "(406 * 2) + (0 * 4) + (94 * 5) = 812 + 0 + 470 = 1282",
+  "totalGeralQuestoes": 7760,
+  "totalGeralAlternativas": 28366,
+  "placeholdersEncontrados": 0,
+  "problemasPedagogicosEncontrados": 0
+}

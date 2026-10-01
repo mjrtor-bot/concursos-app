@@ -1,0 +1,66 @@
+{
+  "totalQuestoes": 5760,
+  "totalAlternativas": 22212,
+  "byDisc": {
+    "Língua Portuguesa": 605,
+    "Informática e Tecnologia": 318,
+    "Direito Constitucional": 645,
+    "Direitos Humanos": 360,
+    "Direito Processual Penal": 660,
+    "Raciocínio Lógico-Matemático": 307,
+    "Direito Administrativo": 640,
+    "Direito Penal": 780,
+    "Legislação Especial": 665,
+    "Legislação de Trânsito": 200,
+    "Administração Pública": 80,
+    "Contabilidade Geral e Pública": 80,
+    "Atualidades e Realidade Brasileira": 60,
+    "Ética no Serviço Público": 40,
+    "Direito Previdenciário": 40,
+    "Direito Tributário": 40,
+    "Criminologia": 240
+  },
+  "byBanca": {
+    "Cebraspe": 172,
+    "FGV": 630,
+    "FCC": 209,
+    "Cesgranrio": 126,
+    "Vunesp": 135,
+    "VUNESP": 258,
+    "CEBRASPE (CESPE)": 803,
+    "IBFC": 273,
+    "Quadrix": 123,
+    "Instituto AOCP": 137,
+    "Selecon": 123,
+    "IADES": 123,
+    "CEBRASPE": 540,
+    "Inédita / Estilo FGV": 492,
+    "AOCP": 16,
+    "Inédita / Estilo VUNESP": 283,
+    "Inédita / Estilo CEBRASPE": 886,
+    "Inédita / Estilo IBFC": 169,
+    "Inédita / Estilo AOCP": 170,
+    "INSTITUTO AOCP": 86,
+    "IDECAN": 6
+  },
+  "byDificuldade": {
+    "facil": 1075,
+    "medio": 2927,
+    "dificil": 1758
+  },
+  "byTipo": {
+    "multipla_escolha": 3566,
+    "certo_errado": 2194
+  },
+  "byLote": {
+    "v2.1": 1760,
+    "v2.3-lote3": 500,
+    "v2.9-lote9": 500,
+    "v2.2-lote2": 500,
+    "v2.7-lote7": 500,
+    "v2.6-lote6": 500,
+    "v2.5-lote5": 500,
+    "v2.4-lote4": 500,
+    "v2.8-lote8": 500
+  }
+}

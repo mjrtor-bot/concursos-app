@@ -1,0 +1,850 @@
+{
+  "metadata": {
+    "dataCriacao": "2026-09-27T17:54:32.258Z",
+    "totalQuestoesBanco": 7760,
+    "totalAlternativasBanco": 28366,
+    "totalCorrecoesAlternativas": 62,
+    "totalCorrecoesQuestoesExplicacao": 18,
+    "descricao": "Plano estruturado de correção de integridade pedagógica e gabaritos no Supabase de produção."
+  },
+  "correcoesAlternativas": [
+    {
+      "id": "7a0f247a-c5ae-5ea0-ba02-5e3d99cadb9f",
+      "questao_id": "0e7459a9-a0a4-5498-b5f6-16ec72503a98",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Inconstitucionalidade da vedação genérica à liberdade provisória em crimes hediondos fixada pelo STF no HC 104.329/SP."
+    },
+    {
+      "id": "52aae9ba-cedc-532b-b23f-934fed4b92b2",
+      "questao_id": "0e7459a9-a0a4-5498-b5f6-16ec72503a98",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Inconstitucionalidade da vedação genérica à liberdade provisória em crimes hediondos fixada pelo STF no HC 104.329/SP."
+    },
+    {
+      "id": "8104be3d-26d6-5cb0-9aa5-773068cd1d46",
+      "questao_id": "13f27d61-4548-5206-ab6b-b1344e3e450a",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Teoria do Etiquetamento (Labelling Approach / Reacionismo Social de Howard Becker)."
+    },
+    {
+      "id": "03b45b77-06d4-5455-9a29-a9ff62b939cf",
+      "questao_id": "13f27d61-4548-5206-ab6b-b1344e3e450a",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Teoria do Etiquetamento (Labelling Approach / Reacionismo Social de Howard Becker)."
+    },
+    {
+      "id": "ad79df93-839d-51f4-8bd3-28c012586f2c",
+      "questao_id": "218476f5-108d-5174-af53-dbcc3cc098bb",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Prazos da prisão temporária (5+5 dias para crimes comuns conforme art. 2º da Lei 7.960/89; 30+30 dias para hediondos conforme art. 2º, § 4º da Lei 8.072/90)."
+    },
+    {
+      "id": "a372023f-d306-5a27-b9d0-b9c980004c8a",
+      "questao_id": "218476f5-108d-5174-af53-dbcc3cc098bb",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Prazos da prisão temporária (5+5 dias para crimes comuns conforme art. 2º da Lei 7.960/89; 30+30 dias para hediondos conforme art. 2º, § 4º da Lei 8.072/90)."
+    },
+    {
+      "id": "1ccd1a56-a51c-51b6-9ca5-f6368b386de5",
+      "questao_id": "294c9e76-85fe-5685-8672-4ad0f3d8160c",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Criminologia: vitimização primária decorre do crime; vitimização terciária decorre da estigmatização pelo meio social."
+    },
+    {
+      "id": "0c7dbb3b-d623-5fbf-8341-da1b956e1319",
+      "questao_id": "294c9e76-85fe-5685-8672-4ad0f3d8160c",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Criminologia: vitimização primária decorre do crime; vitimização terciária decorre da estigmatização pelo meio social."
+    },
+    {
+      "id": "d67ed5fa-4dba-50ea-9bfd-e1ca8ff3e53c",
+      "questao_id": "2e18cfb4-115d-59ba-9df5-9e5f1e1aeea3",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Escola Clássica concebe o crime como ente puramente jurídico; a Escola Positiva (Lombroso/Ferri/Garofalo) concebe como fato biopsicossocial."
+    },
+    {
+      "id": "02d93d13-8c96-5a4c-b0f6-677c28ebfa35",
+      "questao_id": "2e18cfb4-115d-59ba-9df5-9e5f1e1aeea3",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Escola Clássica concebe o crime como ente puramente jurídico; a Escola Positiva (Lombroso/Ferri/Garofalo) concebe como fato biopsicossocial."
+    },
+    {
+      "id": "f739f0d5-f202-58f7-8c80-d2069efe20a3",
+      "questao_id": "3e2b208b-4cb0-5a46-8a1f-1ff6602d83eb",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "A revogação de ato discricionário produz efeitos ex nunc (prospectivos); a anulação produz efeitos ex tunc."
+    },
+    {
+      "id": "d22ee0f9-e599-5fcb-bd46-8f8422117d12",
+      "questao_id": "3e2b208b-4cb0-5a46-8a1f-1ff6602d83eb",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "A revogação de ato discricionário produz efeitos ex nunc (prospectivos); a anulação produz efeitos ex tunc."
+    },
+    {
+      "id": "b28dc3e5-466a-5bcb-95f3-e6dcf34813d0",
+      "questao_id": "40ab0839-bff4-58c2-b338-baba3d823f33",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Polícia administrativa incide sobre bens/direitos/atividades preventivamente; polícia judiciária incide sobre pessoas repressivamente."
+    },
+    {
+      "id": "cce29389-48fd-5584-b55b-a271c57169ec",
+      "questao_id": "40ab0839-bff4-58c2-b338-baba3d823f33",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Polícia administrativa incide sobre bens/direitos/atividades preventivamente; polícia judiciária incide sobre pessoas repressivamente."
+    },
+    {
+      "id": "175edb48-504c-5d57-badc-dfa1d0f9bba8",
+      "questao_id": "55dd6201-7f5b-5881-abe1-c0ede0e01664",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Criminologia: conceito da Cifra Negra (dark figure of crime)."
+    },
+    {
+      "id": "1a010c94-0aea-5128-8787-8512f07530b5",
+      "questao_id": "55dd6201-7f5b-5881-abe1-c0ede0e01664",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Criminologia: conceito da Cifra Negra (dark figure of crime)."
+    },
+    {
+      "id": "555ebc4e-dade-593a-9a11-2418ee285c45",
+      "questao_id": "610d2fb0-3389-5eec-ab7e-8515113add1b",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Protocolo de Istambul (Manual da ONU para documentação e investigação eficazes da tortura)."
+    },
+    {
+      "id": "9b72b404-5064-5445-a844-ddfb1337840c",
+      "questao_id": "610d2fb0-3389-5eec-ab7e-8515113add1b",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Protocolo de Istambul (Manual da ONU para documentação e investigação eficazes da tortura)."
+    },
+    {
+      "id": "3d09a99c-9e41-5b2c-82c2-bc9babde4193",
+      "questao_id": "65fcd79a-eaaa-5eb2-a3c5-660da85deec1",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Criminologia: prevenção primária atua nas causas profundas da criminalidade mediante políticas públicas estruturantes."
+    },
+    {
+      "id": "31f685db-0953-51a5-b6a6-87207206f8c5",
+      "questao_id": "65fcd79a-eaaa-5eb2-a3c5-660da85deec1",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Criminologia: prevenção primária atua nas causas profundas da criminalidade mediante políticas públicas estruturantes."
+    },
+    {
+      "id": "44bb8288-2c32-5e4f-b0f1-19c5de12bb35",
+      "questao_id": "7cb2fd1c-2664-523c-bcb7-d8ccd5c6bfca",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Processo Penal: a quebra da cadeia de custódia não acarreta nulidade/ilicitude automática (jurisprudência STJ, RHC 131.956)."
+    },
+    {
+      "id": "7ce0a536-b621-582d-af56-5852a9ff3211",
+      "questao_id": "7cb2fd1c-2664-523c-bcb7-d8ccd5c6bfca",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Processo Penal: a quebra da cadeia de custódia não acarreta nulidade/ilicitude automática (jurisprudência STJ, RHC 131.956)."
+    },
+    {
+      "id": "070843f8-cd4b-5876-bd55-6255875abf68",
+      "questao_id": "812cd4b0-877e-5b4e-950d-db327b2c7b62",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Criminologia: Teoria da Anomia de Robert Merton e Émile Durkheim."
+    },
+    {
+      "id": "7bc55817-e3e7-547a-a995-25c58ff71614",
+      "questao_id": "812cd4b0-877e-5b4e-950d-db327b2c7b62",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Criminologia: Teoria da Anomia de Robert Merton e Émile Durkheim."
+    },
+    {
+      "id": "b4d737ac-d3fe-598e-bac6-0fabfab65811",
+      "questao_id": "84e3a331-ef31-56d7-a5f5-302200f626cc",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Habeas Data (CF/88, art. 5º, LXXII, 'a')."
+    },
+    {
+      "id": "168af0c0-10d9-5036-8c51-7aaeb2cab91c",
+      "questao_id": "84e3a331-ef31-56d7-a5f5-302200f626cc",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Habeas Data (CF/88, art. 5º, LXXII, 'a')."
+    },
+    {
+      "id": "a02b5f6d-cd07-51be-ad63-a24fc8781f16",
+      "questao_id": "899ce1cf-d52b-5216-9254-496e40ddf517",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Art. 4.3 da CADH (vedação ao restabelecimento da pena de morte / Princípio do Não-Retrocesso)."
+    },
+    {
+      "id": "75e14343-cd3e-5934-a82d-bd9a902579d3",
+      "questao_id": "899ce1cf-d52b-5216-9254-496e40ddf517",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Art. 4.3 da CADH (vedação ao restabelecimento da pena de morte / Princípio do Não-Retrocesso)."
+    },
+    {
+      "id": "48c1d981-89fd-5d70-bfa9-600a090523b4",
+      "questao_id": "8bce682f-3650-5cf4-a5c3-8369562126b2",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Raciocínio Lógico: tabela-verdade da bicondicional P <-> Q (falsa se valores lógicos divergirem)."
+    },
+    {
+      "id": "398b3539-1ec1-5062-844d-38a60e5a3a93",
+      "questao_id": "8bce682f-3650-5cf4-a5c3-8369562126b2",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Raciocínio Lógico: tabela-verdade da bicondicional P <-> Q (falsa se valores lógicos divergirem)."
+    },
+    {
+      "id": "e497a86c-790b-5089-aac7-417a83942842",
+      "questao_id": "a0e37cc1-e932-527a-99d5-c4949c03cfa7",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direitos Humanos: DUDH adotada pela Resolução 217 A (III) da Assembleia Geral da ONU de 1948."
+    },
+    {
+      "id": "c258d4c3-7b35-5a25-afe4-f2bab4758d19",
+      "questao_id": "a0e37cc1-e932-527a-99d5-c4949c03cfa7",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direitos Humanos: DUDH adotada pela Resolução 217 A (III) da Assembleia Geral da ONU de 1948."
+    },
+    {
+      "id": "55b380a6-a5b1-5628-8bc2-58d8583f276b",
+      "questao_id": "a4c01f60-e398-5666-a85b-5fbe1e9ffe14",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Legislação Penal Especial: Art. 12 da Lei 10.826/2003 (posse irregular de arma de uso permitido)."
+    },
+    {
+      "id": "70126fab-1b69-5bb2-bac3-eaf733ebea05",
+      "questao_id": "a4c01f60-e398-5666-a85b-5fbe1e9ffe14",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Legislação Penal Especial: Art. 12 da Lei 10.826/2003 (posse irregular de arma de uso permitido)."
+    },
+    {
+      "id": "8d66d425-973b-5333-a32e-ce54ed184c47",
+      "questao_id": "a69d5f2e-dfc7-53e1-9b6f-ce86c90f21e6",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Legislação Penal Especial: Art. 16 da Lei 11.340/2006 (renúncia à representação em audiência própria perante o juiz)."
+    },
+    {
+      "id": "c4fe475b-975d-50f0-9c30-3d09695680f5",
+      "questao_id": "a69d5f2e-dfc7-53e1-9b6f-ce86c90f21e6",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Legislação Penal Especial: Art. 16 da Lei 11.340/2006 (renúncia à representação em audiência própria perante o juiz)."
+    },
+    {
+      "id": "444b2d30-ccde-582d-99e4-f5bdbd9b85f7",
+      "questao_id": "b057e3fc-e46c-524f-bb63-095422bdcdb8",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Art. 144, § 2º da CF/88 (Polícia Rodoviária Federal)."
+    },
+    {
+      "id": "38c91ede-0e95-546e-8afa-48da35a25eb3",
+      "questao_id": "b057e3fc-e46c-524f-bb63-095422bdcdb8",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Art. 144, § 2º da CF/88 (Polícia Rodoviária Federal)."
+    },
+    {
+      "id": "9552cbf5-c352-5d80-82b6-810fe570015b",
+      "questao_id": "b75e4067-ee36-5e83-964b-1e2aecc5be3b",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Língua Portuguesa: características do gênero textual Relatório de Investigação Policial."
+    },
+    {
+      "id": "06ab0ed9-abc4-5c0b-8f0c-19ede1f38c33",
+      "questao_id": "b75e4067-ee36-5e83-964b-1e2aecc5be3b",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Língua Portuguesa: características do gênero textual Relatório de Investigação Policial."
+    },
+    {
+      "id": "9451b390-eb32-5270-978e-8c2a0917dd7f",
+      "questao_id": "bd0cb5c4-bb69-55d6-a989-26a83f172410",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Processo Penal: características do Inquérito Policial (informativo, inquisitorial, discricionário e prescindível)."
+    },
+    {
+      "id": "cd065945-3555-5f8b-906a-354075e19da2",
+      "questao_id": "bd0cb5c4-bb69-55d6-a989-26a83f172410",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Processo Penal: características do Inquérito Policial (informativo, inquisitorial, discricionário e prescindível)."
+    },
+    {
+      "id": "ea915618-c4d6-50a8-b726-e72612682db9",
+      "questao_id": "bf179673-0637-51e9-9872-fbf3a84e5857",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Língua Portuguesa: impessoalidade do verbo 'haver' no sentido de existir/ocorrer (deve permanecer no singular: 'Havia muitos vestígios')."
+    },
+    {
+      "id": "f8268957-5882-5c92-a85e-e2d6d5584067",
+      "questao_id": "bf179673-0637-51e9-9872-fbf3a84e5857",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Língua Portuguesa: impessoalidade do verbo 'haver' no sentido de existir/ocorrer (deve permanecer no singular: 'Havia muitos vestígios')."
+    },
+    {
+      "id": "319fc9b0-8b77-5ab9-9d36-8561ce18fc67",
+      "questao_id": "c0305cec-f8af-5ce1-a7fe-b531219d9354",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Regras de Bangkok (Resolução 65/229 da AG/ONU para mulheres presas)."
+    },
+    {
+      "id": "4140a213-1ef4-5757-8c51-50825149606c",
+      "questao_id": "c0305cec-f8af-5ce1-a7fe-b531219d9354",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Regras de Bangkok (Resolução 65/229 da AG/ONU para mulheres presas)."
+    },
+    {
+      "id": "53a228af-717e-57f0-a00b-79ec268100c9",
+      "questao_id": "c2861f52-4408-5b15-a5b8-d3416f3a52a8",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Art. 37, § 6º da CF/88 (responsabilidade objetiva do Estado e direito de regresso)."
+    },
+    {
+      "id": "db5527d1-b041-51e0-a760-a2c1bcc18561",
+      "questao_id": "c2861f52-4408-5b15-a5b8-d3416f3a52a8",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Art. 37, § 6º da CF/88 (responsabilidade objetiva do Estado e direito de regresso)."
+    },
+    {
+      "id": "808320cd-800f-5adc-9c3b-2a74fafb3a09",
+      "questao_id": "d08e40c7-c3cf-5002-a74a-0cbc7f995e43",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Tema 940/STF (Teoria da Dupla Garantia - vedado litisconsórcio passivo facultativo com o agente público)."
+    },
+    {
+      "id": "94c274d6-2c87-5f0b-86e1-26f2967260e4",
+      "questao_id": "d08e40c7-c3cf-5002-a74a-0cbc7f995e43",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Tema 940/STF (Teoria da Dupla Garantia - vedado litisconsórcio passivo facultativo com o agente público)."
+    },
+    {
+      "id": "197b5b23-41d7-5224-9b8b-e5e29b7ea6e0",
+      "questao_id": "de5c0c66-8d69-5961-beeb-cf6ab398af76",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Art. 144, § 5º-A da CF/88 (Polícias Penais)."
+    },
+    {
+      "id": "0d4c2c1a-2a87-58b2-aa60-4b68968044c2",
+      "questao_id": "de5c0c66-8d69-5961-beeb-cf6ab398af76",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direito Constitucional: Art. 144, § 5º-A da CF/88 (Polícias Penais)."
+    },
+    {
+      "id": "77f0e38a-3568-5929-9638-090641a294b7",
+      "questao_id": "e40bf008-0b48-5363-a871-6a08e4e46a12",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Direito Administrativo: Art. 1º, § 3º da Lei 8.429/1992 com redação dada pela Lei 14.230/2021."
+    },
+    {
+      "id": "c18099f4-d01b-5e4d-9857-a0af638a6e8d",
+      "questao_id": "e40bf008-0b48-5363-a871-6a08e4e46a12",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Direito Administrativo: Art. 1º, § 3º da Lei 8.429/1992 com redação dada pela Lei 14.230/2021."
+    },
+    {
+      "id": "7c2574f1-6843-5474-b91c-1d88bfac82a4",
+      "questao_id": "e5429755-ea59-5c8f-a37b-92b30a4b19c6",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Raciocínio Lógico: equivalência lógica ~P -> Q <-> P v Q."
+    },
+    {
+      "id": "4d075e95-ced7-5e62-8dc9-8a4edafb22f0",
+      "questao_id": "e5429755-ea59-5c8f-a37b-92b30a4b19c6",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Raciocínio Lógico: equivalência lógica ~P -> Q <-> P v Q."
+    },
+    {
+      "id": "9e35a968-c503-581b-a02c-c0224ac98c10",
+      "questao_id": "ea7830f2-6886-5434-b153-742512d631cd",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Legislação Penal Especial: Art. 1º, § 1º da Lei 12.850/2013 (organização criminosa exige associação de 4 ou mais pessoas)."
+    },
+    {
+      "id": "349634f3-0ab8-58c0-aa3b-b5f50822b5d4",
+      "questao_id": "ea7830f2-6886-5434-b153-742512d631cd",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Legislação Penal Especial: Art. 1º, § 1º da Lei 12.850/2013 (organização criminosa exige associação de 4 ou mais pessoas)."
+    },
+    {
+      "id": "acb55f07-cfff-5da8-ad15-bec395c1b00c",
+      "questao_id": "ecc0d8c5-f11e-5cc8-808a-23ae0e977e51",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa C para INCORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Princípio 9 do PBUFAF/ONU (proibição de disparos letais contra fugitivos desarmados sem perigo iminente)."
+    },
+    {
+      "id": "d0f4eb1b-47a3-5c61-ae77-6f4929d154f0",
+      "questao_id": "ecc0d8c5-f11e-5cc8-808a-23ae0e977e51",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa E para CORRETO.",
+      "fundamento_juridico": "Direitos Humanos: Princípio 9 do PBUFAF/ONU (proibição de disparos letais contra fugitivos desarmados sem perigo iminente)."
+    },
+    {
+      "id": "11571331-86d2-5439-83f1-7df26f3e2923",
+      "questao_id": "f9d8bbe3-400a-5eef-b7d0-f555550b61c8",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "C",
+      "valor_anterior": false,
+      "valor_correto": true,
+      "motivo": "Correção do gabarito estruturado da alternativa C para CORRETO.",
+      "fundamento_juridico": "Língua Portuguesa: regras de uso do acento indicativo de crase antes de pronomes de tratamento."
+    },
+    {
+      "id": "27ef9f70-d651-5b67-b81c-8a6409b27abf",
+      "questao_id": "f9d8bbe3-400a-5eef-b7d0-f555550b61c8",
+      "prompt_versao": "v3.1-lote11",
+      "letra": "E",
+      "valor_anterior": true,
+      "valor_correto": false,
+      "motivo": "Correção do gabarito estruturado da alternativa E para INCORRETO.",
+      "fundamento_juridico": "Língua Portuguesa: regras de uso do acento indicativo de crase antes de pronomes de tratamento."
+    }
+  ],
+  "correcoesQuestoes": [
+    {
+      "id": "2835d0fc-dea6-5eae-8c64-26d7307905b2",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "28dded28-4c30-50b0-9ca2-cf245f814fc3",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "2bb12354-8fa5-5a4e-9d10-a81abb6739d1",
+      "prompt_versao": "v2.3-lote3",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "enunciado": "Durante a lavratura de auto de prisão em flagrante em sede policial, o defensor constituído do preso requer acesso imediato aos elementos de prova já formalmente documentados nos autos do inquérito policial. À luz do Artigo 8º da Convenção Americana sobre Direitos Humanos (CADH) e da Súmula Vinculante nº 14 do STF, assinale a conduta que deve ser adotada pela autoridade policial:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A Súmula Vinculante 14 do STF consagra: 'É direito do defensor, no interesse do representado, ter acesso amplo aos elementos de prova que, já documentados em procedimento investigatório realizado por órgão com competência de polícia judiciária, digam respeito ao exercício do direito de defesa'. Essa diretriz alinha-se às garantias judiciais do Artigo 8.2 da CADH (tempo e meios adequados para a preparação da defesa e comunicação prévia e pormenorizada). Ressalvam-se apenas diligências em andamento e ainda não documentadas.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA Súmula Vinculante 14 do STF consagra: 'É direito do defensor, no interesse do representado, ter acesso amplo aos elementos de prova que, já documentados em procedimento investigatório realizado por órgão com competência de polícia judiciária, digam respeito ao exercício do direito de defesa'. Essa diretriz alinha-se às garantias judiciais do Artigo 8.2 da CADH (tempo e meios adequados para a preparação da defesa e comunicação prévia e pormenorizada). Ressalvam-se apenas diligências em andamento e ainda não documentadas.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "5552bf11-b634-5775-bd02-61ace01faf9b",
+      "prompt_versao": "v2.2-lote2",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-68] A situação descrita pressupõe atuação regular de agentes públicos e ausência de nulidade diversa daquela expressamente indicada no enunciado.",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "66ba60cf-f1b2-5232-973e-dfbe060c91b1",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+      "enunciado": "Uma proposição logicamente equivalente a 'Ou o mandado de busca é expedido ou a operação será cancelada' (disjunção exclusiva: P ⊻ Q) é:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A disjunção exclusiva (P ⊻ Q) é logicamente equivalente à negação da bicondicional: ~(P ↔ Q) ou (P ∧ ~Q) ∨ (~P ∧ Q).",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA disjunção exclusiva (P ⊻ Q) é logicamente equivalente à negação da bicondicional: ~(P ↔ Q) ou (P ∧ ~Q) ∨ (~P ∧ Q).",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "69dd4630-43e1-5ba1-ac46-eca28d0f3ef5",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+      "enunciado": "A negação lógica da proposição 'Existe pelo menos um investigado foragido' é:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A negação de uma proposição particular afirmativa ('Existe algum / Pelo menos um') é a universal negativa ('Nenhum investigado está foragido' / 'Todo investigado não está foragido').",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA negação de uma proposição particular afirmativa ('Existe algum / Pelo menos um') é a universal negativa ('Nenhum investigado está foragido' / 'Todo investigado não está foragido').",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "81068fd6-5909-5227-a008-27faaa4f07aa",
+      "prompt_versao": "v2.8-lote8",
+      "disciplina_id": "cf63a64b-0209-5181-8fcf-2661da50a633",
+      "assunto_id": "874b8ded-33c7-575d-8339-7a2f42e85e25",
+      "enunciado": "Assinale a alternativa que apresenta a concordância nominal CORRETA:",
+      "gabarito_db": "A",
+      "explicacao_anterior": "GABARITO: B. 'A viatura e o equipamento novos' (adjetivo posposto concordando com o substantivo mais próximo no masculino ou no plural masculino). 'Bastantes policiais' ('bastante' como pronome adjetivo pluraliza).",
+      "explicacao_corrigida": "GABARITO: Letra A.\n\nJustificativa pedagógica e gramatical:\nNa oração 'Havia bastantes policiais convocados para o plantão extraordinário de carnaval', a palavra 'bastantes' atua como pronome adjetivo indefinido (com valor de 'muitos'), devendo concordar obrigatoriamente em número com o substantivo 'policiais' a que se refere. Além disso, o verbo 'haver' é impessoal com sentido de existir e permanece corretamente no singular ('Havia').\n\nAnálise das demais alternativas:\n- As outras alternativas apresentam erros de concordância nominal ou verbal.",
+      "motivo": "Reescrita da explicação para justificar adequadamente a alternativa A e sanar cabeçalho incorreto B.",
+      "fundamento_juridico": "Língua Portuguesa: 'bastante' como pronome adjetivo concorda em número com o substantivo determinado ('bastantes policiais')."
+    },
+    {
+      "id": "8b7b91d4-17e2-533d-9d63-3fb751fe990b",
+      "prompt_versao": "v2.2-lote2",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-62] Para a resolução deste item autoral, adote como premissa que todos os fatos narrados foram comprovados documentalmente e que a legislação vigente em 2026 deve ser aplicada.",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "aee27583-73c7-50c5-a336-6bcc70484913",
+      "prompt_versao": "v2.2-lote2",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "079aff83-cc64-59d6-92e8-b6c1691c5392",
+      "enunciado": "O fenômeno da vitimização terciária manifesta-se quando:",
+      "gabarito_db": "C",
+      "explicacao_anterior": "GABARITO: A vítima sofre isolamento, rejeição, discriminação ou reprovação moral em seu próprio meio social, comunitário ou familiar em decorrência do crime.",
+      "explicacao_corrigida": "GABARITO: Letra C.\n\nA vítima sofre isolamento, rejeição, discriminação ou reprovação moral em seu próprio meio social, comunitário ou familiar em decorrência do crime.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "c20478aa-ed74-5f10-a0e2-c647e47beb9a",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "cefbb6ff-2b3c-5d89-b400-c9bd2ddbfe71",
+      "prompt_versao": "v2.2-lote2",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-66] A banca espera distinção técnica entre regra geral, exceção expressa e consequência jurídica prática para concursos policiais.",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "d904eba6-562b-58d9-862e-1cc8d1ba7024",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "0321c3c1-167a-5a44-a59d-89c065d0426d",
+      "assunto_id": "e9d58ff5-4eb1-5234-b8ff-670ac90da24a",
+      "enunciado": "A Teoria do Etiquetamento Social (Labeling Approach ou Teoria da Rotulação), expoente das teorias da reação social e do conflito, afirma que:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A criminalidade não é uma qualidade intrínseca da conduta ou do indivíduo, mas um status social atribuído pela atuação seletiva das agências formais de controle (polícia, tribunais, prisões), que estigmatizam o autor e provocam a desvio secundário.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA criminalidade não é uma qualidade intrínseca da conduta ou do indivíduo, mas um status social atribuído pela atuação seletiva das agências formais de controle (polícia, tribunais, prisões), que estigmatizam o autor e provocam a desvio secundário.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "dd3df68a-6025-5861-98ba-9a3e834225bb",
+      "prompt_versao": "v2.2-lote2",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "c8dc15e6-c026-5d07-b054-7bda9bc971fb",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-64] No cenário de treinamento, inexistem peculiaridades não mencionadas: a resposta deve decorrer apenas do texto legal, da doutrina majoritária e da jurisprudência consolidada.",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "de4e56a9-01d9-5a3d-b8ff-82d1ecdd7c24",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "dac6313a-adfd-50ca-98a1-09fb195469ff",
+      "assunto_id": "671e06a6-a523-512a-a333-08f2542f694f",
+      "enunciado": "A negação lógica da proposição condicional 'Se o suspeito confessar o crime, então o juiz concederá a liberdade provisória' é dada por:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A negação de uma condicional P → Q é dada pela regra do 'MANÉ' (Mantém a primeira e Nega a segunda: P ∧ ~Q). Portanto: 'O suspeito confessa o crime e o juiz não concede a liberdade provisória'.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA negação de uma condicional P → Q é dada pela regra do 'MANÉ' (Mantém a primeira e Nega a segunda: P ∧ ~Q). Portanto: 'O suspeito confessa o crime e o juiz não concede a liberdade provisória'.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "e6412ca0-af83-57ff-a167-a7c5e397a5c8",
+      "prompt_versao": "v2.2-lote2",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:\n\n[Contexto autoral Lote 2 - dpp2-70] Na narrativa do Lote 2, os envolvidos foram identificados previamente e a cadeia decisória foi formalmente documentada pela autoridade competente.",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.\n\nNota do Lote 2: questão autoral reformulada com contexto policial inédito, mantendo a mesma diretriz normativa do tema e ampliando a cobrança prática para concursos de segurança pública.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "f49916ff-48ed-5a4e-9a5b-83805277cd0c",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "fc87147e-4401-5a13-bbde-bfaea15f2ca4",
+      "prompt_versao": "v2.1",
+      "disciplina_id": "18877540-1bd4-5e15-b497-20b2582bc4d8",
+      "assunto_id": "91b1995a-d047-5f6e-be4b-39ef7260df72",
+      "enunciado": "Sobre a realização de busca domiciliar pelas forças policiais, à luz da jurisprudência do STF (Tema 280 da Repercussão Geral), é correto afirmar que:",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA entrada forçada em domicílio sem mandado judicial é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas pelas circunstâncias do caso concreto. Tema 280/STF: 'A entrada forçada em domicílio sem mandado judicial só é lícita, mesmo em período noturno, quando amparada em fundadas razões, devidamente justificadas a posteriori, que indiquem que dentro da casa ocorre situação de flagrante delito, sob pena de responsabilidade disciplinar, civil e penal do agente ou da autoridade e de nulidade dos atos praticados'.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    },
+    {
+      "id": "fdab75b8-894d-5623-8058-cf12333dbc9f",
+      "prompt_versao": "v2.3-lote3",
+      "disciplina_id": "ee8e2e17-ceae-5165-932a-76c8bc67a294",
+      "assunto_id": "766c2683-7c95-5520-9580-bb23b3f92c57",
+      "enunciado": "O Artigo 7º, item 7, da Convenção Americana sobre Direitos Humanos dispõe que ninguém deve ser detido por dívidas, ressalvando unicamente a prisão por inadimplemento de obrigação alimentar. Em face dessa norma convencional e da jurisprudência consolidada no âmbito do STF, assinale a opção que reflete o enunciado da Súmula Vinculante nº 25.",
+      "gabarito_db": "B",
+      "explicacao_anterior": "GABARITO: A Súmula Vinculante 25 do STF dispõe expressamente: 'É ilícita a prisão civil de depositário infiel, qualquer que seja a modalidade do depósito'. Em razão do status supralegal da CADH (art. 7.7), as normas infraconstitucionais brasileiras que previam a prisão do depositário infiel tiveram sua eficácia suspensa/paralisada, restando unicamente admitida no Brasil a prisão civil do devedor inescusável de alimentos.",
+      "explicacao_corrigida": "GABARITO: Letra B.\n\nA Súmula Vinculante 25 do STF dispõe expressamente: 'É ilícita a prisão civil de depositário infiel, qualquer que seja a modalidade do depósito'. Em razão do status supralegal da CADH (art. 7.7), as normas infraconstitucionais brasileiras que previam a prisão do depositário infiel tiveram sua eficácia suspensa/paralisada, restando unicamente admitida no Brasil a prisão civil do devedor inescusável de alimentos.",
+      "motivo": "Padronização do cabeçalho da explicação com a indicação explícita da letra correta.",
+      "fundamento_juridico": "Padronização do cabeçalho da explicação para 'GABARITO: Letra X', eliminando ambiguidade de parsing heurístico e preservando o gabarito substantivo já correto no banco."
+    }
+  ]
+}
