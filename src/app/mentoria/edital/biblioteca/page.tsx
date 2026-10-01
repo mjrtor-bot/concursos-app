@@ -34,6 +34,7 @@ export default function BibliotecaEditaisPage() {
   const { user } = useAuth();
   const { recarregarConcursoAlvo } = useConcurso();
   const [editais,setEditais]=useState<Edital[]>([]);
+  const [meusEditais,setMeusEditais]=useState<any[]>([]);
   const [loading,setLoading]=useState(true);
   const [erro,setErro]=useState("");
   const [q,setQ]=useState("");
@@ -54,6 +55,14 @@ export default function BibliotecaEditaisPage() {
   const [mostrarPreview,setMostrarPreview]=useState(false);
   const [alvo,setAlvo]=useState<Alvo|null>(null);
   const [alvoDetalhe,setAlvoDetalhe]=useState<AlvoDetalhe|null>(null);
+
+  async function carregarMeusEditais(){
+    try{
+      const r=await fetch("/api/editais/importados",{cache:"no-store"});
+      const j=await r.json();
+      if(r.ok)setMeusEditais(j.editais||[]);
+    }catch{ /* a biblioteca oficial continua disponível mesmo se a consulta dos importados falhar */ }
+  }
 
   async function carregar(){
     setLoading(true); setErro("");
@@ -91,7 +100,7 @@ export default function BibliotecaEditaisPage() {
     }
   }
 
-  useEffect(()=>{void carregarAlvo()},[user?.id]);
+  useEffect(()=>{void carregarAlvo(); void carregarMeusEditais()},[user?.id]);
   useEffect(()=>{const t=setTimeout(carregar,250);return()=>clearTimeout(t);},[q,carreira,uf,status]);
 
   const ufs=useMemo(()=>Array.from(new Set(editais.map(e=>e.uf).filter(Boolean) as string[])).sort(),[editais]);
@@ -233,6 +242,20 @@ export default function BibliotecaEditaisPage() {
         <select value={status} onChange={e=>setStatus(e.target.value)} className="rounded-xl border bg-transparent p-2.5"><option value="todos">Todos os status</option><option value="aberto">Abertos</option><option value="previsto">Previstos</option><option value="prova_realizada">Prova realizada</option><option value="encerrado">Encerrados</option><option value="expirado">Expirados</option></select>
       </div>
     </section>
+
+    {meusEditais.length>0&&<section className="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div><p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Meus editais importados</p><h2 className="mt-1 text-xl font-black">Biblioteca pessoal de concursos</h2><p className="mt-1 text-sm text-slate-600">Os PDFs que você confirmou aparecem aqui e ficam vinculados ao concurso alvo.</p></div>
+        <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700">{meusEditais.length} edital{meusEditais.length===1?"":"s"}</span>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        {meusEditais.map((ed:any)=><article key={ed.id} className="rounded-xl border bg-white p-4">
+          <div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold text-indigo-600">{ed.orgao||"Órgão não informado"}{ed.uf?" · "+ed.uf:""}</p><h3 className="font-black">{ed.nome}</h3><p className="text-sm text-slate-600">{ed.cargo||"Cargo não informado"}</p></div><span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700">{ed.status==="confirmado"?"Confirmado":"Aguardando revisão"}</span></div>
+          <div className="mt-3 grid grid-cols-2 gap-2 text-sm"><div><span className="text-slate-500">Disciplinas</span><p className="font-bold">{ed.total_disciplinas}</p></div><div><span className="text-slate-500">Assuntos</span><p className="font-bold">{ed.total_topicos}</p></div></div>
+          <p className="mt-3 truncate text-xs text-slate-500">{ed.arquivo_nome}</p>
+        </article>)}
+      </div>
+    </section>}
 
     <section>
       {loading?<div className="flex items-center justify-center gap-2 py-12"><Loader2 className="h-5 w-5 animate-spin"/>Carregando editais...</div>:
