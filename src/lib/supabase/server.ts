@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "./client";
 
@@ -22,10 +23,11 @@ export async function createClientServer() {
 export function createAdminClient() {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!isSupabaseConfigured || !serviceKey) return null;
-  return createServerClient(supabaseUrl, serviceKey, {
-    cookies: {
-      getAll() { return []; },
-      setAll() {},
+  return createClient(supabaseUrl, serviceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+      detectSessionInUrl: false,
     },
   });
 }
