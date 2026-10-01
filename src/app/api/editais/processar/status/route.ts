@@ -57,12 +57,20 @@ export async function GET(request: NextRequest) {
 
   const db = createAdminClient() || auth.supabase!;
 
-  const { data: registro } = await auth.supabase!
+  const { data: registro, error: registroError } = await db
     .from("editais_usuario")
     .select("id,status,erro_processamento,estrutura_extraida,usuario_id,processamento_iniciado_em,created_at")
     .eq("id", id)
-    .eq("usuario_id", auth.user!.id)
     .maybeSingle();
+
+  if (registro && registro.usuario_id !== auth.user!.id) {
+    return NextResponse.json({ error: "PDF não pertence ao usuário autenticado." }, { status: 403 });
+  }
+
+  if (registroError) {
+    console.error("Erro ao consultar edital_usuario no polling:", registroError);
+    return NextResponse.json({ error: registroError.message }, { status: 500 });
+  }
 
   if (!registro) return NextResponse.json({ error: "PDF não encontrado." }, { status: 404 });
 
@@ -123,7 +131,7 @@ export async function GET(request: NextRequest) {
     const elapsedMs = Date.now() - startedAt;
     const providerStatus = json.status;
 
-    await auth.supabase!.from("editais_usuario").update({
+    await db.from("editais_usuario").update({
       erro_processamento: JSON.stringify({
         response_id: meta.response_id,
         file_id: meta.file_id,
