@@ -185,7 +185,8 @@ export default function BibliotecaEditaisPage() {
       if(!sync.ok)throw new Error(sj.error||"Conteúdo confirmado, mas a sincronização do planejamento falhou.");
 
       await recarregarConcursoAlvo();
-      await carregar(); // Recarrega a lista de editais para refletir as mudanças
+      await carregar();
+      await carregarMeusEditais();
 
       if(user?.id){
         const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
