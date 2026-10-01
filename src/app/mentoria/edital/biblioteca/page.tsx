@@ -1,5 +1,3 @@
-"use client";
-
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AlertCircle, CheckCircle2, ChevronDown, ExternalLink, Loader2, Search, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -247,10 +245,10 @@ export default function BibliotecaEditaisPage() {
       </div>}
 
       <form onSubmit={enviar} className="mt-5 grid gap-3 sm:grid-cols-2">
-        <input name="nome" value={formValues.nome} onChange={e=>setFormValues(v=>({...v,nome:e.target.value}))} required placeholder="Nome do concurso / edital" className="rounded-xl border bg-transparent p-2.5"/>
+        <input name="nome" required value={formValues.nome} onChange={e=>setFormValues(v=>({...v,nome:e.target.value}))} placeholder="Nome do concurso / edital" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="orgao" value={formValues.orgao} onChange={e=>setFormValues(v=>({...v,orgao:e.target.value}))} placeholder="Órgão" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="cargo" value={formValues.cargo} onChange={e=>setFormValues(v=>({...v,cargo:e.target.value}))} placeholder="Cargo" className="rounded-xl border bg-transparent p-2.5"/>
-        <input name="uf" value={formValues.uf} onChange={e=>setFormValues(v=>({...v,uf:e.target.value.toUpperCase().slice(0,2)}))} maxLength={2} placeholder="UF" className="rounded-xl border bg-transparent p-2.5"/>
+        <input name="uf" maxLength={2} value={formValues.uf} onChange={e=>setFormValues(v=>({...v,uf:e.target.value}))} placeholder="UF" className="rounded-xl border bg-transparent p-2.5 uppercase"/>
         <label className="sm:col-span-2 rounded-xl border border-dashed p-5 text-sm"><span className="font-bold">PDF do edital (máx. 20 MB)</span><input type="file" accept="application/pdf,.pdf" onChange={e=>setArquivo(e.target.files?.[0]||null)} className="mt-2 block w-full"/></label>
         <button disabled={enviando||processando||confirmando} className="sm:col-span-2 rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white disabled:opacity-50">{enviando?"Enviando PDF...":processando?"Processando PDF...":"Enviar e gerar prévia"}</button>
       </form>

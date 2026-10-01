@@ -82,7 +82,6 @@ export async function POST(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      // Usuário não autenticado - permitido responder offline no cliente
       return NextResponse.json({ success: false, saved: false, reason: "unauthenticated" }, { status: 401 });
     }
 
@@ -96,8 +95,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, saved: false, reason: "invalid_ids" }, { status: 400 });
     }
 
-    // O servidor é a única autoridade sobre o gabarito. Nunca confie em `correta`
-    // enviada pelo navegador.
     const { data: questao, error: questaoError } = await supabase
       .from("questoes")
       .select("id,tipo,versao,auditoria_status,anulada,desatualizada")
@@ -123,7 +120,6 @@ export async function POST(request: NextRequest) {
         ? String(alternativa.texto || "").toLowerCase() === "certo" ? "certo" : "errado"
         : null;
 
-    // Grava na tabela respostas_usuarios
     const { error: insertError } = await supabase.from("respostas_usuarios").insert({
       usuario_id: user.id,
       questao_id,
@@ -142,7 +138,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Mantém o caderno de erros consistente com o histórico real.
     const agora = new Date().toISOString();
     const { data: erroAtual } = await supabase
       .from("caderno_erros")
@@ -153,7 +148,6 @@ export async function POST(request: NextRequest) {
 
     if (!correta) {
       let cadernoError: { message: string } | null = null;
-
       if (erroAtual) {
         const { error } = await supabase
           .from("caderno_erros")
@@ -178,7 +172,6 @@ export async function POST(request: NextRequest) {
           });
         cadernoError = error;
       }
-
       if (cadernoError) console.warn("[API /questoes/resposta] Aviso caderno_erros:", cadernoError.message);
     } else if (erroAtual) {
       const { error: revisaoError } = await supabase
@@ -188,12 +181,7 @@ export async function POST(request: NextRequest) {
       if (revisaoError) console.warn("[API /questoes/resposta] Aviso revisão caderno:", revisaoError.message);
     }
 
-    let alternativa_correta_id = alternativa.id;
-    if (!correta) {
-      const { data: corretaRow } = await supabase.from("questoes_alternativas").select("id").eq("questao_id", questao_id).eq("correta", true).maybeSingle();
-      alternativa_correta_id = corretaRow?.id || "";
-    }
-    return NextResponse.json({ success: true, saved: true, correta, alternativa_correta_id });
+    return NextResponse.json({ success: true, saved: true, correta, alternativa_correta_id: correta ? alternativa.id : undefined });
   } catch (error: any) {
     console.error("[API /questoes/resposta] Exceção:", error);
     return NextResponse.json(
