@@ -117,6 +117,11 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
       icon: BookOpen,
     },
     {
+      href: "/mentoria/edital/importados",
+      label: "Meus Editais Importados",
+      icon: FileText,
+    },
+    {
       href: "/mentoria/comunicacao",
       label: "Mural & Inbox",
       icon: MessageSquare,
