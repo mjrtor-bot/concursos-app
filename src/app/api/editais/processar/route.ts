@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       }
     };
 
+    // Iniciar processamento assíncrono
     const resp = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
@@ -82,14 +83,16 @@ export async function POST(request: NextRequest) {
       })
     });
     const json = await resp.json();
-    if (!resp.ok) throw new Error(json.error?.message || "Falha na análise do edital.");
-    const output = extractOutputText(json);
-    const estrutura = JSON.parse(output);
-    const totalAssuntos = estrutura.disciplinas.reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
-    if (!estrutura.disciplinas.length || totalAssuntos === 0) throw new Error("Nenhum conteúdo programático confiável foi identificado.");
+    if (!resp.ok) throw new Error(json.error?.message || "Falha ao iniciar análise do edital.");
 
-    await auth.supabase!.from("editais_usuario").update({ status: "aguardando_confirmacao", estrutura_extraida: estrutura, erro_processamento: null, updated_at: new Date().toISOString() }).eq("id", registro.id);
-    return NextResponse.json({ ok: true, edital_usuario_id: registro.id, estrutura, total_disciplinas: estrutura.disciplinas.length, total_assuntos: totalAssuntos });
+    // Armazenar ID da resposta para polling e retornar aceito
+    await auth.supabase!.from("editais_usuario").update({
+      status: "processando",
+      erro_processamento: JSON.stringify({ response_id: json.id, file_id: uploaded.id }),
+      updated_at: new Date().toISOString()
+    }).eq("id", registro.id);
+
+    return NextResponse.json({ ok: true, processing: true, edital_usuario_id: registro.id });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Erro inesperado";
     await auth.supabase!.from("editais_usuario").update({ status: "erro", erro_processamento: message, updated_at: new Date().toISOString() }).eq("id", registro.id);
