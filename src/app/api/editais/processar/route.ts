@@ -72,7 +72,8 @@ export async function POST(request: NextRequest) {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-5.1-mini",
+        model: "gpt-5.6-luna",
+        background: true,
         input: [{
           role: "user", content: [
             { type: "input_file", file_id: uploaded.id },

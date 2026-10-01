@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   if (!uploadId || !editalId) return NextResponse.json({ error: "edital_usuario_id e edital_id são obrigatórios" }, { status: 400 });
 
   const { data: upload } = await supabase.from("editais_usuario").select("id,status,estrutura_extraida").eq("id", uploadId).eq("usuario_id", user.id).maybeSingle();
-  if (!upload || upload.status !== "aguardando_confirmacao" || !upload.estrutura_extraida) return NextResponse.json({ error: "Não há prévia processada aguardando confirmação." }, { status: 409 });
+  if (!upload || upload.status !== "aguardando_revisao" || !upload.estrutura_extraida) return NextResponse.json({ error: "Não há prévia processada aguardando confirmação." }, { status: 409 });
 
   const { data: edital } = await supabase.from("editais_concurso").select("id").eq("id", editalId).maybeSingle();
   if (!edital) return NextResponse.json({ error: "Edital de destino não encontrado." }, { status: 404 });

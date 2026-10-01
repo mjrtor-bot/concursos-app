@@ -122,7 +122,7 @@ export default function BibliotecaEditaisPage() {
 
       if(j.processing){
         setMensagem("PDF recebido. A análise está sendo executada; esta tela será atualizada automaticamente.");
-        for(let tentativa=0; tentativa<120; tentativa++){
+        for(let tentativa=0; tentativa<300; tentativa++){
           await new Promise(resolve=>setTimeout(resolve,3000));
           const sr=await fetch(`/api/editais/processar/status?edital_usuario_id=${encodeURIComponent(id)}`,{cache:"no-store"});
           const sj=await sr.json();
@@ -151,7 +151,8 @@ export default function BibliotecaEditaisPage() {
   }
 
   async function confirmarPreview(){
-    if(!uploadId||!preview)return;
+    if(!uploadId){ setMensagem("O identificador do upload não está disponível. Atualize a página e gere uma nova prévia."); return; }
+    if(!preview){ setMensagem("A prévia do edital ainda não está disponível."); return; }
     if(!alvo?.edital_id){
       setMensagem("Seu concurso alvo não possui um edital cadastrado. Selecione um concurso/edital válido antes de confirmar a importação.");
       return;
