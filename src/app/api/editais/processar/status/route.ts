@@ -116,7 +116,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (json.status === "queued" || json.status === "in_progress") {
-    const startedAt = registro.updated_at ? new Date(registro.updated_at).getTime() : Date.now();
+    const startedAt = meta.started_at ? new Date(meta.started_at).getTime() : (registro.created_at ? new Date(registro.created_at).getTime() : Date.now());
     const elapsedMs = Date.now() - startedAt;
     const providerStatus = json.status;
     // Persistimos o último estado observado para diagnóstico e evitamos jobs presos indefinidamente.
@@ -124,6 +124,7 @@ export async function GET(request: NextRequest) {
       erro_processamento: JSON.stringify({
         response_id: meta.response_id,
         file_id: meta.file_id,
+        started_at: meta.started_at,
         provider_status: providerStatus,
         last_checked_at: new Date().toISOString()
       }),
