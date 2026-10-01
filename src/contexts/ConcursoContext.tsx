@@ -47,8 +47,8 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
       const res=await fetch("/api/concursos/alvo",{cache:"no-store"});
       const json=await res.json();
       if(!res.ok) throw new Error(json.error||"Falha ao carregar concurso alvo");
-      const oficiais=(json.concursos||[]).filter((c:ApiConcurso)=>Boolean(c.fonte_oficial_url));
-      setRaw(oficiais);
+      const lista=(json.concursos||[]) as ApiConcurso[];
+      setRaw(lista);
       setAlvo(json.alvo||null);
     }catch(e){setRaw([]);setAlvo(null);info(e instanceof Error?e.message:"Não foi possível carregar concursos oficiais.");}
   };
