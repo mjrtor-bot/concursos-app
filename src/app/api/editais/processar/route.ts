@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClientServer } from "@/lib/supabase/server";
+import { createClientServer, createAdminClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -43,14 +43,16 @@ export async function POST(request: NextRequest) {
   const editalUsuarioId = body?.edital_usuario_id;
   if (!editalUsuarioId) return NextResponse.json({ error: "edital_usuario_id obrigatório" }, { status: 400 });
 
-  const { data: registro, error: regError } = await auth.supabase!.from("editais_usuario").select("*").eq("id", editalUsuarioId).eq("usuario_id", auth.user!.id).in("status", ["aguardando_processamento", "erro"]).maybeSingle();
+  const db = createAdminClient() || auth.supabase!;
+  const { data: registro, error: regError } = await db.from("editais_usuario").select("*").eq("id", editalUsuarioId).maybeSingle();
+  if (registro && registro.usuario_id !== auth.user!.id) return NextResponse.json({ error: "PDF não pertence ao usuário autenticado." }, { status: 403 });
   if (regError || !registro) return NextResponse.json({ error: "PDF não encontrado ou não aguardando processamento." }, { status: 404 });
 
-  const { error: updateError } = await auth.supabase!.from("editais_usuario").update({ status: "processando", erro_processamento: null, updated_at: new Date().toISOString() }).eq("id", registro.id).eq("status", registro.status);
+  const { error: updateError } = await db.from("editais_usuario").update({ status: "processando", erro_processamento: null, updated_at: new Date().toISOString() }).eq("id", registro.id).eq("status", registro.status);
   if (updateError) return NextResponse.json({ error: "Conflito de estado ao iniciar processamento." }, { status: 409 });
 
   try {
-    const { data: arquivo, error: downloadError } = await auth.supabase!.storage.from("editais-usuario").download(registro.arquivo_path);
+    const { data: arquivo, error: downloadError } = await db.storage.from("editais-usuario").download(registro.arquivo_path);
     if (downloadError || !arquivo) throw new Error(downloadError?.message || "Não foi possível baixar o PDF.");
 
     const form = new FormData();
@@ -98,7 +100,7 @@ export async function POST(request: NextRequest) {
     if (!resp.ok) throw new Error(json.error?.message || "Falha ao iniciar análise do edital.");
 
     // Armazenar ID da resposta para polling e retornar aceito (HTTP 202)
-    await auth.supabase!.from("editais_usuario").update({
+    await db.from("editais_usuario").update({
       status: "processando",
       processamento_iniciado_em: new Date().toISOString(),
       erro_processamento: JSON.stringify({ response_id: json.id, file_id: uploaded.id }),
