@@ -13,6 +13,36 @@ type Importado = {
   edital_id: string | null;
 };
 
+const UFS_VALIDAS = new Set([
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA",
+  "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN",
+  "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+]);
+
+function isConcursoOficialValido(item: Importado, fonteExterna?: string | null): boolean {
+  const orgao = (item.orgao_nome || "").trim();
+  if (!orgao || orgao.length < 3 || orgao.toLowerCase() === "edital importado") return false;
+
+  const uf = (item.uf || "").trim().toUpperCase();
+  if (!UFS_VALIDAS.has(uf)) return false;
+
+  const banca = (item.estrutura_extraida?.banca || "").trim();
+  if (!banca || banca.length < 2) return false;
+
+  const fonte = (fonteExterna || "").trim();
+  if (!fonte || !/^https?:\/\//i.test(fonte)) return false;
+  if (
+    fonte.includes("/mentoria/edital/importados") ||
+    fonte.includes("localhost") ||
+    fonte.includes("mjrtor.com.br") ||
+    fonte.includes("vercel.app")
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function slugify(value: string) {
   return value
     .normalize("NFD")
@@ -55,6 +85,9 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
     }
   }
 
+  const ehOficial = isConcursoOficialValido(item, item.estrutura_extraida?.fonte_oficial_url);
+  const statusConcurso = ehOficial ? "publicado" : "rascunho";
+
   const { data: concurso, error: concursoError } = await admin
     .from("concursos")
     .insert({
@@ -62,8 +95,8 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       orgao,
       esfera: "estadual",
       uf: item.uf || null,
-      status: "publicado",
-      fonte_oficial_url: sourceUrl,
+      status: statusConcurso,
+      fonte_oficial_url: ehOficial ? (item.estrutura_extraida?.fonte_oficial_url || sourceUrl) : sourceUrl,
     })
     .select("id")
     .single();
@@ -97,8 +130,8 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       prova_em: null,
       fonte_oficial_url: sourceUrl,
       pdf_url: null,
-      status: "publicado",
-      banca: null,
+      status: statusConcurso,
+      banca: ehOficial ? (item.estrutura_extraida?.banca || null) : null,
       fonte_conteudo_url: sourceUrl,
     })
     .select("id")
@@ -183,7 +216,7 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
 
   const [{ data: concursos, error: concursosError }, { data: alvo, error: alvoError }, { data: importados, error: importadosError }] = await Promise.all([
-    supabase.from("concursos").select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,concurso_cargos(id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo,editais_concurso(id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca))").order("nome"),
+    supabase.from("concursos").select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,concurso_cargos(id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo,editais_concurso(id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca))").eq("status", "publicado").order("nome"),
     supabase.from("usuario_concurso_alvo").select("concurso_id,cargo_id,edital_id").eq("usuario_id", user.id).maybeSingle(),
     supabase.from("editais_usuario").select("id,nome,orgao_nome,cargo,uf,status,arquivo_nome,estrutura_extraida,edital_id").eq("usuario_id", user.id).in("status", ["aguardando_revisao","confirmado"]).order("updated_at", { ascending: false }),
   ]);
