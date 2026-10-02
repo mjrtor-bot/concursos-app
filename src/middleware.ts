@@ -9,6 +9,8 @@ const PUBLIC_ROUTES = [
   "/redefinir-senha",
   "/onboarding",
   "/reset",
+  "/termos",
+  "/privacidade",
   "/auth/callback",
   "/auth/confirm",
   "/",
