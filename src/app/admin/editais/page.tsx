@@ -184,12 +184,19 @@ export default function AdminEditais() {
   const c = "w-full border rounded-lg p-2 bg-transparent";
   return (
     <div className="max-w-6xl mx-auto space-y-5">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-black">Admin · Editais</h1>
           <p className="text-sm text-slate-500">Cadastre edital, banca, datas e conteúdo programático.</p>
         </div>
-        <Link className="text-blue-600" href="/admin/concursos">Gerenciar concursos/cargos</Link>
+        <div className="flex items-center gap-3 text-sm">
+          <Link className="px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-semibold hover:bg-blue-100 transition-colors" href="/admin/cobertura">
+            Relatório de Cobertura
+          </Link>
+          <Link className="text-blue-600 hover:underline" href="/admin/concursos">
+            Gerenciar concursos/cargos
+          </Link>
+        </div>
       </div>
       {msg && <div className="border rounded-lg p-3">{msg}</div>}
       <div className="grid md:grid-cols-3 gap-2 border rounded-xl p-4">

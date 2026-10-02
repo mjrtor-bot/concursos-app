@@ -386,6 +386,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
               <div className="px-3.5 pb-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Administração</div>
               {[
                 { href:"/admin/editais", label:"Editais", icon:BookOpen },
+                { href:"/admin/cobertura", label:"Cobertura", icon:Layers },
                 { href:"/admin/concursos", label:"Concursos", icon:GraduationCap },
                 { href:"/admin/questoes", label:"Questões", icon:Database },
                 { href:"/admin/usuarios", label:"Usuários", icon:Users },
