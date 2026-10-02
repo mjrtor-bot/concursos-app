@@ -38,21 +38,27 @@ export async function GET(
       .eq("edital_id", edital.edital_id)
       .order("ordem", { ascending: true }),
     supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", user.id),
-    supabase.from("respostas_usuarios").select("assunto_id,correta,created_at").eq("usuario_id", user.id),
+    supabase.from("respostas_usuarios").select("correta,created_at,questoes(assunto_id)").eq("usuario_id", user.id),
   ]);
 
   if (topicosRes.error) return NextResponse.json({ error: topicosRes.error.message }, { status: 500 });
+  if (respostasRes.error) {
+    console.error("[verticalizado/route] Erro ao buscar respostas_usuarios:", respostasRes.error);
+  }
 
   const salvos = new Map((salvosRes.data || []).map((x: any) => [x.assunto_id, x]));
   const stats = new Map<string, { total: number; acertos: number; ultimaData?: string }>();
 
-  for (const r of respostasRes.data || []) {
-    if (!r.assunto_id) continue;
-    const s = stats.get(r.assunto_id) || { total: 0, acertos: 0 };
+  for (const r of (respostasRes.data || []) as any[]) {
+    const questaoRel = r.questoes as unknown as { assunto_id?: string } | { assunto_id?: string }[] | null;
+    const questao = Array.isArray(questaoRel) ? questaoRel[0] : questaoRel;
+    const assuntoId = questao?.assunto_id;
+    if (!assuntoId) continue;
+    const s = stats.get(assuntoId) || { total: 0, acertos: 0 };
     s.total++;
     if (r.correta) s.acertos++;
     if (!s.ultimaData || (r.created_at && r.created_at > s.ultimaData)) s.ultimaData = r.created_at;
-    stats.set(r.assunto_id, s);
+    stats.set(assuntoId, s);
   }
 
   const grupos = new Map<string, any>();

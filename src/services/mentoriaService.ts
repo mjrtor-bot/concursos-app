@@ -910,21 +910,26 @@ export class MentoriaService {
           .eq("edital_id", alvo.edital_id)
           .order("ordem", { ascending: true }),
         supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
-        supabase.from("respostas_usuarios").select("assunto_id, correta, created_at").eq("usuario_id", usuarioId),
+        supabase.from("respostas_usuarios").select("correta, created_at, questoes(assunto_id)").eq("usuario_id", usuarioId),
       ]);
 
       if (resTopicosEdital.error) throw resTopicosEdital.error;
+      if (resRespostas.error) {
+        console.error("[mentoriaService] Erro ao carregar respostas_usuarios para estatísticas:", resRespostas.error);
+      }
       topicosSalvos = (resTopicosSalvos.data || []) as MentoriaEditalTopico[];
-      respostasUsuario = (resRespostas.data || []) as { assunto_id: string; correta: boolean; created_at: string }[];
 
       const statsPorAssunto = new Map<string, { total: number; acertos: number; ultimaData?: string }>();
-      for (const r of respostasUsuario) {
-        if (!r.assunto_id) continue;
-        const cur = statsPorAssunto.get(r.assunto_id) || { total: 0, acertos: 0 };
+      for (const r of (resRespostas.data || []) as any[]) {
+        const questaoRel = r.questoes as unknown as { assunto_id?: string } | { assunto_id?: string }[] | null;
+        const questao = Array.isArray(questaoRel) ? questaoRel[0] : questaoRel;
+        const assuntoId = questao?.assunto_id;
+        if (!assuntoId) continue;
+        const cur = statsPorAssunto.get(assuntoId) || { total: 0, acertos: 0 };
         cur.total += 1;
         if (r.correta) cur.acertos += 1;
         if (!cur.ultimaData || (r.created_at && r.created_at > cur.ultimaData)) cur.ultimaData = r.created_at;
-        statsPorAssunto.set(r.assunto_id, cur);
+        statsPorAssunto.set(assuntoId, cur);
       }
 
       const mapaSalvos = new Map(topicosSalvos.map((t) => [t.assunto_id, t]));
