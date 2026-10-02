@@ -13,10 +13,6 @@ export async function POST(request: Request) {
   if (!supabase) return NextResponse.json({ error: "Supabase não configurado" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-  if (!profile || !["admin","editor"].includes(profile.role)) {
-    return NextResponse.json({ error: "Apenas administradores podem importar PDFs de editais." }, { status: 403 });
-  }
 
   let form: FormData;
   try { form = await request.formData(); } catch { return NextResponse.json({ error: "Falha ao ler o upload. Envie um PDF de até 20 MB." }, { status: 400 }); }

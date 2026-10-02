@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { AlertCircle, CheckCircle2, ChevronDown, ExternalLink, Loader2, Search, Upload } from "lucide-react";
+import { AlertCircle, CheckCircle2, ChevronDown, ExternalLink, Loader2, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
@@ -20,6 +20,23 @@ type Preview = { titulo_detectado: string; disciplinas: PreviewDisciplina[]; obs
 type Alvo = { concurso_id: string; cargo_id: string; edital_id: string | null };
 type AlvoDetalhe = { concurso: string; cargo: string; edital: string };
 
+type MeuEditalUpload = {
+  id: string;
+  nome: string;
+  orgao?: string | null;
+  cargo?: string | null;
+  uf?: string | null;
+  status: string;
+  arquivo_nome?: string | null;
+  arquivo_tamanho?: number | null;
+  erro_processamento?: string | null;
+  edital_id?: string | null;
+  created_at: string;
+  confirmado_em?: string | null;
+  total_disciplinas: number;
+  total_topicos: number;
+};
+
 const carreiras = [
   ["todos","Todas"],["PF","PF"],["PRF","PRF"],["POLICIA_CIVIL","Polícia Civil"],
   ["POLICIA_MILITAR","Polícia Militar"],["BOMBEIROS","Bombeiros"],
@@ -31,11 +48,20 @@ const statusLabel: Record<string,string> = {
   encerrado:"Encerrado", expirado:"Expirado",
 };
 
+const statusUploadLabel: Record<string, { label: string; bg: string; text: string }> = {
+  aguardando_processamento: { label: "Aguardando processamento", bg: "bg-amber-100 dark:bg-amber-950/40", text: "text-amber-800 dark:text-amber-300" },
+  processando: { label: "Processando IA", bg: "bg-blue-100 dark:bg-blue-950/40", text: "text-blue-800 dark:text-blue-300" },
+  aguardando_revisao: { label: "Aguardando revisão", bg: "bg-indigo-100 dark:bg-indigo-950/40", text: "text-indigo-800 dark:text-indigo-300" },
+  revisao_sem_conteudo: { label: "Sem conteúdo programático", bg: "bg-orange-100 dark:bg-orange-950/40", text: "text-orange-800 dark:text-orange-300" },
+  confirmado: { label: "Confirmado", bg: "bg-green-100 dark:bg-green-950/40", text: "text-green-800 dark:text-green-300" },
+  erro: { label: "Erro no processamento", bg: "bg-red-100 dark:bg-red-950/40", text: "text-red-800 dark:text-red-300" },
+};
+
 export default function BibliotecaEditaisPage() {
   const { user } = useAuth();
   const { recarregarConcursoAlvo } = useConcurso();
   const [editais,setEditais]=useState<Edital[]>([]);
-  const [meusEditais,setMeusEditais]=useState<any[]>([]);
+  const [meusEditais,setMeusEditais]=useState<MeuEditalUpload[]>([]);
   const [loading,setLoading]=useState(true);
   const [erro,setErro]=useState("");
   const [q,setQ]=useState("");
@@ -44,11 +70,13 @@ export default function BibliotecaEditaisPage() {
   const [status,setStatus]=useState("todos");
 
   const [formValues,setFormValues]=useState({nome:"",orgao:"",cargo:"",uf:""});
+  const [destinoEditalId,setDestinoEditalId]=useState<string>("");
   const [arquivo,setArquivo]=useState<File|null>(null);
   const [enviando,setEnviando]=useState(false);
   const [processando,setProcessando]=useState(false);
   const [confirmando,setConfirmando]=useState(false);
   const [confirmado,setConfirmado]=useState(false);
+  const [excluindoId,setExcluindoId]=useState<string|null>(null);
   const [mensagem,setMensagem]=useState("");
   const [aplicando,setAplicando]=useState<string|null>(null);
   const [uploadId,setUploadId]=useState<string|null>(null);
@@ -90,11 +118,16 @@ export default function BibliotecaEditaisPage() {
       const concurso=(j.concursos||[]).find((c:any)=>c.id===j.alvo?.concurso_id);
       const cargo=(concurso?.concurso_cargos||[]).find((c:any)=>c.id===j.alvo?.cargo_id);
       const edital=(cargo?.editais_concurso||[]).find((e:any)=>e.id===j.alvo?.edital_id);
-      if(concurso&&cargo) setAlvoDetalhe({
-        concurso:concurso.nome,
-        cargo:cargo.nome,
-        edital:edital?.titulo||edital?.numero||"Edital do concurso alvo",
-      });
+      if(concurso&&cargo) {
+        setAlvoDetalhe({
+          concurso:concurso.nome,
+          cargo:cargo.nome,
+          edital:edital?.titulo||edital?.numero||"Edital do concurso alvo",
+        });
+        if (edital?.id && !destinoEditalId) {
+          setDestinoEditalId(edital.id);
+        }
+      }
     }catch(e){
       setAlvo(null); setAlvoDetalhe(null);
       setMensagem(e instanceof Error?e.message:"Não foi possível identificar o concurso alvo.");
@@ -117,13 +150,13 @@ export default function BibliotecaEditaisPage() {
         const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
         if(!ciclo.success)throw new Error(ciclo.error||"Edital aplicado, mas o ciclo não pôde ser gerado.");
       }
-      setMensagem(`${j.aviso} ${j.topicos} tópicos sincronizados e ciclo atualizado.`);
+      setMensagem(`${j.aviso||"Edital selecionado."} ${j.topicos||0} tópicos sincronizados e ciclo atualizado.`);
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao aplicar edital");}
     finally{setAplicando(null);}
   }
 
   async function processarPdf(id:string){
-    setProcessando(true); setMensagem(""); setConfirmado(false); setPreview(null); setMostrarPreview(false);
+    setProcessando(true); setMensagem(""); setConfirmado(false); setPreview(null); setMostrarPreview(false); setUploadId(id);
     try{
       const r=await fetch("/api/editais/processar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({edital_usuario_id:id})});
       const j=await r.json();
@@ -136,6 +169,7 @@ export default function BibliotecaEditaisPage() {
         setPreview(sj.estrutura as Preview);
         setMostrarPreview(true);
         setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
+        await carregarMeusEditais();
         return;
       }
 
@@ -143,16 +177,40 @@ export default function BibliotecaEditaisPage() {
         setPreview(j.estrutura);
         setMostrarPreview(true);
         setMensagem(`PDF processado: ${j.total_disciplinas} disciplinas e ${j.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
+        await carregarMeusEditais();
       }
-    }catch(err){setMensagem(err instanceof Error?err.message:"Falha ao processar o PDF");}
+    }catch(err){
+      setMensagem(err instanceof Error?err.message:"Falha ao processar o PDF");
+      await carregarMeusEditais();
+    }
     finally{setProcessando(false);}
+  }
+
+  async function excluirUpload(id:string){
+    if(!confirm("Tem certeza que deseja excluir este PDF e suas prévias?")) return;
+    setExcluindoId(id);
+    try{
+      const r=await fetch(`/api/editais/importados?id=${id}`,{method:"DELETE"});
+      const j=await r.json();
+      if(!r.ok)throw new Error(j.error||"Falha ao excluir upload");
+      setMensagem("PDF excluído com sucesso.");
+      if(uploadId===id){
+        setUploadId(null); setPreview(null); setMostrarPreview(false);
+      }
+      await carregarMeusEditais();
+    }catch(err){
+      setMensagem(err instanceof Error?err.message:"Falha ao excluir o upload");
+    }finally{
+      setExcluindoId(null);
+    }
   }
 
   async function confirmarPreview(){
     if(!uploadId){ setMensagem("O identificador do upload não está disponível. Atualize a página e gere uma nova prévia."); return; }
     if(!preview){ setMensagem("A prévia do edital ainda não está disponível."); return; }
-    if(!alvo?.edital_id){
-      setMensagem("Seu concurso alvo não possui um edital cadastrado. Selecione um concurso/edital válido antes de confirmar a importação.");
+    const targetEditalId = destinoEditalId || alvo?.edital_id;
+    if(!targetEditalId){
+      setMensagem("Selecione um edital de destino antes de confirmar a importação.");
       return;
     }
     setConfirmando(true); setMensagem("");
@@ -160,37 +218,37 @@ export default function BibliotecaEditaisPage() {
       const r=await fetch("/api/editais/confirmar",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({edital_usuario_id:uploadId,edital_id:alvo.edital_id})
+        body:JSON.stringify({edital_usuario_id:uploadId,edital_id:targetEditalId})
       });
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha ao confirmar e importar o conteúdo.");
 
-      const sync=await fetch("/api/concursos/alvo",{
-        method:"PUT",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({concurso_id:alvo.concurso_id,cargo_id:alvo.cargo_id,edital_id:alvo.edital_id})
-      });
-      const sj=await sync.json();
-      if(!sync.ok)throw new Error(sj.error||"Conteúdo confirmado, mas a sincronização do planejamento falhou.");
+      if(alvo && targetEditalId === alvo.edital_id){
+        const sync=await fetch("/api/concursos/alvo",{
+          method:"PUT",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({concurso_id:alvo.concurso_id,cargo_id:alvo.cargo_id,edital_id:targetEditalId})
+        });
+        const sj=await sync.json();
+        if(!sync.ok)throw new Error(sj.error||"Conteúdo confirmado, mas a sincronização do planejamento falhou.");
+
+        if(user?.id){
+          const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
+          if(!ciclo.success)throw new Error(ciclo.error||"Conteúdo importado, mas o ciclo não pôde ser recalculado.");
+        }
+      }
 
       await recarregarConcursoAlvo();
       await carregar();
       await carregarMeusEditais();
 
-      if(user?.id){
-        const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
-        if(!ciclo.success)throw new Error(ciclo.error||"Conteúdo importado, mas o ciclo não pôde ser recalculado.");
-      }
-
       setConfirmado(true);
-      setMensagem(`Conteúdo confirmado: ${j.total_topicos} tópicos importados e sincronizados com o planejamento.`);
-      // Limpa os estados de preview/upload para permitir novos processamentos e não travar a UI
+      setMensagem(`Conteúdo confirmado: ${j.total_topicos} tópicos importados com sucesso.`);
       setUploadId(null);
       setPreview(null);
       setMostrarPreview(false);
     }catch(err){
-        setMensagem(err instanceof Error?err.message:"Falha ao confirmar a prévia");
-        setConfirmando(false); // Garante que o loading para em caso de erro
+      setMensagem(err instanceof Error?err.message:"Falha ao confirmar a prévia");
     }
     finally{setConfirmando(false);}
   }
@@ -204,7 +262,14 @@ export default function BibliotecaEditaisPage() {
     setEnviando(true);
     try{
       const fd=new FormData();
-      fd.set("nome",formValues.nome); fd.set("orgao",formValues.orgao); fd.set("cargo",formValues.cargo); fd.set("uf",formValues.uf); if (alvo?.edital_id) fd.set("edital_id", alvo.edital_id); fd.set("arquivo",arquivo);
+      fd.set("nome",formValues.nome);
+      fd.set("orgao",formValues.orgao);
+      fd.set("cargo",formValues.cargo);
+      fd.set("uf",formValues.uf);
+      const targetEditalId = destinoEditalId || alvo?.edital_id;
+      if (targetEditalId) fd.set("edital_id", targetEditalId);
+      fd.set("arquivo",arquivo);
+
       const r=await fetch("/api/editais/upload",{method:"POST",body:fd});
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha no upload");
@@ -212,6 +277,7 @@ export default function BibliotecaEditaisPage() {
       if(!id)throw new Error("Upload concluído, mas o identificador do edital não foi retornado.");
       setUploadId(id);
       setFormValues({nome:"",orgao:"",cargo:"",uf:""}); setArquivo(null);
+      await carregarMeusEditais();
       await processarPdf(id);
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha no upload");}
     finally{setEnviando(false);}
@@ -219,9 +285,9 @@ export default function BibliotecaEditaisPage() {
 
   return <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-6">
     <div className="flex flex-wrap gap-2">
-      <a href="/mentoria/edital" className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-indigo-300 hover:text-indigo-600">Meu edital</a>
-      <a href="/mentoria/edital/biblioteca" className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-2.5 text-sm font-bold text-slate-700 hover:border-indigo-300 hover:text-indigo-600">Biblioteca policial</a>
-      <a href="/mentoria/edital/importados" className="inline-flex items-center gap-2 rounded-xl border border-indigo-300 bg-indigo-50 px-4 py-2.5 text-sm font-bold text-indigo-700 hover:bg-indigo-100">Meus editais importados</a>
+      <a href="/mentoria/edital" className="inline-flex items-center gap-2 rounded-xl border bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:border-indigo-300 hover:text-indigo-600">Meu edital</a>
+      <a href="/mentoria/edital/biblioteca" className="inline-flex items-center gap-2 rounded-xl border bg-white dark:bg-slate-900 px-4 py-2.5 text-sm font-bold text-slate-700 dark:text-slate-300 hover:border-indigo-300 hover:text-indigo-600">Biblioteca policial</a>
+      <a href="/mentoria/edital/importados" className="inline-flex items-center gap-2 rounded-xl border border-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 px-4 py-2.5 text-sm font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100">Meus editais importados</a>
       <a href="/mentoria/edital/biblioteca#importar" className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-600">Importar edital em PDF</a>
     </div>
 
@@ -241,16 +307,76 @@ export default function BibliotecaEditaisPage() {
       </div>
     </section>
 
-    {meusEditais.length>0&&<section className="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-5">
+    {meusEditais.length>0&&<section className="rounded-2xl border border-indigo-200 bg-indigo-50/40 dark:bg-indigo-950/20 p-5">
       <div className="flex items-start justify-between gap-3">
-        <div><p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Meus editais importados</p><h2 className="mt-1 text-xl font-black">Biblioteca pessoal de concursos</h2><p className="mt-1 text-sm text-slate-600">Os PDFs que você confirmou aparecem aqui e ficam vinculados ao concurso alvo.</p></div>
-        <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold text-indigo-700">{meusEditais.length} edital{meusEditais.length===1?"":"s"}</span>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Meus uploads de editais</p>
+          <h2 className="mt-1 text-xl font-black">Histórico de PDFs e importações</h2>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Acompanhe o status do processamento, revise prévias ou gerencie seus arquivos.</p>
+        </div>
+        <span className="rounded-full bg-indigo-100 dark:bg-indigo-900 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300">{meusEditais.length} upload{meusEditais.length===1?"":"s"}</span>
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {meusEditais.map((ed:any)=><article key={ed.id} className="rounded-xl border bg-white p-4">
-          <div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold text-indigo-600">{ed.orgao||"Órgão não informado"}{ed.uf?" · "+ed.uf:""}</p><h3 className="font-black">{ed.nome}</h3><p className="text-sm text-slate-600">{ed.cargo||"Cargo não informado"}</p></div><span className="rounded-full bg-green-100 px-2.5 py-1 text-xs font-bold text-green-700">{ed.status==="confirmado"?"Confirmado":"Aguardando revisão"}</span></div>
-          <div className="mt-3 grid grid-cols-2 gap-2 text-sm"><div><span className="text-slate-500">Disciplinas</span><p className="font-bold">{ed.total_disciplinas}</p></div><div><span className="text-slate-500">Assuntos</span><p className="font-bold">{ed.total_topicos}</p></div></div>
-          <p className="mt-3 truncate text-xs text-slate-500">{ed.arquivo_nome}</p>
+        {meusEditais.map((ed)=><article key={ed.id} className="rounded-xl border bg-white dark:bg-slate-900 p-4 flex flex-col justify-between">
+          <div>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-xs font-bold text-indigo-600">{ed.orgao||"Órgão não informado"}{ed.uf?" · "+ed.uf:""}</p>
+                <h3 className="font-black text-base">{ed.nome}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">{ed.cargo||"Cargo não informado"}</p>
+              </div>
+              <span className={`rounded-full px-2.5 py-1 text-xs font-bold whitespace-nowrap ${(statusUploadLabel[ed.status]||statusUploadLabel.aguardando_processamento).bg} ${(statusUploadLabel[ed.status]||statusUploadLabel.aguardando_processamento).text}`}>
+                {(statusUploadLabel[ed.status]||statusUploadLabel.aguardando_processamento).label}
+              </span>
+            </div>
+
+            {ed.erro_processamento && (
+              <div className="mt-2 rounded-lg bg-red-50 dark:bg-red-950/30 p-2.5 text-xs text-red-700 dark:text-red-300">
+                <strong>Diagnóstico:</strong> {ed.erro_processamento}
+              </div>
+            )}
+
+            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div><span className="text-slate-500">Disciplinas</span><p className="font-bold">{ed.total_disciplinas}</p></div>
+              <div><span className="text-slate-500">Assuntos</span><p className="font-bold">{ed.total_topicos}</p></div>
+            </div>
+            <p className="mt-2 truncate text-xs text-slate-500">{ed.arquivo_nome}</p>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2 border-t pt-3">
+            {ed.status !== "confirmado" && (
+              <button
+                type="button"
+                onClick={()=>processarPdf(ed.id)}
+                disabled={processando}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 px-3 py-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100"
+              >
+                <RefreshCw className="h-3.5 w-3.5"/>
+                {ed.status === "aguardando_revisao" ? "Revisar prévia" : "Tentar novamente"}
+              </button>
+            )}
+
+            {ed.status === "confirmado" && ed.edital_id && (
+              <button
+                type="button"
+                onClick={()=>usarNoPlanejamento(ed.edital_id!)}
+                disabled={aplicando === ed.edital_id}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700"
+              >
+                {aplicando === ed.edital_id ? "Aplicando..." : "Usar no meu planejamento"}
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={()=>excluirUpload(ed.id)}
+              disabled={excluindoId === ed.id}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30 px-3 py-1.5 text-xs font-bold text-red-700 dark:text-red-300 hover:bg-red-100 ml-auto"
+            >
+              {excluindoId === ed.id ? <Loader2 className="h-3.5 w-3.5 animate-spin"/> : <Trash2 className="h-3.5 w-3.5"/>}
+              Excluir
+            </button>
+          </div>
         </article>)}
       </div>
     </section>}
@@ -268,27 +394,61 @@ export default function BibliotecaEditaisPage() {
     </section>
 
     <section id="importar" className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
-      <div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importar edital em PDF</h2><p className="text-sm text-slate-600 dark:text-slate-400">Envie o edital, confira a prévia e só depois confirme a importação para o concurso alvo.</p></div></div>
+      <div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importar edital em PDF</h2><p className="text-sm text-slate-600 dark:text-slate-400">Envie o edital, confira a prévia e só depois confirme a importação para o concurso selecionado.</p></div></div>
 
-      {alvoDetalhe&&<div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm">
-        <p className="text-xs font-bold uppercase tracking-wide text-indigo-700">Destino da importação</p>
-        <p className="mt-1 font-black">{alvoDetalhe.concurso}</p>
-        <p className="text-slate-700">{alvoDetalhe.cargo} · {alvoDetalhe.edital}</p>
-        <p className="mt-1 text-xs text-slate-600">A confirmação gravará os tópicos extraídos neste edital. Verifique o destino antes de confirmar.</p>
-      </div>}
+      <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/40 p-4 text-sm space-y-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">Destino da importação</p>
+          {alvoDetalhe ? (
+            <div className="mt-1">
+              <p className="font-black">{alvoDetalhe.concurso}</p>
+              <p className="text-slate-700 dark:text-slate-300">{alvoDetalhe.cargo} · {alvoDetalhe.edital}</p>
+            </div>
+          ) : (
+            <p className="mt-1 text-slate-600">Nenhum concurso alvo selecionado.</p>
+          )}
+        </div>
+
+        {editais.length > 0 && (
+          <div className="pt-2 border-t border-indigo-200 dark:border-indigo-800">
+            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
+              Vincular a outro edital do catálogo (opcional):
+            </label>
+            <select
+              value={destinoEditalId}
+              onChange={e=>setDestinoEditalId(e.target.value)}
+              className="w-full rounded-xl border bg-white dark:bg-slate-900 p-2.5 text-sm"
+            >
+              {alvo?.edital_id && (
+                <option value={alvo.edital_id}>
+                  Usar concurso alvo ({alvoDetalhe?.concurso || "Meu alvo"})
+                </option>
+              )}
+              <option value="">Selecione outro edital...</option>
+              {editais.map(e => (
+                <option key={e.id} value={e.id}>
+                  {e.orgao_nome} — {e.cargo} ({e.edital_numero || "Edital"})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <p className="text-xs text-slate-600 dark:text-slate-400">A confirmação gravará os tópicos extraídos no edital selecionado.</p>
+      </div>
 
       <form onSubmit={enviar} className="mt-5 grid gap-3 sm:grid-cols-2">
         <input name="nome" required value={formValues.nome} onChange={e=>setFormValues(v=>({...v,nome:e.target.value}))} placeholder="Nome do concurso / edital" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="orgao" value={formValues.orgao} onChange={e=>setFormValues(v=>({...v,orgao:e.target.value}))} placeholder="Órgão" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="cargo" value={formValues.cargo} onChange={e=>setFormValues(v=>({...v,cargo:e.target.value}))} placeholder="Cargo" className="rounded-xl border bg-transparent p-2.5"/>
         <input name="uf" maxLength={2} value={formValues.uf} onChange={e=>setFormValues(v=>({...v,uf:e.target.value}))} placeholder="UF" className="rounded-xl border bg-transparent p-2.5 uppercase"/>
-        <label className="sm:col-span-2 rounded-xl border border-dashed p-5 text-sm"><span className="font-bold">PDF do edital (máx. 20 MB)</span><input type="file" accept="application/pdf,.pdf" onChange={e=>setArquivo(e.target.files?.[0]||null)} className="mt-2 block w-full"/></label>
+        <label className="sm:col-span-2 rounded-xl border border-dashed p-5 text-sm cursor-pointer hover:border-indigo-400"><span className="font-bold">PDF do edital (máx. 20 MB)</span><input type="file" accept="application/pdf,.pdf" onChange={e=>setArquivo(e.target.files?.[0]||null)} className="mt-2 block w-full"/></label>
         <button disabled={enviando||processando||confirmando} className="sm:col-span-2 rounded-xl bg-indigo-600 px-4 py-3 font-bold text-white disabled:opacity-50">{enviando?"Enviando PDF...":processando?"Processando PDF...":"Enviar e gerar prévia"}</button>
       </form>
 
       {mensagem&&<div className="mt-4 flex gap-2 rounded-xl bg-slate-50 dark:bg-slate-800 p-3 text-sm"><AlertCircle className="h-4 w-4 shrink-0 mt-0.5"/>{mensagem}</div>}
 
-      {processando&&<div className="mt-4 flex items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm"><Loader2 className="h-5 w-5 animate-spin text-indigo-600"/><div><strong>Processando edital...</strong><p className="text-slate-600">O PDF inteiro está sendo analisado para localizar disciplinas e todos os assuntos.</p></div></div>}
+      {processando&&<div className="mt-4 flex items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/40 p-4 text-sm"><Loader2 className="h-5 w-5 animate-spin text-indigo-600"/><div><strong>Processando edital...</strong><p className="text-slate-600 dark:text-slate-400">O PDF inteiro está sendo analisado para localizar disciplinas e todos os assuntos.</p></div></div>}
 
       {preview&&<section className="mt-5 rounded-2xl border border-indigo-200 bg-white dark:bg-slate-900 overflow-hidden">
         <button type="button" onClick={()=>setMostrarPreview(v=>!v)} className="w-full flex items-center justify-between gap-3 p-5 text-left">
@@ -296,26 +456,26 @@ export default function BibliotecaEditaisPage() {
           <ChevronDown className={`h-5 w-5 transition-transform ${mostrarPreview?"rotate-180":""}`}/>
         </button>
         {mostrarPreview&&<div className="border-t p-5 space-y-3">
-          {preview.observacoes?.length>0&&<div className="rounded-xl bg-amber-50 p-3 text-sm text-amber-800"><strong>Observações:</strong><ul className="mt-1 list-disc pl-5">{preview.observacoes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>}
+          {preview.observacoes?.length>0&&<div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 p-3 text-sm text-amber-800 dark:text-amber-300"><strong>Observações:</strong><ul className="mt-1 list-disc pl-5">{preview.observacoes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>}
           {preview.disciplinas.map((d,i)=><details key={i} className="rounded-xl border p-4" open={i<3}><summary className="cursor-pointer font-bold">{d.nome} <span className="ml-2 text-xs font-normal text-slate-500">{d.assuntos.length} assuntos</span></summary><ol className="mt-3 list-decimal pl-5 space-y-1 text-sm">{d.assuntos.map((a,j)=><li key={j}>{a}</li>)}</ol></details>)}
           <div className="pt-2 text-xs text-slate-500">A prévia é extraída exclusivamente do PDF. Nenhum tópico deve ser inventado.</div>
 
-          {!confirmado&&<div className="mt-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 p-4">
+          {!confirmado&&<div className="mt-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 p-4">
             <p className="font-black">Revisou a prévia?</p>
-            <p className="mt-1 text-sm text-slate-700">A confirmação gravará os {preview.disciplinas.reduce((n,d)=>n+d.assuntos.length,0)} assuntos no edital indicado acima e atualizará seu planejamento.</p>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">A confirmação gravará os {preview.disciplinas.reduce((n,d)=>n+d.assuntos.length,0)} assuntos no edital selecionado acima e atualizará seu planejamento.</p>
             <label className="mt-3 flex items-start gap-2 text-sm"><input id="confirmar-conteudo" type="checkbox" className="mt-1" required/><span>Revisei o conteúdo e confirmo que os assuntos acima estão de acordo com o PDF.</span></label>
-            <button type="button" disabled={confirmando||!alvo?.edital_id} onClick={async()=>{
+            <button type="button" disabled={confirmando||!(destinoEditalId||alvo?.edital_id)} onClick={async()=>{
               const box=document.getElementById("confirmar-conteudo") as HTMLInputElement|null;
               if(!box?.checked){setMensagem("Marque a confirmação após revisar a prévia.");return;}
               await confirmarPreview();
             }} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-black text-white disabled:opacity-50">
-              {confirmando?<><Loader2 className="h-4 w-4 animate-spin"/>Confirmando...</>:<>Confirmar e importar para meu concurso</>}
+              {confirmando?<><Loader2 className="h-4 w-4 animate-spin"/>Confirmando...</>:<>Confirmar e importar para o edital selecionado</>}
             </button>
           </div>}
 
-          {confirmado&&<div className="mt-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4 text-green-800">
+          {confirmado&&<div className="mt-5 flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 dark:bg-green-950/30 p-4 text-green-800 dark:text-green-300">
             <CheckCircle2 className="h-5 w-5 mt-0.5"/>
-            <div><p className="font-black">Edital confirmado e importado</p><p className="text-sm">{mensagem}</p><button type="button" onClick={()=>window.location.hash="planejamento"} className="mt-2 underline font-semibold">Ir para o planejamento</button></div>
+            <div><p className="font-black">Edital confirmado e importado</p><p className="text-sm">{mensagem}</p><a href="/mentoria/edital" className="mt-2 inline-block underline font-semibold">Ir para o edital verticalizado</a></div>
           </div>}
         </div>}
       </section>}
