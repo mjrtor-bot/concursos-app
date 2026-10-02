@@ -87,8 +87,13 @@ export default function DesempenhoPage() {
   const sortedDiscs = [...stats.por_disciplina]
     .filter((d) => d.total > 0)
     .sort((a, b) => a.percentual - b.percentual);
-  const piorDisciplina = sortedDiscs[0];
-  const melhorDisciplina = sortedDiscs[sortedDiscs.length - 1];
+  // Só aponta vulnerabilidade/ponto forte com amostra mínima e aproveitamento coerente.
+  const AMOSTRA_MINIMA = 5;
+  const comAmostra = sortedDiscs.filter((d) => d.total >= AMOSTRA_MINIMA);
+  const piorDisciplina = comAmostra.find((d) => d.percentual < 70);
+  const melhorCandidata = [...comAmostra].reverse().find((d) => d.percentual >= 70);
+  const melhorDisciplina = melhorCandidata && melhorCandidata.disciplina_id !== piorDisciplina?.disciplina_id ? melhorCandidata : undefined;
+  const disciplinasComAtividade = stats.por_disciplina.filter((d) => d.total > 0);
 
   const horasLiquidasSemana = dashStats
     ? (dashStats.minutos_estudados_semana / 60).toFixed(1)
@@ -391,14 +396,14 @@ export default function DesempenhoPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-              {stats.por_disciplina.length === 0 ? (
+              {disciplinasComAtividade.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-5 py-10 text-center text-sm text-slate-500 dark:text-slate-400">
                     Ainda não há disciplinas associadas às suas respostas.
                   </td>
                 </tr>
               ) : (
-                stats.por_disciplina.map((disc) => (
+                disciplinasComAtividade.map((disc) => (
                   <tr
                     key={disc.disciplina_id}
                     className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40"

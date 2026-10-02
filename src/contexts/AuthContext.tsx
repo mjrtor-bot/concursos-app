@@ -363,7 +363,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (updates.meta_diaria_questoes !== undefined) metadata.meta_diaria_questoes = updates.meta_diaria_questoes;
 
     const payload: { email?: string; data?: Record<string, unknown> } = {};
-    if (updates.email) payload.email = updates.email;
+    const { data: atual } = await supabase.auth.getUser();
+    // Só envia e-mail quando realmente mudou (evita fluxo de troca de e-mail desnecessário).
+    if (updates.email && updates.email.trim().toLowerCase() !== (atual.user?.email || "").toLowerCase()) payload.email = updates.email.trim();
     if (Object.keys(metadata).length) payload.data = metadata;
 
     const { data, error } = await supabase.auth.updateUser(payload);
@@ -371,7 +373,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const parsed = parseAuthError(error);
       return { success: false, error: parsed.message, code: parsed.code };
     }
-    if (data.user) setUser(buildProfileFromSupabaseUser(data.user));
+    // meta_diaria_questoes também vive em public.profiles (fonte usada pelo servidor).
+    if (data.user && updates.meta_diaria_questoes !== undefined) {
+      await supabase.from("profiles").update({ meta_diaria_questoes: updates.meta_diaria_questoes, ...(updates.nome !== undefined && { nome: updates.nome }) }).eq("id", data.user.id);
+    }
+    if (data.user) {
+      // role é autoritativa em public.profiles; nunca rebaixar pelo app_metadata.
+      const { data: dbProfile } = await supabase.from("profiles").select("nome,role,meta_diaria_questoes").eq("id", data.user.id).maybeSingle();
+      const base = buildProfileFromSupabaseUser(data.user);
+      setUser({ ...base, nome: dbProfile?.nome || base.nome, role: (dbProfile?.role as Profile["role"]) || base.role, meta_diaria_questoes: dbProfile?.meta_diaria_questoes ?? base.meta_diaria_questoes });
+    }
     return { success: true };
   }, []);
 

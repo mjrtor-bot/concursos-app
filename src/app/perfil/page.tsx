@@ -55,8 +55,12 @@ export default function PerfilPage() {
   const trocarConcurso=(id:string)=>{setConcursoId(id);const primeiro=concursos.find(c=>c.id===id)?.concurso_cargos?.find(c=>c.ativo);setCargoId(primeiro?.id||"");setEditalId(primeiro?.editais_concurso?.[0]?.id||"");};
   const trocarCargo=(id:string)=>{setCargoId(id);const escolhido=cargos.find(c=>c.id===id);setEditalId(escolhido?.editais_concurso?.[0]?.id||"");};
 
+  const [salvando,setSalvando]=useState(false);
   const handleSalvarPerfil=async(e:React.FormEvent)=>{
     e.preventDefault();
+    if(salvando)return;
+    setSalvando(true);
+    try{
     const resultado=await updateUser({nome:nome.trim(),email:email.trim(),meta_diaria_questoes:Number(metaDiaria)});
     if(!resultado.success){info(resultado.error||"Não foi possível atualizar o perfil.");return;}
     if(concursoId&&cargoId){
@@ -70,6 +74,8 @@ export default function PerfilPage() {
       }
     }
     success("Perfil salvo e planejamento atualizado para o edital selecionado.");
+    }catch(err){info(err instanceof Error?err.message:"Falha ao salvar o perfil.");}
+    finally{setSalvando(false);}
   };
 
   const cls="w-full px-3.5 py-2.5 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100";
@@ -93,7 +99,7 @@ export default function PerfilPage() {
           </div>}
           {editais.find(e=>e.id===editalId)?.fonte_oficial_url&&<a className="inline-block mt-3 text-sm text-blue-600 hover:underline" href={editais.find(e=>e.id===editalId)!.fonte_oficial_url} target="_blank" rel="noreferrer">Abrir fonte oficial do edital</a>}
         </div>
-        <div className="flex justify-end pt-2"><Button type="submit" size="md" leftIcon={<Save className="w-4 h-4"/>}>Salvar Alterações</Button></div>
+        <div className="flex justify-end pt-2"><Button type="submit" size="md" disabled={salvando} leftIcon={<Save className="w-4 h-4"/>}>{salvando?"Salvando...":"Salvar Alterações"}</Button></div>
       </form>
     </CardContent></Card>
   </div>;

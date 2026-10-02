@@ -39,6 +39,8 @@ interface SidebarProps {
   onCloseMobile?: () => void;
 }
 
+let ultimaSincronizacaoSidebar = 0;
+
 export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { user } = useAuth();
@@ -52,7 +54,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   useEffect(() => {
     if (!pathname.startsWith("/mentoria")) return;
 
-    const frame = window.requestAnimationFrame(() => {
+    const frame = window.setTimeout(() => {
       setIsMentoriaOpen(true);
       try {
         localStorage.setItem("mentoria_submenu_open", "true");
@@ -60,7 +62,7 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
         // Ignore storage errors
       }
     });
-    return () => window.cancelAnimationFrame(frame);
+    return () => window.clearTimeout(frame);
   }, [pathname]);
 
   const toggleMentoria = () => {
@@ -76,16 +78,24 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
   };
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    let ativo = true;
+    const atualizar = () => {
       try {
         const stats = DataService.getEstatisticas();
+        if (!ativo) return;
         setSequenciaDias(stats.sequencia_dias ?? 0);
         setQuestoesHoje(stats.questoes_hoje ?? 0);
       } catch {
         // Fallback gracioso
       }
-    });
-    return () => window.cancelAnimationFrame(frame);
+    };
+    const frame = window.setTimeout(atualizar);
+    // Sincroniza com o servidor para o contador não divergir de Desempenho/Dashboard.
+    if (Date.now() - ultimaSincronizacaoSidebar > 60_000) {
+      ultimaSincronizacaoSidebar = Date.now();
+      DataService.sincronizarRespostasSupabase().then(atualizar).catch(() => undefined);
+    }
+    return () => { ativo = false; window.clearTimeout(frame); };
   }, [pathname]);
 
   const mentoriaSubItems = [

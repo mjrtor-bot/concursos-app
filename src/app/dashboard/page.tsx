@@ -148,10 +148,10 @@ export default function DashboardPage() {
                     CONCURSO ALVO SELECIONADO
                   </Badge>
                   <Badge variant="success" size="sm">
-                    {concursoAtivo.status.toUpperCase()}
+                    {({ aberto: "INSCRIÇÕES ABERTAS", previsto: "PREVISTO", em_andamento: "EM ANDAMENTO", encerrado: "ENCERRADO" } as Record<string, string>)[concursoAtivo.status] || concursoAtivo.status.toUpperCase()}
                   </Badge>
                   <span className="text-xs font-semibold text-slate-500">
-                    Banca: {concursoAtivo.banca}
+                    Banca: {concursoAtivo.banca || "não informada"}
                   </span>
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100">

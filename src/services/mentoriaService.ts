@@ -83,16 +83,18 @@ export class MentoriaService {
           .eq("ativo", true)
           .maybeSingle();
 
-        if (!error && data) {
-          // Atualiza cache local
+        if (!error) {
+          // Supabase respondeu: ele é a fonte autoritativa. Sem linha = sem perfil
+          // (não reaproveita cache local antigo, que pode ser de outro concurso).
           if (typeof window !== "undefined") {
             try {
-              localStorage.setItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`, JSON.stringify(data));
+              if (data) localStorage.setItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`, JSON.stringify(data));
+              else localStorage.removeItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`);
             } catch {
               // Ignore storage errors
             }
           }
-          return data as MentoriaPerfil;
+          return (data as MentoriaPerfil) ?? null;
         }
       } catch (err) {
         console.warn("[MentoriaService] Falha ao consultar Supabase, consultando cache local:", err);
@@ -170,11 +172,13 @@ export class MentoriaService {
 
         if (error) {
           console.error("[MentoriaService] Erro ao salvar perfil no Supabase:", error.message);
+          return { success: false, error: `Não foi possível salvar o perfil da mentoria: ${error.message}` };
         } else if (data) {
           savedPerfil = data as MentoriaPerfil;
         }
       } catch (err) {
         console.error("[MentoriaService] Exceção ao salvar perfil no Supabase:", err);
+        return { success: false, error: "Falha de conexão ao salvar o perfil da mentoria." };
       }
     }
 

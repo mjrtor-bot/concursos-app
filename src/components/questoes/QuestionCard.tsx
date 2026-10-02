@@ -147,6 +147,8 @@ export function QuestionCard({
         tempoGastoSegundos,
         questao
       );
+      // Gabarito só chega após a resposta; sem ele a alternativa certa ficava vermelha.
+      setGabaritoId(typeof json.alternativa_correta_id === "string" && json.alternativa_correta_id ? json.alternativa_correta_id : (json.correta ? selecionadaId : null));
       setResposta(resultado.resposta);
       setMostrarExplicacao(true);
       if (resultado.correta) success("Parabéns! Resposta correta.");
@@ -418,7 +420,7 @@ export function QuestionCard({
           {questao.alternativas.map((alt) => {
             const isSelected = selecionadaId === alt.id;
             const isAnswered = Boolean(resposta);
-            const isCorrect = Boolean(resposta) ? alt.id === gabaritoId : false;
+            const isCorrect = Boolean(resposta) ? (gabaritoId ? alt.id === gabaritoId : (isSelected && resposta?.correta === true)) : false;
 
             let optionStyle =
               "bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 text-slate-800 dark:text-slate-200";

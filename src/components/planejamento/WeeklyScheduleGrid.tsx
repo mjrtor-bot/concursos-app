@@ -22,12 +22,12 @@ export function WeeklyScheduleGrid({ grade = [], loading = false }: WeeklySchedu
   const [hojeDiaSemana, setHojeDiaSemana] = useState<number | null>(null);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
+    const frame = window.setTimeout(() => {
       const hoje = new Date().getDay();
       setDiaSelecionado(hoje);
       setHojeDiaSemana(hoje);
     });
-    return () => window.cancelAnimationFrame(frame);
+    return () => window.clearTimeout(frame);
   }, []);
 
   if (loading) {

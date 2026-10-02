@@ -45,8 +45,8 @@ export default function PlanejamentoSemanalPage() {
   const [movendoMeta, setMovendoMeta] = useState(false);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => setAgora(new Date()));
-    return () => window.cancelAnimationFrame(frame);
+    const frame = window.setTimeout(() => setAgora(new Date()), 0);
+    return () => window.clearTimeout(frame);
   }, []);
 
   useEffect(() => {
@@ -74,7 +74,8 @@ export default function PlanejamentoSemanalPage() {
       }
     }
     carregarDados();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   const dataISO = (d: Date) => {
     const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");

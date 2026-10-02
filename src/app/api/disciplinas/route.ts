@@ -4,7 +4,8 @@ import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { MOCK_DISCIPLINAS } from "@/data/mockData";
 import { Disciplina } from "@/types";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const somenteComQuestoes = new URL(request.url).searchParams.get("com_questoes") === "1";
   try {
     if (isSupabaseConfigured) {
       const supabase = await createClientServer();
@@ -15,7 +16,11 @@ export async function GET() {
           .order("ordem", { ascending: true });
 
         if (!error && data && data.length > 0) {
-          const disciplinas: Disciplina[] = data.map((row: any) => ({
+          const { data: contagem } = await supabase.rpc("disciplinas_contagem_questoes");
+          const totais = new Map<string, number>(((contagem as any[]) || []).map((c: any) => [c.disciplina_id, Number(c.total)]));
+          const linhas = somenteComQuestoes ? data.filter((row: any) => (totais.get(row.id) || 0) > 0) : data;
+          const disciplinas: (Disciplina & { total_questoes: number })[] = linhas.map((row: any) => ({
+            total_questoes: totais.get(row.id) || 0,
             id: row.id,
             nome: row.nome,
             slug: row.slug,

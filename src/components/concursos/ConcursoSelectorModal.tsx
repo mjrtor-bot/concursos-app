@@ -120,10 +120,12 @@ export function ConcursoSelectorModal({
                         <Building2 className="w-3.5 h-3.5" />
                         {c.orgao}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Award className="w-3.5 h-3.5" />
-                        Até R$ {c.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                      </span>
+                      {c.salario_max > 0 && (
+                        <span className="flex items-center gap-1">
+                          <Award className="w-3.5 h-3.5" />
+                          Até R$ {c.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                        </span>
+                      )}
                       {c.data_prova && (
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5" />

@@ -38,7 +38,7 @@ export default function ConcursoDetalhePage({
 
   const isAlvo = concursoAtivo?.id === concurso.id;
   const cargos = cargosDoConcurso;
-  const editais: Array<{id:string;titulo:string;publicado_em:string;url:string}> = concurso.edital_url ? [{id: concurso.id, titulo: "Fonte oficial do concurso", publicado_em: concurso.created_at || new Date().toISOString(), url: concurso.edital_url}] : [];
+  const editais: Array<{id:string;titulo:string;publicado_em:string;url:string}> = concurso.edital_url ? [{id: concurso.id, titulo: "Fonte oficial do concurso", publicado_em: concurso.created_at || "", url: concurso.edital_url}] : [];
   const disciplinas: Array<{id:string;slug:string;nome:string;descricao?:string}> = [];
 
   return (
@@ -65,7 +65,7 @@ export default function ConcursoDetalhePage({
                     {concurso.status.toUpperCase()}
                   </Badge>
                   <Badge variant="outline" size="sm">
-                    Banca: {concurso.banca}
+                    Banca: {concurso.banca || "não informada"}
                   </Badge>
                   <Badge variant="secondary" size="sm">
                     Ano {concurso.ano}
@@ -111,7 +111,7 @@ export default function ConcursoDetalhePage({
                 </span>
                 <p className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                   <Users className="w-4 h-4 text-blue-500" />
-                  {concurso.vagas_totais} vagas
+                  {concurso.vagas_totais > 0 ? `${concurso.vagas_totais} vagas` : "Não informado"}
                 </p>
               </div>
 
@@ -121,7 +121,7 @@ export default function ConcursoDetalhePage({
                 </span>
                 <p className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <Award className="w-4 h-4" />
-                  R$ {concurso.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                  {concurso.salario_max > 0 ? `R$ ${concurso.salario_max.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "Não informado"}
                 </p>
               </div>
 
@@ -144,7 +144,7 @@ export default function ConcursoDetalhePage({
                 <p className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-100">
                   {concurso.taxa_inscricao
                     ? `R$ ${concurso.taxa_inscricao.toFixed(2)}`
-                    : "Isento / A definir"}
+                    : "Não informado"}
                 </p>
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function ConcursoDetalhePage({
                       {edital.titulo}
                     </p>
                     <p className="text-[11px] text-slate-400">
-                      Publicado em: {new Date(edital.publicado_em).toLocaleDateString("pt-BR")}
+                      {edital.publicado_em ? `Publicado em: ${new Date(edital.publicado_em).toLocaleDateString("pt-BR")}` : "Data de publicação não informada"}
                     </p>
                   </div>
                   <a

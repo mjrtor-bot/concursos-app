@@ -30,7 +30,8 @@ const nivel = (v?:string|null): Cargo["escolaridade"] =>
 const status = (v?:string|null): Concurso["status"] => {
   const x=(v||"").toLowerCase();
   if(x==="aberto"||x==="previsto"||x==="em_andamento"||x==="encerrado") return x;
-  if(x==="publicado") return "aberto";
+  // "publicado" = edital publicado no cadastro; não significa inscrições abertas.
+  if(x==="publicado") return "em_andamento";
   if(x==="homologado"||x==="finalizado") return "encerrado";
   return "previsto";
 };
@@ -94,9 +95,14 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
     const cargos=(c.concurso_cargos||[]).filter(x=>x.ativo);
     const editais=cargos.flatMap(x=>x.editais_concurso||[]);
     const prova=editais.find(e=>e.id===alvo?.edital_id)?.prova_em||editais.find(e=>e.prova_em)?.prova_em||null;
-    const siglas=c.orgao.match(/\b[A-Z]{2,6}\b/g)||[];
-    const sigla=siglas.length?siglas[siglas.length-1]:c.orgao.replace(/[^A-Za-z]/g,"").slice(0,6).toUpperCase();
-    return {id:c.id,nome:c.nome,orgao:c.orgao,sigla,ano:new Date().getFullYear(),nivel:nivel(cargos[0]?.escolaridade),esfera:(c.esfera==="municipal"||c.esfera==="estadual"||c.esfera==="federal"?c.esfera:"estadual") as Concurso["esfera"],status:status(c.status),banca:"",descricao:"Dados provenientes de fonte oficial cadastrada.",vagas_totais:cargos.reduce((s,x)=>s+(x.vagas||0),0),salario_max:Math.max(0,...cargos.map(x=>Number(x.salario||0))),data_prova:prova,edital_url:c.fonte_oficial_url,uf:c.uf,created_at:""};
+    // Sigla: prioriza acrônimo presente no nome (ex.: "PMPR Soldado"), depois no órgão,
+    // e por fim as iniciais das palavras significativas do órgão (sem cortar acentos).
+    const acronimo=(t:string)=>(t.match(/\b[A-ZÁÉÍÓÚÂÊÔÃÕÇ]{2,8}\b/g)||[]).filter(x=>!["DO","DA","DE","DOS","DAS"].includes(x));
+    const iniciais=c.orgao.split(/\s+/).filter(w=>w.length>2&&!/^(do|da|de|dos|das|estado)$/i.test(w)).map(w=>w.charAt(0).toUpperCase()).join("").slice(0,6);
+    const sigla=acronimo(c.nome)[0]||acronimo(c.orgao).pop()||iniciais||c.nome.slice(0,10);
+    const editalAtual=editais.find(e=>e.id===alvo?.edital_id)||editais[0];
+    const banca=(editalAtual as {banca?:string|null}|undefined)?.banca||"";
+    return {id:c.id,nome:c.nome,orgao:c.orgao,sigla,ano:new Date().getFullYear(),nivel:nivel(cargos[0]?.escolaridade),esfera:(c.esfera==="municipal"||c.esfera==="estadual"||c.esfera==="federal"?c.esfera:"estadual") as Concurso["esfera"],status:status(c.status),banca,descricao:"Dados provenientes de fonte oficial cadastrada.",vagas_totais:cargos.reduce((s,x)=>s+(x.vagas||0),0),salario_max:Math.max(0,...cargos.map(x=>Number(x.salario||0))),data_prova:prova,edital_url:c.fonte_oficial_url,uf:c.uf,created_at:""};
   }),[raw,alvo?.edital_id]);
 
   const concursoAtivo=concursos.find(c=>c.id===alvo?.concurso_id)||null;

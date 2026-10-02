@@ -183,7 +183,10 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
 
   const [{ data: concursos, error: concursosError }, { data: alvo, error: alvoError }, { data: importados, error: importadosError }] = await Promise.all([
-    supabase.from("concursos").select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,concurso_cargos(id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo,editais_concurso(id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status))").order("nome"),
+    supabase.from("concursos").select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,concurso_cargos(id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo,editais_concurso(id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca))").order("nome"),
+    supabase.from("usuario_concurso_alvo").select("concurso_id,cargo_id,edital_id").eq("usuario_id", user.id).maybeSingle(),
+    supabase.from("editais_usuario").select("id,nome,orgao_nome,cargo,uf,status,arquivo_nome,estrutura_extraida,edital_id").eq("usuario_id", user.id).in("status", ["aguardando_revisao","confirmado"]).order("updated_at", { ascending: false }),
+  ]);
     supabase.from("usuario_concurso_alvo").select("concurso_id,cargo_id,edital_id").eq("usuario_id", user.id).maybeSingle(),
     supabase.from("editais_usuario").select("id,nome,orgao_nome,cargo,uf,status,arquivo_nome,estrutura_extraida,edital_id").eq("usuario_id", user.id).in("status", ["aguardando_revisao","confirmado"]).order("updated_at", { ascending: false }),
   ]);
@@ -268,6 +271,24 @@ export async function PUT(request: Request) {
   }, { onConflict: "usuario_id" }).select("concurso_id,cargo_id,edital_id").single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Mantém o perfil da mentoria coerente com o concurso alvo (fonte única: usuario_concurso_alvo).
+  const [{ data: concursoInfo }, { data: cargoInfo }] = await Promise.all([
+    supabase.from("concursos").select("nome").eq("id", body.concurso_id).maybeSingle(),
+    supabase.from("concurso_cargos").select("nome").eq("id", body.cargo_id).maybeSingle(),
+  ]);
+  const camposPerfil = {
+    concurso_id: body.concurso_id,
+    concurso_nome: concursoInfo?.nome ?? "",
+    cargo_id: body.cargo_id,
+    cargo_nome: cargoInfo?.nome ?? "",
+    updated_at: new Date().toISOString(),
+  };
+  const { data: perfilExistente } = await supabase.from("mentoria_perfis").select("id").eq("usuario_id", user.id).maybeSingle();
+  const { error: perfilError } = perfilExistente
+    ? await supabase.from("mentoria_perfis").update(camposPerfil).eq("usuario_id", user.id)
+    : await supabase.from("mentoria_perfis").insert({ usuario_id: user.id, ...camposPerfil, ativo: true });
+  if (perfilError) return NextResponse.json({ error: `Alvo salvo, mas o perfil da mentoria não foi atualizado: ${perfilError.message}` }, { status: 500 });
 
   if (mudouEdital) {
     const { error: archiveError } = await supabase.from("mentoria_planos")

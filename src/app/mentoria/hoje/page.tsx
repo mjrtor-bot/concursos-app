@@ -30,6 +30,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 import { MentoriaQuestoesService } from "@/services/mentoriaQuestoesService";
@@ -97,6 +98,8 @@ export default function MentoriaHojePage() {
   const [conteudosAssunto, setConteudosAssunto] = useState<Array<{id:string;titulo:string;orientacao?:string;lei_seca?:string;lei_seca_url?:string;pdf_url?:string;video_url?:string}>>([]);
   const [anotacoesTeoria, setAnotacoesTeoria] = useState<string>("");
   const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
+  const [salvandoResumo, setSalvandoResumo] = useState<boolean>(false);
+  const { success: toastSucessoResumo, info: toastInfoResumo } = useToast();
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -561,6 +564,33 @@ export default function MentoriaHojePage() {
   }
 
   const blocoAtual = planoCiclo?.bloco_atual;
+
+  // Persiste o resumo imediatamente no servidor (mesma linha da sessão ativa do bloco).
+  const salvarResumo = async () => {
+    if (!planoCiclo?.bloco_atual || !anotacoesTeoria.trim() || salvandoResumo) return;
+    setSalvandoResumo(true);
+    try {
+      const res = await fetch("/api/mentoria/sessao-ativa", {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plano_id: planoCiclo.plano_id, tarefa_id: planoCiclo.bloco_atual.id,
+          cronometro_iniciado: cronometroIniciado, cronometro_ativo: cronometroAtivo,
+          segundos_liquidos: segundosLiquidos, pausas_contador: pausasContador,
+          segundos_pausa_total: segundosPausaTotal, tempo_inicio_sessao: tempoInicioSessao,
+          questoes_respondidas: questoesRespondidas, questoes_acertadas: questoesAcertadas,
+          observacoes: observacoesSessao, anotacoes: anotacoesTeoria,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error || "Falha ao salvar o resumo.");
+      setAnotacoesSalvas(true);
+      toastSucessoResumo("Resumo salvo na sua conta.");
+    } catch (err) {
+      toastInfoResumo("Não foi possível salvar o resumo", err instanceof Error ? err.message : "Tente novamente.");
+    } finally {
+      setSalvandoResumo(false);
+    }
+  };
 
   // Validação pedagógica de dupla condição (tempo >= 70% E questões >= 1 para blocos de questões)
   const blocoQuestoesSemResolucao =
@@ -1177,8 +1207,8 @@ export default function MentoriaHojePage() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => setAnotacoesSalvas(true)}
-                      disabled={!anotacoesTeoria.trim()}
+                      onClick={salvarResumo}
+                      disabled={!anotacoesTeoria.trim() || salvandoResumo}
                       className="font-bold text-xs"
                       leftIcon={<Save className="w-3.5 h-3.5" />}
                     >
