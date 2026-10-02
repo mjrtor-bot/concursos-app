@@ -187,9 +187,6 @@ export async function GET(request: Request) {
     supabase.from("usuario_concurso_alvo").select("concurso_id,cargo_id,edital_id").eq("usuario_id", user.id).maybeSingle(),
     supabase.from("editais_usuario").select("id,nome,orgao_nome,cargo,uf,status,arquivo_nome,estrutura_extraida,edital_id").eq("usuario_id", user.id).in("status", ["aguardando_revisao","confirmado"]).order("updated_at", { ascending: false }),
   ]);
-    supabase.from("usuario_concurso_alvo").select("concurso_id,cargo_id,edital_id").eq("usuario_id", user.id).maybeSingle(),
-    supabase.from("editais_usuario").select("id,nome,orgao_nome,cargo,uf,status,arquivo_nome,estrutura_extraida,edital_id").eq("usuario_id", user.id).in("status", ["aguardando_revisao","confirmado"]).order("updated_at", { ascending: false }),
-  ]);
 
   if (concursosError) return NextResponse.json({ error: concursosError.message }, { status: 500 });
   if (alvoError) return NextResponse.json({ error: alvoError.message }, { status: 500 });
