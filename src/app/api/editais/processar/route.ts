@@ -100,17 +100,28 @@ export async function POST(request: NextRequest) {
     if (!resp.ok) throw new Error(json.error?.message || "Falha ao iniciar análise do edital.");
 
     // Armazenar ID da resposta para polling e retornar aceito (HTTP 202)
-    await db.from("editais_usuario").update({
+    const { error: saveMetaError } = await db.from("editais_usuario").update({
       status: "processando",
       processamento_iniciado_em: new Date().toISOString(),
-      erro_processamento: JSON.stringify({ response_id: json.id, file_id: uploaded.id }),
+      openai_response_id: json.id,
+      openai_file_id: uploaded.id,
+      provider_status: "queued",
+      erro_processamento: null,
       updated_at: new Date().toISOString()
     }).eq("id", registro.id);
+    if (saveMetaError) {
+      console.error("[processar/route] Erro ao salvar metadados do processamento:", saveMetaError);
+    }
 
     return NextResponse.json({ ok: true, processing: true, edital_usuario_id: registro.id }, { status: 202 });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Erro inesperado";
-    await db.from("editais_usuario").update({ status: "erro", erro_processamento: message, updated_at: new Date().toISOString() }).eq("id", registro.id);
+    console.error("[processar/route] Erro no processamento do edital:", { id: registro.id, error: message });
+    await db.from("editais_usuario").update({
+      status: "erro",
+      erro_processamento: message,
+      updated_at: new Date().toISOString()
+    }).eq("id", registro.id);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

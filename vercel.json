@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/editais/processar/reconciliar",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}
