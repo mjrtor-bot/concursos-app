@@ -133,7 +133,7 @@ export default function BibliotecaEditaisPage() {
       if(j.processing){
         setMensagem("PDF recebido. A análise está sendo executada; esta tela será atualizada automaticamente.");
         const sj = await aguardarProcessamento(id, setMensagem);
-        setPreview(sj.estrutura);
+        setPreview(sj.estrutura as Preview);
         setMostrarPreview(true);
         setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
         return;

@@ -1,7 +1,7 @@
 export async function aguardarProcessamento(
   editalUsuarioId: string,
   onProgress: (msg: string) => void
-): Promise<any> {
+): Promise<Record<string, unknown>> {
   for (let tentativa = 0; tentativa < 300; tentativa++) {
     await new Promise((resolve) => setTimeout(resolve, 3000));
 

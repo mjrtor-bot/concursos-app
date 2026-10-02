@@ -33,12 +33,14 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
     const prefereDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const deveSerDark = temaSalvo === "dark" || (!temaSalvo && prefereDark);
 
-    setIsDarkMode(deveSerDark);
     if (deveSerDark) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
+    queueMicrotask(() => {
+      setIsDarkMode(deveSerDark);
+    });
   }, []);
 
   const toggleDarkMode = () => {

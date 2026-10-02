@@ -13,7 +13,6 @@ import {
   FileText,
   BarChart3,
   Database,
-  Settings,
   Users,
   User,
   ChevronRight,

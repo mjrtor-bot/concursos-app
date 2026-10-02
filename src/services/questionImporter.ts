@@ -39,7 +39,7 @@ export interface RawQuestaoInput {
   anulada?: boolean;
   desatualizada?: boolean;
   motivo_desatualizacao?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -122,7 +122,7 @@ export function parseCSVToObjects(csvText: string): Record<string, string>[] {
  * Valida e converte uma entrada bruta (JSON ou CSV row) para uma Questao válida tipada.
  */
 export function validarEConverterQuestao(
-  raw: RawQuestaoInput | Record<string, any>,
+  raw: RawQuestaoInput | Record<string, unknown>,
   linhaIndex: number
 ): { questao?: Questao; erro?: ImportItemError } {
   // 1. Validação do enunciado
@@ -298,10 +298,10 @@ export function validarEConverterQuestao(
   });
 
   const questao: Questao = {
-    id: raw.id || `q_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+    id: (raw.id ? String(raw.id) : undefined) || `q_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
     disciplina_id: String(raw.disciplina_id || raw.disciplina || "disc_geral").toLowerCase(),
     assunto_id: String(raw.assunto_id || raw.assunto || "assunto_geral").toLowerCase(),
-    subassunto_id: raw.subassunto_id || raw.subassunto || null,
+    subassunto_id: raw.subassunto_id ? String(raw.subassunto_id) : (raw.subassunto ? String(raw.subassunto) : null),
     enunciado,
     tipo,
     dificuldade,
@@ -351,7 +351,7 @@ export function processarImportacaoQuestoes(
     tempoGastoMs: 0,
   };
 
-  let rawList: any[] = [];
+  let rawList: (RawQuestaoInput | Record<string, unknown>)[] = [];
 
   try {
     if (formato === "json") {
@@ -360,9 +360,9 @@ export function processarImportacaoQuestoes(
     } else {
       rawList = parseCSVToObjects(conteudoArquivo);
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     report.invalidas = 1;
-    const msg = `Erro ao fazer parse do arquivo ${formato.toUpperCase()}: ${err.message}`;
+    const msg = `Erro ao fazer parse do arquivo ${formato.toUpperCase()}: ${err instanceof Error ? err.message : String(err)}`;
     report.erros.push({
       linha: 0,
       mensagem: msg,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Questao, RespostaUsuario } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -11,11 +11,9 @@ import {
   Bookmark,
   CheckCircle2,
   XCircle,
-  HelpCircle,
   Sparkles,
   RotateCcw,
   BookOpen,
-  Share2,
   ChevronRight,
   TrendingUp,
   FileText,
@@ -55,32 +53,45 @@ export function QuestionCard({
   const [gabaritoId, setGabaritoId] = useState<string | null>(null);
   const [mostrarExplicacao, setMostrarExplicacao] = useState(false);
   const [isFavorita, setIsFavorita] = useState(false);
-  const [tempoInicio, setTempoInicio] = useState<number>(Date.now());
+  const tempoInicioRef = useRef<number>(0);
   const [anotacao, setAnotacao] = useState("");
   const [mostrarAnotacao, setMostrarAnotacao] = useState(false);
   const [historicoAnterior, setHistoricoAnterior] = useState<RespostaUsuario | null>(null);
 
   // Inicializa a questão sempre limpa e pronta para resolução ativa
   useEffect(() => {
-    setTempoInicio(Date.now());
-    setSelecionadaId(respostaInicial || null);
-    setResposta(null);
-    setGabaritoId(null);
-    setMostrarExplicacao(false);
-    setMostrarAnotacao(false);
+    tempoInicioRef.current = Date.now();
+    queueMicrotask(() => {
+      setSelecionadaId(respostaInicial || null);
+      setResposta(null);
+      setGabaritoId(null);
+      setMostrarExplicacao(false);
+      setMostrarAnotacao(false);
 
-    if (!modoSimulado) {
-      const respExistente = DataService.getRespostaByQuestaoId(questao.id);
-      setHistoricoAnterior(respExistente || null);
-    } else {
-      setHistoricoAnterior(null);
+      if (!modoSimulado) {
+        const respExistente = DataService.getRespostaByQuestaoId(questao.id);
+        setHistoricoAnterior(respExistente || null);
+      } else {
+        setHistoricoAnterior(null);
+      }
+
+      setIsFavorita(DataService.isFavorita(questao.id));
+      const notaSalva = DataService.getAnotacaoQuestao(questao.id);
+      setAnotacao(notaSalva || "");
+    });
+
+    const sb = createClient();
+    if (sb) {
+      sb.auth.getUser().then(async ({ data: { user } }) => {
+        if (!user) return;
+        const [{ data: fav }, { data: nota }] = await Promise.all([
+          sb.from("questoes_favoritas").select("id").eq("usuario_id", user.id).eq("questao_id", questao.id).maybeSingle(),
+          sb.from("questoes_anotacoes").select("texto").eq("usuario_id", user.id).eq("questao_id", questao.id).maybeSingle(),
+        ]);
+        setIsFavorita(Boolean(fav));
+        if (nota?.texto !== undefined) setAnotacao(nota.texto || "");
+      });
     }
-
-    setIsFavorita(DataService.isFavorita(questao.id));
-    const notaSalva = DataService.getAnotacaoQuestao(questao.id);
-    setAnotacao(notaSalva || "");
-    const sb=createClient();
-    if(sb){sb.auth.getUser().then(async({data:{user}})=>{if(!user)return;const[{data:fav},{data:nota}]=await Promise.all([sb.from("questoes_favoritas").select("id").eq("usuario_id",user.id).eq("questao_id",questao.id).maybeSingle(),sb.from("questoes_anotacoes").select("texto").eq("usuario_id",user.id).eq("questao_id",questao.id).maybeSingle()]);setIsFavorita(Boolean(fav));if(nota?.texto!==undefined)setAnotacao(nota.texto||"");});}
   }, [questao.id, modoSimulado, respostaInicial]);
 
   const handleSalvarAnotacao = async () => {
@@ -113,7 +124,7 @@ export function QuestionCard({
 
     const tempoGastoSegundos = Math.max(
       1,
-      Math.round((Date.now() - tempoInicio) / 1000)
+      Math.round((Date.now() - (tempoInicioRef.current || Date.now())) / 1000)
     );
     try {
       const res = await fetch("/api/questoes/resposta", {
@@ -162,7 +173,7 @@ export function QuestionCard({
     setResposta(null);
     setSelecionadaId(null);
     setMostrarExplicacao(false);
-    setTempoInicio(Date.now());
+    tempoInicioRef.current = Date.now();
   };
 
   const disciplina = DataService.getDisciplinaById(questao.disciplina_id);

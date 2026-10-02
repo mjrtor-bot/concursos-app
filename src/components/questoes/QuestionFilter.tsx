@@ -2,7 +2,6 @@
 
 import React from "react";
 import { FiltroQuestoes, Disciplina, Assunto } from "@/types";
-import { Button } from "@/components/ui/Button";
 import { Search, Filter, RotateCcw, X, Sparkles } from "lucide-react";
 
 interface QuestionFilterProps {

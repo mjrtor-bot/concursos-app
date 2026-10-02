@@ -1,15 +1,12 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import {
   Questao,
-  QuestaoAlternativa,
   MentoriaNivelCalculado,
-  MentoriaTarefaTipo,
   MentoriaQuestoesSelecaoOpcoes,
   MentoriaQuestoesSelecaoResultado,
   MentoriaTopicoFraco,
   MentoriaRevisaoItem,
   RespostaUsuario,
-  ItemCadernoErros,
 } from "@/types";
 import { DataService } from "./dataService";
 
@@ -182,7 +179,7 @@ export class MentoriaQuestoesService {
     }
 
     // Ordena cada balde pelo score decrescente
-    for (const [_, lista] of grupos) {
+    for (const [, lista] of grupos) {
       lista.sort((a, b) => b.scoreTotal - a.scoreTotal);
     }
 
@@ -297,32 +294,32 @@ export class MentoriaQuestoesService {
         const { data, error } = await query.limit(200);
 
         if (!error && data && data.length > 0) {
-          questoesCandidatas = data.map((q: any) => ({
-            id: q.id,
-            enunciado: q.enunciado,
-            ano: q.ano || 2024,
-            tipo: q.tipo || "multipla_escolha",
-            dificuldade: q.dificuldade || "medio",
-            explicacao: q.explicacao || "",
+          questoesCandidatas = (data as Record<string, unknown>[]).map((q) => ({
+            id: q.id as string,
+            enunciado: q.enunciado as string,
+            ano: (q.ano as number) || 2024,
+            tipo: (q.tipo as "multipla_escolha" | "certo_errado") || "multipla_escolha",
+            dificuldade: (q.dificuldade as "facil" | "medio" | "dificil") || "medio",
+            explicacao: (q.explicacao as string) || "",
             is_autoral_ia: Boolean(q.is_autoral_ia),
             anulada: Boolean(q.anulada),
             desatualizada: Boolean(q.desatualizada),
-            auditoria_status: q.auditoria_status || "pendente",
-            disciplina_id: q.disciplina_id,
-            assunto_id: q.assunto_id,
-            subassunto_id: q.subassunto_id,
-            banca: q.banca_nome || "",
-            orgao: q.is_autoral_ia ? "" : (q.orgao_nome || ""),
-            cargo: q.is_autoral_ia ? undefined : (q.cargo_nome || undefined),
+            auditoria_status: (q.auditoria_status as "ok" | "irrecuperavel" | "pendente" | "suspeita" | undefined) || "pendente",
+            disciplina_id: q.disciplina_id as string,
+            assunto_id: q.assunto_id as string,
+            subassunto_id: q.subassunto_id as string | undefined,
+            banca: (q.banca_nome as string) || "",
+            orgao: q.is_autoral_ia ? "" : ((q.orgao_nome as string) || ""),
+            cargo: q.is_autoral_ia ? undefined : ((q.cargo_nome as string) || undefined),
             disciplina: disciplinaNome || "Disciplina",
             assunto: undefined,
-            created_at: q.created_at || new Date().toISOString(),
-            alternativas: (q.questoes_alternativas || []).map((alt: any) => ({
-              id: alt.id,
-              texto: alt.texto,
+            created_at: (q.created_at as string) || new Date().toISOString(),
+            alternativas: ((q.questoes_alternativas || []) as Record<string, unknown>[]).map((alt) => ({
+              id: alt.id as string,
+              texto: alt.texto as string,
               correta: Boolean(alt.correta),
-              letra: alt.letra,
-              ordem: alt.ordem,
+              letra: alt.letra as "A" | "B" | "C" | "D" | "E" | undefined,
+              ordem: alt.ordem as number,
             })),
           }));
         }
@@ -336,7 +333,7 @@ export class MentoriaQuestoesService {
       const assuntoIds = Array.from(new Set(questoesCandidatas.map((q) => q.assunto_id).filter(Boolean))) as string[];
       if (assuntoIds.length > 0) {
         const { data: assuntosData } = await supabase.from("assuntos").select("id,nome").in("id", assuntoIds);
-        const nomes = new Map((assuntosData || []).map((a: any) => [a.id, a.nome]));
+        const nomes = new Map(((assuntosData || []) as { id: string; nome: string }[]).map((a) => [a.id, a.nome]));
         questoesCandidatas = questoesCandidatas.map((q) => ({
           ...q,
           assunto: q.assunto_id ? nomes.get(q.assunto_id) || undefined : undefined,
@@ -374,14 +371,14 @@ export class MentoriaQuestoesService {
           .limit(500);
 
         if (respData) {
-          historicoRespostas = respData.map((r: any) => ({
-            id: r.id,
-            usuario_id: r.usuario_id,
-            questao_id: r.questao_id,
-            alternativa_id: r.alternativa_id,
+          historicoRespostas = (respData as Record<string, unknown>[]).map((r) => ({
+            id: r.id as string,
+            usuario_id: r.usuario_id as string,
+            questao_id: r.questao_id as string,
+            alternativa_id: r.alternativa_id as string,
             correta: Boolean(r.correta),
-            tempo_resposta: r.tempo_resposta_segundos || 0,
-            created_at: r.created_at,
+            tempo_resposta: (r.tempo_resposta_segundos as number) || 0,
+            created_at: r.created_at as string,
           }));
         }
       } catch (err) {
@@ -403,7 +400,7 @@ export class MentoriaQuestoesService {
           .eq("revisado", false);
 
         if (errData) {
-          errData.forEach((e: any) => idsCadernoErros.add(e.questao_id));
+          (errData as { questao_id: string }[]).forEach((e) => idsCadernoErros.add(e.questao_id));
         }
       } catch (err) {
         console.warn("[MentoriaQuestoesService] Erro ao buscar caderno de erros:", err);
@@ -500,7 +497,7 @@ export class MentoriaQuestoesService {
 
     if (supabase && usuarioId) {
       try {
-        let query = supabase
+        const query = supabase
           .from("respostas_usuarios")
           .select(
             `
@@ -517,8 +514,13 @@ export class MentoriaQuestoesService {
         const { data, error } = await query.limit(1000);
 
         if (!error && data) {
-          for (const item of data as any[]) {
-            const q = item.questoes;
+          type RespostaItem = {
+            correta?: boolean;
+            questoes?: { id: string; disciplina_id?: string; assunto_id?: string } | { id: string; disciplina_id?: string; assunto_id?: string }[] | null;
+          };
+          for (const item of (data as unknown as RespostaItem[])) {
+            const rawQ = item.questoes;
+            const q = Array.isArray(rawQ) ? rawQ[0] : rawQ;
             if (!q || !q.assunto_id) continue;
             if (disciplinaId && q.disciplina_id !== disciplinaId) continue;
 
@@ -527,7 +529,7 @@ export class MentoriaQuestoesService {
               mapaTopicos.set(chave, {
                 total: 0,
                 erros: 0,
-                disciplina_id: q.disciplina_id,
+                disciplina_id: q.disciplina_id || "",
               });
             }
 
@@ -640,19 +642,19 @@ export class MentoriaQuestoesService {
         const { data, error } = await query.order("proxima_revisao", { ascending: true });
 
         if (!error && data) {
-          return data.map((r: any) => ({
-            id: r.id,
-            usuario_id: r.usuario_id,
-            disciplina_id: r.disciplina_id,
-            assunto_id: r.assunto_id,
-            subassunto_id: r.subassunto_id,
-            origem: r.origem || "estudo_diario",
-            etapa: r.etapa || 1,
-            intervalo_dias: r.intervalo_dias || 1,
-            proxima_revisao: r.proxima_revisao,
-            status: r.status,
-            created_at: r.created_at,
-            updated_at: r.updated_at,
+          return (data as Record<string, unknown>[]).map((r) => ({
+            id: r.id as string,
+            usuario_id: r.usuario_id as string,
+            disciplina_id: r.disciplina_id as string,
+            assunto_id: r.assunto_id as string,
+            subassunto_id: r.subassunto_id as string | undefined,
+            origem: ((r.origem === "estudo_diario" || r.origem === "simulado" ? "sessao_estudo" : r.origem) as "caderno_erros" | "sessao_estudo" | "diagnostico" | "manual") || "sessao_estudo",
+            etapa: (r.etapa as number) || 1,
+            intervalo_dias: (r.intervalo_dias as number) || 1,
+            proxima_revisao: r.proxima_revisao as string,
+            status: r.status as "pendente" | "concluida" | "atrasada",
+            created_at: r.created_at as string,
+            updated_at: r.updated_at as string,
           }));
         }
       } catch (err) {

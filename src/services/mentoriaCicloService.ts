@@ -529,12 +529,23 @@ export class MentoriaCicloService {
     }
 
     // Configuração avançada é autoritativa para geração do ciclo.
-    let configPlano: any = null;
+    type PlanoConfigAdv = {
+      pausado?: boolean;
+      disciplinas_ativas?: string[];
+      materias_simultaneas?: number;
+      velocidade?: string;
+      etapas?: string[];
+      assuntos_ativos?: string[];
+    };
+    let configPlano: PlanoConfigAdv | null = null;
     if (supabase) {
       const { data } = await supabase.from("mentoria_config_plano").select("*").eq("usuario_id", usuarioId).maybeSingle();
-      configPlano = data;
+      if (data) {
+        configPlano = data as PlanoConfigAdv;
+      }
     }
-    if (configPlano?.pausado) {
+    const planoAdv: PlanoConfigAdv = configPlano || {};
+    if (planoAdv.pausado) {
       return { success: false, error: "O plano está pausado. Retome-o em Configurar antes de recalcular." };
     }
 
@@ -650,9 +661,9 @@ export class MentoriaCicloService {
     }
 
     // Respeita disciplinas explicitamente ativadas e o limite de matérias simultâneas.
-    const disciplinasAtivas: string[] = Array.isArray(configPlano?.disciplinas_ativas) ? configPlano.disciplinas_ativas : [];
+    const disciplinasAtivas: string[] = Array.isArray(planoAdv.disciplinas_ativas) ? planoAdv.disciplinas_ativas : [];
     if (disciplinasAtivas.length > 0) disciplinasInput = disciplinasInput.filter(d => disciplinasAtivas.includes(d.disciplina_id));
-    const limiteMaterias = Math.max(1, Number(configPlano?.materias_simultaneas) || disciplinasInput.length || 1);
+    const limiteMaterias = Math.max(1, Number(planoAdv.materias_simultaneas) || disciplinasInput.length || 1);
     disciplinasInput = disciplinasInput
       .sort((a,b) => ((a.score_diagnostico ?? 50) - (b.score_diagnostico ?? 50)) || ((b.peso_base ?? 50) - (a.peso_base ?? 50)))
       .slice(0, limiteMaterias);
@@ -661,7 +672,7 @@ export class MentoriaCicloService {
       return { success: false, error: "Nenhuma disciplina ativa válida foi encontrada no edital selecionado." };
     }
 
-    const velocidade = configPlano?.velocidade || "normal";
+    const velocidade = planoAdv.velocidade || "normal";
     const fatorVelocidade = velocidade === "leve" ? 0.75 : velocidade === "intensiva" ? 1.25 : 1;
     const duracaoBlocoMinutos = Math.max(15, Math.round((perfil.duracao_bloco_minutos || 40) * fatorVelocidade));
     const questoesPorBloco = perfil.quantidade_questoes_bloco || 15;
@@ -680,7 +691,7 @@ export class MentoriaCicloService {
     );
 
     // Etapas escolhidas controlam os tipos de bloco produzidos pelo motor.
-    const etapas: string[] = Array.isArray(configPlano?.etapas) && configPlano.etapas.length ? configPlano.etapas : ["estudo","resumo","revisao","exercicio"];
+    const etapas: string[] = Array.isArray(planoAdv.etapas) && planoAdv.etapas.length ? planoAdv.etapas : ["estudo","resumo","revisao","exercicio"];
     const tiposPermitidos: MentoriaTarefaTipo[] = [];
     if (etapas.includes("estudo") || etapas.includes("resumo")) tiposPermitidos.push("TEORIA");
     if (etapas.includes("revisao")) tiposPermitidos.push("REVISAO");
@@ -697,7 +708,7 @@ export class MentoriaCicloService {
           ? await supabase.from("edital_topicos").select("disciplina_id, assunto_id, ordem, assuntos(id,nome)").eq("edital_id", alvo.edital_id).order("ordem", { ascending: true })
           : { data: [] };
 
-        const assuntosAtivos: string[] = Array.isArray(configPlano?.assuntos_ativos) ? configPlano.assuntos_ativos : [];
+        const assuntosAtivos: string[] = Array.isArray(planoAdv.assuntos_ativos) ? planoAdv.assuntos_ativos : [];
         const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
         for (const t of topicos || []) {
           if (assuntosAtivos.length > 0 && t.assunto_id && !assuntosAtivos.includes(t.assunto_id)) continue;

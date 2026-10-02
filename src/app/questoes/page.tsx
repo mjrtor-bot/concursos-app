@@ -7,12 +7,11 @@ import { QuestionFilter } from "@/components/questoes/QuestionFilter";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { DataService } from "@/services/dataService";
-import { Questao, FiltroQuestoes, Disciplina, Assunto } from "@/types";
+import { Questao, FiltroQuestoes, Disciplina, Assunto, OrigemQuestaoFiltro } from "@/types";
 import {
   CheckSquare2,
   ChevronLeft,
   ChevronRight,
-  RotateCcw,
   Loader2,
   ChevronsLeft,
   ChevronsRight,
@@ -35,13 +34,21 @@ function QuestoesContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
 
-  const [filtro, setFiltro] = useState<FiltroQuestoes>({
-    disciplina_id: searchParams.get("disciplina_id") || undefined,
-    assunto_id: searchParams.get("assunto_id") || undefined,
-    concurso_id: searchParams.get("concurso_id") || undefined,
-    banca: searchParams.get("banca") || undefined,
-    origem: (searchParams.get("origem") as any) || "todas",
-    status: "todas",
+  const [filtro, setFiltro] = useState<FiltroQuestoes>(() => {
+    const rawOrigem = searchParams.get("origem");
+    const origemValida: OrigemQuestaoFiltro =
+      rawOrigem === "oficiais" || rawOrigem === "autorais_ia" || rawOrigem === "todas"
+        ? rawOrigem
+        : "todas";
+
+    return {
+      disciplina_id: searchParams.get("disciplina_id") || undefined,
+      assunto_id: searchParams.get("assunto_id") || undefined,
+      concurso_id: searchParams.get("concurso_id") || undefined,
+      banca: searchParams.get("banca") || undefined,
+      origem: origemValida,
+      status: "todas",
+    };
   });
 
   // O padrão deve exibir o acervo disponível; filtros restritivos só entram por ação explícita do usuário.
@@ -87,22 +94,26 @@ function QuestoesContent() {
     return () => { isMounted = false; };
   }, []);
 
-  useEffect(() => {
-    if (!filtro.assunto_id || !filtro.disciplina_id || assuntos.length === 0) return;
-    const assunto = assuntos.find((a) => a.id === filtro.assunto_id);
-    if (assunto && assunto.disciplina_id !== filtro.disciplina_id) {
-      setFiltro((atual) => ({ ...atual, assunto_id: undefined }));
-    }
-  }, [filtro.disciplina_id, filtro.assunto_id, assuntos]);
-
   // ── Monta os URLSearchParams para a API ──────────────────────────────────
   const buildParams = useCallback(
     (page: number) => {
       const params = new URLSearchParams();
-      if (filtro.disciplina_id && filtro.disciplina_id !== "todos")
+      if (filtro.disciplina_id && filtro.disciplina_id !== "todos") {
         params.set("disciplina_id", filtro.disciplina_id);
-      if (filtro.assunto_id && filtro.assunto_id !== "todos")
-        params.set("assunto_id", filtro.assunto_id);
+      }
+
+      const assuntoValido =
+        filtro.assunto_id && filtro.assunto_id !== "todos" && filtro.disciplina_id && assuntos.length > 0
+          ? assuntos.find((a) => a.id === filtro.assunto_id)?.disciplina_id === filtro.disciplina_id
+            ? filtro.assunto_id
+            : undefined
+          : filtro.assunto_id && filtro.assunto_id !== "todos"
+          ? filtro.assunto_id
+          : undefined;
+
+      if (assuntoValido) {
+        params.set("assunto_id", assuntoValido);
+      }
       if (filtro.banca && filtro.banca !== "todas")
         params.set("banca", filtro.banca);
       if (filtro.ano) params.set("ano", String(filtro.ano));
@@ -118,16 +129,12 @@ function QuestoesContent() {
       params.set("pageSize", String(PAGE_SIZE));
       return params;
     },
-    [filtro]
+    [filtro, assuntos]
   );
 
   // ── Busca questões (reseta para página 1 quando filtro muda) ─────────────
   const buscarQuestoes = useCallback(
     async (page = 1) => {
-      const isFirstLoad = page === 1;
-      if (isFirstLoad) setIsLoading(true);
-      else setIsLoadingPage(true);
-
       try {
         const params = buildParams(page);
         const response = await fetch(`/api/questoes?${params.toString()}`);
@@ -135,7 +142,7 @@ function QuestoesContent() {
         if (response.ok) {
           const data = await response.json();
           if (data.success && Array.isArray(data.questoes)) {
-            let lista: Questao[] = data.questoes;
+            const lista: Questao[] = data.questoes;
 
             setQuestoes(lista);
             setApiPage(data.page ?? page);
@@ -144,7 +151,7 @@ function QuestoesContent() {
 
             // Navega até a questão específica se presente na URL
             const targetQId = searchParams.get("questaoId");
-            if (targetQId && isFirstLoad) {
+            if (targetQId && page === 1) {
               const idx = lista.findIndex((q) => q.id === targetQId);
               setCurrentIndex(idx >= 0 ? idx : 0);
             } else {
@@ -174,13 +181,64 @@ function QuestoesContent() {
         setIsLoadingPage(false);
       }
     },
-    [filtro, buildParams, searchParams]
+    [buildParams, searchParams]
   );
 
   // Recarrega desde a página 1 quando os filtros mudam
   useEffect(() => {
-    buscarQuestoes(1);
-  }, [buscarQuestoes]);
+    let ignore = false;
+    async function carregar() {
+      try {
+        const params = buildParams(1);
+        const response = await fetch(`/api/questoes?${params.toString()}`);
+        if (ignore) return;
+
+        if (response.ok) {
+          const data = await response.json();
+          if (ignore) return;
+          if (data.success && Array.isArray(data.questoes)) {
+            const lista: Questao[] = data.questoes;
+            setQuestoes(lista);
+            setApiPage(data.page ?? 1);
+            setTotalQuestoes(data.total ?? lista.length);
+            setTotalApiPages(data.totalPages ?? 1);
+
+            const targetQId = searchParams.get("questaoId");
+            if (targetQId) {
+              const idx = lista.findIndex((q) => q.id === targetQId);
+              setCurrentIndex(idx >= 0 ? idx : 0);
+            } else {
+              setCurrentIndex(0);
+            }
+            return;
+          }
+        }
+
+        setQuestoes([]);
+        setTotalQuestoes(0);
+        setTotalApiPages(1);
+        setApiPage(1);
+        setCurrentIndex(0);
+      } catch {
+        if (!ignore) {
+          setQuestoes([]);
+          setTotalQuestoes(0);
+          setTotalApiPages(1);
+          setApiPage(1);
+          setCurrentIndex(0);
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    carregar();
+    return () => {
+      ignore = true;
+    };
+  }, [buildParams, searchParams]);
 
   // ── Navegação dentro da página atual ────────────────────────────────────
   const handleProxima = async () => {
@@ -312,7 +370,7 @@ function QuestoesContent() {
                     const visiblePages: number[] = [];
                     const half = 2;
                     let start = Math.max(1, apiPage - half);
-                    let end = Math.min(totalApiPages, start + 4);
+                    const end = Math.min(totalApiPages, start + 4);
                     if (end - start < 4) start = Math.max(1, end - 4);
                     for (let p = start; p <= end; p++) visiblePages.push(p);
                     return visiblePages.map((p) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState, useCallback } from "react";
 import { Concurso, Cargo } from "@/types";
 import { calcularPrazoProva, PrazoProva } from "@/lib/prazoProva";
 import { useAuth } from "./AuthContext";
@@ -41,18 +41,54 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
   const [raw,setRaw]=useState<ApiConcurso[]>([]);
   const [alvo,setAlvo]=useState<ApiAlvo|null>(null);
 
-  const carregar=async()=>{
-    if(!user){setRaw([]);setAlvo(null);return;}
-    try{
-      const res=await fetch("/api/concursos/alvo",{cache:"no-store"});
-      const json=await res.json();
-      if(!res.ok) throw new Error(json.error||"Falha ao carregar concurso alvo");
-      const lista=(json.concursos||[]) as ApiConcurso[];
+  const carregar = useCallback(async () => {
+    if (!user) {
+      setRaw([]);
+      setAlvo(null);
+      return;
+    }
+    try {
+      const res = await fetch("/api/concursos/alvo", { cache: "no-store" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Falha ao carregar concurso alvo");
+      const lista = (json.concursos || []) as ApiConcurso[];
       setRaw(lista);
-      setAlvo(json.alvo||null);
-    }catch(e){setRaw([]);setAlvo(null);info(e instanceof Error?e.message:"Não foi possível carregar concursos oficiais.");}
-  };
-  useEffect(()=>{void carregar()},[user?.id]);
+      setAlvo(json.alvo || null);
+    } catch (e) {
+      setRaw([]);
+      setAlvo(null);
+      info(e instanceof Error ? e.message : "Não foi possível carregar concursos oficiais.");
+    }
+  }, [user, info]);
+
+  useEffect(() => {
+    let ativo = true;
+    const inicializar = async () => {
+      if (!user) {
+        setRaw([]);
+        setAlvo(null);
+        return;
+      }
+      try {
+        const res = await fetch("/api/concursos/alvo", { cache: "no-store" });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Falha ao carregar concurso alvo");
+        if (!ativo) return;
+        const lista = (json.concursos || []) as ApiConcurso[];
+        setRaw(lista);
+        setAlvo(json.alvo || null);
+      } catch (e) {
+        if (!ativo) return;
+        setRaw([]);
+        setAlvo(null);
+        info(e instanceof Error ? e.message : "Não foi possível carregar concursos oficiais.");
+      }
+    };
+    void inicializar();
+    return () => {
+      ativo = false;
+    };
+  }, [user, info]);
 
   const concursos=useMemo<Concurso[]>(()=>raw.map(c=>{
     const cargos=(c.concurso_cargos||[]).filter(x=>x.ativo);

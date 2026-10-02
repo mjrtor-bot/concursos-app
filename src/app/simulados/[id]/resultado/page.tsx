@@ -7,19 +7,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { StatCard } from "@/components/ui/StatCard";
-import { ProgressBar } from "@/components/ui/ProgressBar";
 import { DataService } from "@/services/dataService";
-import { Simulado, SimuladoTentativa, Questao, Disciplina } from "@/types";
+import { Simulado, SimuladoTentativa, Questao } from "@/types";
 import {
   Award,
   CheckCircle2,
-  XCircle,
   Clock,
   RotateCcw,
-  ArrowRight,
   Sparkles,
   BookOpen,
-  Check,
   AlertTriangle,
 } from "lucide-react";
 
@@ -32,21 +28,31 @@ function SimuladoResultadoContent({ id }: { id: string }) {
   const [questoes, setQuestoes] = useState<Questao[]>([]);
 
   useEffect(() => {
-    const sim = DataService.getSimuladoById(id);
-    if (sim) {
-      setSimulado(sim);
-      const qList: Questao[] = [];
-      sim.questoes_ids.forEach((qId) => {
-        const q = DataService.getQuestaoById(qId);
-        if (q) qList.push(q);
-      });
-      setQuestoes(qList);
-    }
+    let isCancelled = false;
 
-    if (tentativaId) {
-      const t = DataService.getTentativaById(tentativaId);
-      if (t) setTentativa(t);
-    }
+    const carregar = async () => {
+      const sim = DataService.getSimuladoById(id);
+      if (sim && !isCancelled) {
+        setSimulado(sim);
+        const qList: Questao[] = [];
+        sim.questoes_ids.forEach((qId) => {
+          const q = DataService.getQuestaoById(qId);
+          if (q) qList.push(q);
+        });
+        setQuestoes(qList);
+      }
+
+      if (tentativaId && !isCancelled) {
+        const t = DataService.getTentativaById(tentativaId);
+        if (t) setTentativa(t);
+      }
+    };
+
+    void carregar();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [id, tentativaId]);
 
   if (!simulado || !tentativa) {

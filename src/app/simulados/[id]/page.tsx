@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState, useEffect, useCallback } from "react";
+import React, { use, useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import { QuestionCard } from "@/components/questoes/QuestionCard";
@@ -13,7 +13,6 @@ import { Simulado, Questao, SimuladoTentativa, RespostaSimulado } from "@/types"
 import {
   Clock,
   Flag,
-  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Send,
@@ -43,29 +42,7 @@ export default function SimuladoExecucaoPage({
   const [isFinalizarModalOpen, setIsFinalizarModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load Simulado
-  useEffect(() => {
-    const sim = DataService.getSimuladoById(id);
-    if (!sim) {
-      // Check if it's a dynamic one generated in memory
-      const customSims = DataService.getSimulados();
-      const found = customSims.find((s) => s.id === id);
-      if (!found) {
-        notFound();
-        return;
-      }
-      setSimulado(found);
-      carregarQuestoes(found);
-      setTempoRestanteSegundos(found.tempo_limite_minutos * 60);
-      return;
-    }
-
-    setSimulado(sim);
-    carregarQuestoes(sim);
-    setTempoRestanteSegundos(sim.tempo_limite_minutos * 60);
-  }, [id]);
-
-  const carregarQuestoes = async (sim: Simulado) => {
+  const carregarQuestoes = useCallback(async (sim: Simulado) => {
     const qList: Questao[] = [];
     const missingIds: string[] = [];
 
@@ -96,7 +73,35 @@ export default function SimuladoExecucaoPage({
     }
 
     setQuestoes(qList);
-  };
+  }, []);
+
+  // Load Simulado
+  useEffect(() => {
+    let isCancelled = false;
+
+    const carregar = async () => {
+      const sim =
+        DataService.getSimuladoById(id) ||
+        DataService.getSimulados().find((s) => s.id === id);
+
+      if (!sim) {
+        notFound();
+        return;
+      }
+
+      if (isCancelled) return;
+      setSimulado(sim);
+      setTempoRestanteSegundos(sim.tempo_limite_minutos * 60);
+
+      await carregarQuestoes(sim);
+    };
+
+    void carregar();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [id, carregarQuestoes]);
 
   // Finalize Submission
   const handleFinalizar = useCallback(async () => {
@@ -147,20 +152,20 @@ export default function SimuladoExecucaoPage({
     DataService.salvarTentativaSimulado(tentativa);
     success("Simulado finalizado com sucesso!");
     router.push(`/simulados/${simulado.id}/resultado?tentativaId=${tentativaId}`);
-  }, [simulado, isSubmitting, questoes, respostas, tempoRestanteSegundos, tentativaId, user?.id, success, router]);
+  }, [simulado, isSubmitting, questoes, respostas, tempoRestanteSegundos, tentativaId, user?.id, success, error, router]);
+
+  const handleFinalizarRef = useRef(handleFinalizar);
+  useEffect(() => {
+    handleFinalizarRef.current = handleFinalizar;
+  }, [handleFinalizar]);
 
   // Countdown timer
   useEffect(() => {
-    if (tempoRestanteSegundos <= 0) {
-      handleFinalizar();
-      return;
-    }
-
     const interval = setInterval(() => {
       setTempoRestanteSegundos((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          handleFinalizar();
+          void handleFinalizarRef.current();
           return 0;
         }
         return prev - 1;
@@ -168,7 +173,7 @@ export default function SimuladoExecucaoPage({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [tempoRestanteSegundos, handleFinalizar]);
+  }, []);
 
   if (!simulado || questoes.length === 0) return null;
 

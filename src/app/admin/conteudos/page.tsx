@@ -12,8 +12,26 @@ export default function AdminConteudosPage(){
  const [disciplinas,setDisciplinas]=useState<Disciplina[]>([]),[assuntos,setAssuntos]=useState<Assunto[]>([]);
  const [disciplina,setDisciplina]=useState(""),[form,setForm]=useState<Conteudo>(vazio),[lista,setLista]=useState<Conteudo[]>([]);
  const [msg,setMsg]=useState(""),[saving,setSaving]=useState(false);
- useEffect(()=>{fetch("/api/disciplinas").then(r=>r.json()).then(j=>setDisciplinas(j.disciplinas||j.data||[]));},[]);
- useEffect(()=>{if(!disciplina){setAssuntos([]);return;} fetch(`/api/assuntos?disciplina_id=${encodeURIComponent(disciplina)}`).then(r=>r.json()).then(j=>setAssuntos(j.assuntos||j.data||[]));},[disciplina]);
+  useEffect(() => {
+    fetch("/api/disciplinas")
+      .then((r) => r.json())
+      .then((j) => setDisciplinas(j.disciplinas || j.data || []));
+  }, []);
+
+  useEffect(() => {
+    if (!disciplina) return;
+    let cancel = false;
+    fetch(`/api/assuntos?disciplina_id=${encodeURIComponent(disciplina)}`)
+      .then((r) => r.json())
+      .then((j) => {
+        if (!cancel) {
+          setAssuntos(j.assuntos || j.data || []);
+        }
+      });
+    return () => {
+      cancel = true;
+    };
+  }, [disciplina]);
  async function carregar(aid:string){setForm({...vazio,assunto_id:aid});if(!aid){setLista([]);return;}const r=await fetch(`/api/admin/conteudos?assunto_id=${encodeURIComponent(aid)}`);const j=await r.json();setLista(j.conteudos||[]);}
  async function salvar(){setSaving(true);setMsg("");const r=await fetch("/api/admin/conteudos",{method:form.id?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});const j=await r.json();setSaving(false);if(!r.ok){setMsg(j.error||"Erro ao salvar");return;}setMsg("Conteúdo salvo com sucesso.");await carregar(form.assunto_id);}
  async function excluir(id?:string){if(!id||!confirm("Excluir este conteúdo?"))return;const aid=form.assunto_id;const r=await fetch(`/api/admin/conteudos?id=${encodeURIComponent(id)}`,{method:"DELETE"});if(r.ok){setMsg("Conteúdo excluído.");await carregar(aid);}}
@@ -22,7 +40,7 @@ export default function AdminConteudosPage(){
   <div className="flex items-center justify-between"><div><Link href="/admin/questoes" className="text-xs text-slate-500 flex gap-1 items-center"><ArrowLeft className="w-3 h-3"/>Administração</Link><h1 className="text-2xl font-black mt-2 flex gap-2 items-center"><BookOpen className="w-6 h-6 text-blue-600"/>Conteúdo por Assunto</h1><p className="text-sm text-slate-500">Cadastre roteiro, lei seca, PDF e vídeo exibidos na Missão Diária.</p></div></div>
   {msg&&<div className="p-3 rounded-xl border text-sm">{msg}</div>}
   <div className="grid md:grid-cols-2 gap-3">
-   <select className={input} value={disciplina} onChange={e=>{setDisciplina(e.target.value);setForm(vazio);setLista([])}}><option value="">Selecione a disciplina</option>{disciplinas.map(d=><option key={d.id} value={d.id}>{d.nome}</option>)}</select>
+   <select className={input} value={disciplina} onChange={e=>{const val=e.target.value;setDisciplina(val);if(!val)setAssuntos([]);setForm(vazio);setLista([])}}><option value="">Selecione a disciplina</option>{disciplinas.map(d=><option key={d.id} value={d.id}>{d.nome}</option>)}</select>
    <select className={input} value={form.assunto_id} onChange={e=>carregar(e.target.value)}><option value="">Selecione o assunto</option>{assuntos.map(a=><option key={a.id} value={a.id}>{a.nome}</option>)}</select>
   </div>
   {form.assunto_id&&<div className="grid lg:grid-cols-[1fr_1.5fr] gap-5">

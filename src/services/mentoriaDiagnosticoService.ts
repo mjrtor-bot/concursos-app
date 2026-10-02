@@ -7,11 +7,9 @@ import {
   MentoriaAutoavaliacao,
   MentoriaNivelCalculado,
   Questao,
-  Disciplina,
-  MentoriaPerfil,
+  Alternativa,
 } from "@/types";
-import { MOCK_DISCIPLINAS, mockQuestoes } from "@/data/mockData";
-import { MentoriaService } from "./mentoriaService";
+import { mockQuestoes } from "@/data/mockData";
 
 const STORAGE_DIAGNOSTICO_PREFIX = "concursos_app_diag_";
 
@@ -440,11 +438,11 @@ export class MentoriaDiagnosticoService {
               .in("questao_id", qIds)
               .order("ordem", { ascending: true });
 
-            const altsMap = new Map<string, any[]>();
+            const altsMap = new Map<string, Alternativa[]>();
             if (altsData) {
               altsData.forEach((a) => {
                 if (!altsMap.has(a.questao_id)) altsMap.set(a.questao_id, []);
-                altsMap.get(a.questao_id)!.push(a);
+                altsMap.get(a.questao_id)!.push(a as unknown as Alternativa);
               });
             }
 
@@ -602,7 +600,7 @@ export class MentoriaDiagnosticoService {
     const supabase = this.getClient();
     let respostas: MentoriaDiagnosticoResposta[] = [];
     let disciplinasDb: MentoriaDiagnosticoDisciplina[] = [];
-    let historicoPrevioGeral: { total: number; acertos: number } = { total: 0, acertos: 0 };
+    const historicoPrevioGeral: { total: number; acertos: number } = { total: 0, acertos: 0 };
 
     if (supabase) {
       try {

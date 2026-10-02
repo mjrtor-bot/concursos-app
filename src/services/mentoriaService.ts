@@ -1,7 +1,5 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import {
-  Disciplina,
-  Assunto,
   MentoriaPerfil,
   MentoriaDisponibilidade,
   MentoriaEditalTopico,
@@ -20,7 +18,6 @@ import {
   EditalVerticalizadoResumo,
 } from "@/types";
 import { MentoriaCicloService } from "./mentoriaCicloService";
-import { DISCIPLINAS_MASSIVAS, ASSUNTOS_MASSIVOS } from "@/data/mockData";
 
 // ── Chaves de Armazenamento Local de Contingência ─────────────────────────────
 const STORAGE_KEYS = {

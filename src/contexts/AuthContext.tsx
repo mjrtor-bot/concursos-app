@@ -27,10 +27,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // ── Parser de Erros do Supabase com Códigos Estruturados ─────────────────────
-function parseAuthError(error: any): { message: string; code: string } {
+function parseAuthError(error: unknown): { message: string; code: string } {
   if (!error) return { message: "Erro desconhecido de autenticação.", code: "unknown_error" };
-  const rawMsg = (error.message || "").toLowerCase();
-  const rawCode = (error.code || error.status || "").toString().toLowerCase();
+  const errObj = typeof error === "object" && error !== null ? (error as Record<string, unknown>) : {};
+  const rawMsg = (typeof errObj.message === "string" ? errObj.message : "").toLowerCase();
+  const rawCode = (typeof errObj.code === "string" || typeof errObj.code === "number" ? String(errObj.code) : typeof errObj.status === "string" || typeof errObj.status === "number" ? String(errObj.status) : "").toLowerCase();
 
   if (rawMsg.includes("email not confirmed") || rawCode === "email_not_confirmed") {
     return {
@@ -81,8 +82,8 @@ function parseAuthError(error: any): { message: string; code: string } {
   }
 
   return {
-    message: error.message || "Ocorreu um erro durante a autenticação.",
-    code: error.code || "auth_error",
+    message: (typeof errObj.message === "string" ? errObj.message : null) || "Ocorreu um erro durante a autenticação.",
+    code: (typeof errObj.code === "string" ? errObj.code : null) || "auth_error",
   };
 }
 
@@ -129,16 +130,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── Inicialização: carrega a sessão atual do Supabase ─────────────────────
   useEffect(() => {
     if (!isSupabaseConfigured) {
-      // Sem Supabase configurado → usuário nulo (nunca logado)
-      setUser(null);
-      setIsLoading(false);
+      queueMicrotask(() => {
+        setIsLoading(false);
+      });
       return;
     }
 
     const supabase = createClient();
     if (!supabase) {
-      setUser(null);
-      setIsLoading(false);
+      queueMicrotask(() => {
+        setIsLoading(false);
+      });
       return;
     }
 
@@ -218,7 +220,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: "Sessão não pôde ser estabelecida.",
           code: "no_session",
         };
-      } catch (err: any) {
+      } catch (err: unknown) {
         const parsed = parseAuthError(err);
         console.error("[Auth] Exceção no login:", err);
         return { success: false, error: parsed.message, code: parsed.code };
@@ -256,7 +258,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setIsLoading(true);
       try {
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password,
@@ -287,7 +288,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: "O cadastro foi criado, mas o Supabase não iniciou uma sessão. Desative Confirm email no Supabase Auth.",
           code: "email_confirmation_still_enabled",
         };
-      } catch (err: any) {
+      } catch (err: unknown) {
         const parsed = parseAuthError(err);
         console.error("[Auth] Exceção no cadastro:", err);
         return { success: false, error: parsed.message, code: parsed.code };
@@ -343,7 +344,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       return { success: true };
-    } catch (err: any) {
+    } catch (err: unknown) {
       const parsed = parseAuthError(err);
       console.error("[Auth] Exceção ao redefinir senha:", err);
       return { success: false, error: parsed.message, code: parsed.code };

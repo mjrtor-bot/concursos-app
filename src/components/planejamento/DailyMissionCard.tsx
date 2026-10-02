@@ -215,6 +215,16 @@ export function DailyMissionCard({
                   Questões <ChevronRight className="w-3 h-3" />
                 </Link>
 
+                {onAdiar && (
+                  <button
+                    onClick={() => onAdiar(missao.id)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    title="Adiar missão"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                )}
+
                 {onConcluir && (
                   <button
                     onClick={() => onConcluir(missao.id)}
