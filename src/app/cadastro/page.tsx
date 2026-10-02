@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { DataService } from "@/services/dataService";
-import { Concurso } from "@/types";
 import { Button } from "@/components/ui/Button";
 import {
   User,
@@ -15,7 +13,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  GraduationCap,
   CheckCircle2
 } from "lucide-react";
 
@@ -29,24 +26,8 @@ export default function CadastroPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [concursoAlvoId, setConcursoAlvoId] = useState("");
-  const [concursos, setConcursos] = useState<Concurso[]>([]);
   const [aceitouTermos, setAceitouTermos] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-
-
-  useEffect(() => {
-    try {
-      const lista = DataService.getConcursos();
-      setConcursos(lista);
-      if (lista.length > 0) {
-        setConcursoAlvoId(lista[0].id);
-      }
-    } catch {
-      // Fallback
-    }
-  }, []);
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +54,7 @@ export default function CadastroPage() {
 
     setIsLoading(true);
     try {
-      const result = await signup(nome, email, password, concursoAlvoId);
+      const result = await signup(nome, email, password);
       if (result.success) {
         success("Conta criada com sucesso! Bem-vindo(a) à plataforma.");
         router.push("/onboarding");
@@ -222,32 +203,6 @@ export default function CadastroPage() {
                     />
                   </div>
                 </div>
-              </div>
-
-              {/* Concurso Alvo Inicial */}
-              <div>
-                <label
-                  htmlFor="concursoAlvo"
-                  className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5"
-                >
-                  <GraduationCap className="w-4 h-4 text-blue-600" />
-                  Qual é o seu Concurso Alvo Principal?
-                </label>
-                <select
-                  id="concursoAlvo"
-                  value={concursoAlvoId}
-                  onChange={(e) => setConcursoAlvoId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500 font-medium"
-                >
-                  {concursos.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.sigla} - {c.nome} ({c.banca})
-                    </option>
-                  ))}
-                </select>
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Você poderá trocar seu concurso alvo ou adicionar novos a qualquer momento.
-                </p>
               </div>
 
               {/* Termos de Uso */}

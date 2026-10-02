@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { DataService } from "@/services/dataService";
-import { Concurso, Cargo, Disciplina } from "@/types";
+import { useConcurso } from "@/contexts/ConcursoContext";
+import { Disciplina } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -20,17 +20,48 @@ import {
   Flame,
   Zap,
   Trophy,
+  UploadCloud,
+  FileText,
 } from "lucide-react";
+
+interface ApiCargo {
+  id: string;
+  nome: string;
+  escolaridade: string | null;
+  vagas: number | null;
+  salario: number | null;
+  ativo: boolean;
+  editais_concurso?: Array<{
+    id: string;
+    banca: string | null;
+    prova_em: string | null;
+    titulo: string;
+    status: string;
+  }>;
+}
+
+interface ApiConcurso {
+  id: string;
+  nome: string;
+  orgao: string;
+  esfera: string | null;
+  uf: string | null;
+  status: string;
+  fonte_oficial_url: string | null;
+  concurso_cargos?: ApiCargo[];
+}
 
 export default function OnboardingPage() {
   const router = useRouter();
   const { user, updateUser } = useAuth();
-  const { success } = useToast();
+  const { recarregarConcursoAlvo } = useConcurso();
+  const { success, error: showError } = useToast();
 
   const [step, setStep] = useState(1);
-  const [concursos, setConcursos] = useState<Concurso[]>([]);
-  const [cargos, setCargos] = useState<Cargo[]>([]);
+  const [concursos, setConcursos] = useState<ApiConcurso[]>([]);
+  const [cargos, setCargos] = useState<ApiCargo[]>([]);
   const [disciplinas, setDisciplinas] = useState<Disciplina[]>([]);
+  const [loadingDados, setLoadingDados] = useState(true);
 
   // Form states
   const [selectedConcursoId, setSelectedConcursoId] = useState<string>("");
@@ -40,41 +71,66 @@ export default function OnboardingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    try {
-      const listaConcursos = DataService.getConcursos();
-      const listaDisciplinas = DataService.getDisciplinas();
-      setConcursos(listaConcursos);
-      setDisciplinas(listaDisciplinas);
+    let ativo = true;
 
-      const defaultConcursoId =
-        user?.concurso_alvo_id ||
-        (listaConcursos.length > 0 ? listaConcursos[0].id : "");
-      setSelectedConcursoId(defaultConcursoId);
+    async function carregarDadosIniciais() {
+      setLoadingDados(true);
+      try {
+        const [resAlvo, resDisc] = await Promise.all([
+          fetch("/api/concursos/alvo", { cache: "no-store" }).then((r) =>
+            r.ok ? r.json() : { concursos: [], alvo: null }
+          ),
+          fetch("/api/disciplinas", { cache: "no-store" }).then((r) =>
+            r.ok ? r.json() : { disciplinas: [] }
+          ),
+        ]);
 
-      if (defaultConcursoId) {
-        const cargosDisponiveis = DataService.getCargos(defaultConcursoId);
-        setCargos(cargosDisponiveis);
-        if (cargosDisponiveis.length > 0) {
-          setSelectedCargoId(cargosDisponiveis[0].id);
+        if (!ativo) return;
+
+        const listaConcursos: ApiConcurso[] = resAlvo.concursos || [];
+        const listaDisciplinas: Disciplina[] = resDisc.disciplinas || [];
+
+        setConcursos(listaConcursos);
+        setDisciplinas(listaDisciplinas);
+
+        // Se já tem alvo selecionado pelo usuário ou o primeiro da lista
+        const alvoAtualId = resAlvo.alvo?.concurso_id || (listaConcursos.length > 0 ? listaConcursos[0].id : "");
+        setSelectedConcursoId(alvoAtualId);
+
+        if (alvoAtualId) {
+          const conc = listaConcursos.find((c) => c.id === alvoAtualId);
+          const cargosValidos = (conc?.concurso_cargos || []).filter((c) => c.ativo);
+          setCargos(cargosValidos);
+          const cargoPadrao = resAlvo.alvo?.cargo_id || (cargosValidos.length > 0 ? cargosValidos[0].id : "");
+          setSelectedCargoId(cargoPadrao);
         }
-      }
 
-      if (user?.meta_diaria_questoes) {
-        setMetaDiaria(user.meta_diaria_questoes);
-      }
+        if (user?.meta_diaria_questoes) {
+          setMetaDiaria(user.meta_diaria_questoes);
+        }
 
-      // Pré-selecionar as 3 primeiras disciplinas como foco padrão
-      if (listaDisciplinas.length > 0) {
-        setDisciplinasFoco(listaDisciplinas.slice(0, 3).map((d) => d.id));
+        // Pré-selecionar as 3 primeiras disciplinas como foco padrão
+        if (listaDisciplinas.length > 0) {
+          setDisciplinasFoco(listaDisciplinas.slice(0, 3).map((d) => d.id));
+        }
+      } catch (err) {
+        console.error("Erro ao carregar dados do onboarding:", err);
+      } finally {
+        if (ativo) setLoadingDados(false);
       }
-    } catch (err) {
-      console.error("Erro ao carregar dados do onboarding:", err);
     }
+
+    carregarDadosIniciais();
+
+    return () => {
+      ativo = false;
+    };
   }, [user]);
 
   const handleConcursoChange = (concursoId: string) => {
     setSelectedConcursoId(concursoId);
-    const cargosDoConcurso = DataService.getCargos(concursoId);
+    const conc = concursos.find((c) => c.id === concursoId);
+    const cargosDoConcurso = (conc?.concurso_cargos || []).filter((c) => c.ativo);
     setCargos(cargosDoConcurso);
     if (cargosDoConcurso.length > 0) {
       setSelectedCargoId(cargosDoConcurso[0].id);
@@ -91,23 +147,40 @@ export default function OnboardingPage() {
     );
   };
 
-  const handleFinalizar = () => {
+  const handleFinalizar = async () => {
     setIsSubmitting(true);
     try {
-      updateUser({
-        concurso_alvo_id: selectedConcursoId,
+      if (selectedConcursoId && selectedCargoId) {
+        const resp = await fetch("/api/concursos/alvo", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            concurso_id: selectedConcursoId,
+            cargo_id: selectedCargoId,
+          }),
+        });
+
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          console.warn("Aviso ao definir concurso alvo:", errData.error);
+        }
+      }
+
+      await updateUser({
+        concurso_alvo_id: selectedConcursoId || undefined,
         cargo_alvo_id: selectedCargoId || undefined,
         meta_diaria_questoes: metaDiaria,
       });
 
-      if (selectedConcursoId) {
-        DataService.setConcursoAtivoId(selectedConcursoId);
+      if (recarregarConcursoAlvo) {
+        await recarregarConcursoAlvo();
       }
 
       success("Perfil configurado com sucesso! Bons estudos.");
       router.push("/dashboard");
     } catch (err) {
       console.error("Erro ao salvar onboarding:", err);
+      showError("Ocorreu um erro ao salvar suas preferências. Redirecionando...");
       router.push("/dashboard");
     } finally {
       setIsSubmitting(false);
@@ -181,42 +254,80 @@ export default function OnboardingPage() {
               </div>
 
               {/* Grid de Concursos */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {concursos.map((c) => {
-                  const isSelected = selectedConcursoId === c.id;
-                  return (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => handleConcursoChange(c.id)}
-                      className={`p-4 rounded-2xl border text-left transition-all relative ${
-                        isSelected
-                          ? "bg-blue-50/70 dark:bg-blue-950/40 border-blue-500 ring-2 ring-blue-500/20 shadow-md"
-                          : "bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
-                          {c.sigla}
-                        </span>
-                        <Badge
-                          variant={c.status === "aberto" ? "success" : "secondary"}
-                          size="sm"
-                        >
-                          {c.status === "aberto" ? "Inscrições Abertas" : "Previsto"}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 font-medium line-clamp-1">
-                        {c.nome}
-                      </p>
-                      <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
-                        <span>Banca: {c.banca}</span>
-                        <span>{c.vagas_totais.toLocaleString("pt-BR")} vagas</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+              {loadingDados ? (
+                <div className="py-12 text-center text-sm text-slate-500">
+                  <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                  Carregando editais disponíveis...
+                </div>
+              ) : concursos.length === 0 ? (
+                <div className="p-6 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 text-center space-y-3">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Nenhum concurso pré-cadastrado no momento. Você pode importar o PDF do seu edital diretamente.
+                  </p>
+                  <Link
+                    href="/mentoria/edital/importar"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition-colors"
+                  >
+                    <UploadCloud className="w-4 h-4" />
+                    Importar Edital (PDF)
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {concursos.map((c) => {
+                    const isSelected = selectedConcursoId === c.id;
+                    const banca =
+                      c.concurso_cargos?.[0]?.editais_concurso?.[0]?.banca ||
+                      "Banca Oficial";
+                    const totalVagas = (c.concurso_cargos || []).reduce(
+                      (acc, cg) => acc + (cg.vagas || 0),
+                      0
+                    );
+
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => handleConcursoChange(c.id)}
+                        className={`p-4 rounded-2xl border text-left transition-all relative ${
+                          isSelected
+                            ? "bg-blue-50/70 dark:bg-blue-950/40 border-blue-500 ring-2 ring-blue-500/20 shadow-md"
+                            : "bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="font-bold text-slate-900 dark:text-slate-100 text-sm line-clamp-1">
+                            {c.nome}
+                          </span>
+                          <Badge
+                            variant={
+                              c.status === "publicado" || c.status === "aberto"
+                                ? "success"
+                                : "secondary"
+                            }
+                            size="sm"
+                          >
+                            {c.status === "publicado" || c.status === "aberto"
+                              ? "Edital Ativo"
+                              : "Previsto"}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 font-medium line-clamp-1">
+                          {c.orgao} {c.uf ? `• ${c.uf}` : ""}
+                        </p>
+                        <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                          <span>Banca: {banca}</span>
+                          <span>
+                            {totalVagas > 0
+                              ? `${totalVagas.toLocaleString("pt-BR")} vagas`
+                              : "Vagas no edital"}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Cargo Específico */}
               {cargos.length > 0 && (
@@ -235,15 +346,44 @@ export default function OnboardingPage() {
                   >
                     {cargos.map((cargo) => (
                       <option key={cargo.id} value={cargo.id}>
-                        {cargo.nome} ({cargo.escolaridade.toUpperCase()}) — R${" "}
-                        {cargo.salario.toLocaleString("pt-BR", {
-                          minimumFractionDigits: 2,
-                        })}
+                        {cargo.nome}
+                        {cargo.escolaridade
+                          ? ` (${cargo.escolaridade.toUpperCase()})`
+                          : ""}
+                        {cargo.salario
+                          ? ` — R$ ${cargo.salario.toLocaleString("pt-BR", {
+                              minimumFractionDigits: 2,
+                            })}`
+                          : ""}
                       </option>
                     ))}
                   </select>
                 </div>
               )}
+
+              {/* Opção de Importar Meu Edital */}
+              <div className="mt-3 p-4 rounded-2xl border border-dashed border-blue-300 dark:border-blue-800 bg-blue-50/40 dark:bg-blue-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                    <UploadCloud className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                      Não encontrou seu concurso na lista?
+                    </h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      Envie o PDF do seu edital para verticalizar os tópicos e montar seu plano de estudos.
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href="/mentoria/edital/importar"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-colors shrink-0"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Importar Edital (PDF)
+                </Link>
+              </div>
             </div>
           )}
 

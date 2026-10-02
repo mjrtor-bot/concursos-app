@@ -18,7 +18,7 @@ interface AuthContextType {
   isLoading: boolean;
   isSupabaseConnected: boolean;
   login: (email: string, password: string) => Promise<AuthResult>;
-  signup: (nome: string, email: string, password: string, concursoAlvoId?: string) => Promise<AuthResult>;
+  signup: (nome: string, email: string, password: string) => Promise<AuthResult>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<AuthResult>;
   updateUser: (updates: Partial<Profile>) => Promise<AuthResult>;
@@ -236,8 +236,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (
       nome: string,
       email: string,
-      password: string,
-      concursoAlvoId?: string
+      password: string
     ): Promise<AuthResult> => {
       if (!isSupabaseConfigured) {
         return {
@@ -264,7 +263,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           options: {
             data: {
               nome,
-              concurso_alvo_id: concursoAlvoId ?? null,
             },
           },
         });
