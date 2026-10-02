@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, BarChart3, Target, Users } from "lucide-react";
+import { BookOpen, BarChart3, Target, Compass } from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -49,7 +49,7 @@ export default function HomePage() {
           </h1>
 
           <p className="text-xl text-slate-600 dark:text-slate-300 mb-10 leading-relaxed">
-            Banco de questões inteligente, simulados cronometrados, plano de estudos personalizado e
+            Banco de questões com foco no seu edital, simulados cronometrados, mentoria diária personalizada e
             tudo que você precisa para garantir sua aprovação.
           </p>
 
@@ -76,11 +76,11 @@ export default function HomePage() {
               <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-              Banco de Questões Inteligente
+              Banco de Questões Focado
             </h3>
             <p className="text-slate-600 dark:text-slate-400">
-              Mais de 10.000 questões de concursos passados com filtros avançados por banca,
-              disciplina e dificuldade.
+              Questões selecionadas e comentadas, com filtro padrão direto pelo conteúdo do seu edital alvo,
+              banca e disciplina.
             </p>
           </div>
 
@@ -92,21 +92,19 @@ export default function HomePage() {
               Análise de Desempenho
             </h3>
             <p className="text-slate-600 dark:text-slate-400">
-              Gráficos e estatísticas detalhadas para identificar seus pontos fortes e
-              fracos em cada disciplina.
+              Gráficos de evolução, mapa de calor de vulnerabilidades e taxa de acerto por disciplina e assunto.
             </p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
             <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-4">
-              <Users className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              <Compass className="w-6 h-6 text-purple-600 dark:text-purple-400" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-              Comunidade Ativa
+              Mentoria &amp; Edital Verticalizado
             </h3>
             <p className="text-slate-600 dark:text-slate-400">
-              Conecte-se com outros concurseiros, compartilhe dicas e mantenha a motivação
-              durante sua preparação.
+              Missões diárias personalizadas, planejamento semanal e acompanhamento tópico a tópico do seu edital verticalizado.
             </p>
           </div>
         </div>
