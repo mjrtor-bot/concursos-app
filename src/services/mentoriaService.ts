@@ -817,22 +817,46 @@ export class MentoriaService {
     // Buscar respostas de hoje para calcular progresso real por disciplina
     const hojeIso = getDataBrasilia(new Date());
     const respostasHojeDiscMap = new Map<string, number>();
+    const taxaAcertoMap = new Map<string, number>();
 
     const supabase = this.getClient();
     if (supabase && usuarioId) {
       try {
-        const { data: respostas } = await supabase
-          .from("respostas_usuarios")
-          .select("disciplina_id")
-          .eq("usuario_id", usuarioId)
-          .gte("created_at", hojeIso + "T00:00:00");
+        const [{ data: respostasHoje }, { data: todasRespostas }] = await Promise.all([
+          supabase
+            .from("respostas_usuarios")
+            .select("disciplina_id")
+            .eq("usuario_id", usuarioId)
+            .gte("created_at", hojeIso + "T00:00:00"),
+          supabase
+            .from("respostas_usuarios")
+            .select("disciplina_id, correta")
+            .eq("usuario_id", usuarioId),
+        ]);
 
-        if (respostas) {
-          for (const r of respostas) {
+        if (respostasHoje) {
+          for (const r of respostasHoje) {
             if (r.disciplina_id) {
               respostasHojeDiscMap.set(r.disciplina_id, (respostasHojeDiscMap.get(r.disciplina_id) || 0) + 1);
             }
           }
+        }
+
+        if (todasRespostas && todasRespostas.length > 0) {
+          const statsMap = new Map<string, { total: number; acertos: number }>();
+          for (const r of todasRespostas) {
+            if (r.disciplina_id) {
+              const current = statsMap.get(r.disciplina_id) || { total: 0, acertos: 0 };
+              current.total += 1;
+              if (r.correta) current.acertos += 1;
+              statsMap.set(r.disciplina_id, current);
+            }
+          }
+          statsMap.forEach((val, discId) => {
+            if (val.total > 0) {
+              taxaAcertoMap.set(discId, Math.round((val.acertos / val.total) * 100));
+            }
+          });
         }
       } catch {
         // Ignore
@@ -853,6 +877,8 @@ export class MentoriaService {
         progresso = Math.min(100, Math.round((questoesFeitas / (bloco.quantidade_questoes_sugerida || 15)) * 100));
       }
 
+      const taxaAcerto = taxaAcertoMap.get(bloco.disciplina_id);
+
       missoes.push({
         id: bloco.id || `missao-${i + 1}-${bloco.disciplina_id.slice(0, 8)}`,
         plano_id: plano.plano_id,
@@ -868,6 +894,9 @@ export class MentoriaService {
         status,
         motivo_explicabilidade: bloco.motivo_explicabilidade || [],
         progresso_percentual: progresso,
+        data_planejada: hojeIso,
+        taxa_acerto: taxaAcerto !== undefined ? taxaAcerto : undefined,
+        atrasada: false,
       });
     }
 

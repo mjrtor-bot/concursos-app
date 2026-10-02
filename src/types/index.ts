@@ -795,6 +795,10 @@ export interface MissaoDiariaItem {
   status: MentoriaTarefaStatus;
   motivo_explicabilidade: string[];
   progresso_percentual: number;
+  data_planejada?: string;
+  taxa_acerto?: number;
+  anotacoes?: string;
+  atrasada?: boolean;
 }
 
 export interface GradeSemanalDia {
