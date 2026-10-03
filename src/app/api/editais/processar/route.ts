@@ -65,15 +65,64 @@ export async function POST(request: NextRequest) {
     const schema = {
       type: "object",
       additionalProperties: false,
-      required: ["titulo_detectado", "disciplinas", "observacoes"],
+      required: ["titulo_detectado", "cargos", "disciplinas", "observacoes"],
       properties: {
         titulo_detectado: { type: "string" },
         observacoes: { type: "array", items: { type: "string" } },
-        disciplinas: {
-          type: "array", items: {
-            type: "object", additionalProperties: false, required: ["nome", "assuntos"], properties: {
+        cargos: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["nome", "disciplinas"],
+            properties: {
               nome: { type: "string" },
-              assuntos: { type: "array", items: { type: "string" } }
+              disciplinas: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: ["nome", "assuntos"],
+                  properties: {
+                    nome: { type: "string" },
+                    assuntos: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        additionalProperties: false,
+                        required: ["nome", "topicos"],
+                        properties: {
+                          nome: { type: "string" },
+                          topicos: { type: "array", items: { type: "string" } }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        disciplinas: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            required: ["nome", "assuntos"],
+            properties: {
+              nome: { type: "string" },
+              assuntos: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: ["nome", "topicos"],
+                  properties: {
+                    nome: { type: "string" },
+                    topicos: { type: "array", items: { type: "string" } }
+                  }
+                }
+              }
             }
           }
         }
@@ -90,7 +139,7 @@ export async function POST(request: NextRequest) {
         input: [{
           role: "user", content: [
             { type: "input_file", file_id: uploaded.id },
-            { type: "input_text", text: "Analise somente o conteúdo programático efetivamente presente neste edital. Extraia disciplinas e seus assuntos. Não invente, complete, resuma ou acrescente conteúdo externo. Preserve nomes e granularidade do documento. Se uma seção estiver ambígua, registre em observacoes e não crie assunto especulativo." }
+            { type: "input_text", text: "Analise somente o conteúdo programático efetivamente presente neste edital. Extraia a hierarquia completa de 4 níveis de taxonomia: Cargos -> Disciplinas -> Assuntos -> Subassuntos/Tópicos. Se o edital contiver múltiplos cargos, preencha o array 'cargos'; se for um cargo único ou conteúdo geral comum, preencha 'disciplinas' diretamente. Em cada assunto, liste detalhadamente seus subtópicos/itens no array 'topicos'. Não invente, complete, resuma ou acrescente conteúdo externo. Preserve nomes e granularidade do documento. Se uma seção estiver ambígua, registre em observacoes e não crie assunto especulativo." }
           ]
         }],
         text: { format: { type: "json_schema", name: "edital_conteudo", strict: true, schema } }

@@ -622,6 +622,9 @@ export interface MentoriaCicloItem {
   disciplina_nome: string;
   assunto_id?: string;
   assunto_nome?: string;
+  subassunto_id?: string;
+  subassunto_nome?: string;
+  topico_nome?: string;
   tipo: MentoriaTarefaTipo; // "TEORIA" | "QUESTOES" | "REVISAO"
   duracao_minutos: number;
   quantidade_questoes_sugerida: number;
@@ -791,6 +794,9 @@ export interface MissaoDiariaItem {
   disciplina_nome: string;
   assunto_id?: string;
   assunto_nome?: string;
+  subassunto_id?: string;
+  subassunto_nome?: string;
+  topico_nome?: string;
   duracao_minutos: number;
   quantidade_questoes: number;
   prioridade: MentoriaTarefaPrioridade;
@@ -817,6 +823,9 @@ export interface GradeSemanalDia {
     disciplina_nome: string;
     assunto_id?: string;
     assunto_nome?: string;
+    subassunto_id?: string;
+    subassunto_nome?: string;
+    topico_nome?: string;
     tipo: MentoriaTarefaTipo;
     duracao_minutos: number;
     prioridade_nivel: MentoriaTarefaPrioridade;

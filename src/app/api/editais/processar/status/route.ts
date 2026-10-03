@@ -76,13 +76,16 @@ export async function GET(request: NextRequest) {
 
   if (registro.status === "aguardando_revisao" && registro.estrutura_extraida) {
     const estrutura: any = registro.estrutura_extraida;
-    const totalAssuntos = (estrutura.disciplinas || []).reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
+    const disciplinas = (estrutura.disciplinas && estrutura.disciplinas.length > 0)
+      ? estrutura.disciplinas
+      : (estrutura.cargos || []).flatMap((c: any) => c.disciplinas || []);
+    const totalAssuntos = disciplinas.reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
     return NextResponse.json({
       ok: true,
       done: true,
       status: registro.status,
       estrutura,
-      total_disciplinas: estrutura.disciplinas?.length || 0,
+      total_disciplinas: disciplinas.length,
       total_assuntos: totalAssuntos
     });
   }
@@ -217,21 +220,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
     }
 
-    if (!estrutura || !Array.isArray(estrutura.disciplinas)) {
-      const message = "A análise não retornou a lista de disciplinas esperada.";
-      const { error: updateError } = await db.from("editais_usuario").update({
-        status: "erro",
-        provider_status: "completed",
-        erro_processamento: message,
-        updated_at: new Date().toISOString()
-      }).eq("id", id);
-      if (updateError) console.error(`[status/route] Erro ao atualizar para erro no edital ${id}:`, updateError);
-      return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
+    const cargos = Array.isArray(estrutura.cargos) ? estrutura.cargos : [];
+    let disciplinas = Array.isArray(estrutura.disciplinas) ? estrutura.disciplinas : [];
+    if (disciplinas.length === 0 && cargos.length > 0) {
+      disciplinas = cargos.flatMap((c: any) => c.disciplinas || []);
     }
 
-    const totalAssuntos = estrutura.disciplinas.reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
+    const totalAssuntos = disciplinas.reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
 
-    if (!estrutura.disciplinas.length || totalAssuntos === 0) {
+    if (!disciplinas.length || totalAssuntos === 0) {
       const diagnostico = Array.isArray(estrutura.observacoes) && estrutura.observacoes.length
         ? estrutura.observacoes.join(" | ")
         : "Nenhum conteúdo programático foi localizado no PDF.";
@@ -257,7 +254,7 @@ export async function GET(request: NextRequest) {
         done: true,
         status: "revisao_sem_conteudo",
         estrutura,
-        total_disciplinas: estrutura.disciplinas.length,
+        total_disciplinas: disciplinas.length,
         total_assuntos: totalAssuntos,
         aviso: diagnostico
       });
@@ -287,7 +284,7 @@ export async function GET(request: NextRequest) {
       done: true,
       status: "aguardando_revisao",
       estrutura,
-      total_disciplinas: estrutura.disciplinas.length,
+      total_disciplinas: disciplinas.length,
       total_assuntos: totalAssuntos
     });
   }

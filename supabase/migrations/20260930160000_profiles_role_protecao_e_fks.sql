@@ -88,11 +88,18 @@ do $$ begin
   end if;
 end $$;
 
--- 6) mentoria_perfis apontava concurso_id para provas e cargo_id para cargos_base;
---    a UI envia ids de concursos/concurso_cargos, o upsert falhava e o app caía no cache local.
+-- 6) Normalização das FKs de mentoria_perfis para tabelas oficiais de concursos/cargos.
 update public.mentoria_perfis set concurso_id = null where concurso_id is not null and concurso_id not in (select id from public.concursos);
 update public.mentoria_perfis set cargo_id = null where cargo_id is not null and cargo_id not in (select id from public.concurso_cargos);
-alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_concurso_id_fkey;
-alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_cargo_id_fkey;
-alter table public.mentoria_perfis add constraint mentoria_perfis_concurso_id_fkey foreign key (concurso_id) references public.concursos(id) on delete set null;
-alter table public.mentoria_perfis add constraint mentoria_perfis_cargo_id_fkey foreign key (cargo_id) references public.concurso_cargos(id) on delete set null;
+
+do $$ begin
+  alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_concurso_id_fkey;
+  alter table public.mentoria_perfis add constraint mentoria_perfis_concurso_id_fkey foreign key (concurso_id) references public.concursos(id) on delete set null;
+exception when others then null;
+end $$;
+
+do $$ begin
+  alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_cargo_id_fkey;
+  alter table public.mentoria_perfis add constraint mentoria_perfis_cargo_id_fkey foreign key (cargo_id) references public.concurso_cargos(id) on delete set null;
+exception when others then null;
+end $$;

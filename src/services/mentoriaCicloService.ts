@@ -705,18 +705,29 @@ export class MentoriaCicloService {
       try {
         const { data: alvo } = await supabase.from("usuario_concurso_alvo").select("edital_id").eq("usuario_id", usuarioId).maybeSingle();
         const { data: topicos } = alvo?.edital_id
-          ? await supabase.from("edital_topicos").select("disciplina_id, assunto_id, ordem, assuntos(id,nome)").eq("edital_id", alvo.edital_id).order("ordem", { ascending: true })
+          ? await supabase
+              .from("edital_topicos")
+              .select("disciplina_id, assunto_id, subassunto_id, ordem, assuntos(id,nome), subassuntos(id,nome)")
+              .eq("edital_id", alvo.edital_id)
+              .order("ordem", { ascending: true })
           : { data: [] };
 
         const assuntosAtivos: string[] = Array.isArray(planoAdv.assuntos_ativos) ? planoAdv.assuntos_ativos : [];
-        const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string }>>();
-        for (const t of topicos || []) {
+        const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string; subassunto_id?: string; subassunto_nome?: string }>>();
+        for (const t of (topicos || []) as any[]) {
           if (assuntosAtivos.length > 0 && t.assunto_id && !assuntosAtivos.includes(t.assunto_id)) continue;
           const rel = t.assuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
           const assunto = Array.isArray(rel) ? rel[0] : rel;
           if (!t.disciplina_id || !t.assunto_id || !assunto?.nome) continue;
+          const subRel = t.subassuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
+          const subassunto = Array.isArray(subRel) ? subRel[0] : subRel;
           const lista = assuntosPorDisciplina.get(t.disciplina_id) || [];
-          lista.push({ id: t.assunto_id, nome: assunto.nome });
+          lista.push({
+            id: t.assunto_id,
+            nome: assunto.nome,
+            subassunto_id: t.subassunto_id || subassunto?.id || undefined,
+            subassunto_nome: subassunto?.nome || undefined,
+          });
           assuntosPorDisciplina.set(t.disciplina_id, lista);
         }
 
@@ -725,9 +736,16 @@ export class MentoriaCicloService {
           const lista = assuntosPorDisciplina.get(bloco.disciplina_id) || [];
           if (lista.length === 0) return bloco;
           const indice = cursor.get(bloco.disciplina_id) || 0;
-          const assunto = lista[indice % lista.length];
+          const itemTopico = lista[indice % lista.length];
           cursor.set(bloco.disciplina_id, indice + 1);
-          return { ...bloco, assunto_id: assunto.id, assunto_nome: assunto.nome };
+          return {
+            ...bloco,
+            assunto_id: itemTopico.id,
+            assunto_nome: itemTopico.nome,
+            subassunto_id: itemTopico.subassunto_id,
+            subassunto_nome: itemTopico.subassunto_nome,
+            topico_nome: itemTopico.subassunto_nome,
+          };
         });
       } catch (err) {
         console.warn("[MentoriaCicloService] Falha ao vincular assuntos do edital alvo:", err);

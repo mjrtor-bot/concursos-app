@@ -9,4 +9,6 @@ language sql stable security invoker set search_path = public as $$
     and coalesce(q.auditoria_status, '') <> 'irrecuperavel'
   group by q.disciplina_id;
 $$;
+
+revoke all on function public.disciplinas_contagem_questoes() from public;
 grant execute on function public.disciplinas_contagem_questoes() to authenticated, anon;

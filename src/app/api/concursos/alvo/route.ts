@@ -53,7 +53,7 @@ function slugify(value: string) {
     .slice(0, 100);
 }
 
-async function materializarImportado(admin: any, item: Importado, sourceUrl: string) {
+async function materializarImportado(admin: any, item: Importado, sourceUrl: string, userId?: string) {
   const tituloBase = (item.nome || item.arquivo_nome || "Edital importado").trim();
   const concursoNome = tituloBase;
   const cargoNome = (item.cargo || "Cargo importado").trim();
@@ -97,6 +97,7 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       uf: item.uf || null,
       status: statusConcurso,
       fonte_oficial_url: ehOficial ? (item.estrutura_extraida?.fonte_oficial_url || sourceUrl) : sourceUrl,
+      criado_por: userId || null,
     })
     .select("id")
     .single();
@@ -133,15 +134,21 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       status: statusConcurso,
       banca: ehOficial ? (item.estrutura_extraida?.banca || null) : null,
       fonte_conteudo_url: sourceUrl,
+      criado_por: userId || null,
+      visibilidade: ehOficial ? "publico" : "privado",
     })
     .select("id")
     .single();
 
   if (editalError || !edital) throw new Error(editalError?.message || "Não foi possível criar o edital importado.");
 
-  const disciplinas = Array.isArray(item.estrutura_extraida?.disciplinas)
+  let disciplinas = Array.isArray(item.estrutura_extraida?.disciplinas)
     ? item.estrutura_extraida.disciplinas
     : [];
+
+  if (disciplinas.length === 0 && Array.isArray(item.estrutura_extraida?.cargos)) {
+    disciplinas = item.estrutura_extraida.cargos.flatMap((c: any) => c.disciplinas || []);
+  }
 
   let ordem = 0;
   for (const disciplina of disciplinas) {
@@ -167,7 +174,18 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
 
     const assuntos = Array.isArray(disciplina?.assuntos) ? disciplina.assuntos : [];
     for (const assuntoRaw of assuntos) {
-      const assuntoNome = String(assuntoRaw || "").trim();
+      let assuntoNome = "";
+      let subtopicos: any[] = [];
+
+      if (typeof assuntoRaw === "object" && assuntoRaw !== null) {
+        assuntoNome = String(assuntoRaw.nome || "").trim();
+        subtopicos = Array.isArray(assuntoRaw.subassuntos)
+          ? assuntoRaw.subassuntos
+          : (Array.isArray(assuntoRaw.topicos) ? assuntoRaw.topicos : []);
+      } else {
+        assuntoNome = String(assuntoRaw || "").trim();
+      }
+
       if (!assuntoNome) continue;
       const assuntoSlug = slugify(assuntoNome);
 
@@ -188,16 +206,55 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
         a = novo;
       }
 
-      ordem += 1;
-      await admin.from("edital_topicos").upsert(
-        {
-          edital_id: edital.id,
-          disciplina_id: d.id,
-          assunto_id: a.id,
-          ordem,
-        },
-        { onConflict: "edital_id,disciplina_id,assunto_id" }
-      );
+      if (subtopicos.length > 0) {
+        for (const subRaw of subtopicos) {
+          const subNome = typeof subRaw === "object" && subRaw !== null
+            ? String(subRaw.nome || "").trim()
+            : String(subRaw || "").trim();
+          if (!subNome) continue;
+          const subSlug = slugify(subNome);
+
+          let { data: sub } = await admin
+            .from("subassuntos")
+            .select("id")
+            .eq("assunto_id", a.id)
+            .eq("slug", subSlug)
+            .maybeSingle();
+
+          if (!sub) {
+            const { data: novoSub, error } = await admin
+              .from("subassuntos")
+              .insert({ assunto_id: a.id, nome: subNome, slug: subSlug })
+              .select("id")
+              .single();
+            if (error || !novoSub) throw new Error(error?.message || `Falha ao criar subassunto ${subNome}`);
+            sub = novoSub;
+          }
+
+          ordem += 1;
+          await admin.from("edital_topicos").upsert(
+            {
+              edital_id: edital.id,
+              disciplina_id: d.id,
+              assunto_id: a.id,
+              subassunto_id: sub.id,
+              ordem,
+            },
+            { onConflict: "edital_id,disciplina_id,assunto_id,subassunto_id" }
+          );
+        }
+      } else {
+        ordem += 1;
+        await admin.from("edital_topicos").upsert(
+          {
+            edital_id: edital.id,
+            disciplina_id: d.id,
+            assunto_id: a.id,
+            ordem,
+          },
+          { onConflict: "edital_id,disciplina_id,assunto_id" }
+        );
+      }
     }
   }
 
@@ -232,7 +289,7 @@ export async function GET(request: Request) {
   if (admin) {
     for (const item of (importados || []) as Importado[]) {
       try {
-        const editalId = await materializarImportado(admin, item, sourceUrl);
+        const editalId = await materializarImportado(admin, item, sourceUrl, user.id);
         const { data: materializado } = await admin
           .from("editais_concurso")
           .select("id,concurso_id,cargo_id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status")

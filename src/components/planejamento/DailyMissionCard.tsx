@@ -281,7 +281,13 @@ export function DailyMissionCard({
 
               <div className="flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                 <span className="text-slate-400 dark:text-slate-500">📌</span>
-                <span>{missao.assunto_nome || "Conteúdo Programático do Edital"}</span>
+                <span>
+                  {missao.assunto_nome
+                    ? (missao.subassunto_nome || missao.topico_nome
+                        ? `${missao.assunto_nome} › ${missao.subassunto_nome || missao.topico_nome}`
+                        : missao.assunto_nome)
+                    : "Conteúdo Programático do Edital"}
+                </span>
               </div>
             </div>
 
