@@ -810,13 +810,6 @@ export default function MentoriaHojePage() {
                   )}
                 </div>
               </div>
-                      className="w-full sm:w-auto font-bold border-rose-700 text-rose-100 hover:bg-rose-950/40"
-                    >
-                      Encerrar sem concluir
-                    </Button>
-                  )}
-                </div>
-              </div>
 
               {/* Alerta de Validação Pedagógica Dupla */}
               {blocoQuestoesSemResolucao && (
