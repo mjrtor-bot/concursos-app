@@ -250,9 +250,10 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
             edital_id: edital.id,
             disciplina_id: d.id,
             assunto_id: a.id,
+            subassunto_id: null,
             ordem,
           },
-          { onConflict: "edital_id,disciplina_id,assunto_id" }
+          { onConflict: "edital_id,disciplina_id,assunto_id,subassunto_id" }
         );
       }
     }

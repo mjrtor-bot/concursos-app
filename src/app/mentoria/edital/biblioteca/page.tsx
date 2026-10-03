@@ -15,8 +15,15 @@ type Edital = {
   total_disciplinas: number; total_topicos: number;
 };
 
-type PreviewDisciplina = { nome: string; assuntos: string[] };
-type Preview = { titulo_detectado: string; disciplinas: PreviewDisciplina[]; observacoes: string[] };
+type PreviewAssunto = string | { nome: string; topicos?: string[]; subassuntos?: string[] };
+type PreviewDisciplina = { nome: string; assuntos: PreviewAssunto[] };
+type PreviewCargo = { nome: string; disciplinas: PreviewDisciplina[] };
+type Preview = {
+  titulo_detectado: string;
+  cargos?: PreviewCargo[];
+  disciplinas?: PreviewDisciplina[];
+  observacoes: string[];
+};
 type Alvo = { concurso_id: string; cargo_id: string; edital_id: string | null };
 type AlvoDetalhe = { concurso: string; cargo: string; edital: string };
 
@@ -81,6 +88,7 @@ export default function BibliotecaEditaisPage() {
   const [aplicando,setAplicando]=useState<string|null>(null);
   const [uploadId,setUploadId]=useState<string|null>(null);
   const [preview,setPreview]=useState<Preview|null>(null);
+  const [cargoSelecionado,setCargoSelecionado]=useState<string>("");
   const [mostrarPreview,setMostrarPreview]=useState(false);
   const [alvo,setAlvo]=useState<Alvo|null>(null);
   const [alvoDetalhe,setAlvoDetalhe]=useState<AlvoDetalhe|null>(null);
@@ -139,6 +147,19 @@ export default function BibliotecaEditaisPage() {
 
   const ufs=useMemo(()=>Array.from(new Set(editais.map(e=>e.uf).filter(Boolean) as string[])).sort(),[editais]);
 
+  const disciplinasExibidas = useMemo(() => {
+    if (!preview) return [];
+    if (preview.cargos && preview.cargos.length > 0) {
+      const c = preview.cargos.find(cargo => cargo.nome === cargoSelecionado) || preview.cargos[0];
+      return c?.disciplinas || [];
+    }
+    return preview.disciplinas || [];
+  }, [preview, cargoSelecionado]);
+
+  const totalAssuntosExibidos = useMemo(() => {
+    return disciplinasExibidas.reduce((n, d) => n + (d.assuntos?.length || 0), 0);
+  }, [disciplinasExibidas]);
+
   async function usarNoPlanejamento(id:string){
     setAplicando(id); setMensagem("");
     try{
@@ -156,7 +177,7 @@ export default function BibliotecaEditaisPage() {
   }
 
   async function processarPdf(id:string){
-    setProcessando(true); setMensagem(""); setConfirmado(false); setPreview(null); setMostrarPreview(false); setUploadId(id);
+    setProcessando(true); setMensagem(""); setConfirmado(false); setPreview(null); setCargoSelecionado(""); setMostrarPreview(false); setUploadId(id);
     try{
       const r=await fetch("/api/editais/processar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({edital_usuario_id:id})});
       const j=await r.json();
@@ -166,7 +187,13 @@ export default function BibliotecaEditaisPage() {
       if(j.processing){
         setMensagem("PDF recebido. A análise está sendo executada; esta tela será atualizada automaticamente.");
         const sj = await aguardarProcessamento(id, setMensagem);
-        setPreview(sj.estrutura as Preview);
+        const est = sj.estrutura as Preview;
+        setPreview(est);
+        if (est?.cargos && est.cargos.length > 0) {
+          setCargoSelecionado(est.cargos[0].nome);
+        } else {
+          setCargoSelecionado("");
+        }
         setMostrarPreview(true);
         setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
         await carregarMeusEditais();
@@ -174,7 +201,13 @@ export default function BibliotecaEditaisPage() {
       }
 
       if(j.estrutura){
-        setPreview(j.estrutura);
+        const est = j.estrutura as Preview;
+        setPreview(est);
+        if (est?.cargos && est.cargos.length > 0) {
+          setCargoSelecionado(est.cargos[0].nome);
+        } else {
+          setCargoSelecionado("");
+        }
         setMostrarPreview(true);
         setMensagem(`PDF processado: ${j.total_disciplinas} disciplinas e ${j.total_assuntos} assuntos encontrados. Revise a prévia antes de confirmar.`);
         await carregarMeusEditais();
@@ -218,7 +251,11 @@ export default function BibliotecaEditaisPage() {
       const r=await fetch("/api/editais/confirmar",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({edital_usuario_id:uploadId,edital_id:targetEditalId})
+        body:JSON.stringify({
+          edital_usuario_id:uploadId,
+          edital_id:targetEditalId,
+          cargo_nome:cargoSelecionado || null
+        })
       });
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha ao confirmar e importar o conteúdo.");
@@ -246,6 +283,7 @@ export default function BibliotecaEditaisPage() {
       setMensagem(`Conteúdo confirmado: ${j.total_topicos} tópicos importados com sucesso.`);
       setUploadId(null);
       setPreview(null);
+      setCargoSelecionado("");
       setMostrarPreview(false);
     }catch(err){
       setMensagem(err instanceof Error?err.message:"Falha ao confirmar a prévia");
@@ -452,17 +490,64 @@ export default function BibliotecaEditaisPage() {
 
       {preview&&<section className="mt-5 rounded-2xl border border-indigo-200 bg-white dark:bg-slate-900 overflow-hidden">
         <button type="button" onClick={()=>setMostrarPreview(v=>!v)} className="w-full flex items-center justify-between gap-3 p-5 text-left">
-          <div><p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Prévia estruturada</p><h3 className="text-xl font-black">{preview.titulo_detectado||"Edital importado"}</h3><p className="mt-1 text-sm text-slate-500">{preview.disciplinas.length} disciplinas · {preview.disciplinas.reduce((n,d)=>n+d.assuntos.length,0)} assuntos</p></div>
+          <div><p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Prévia estruturada</p><h3 className="text-xl font-black">{preview.titulo_detectado||"Edital importado"}</h3><p className="mt-1 text-sm text-slate-500">{disciplinasExibidas.length} disciplinas · {totalAssuntosExibidos} assuntos</p></div>
           <ChevronDown className={`h-5 w-5 transition-transform ${mostrarPreview?"rotate-180":""}`}/>
         </button>
-        {mostrarPreview&&<div className="border-t p-5 space-y-3">
+        {mostrarPreview&&<div className="border-t p-5 space-y-4">
+          {preview.cargos && preview.cargos.length > 1 && (
+            <div className="rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/40 p-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-1.5">
+                Selecione o cargo a ser importado ({preview.cargos.length} cargos detectados no edital):
+              </label>
+              <select
+                value={cargoSelecionado}
+                onChange={e => setCargoSelecionado(e.target.value)}
+                className="w-full rounded-xl border bg-white dark:bg-slate-900 p-2.5 text-sm font-semibold"
+              >
+                {preview.cargos.map((c, i) => (
+                  <option key={i} value={c.nome}>
+                    {c.nome} ({c.disciplinas?.length || 0} disciplinas)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {preview.observacoes?.length>0&&<div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 p-3 text-sm text-amber-800 dark:text-amber-300"><strong>Observações:</strong><ul className="mt-1 list-disc pl-5">{preview.observacoes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>}
-          {preview.disciplinas.map((d,i)=><details key={i} className="rounded-xl border p-4" open={i<3}><summary className="cursor-pointer font-bold">{d.nome} <span className="ml-2 text-xs font-normal text-slate-500">{d.assuntos.length} assuntos</span></summary><ol className="mt-3 list-decimal pl-5 space-y-1 text-sm">{d.assuntos.map((a,j)=><li key={j}>{a}</li>)}</ol></details>)}
+
+          <div className="space-y-3">
+            {disciplinasExibidas.map((d,i)=>(
+              <details key={i} className="rounded-xl border p-4" open={i<3}>
+                <summary className="cursor-pointer font-bold">
+                  {d.nome} <span className="ml-2 text-xs font-normal text-slate-500">{d.assuntos?.length || 0} assuntos</span>
+                </summary>
+                <ol className="mt-3 list-decimal pl-5 space-y-1.5 text-sm">
+                  {d.assuntos?.map((a,j)=>{
+                    if (typeof a === "object" && a !== null) {
+                      const sub = a.subassuntos || a.topicos || [];
+                      return (
+                        <li key={j} className="space-y-1">
+                          <span className="font-medium">{a.nome}</span>
+                          {sub.length > 0 && (
+                            <ul className="list-disc pl-5 text-xs text-slate-600 dark:text-slate-400 space-y-0.5">
+                              {sub.map((st, k) => <li key={k}>{st}</li>)}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    }
+                    return <li key={j}>{a}</li>;
+                  })}
+                </ol>
+              </details>
+            ))}
+          </div>
+
           <div className="pt-2 text-xs text-slate-500">A prévia é extraída exclusivamente do PDF. Nenhum tópico deve ser inventado.</div>
 
           {!confirmado&&<div className="mt-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 p-4">
             <p className="font-black">Revisou a prévia?</p>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">A confirmação gravará os {preview.disciplinas.reduce((n,d)=>n+d.assuntos.length,0)} assuntos no edital selecionado acima e atualizará seu planejamento.</p>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">A confirmação gravará os {totalAssuntosExibidos} assuntos no edital selecionado acima e atualizará seu planejamento.</p>
             <label className="mt-3 flex items-start gap-2 text-sm"><input id="confirmar-conteudo" type="checkbox" className="mt-1" required/><span>Revisei o conteúdo e confirmo que os assuntos acima estão de acordo com o PDF.</span></label>
             <button type="button" disabled={confirmando||!(destinoEditalId||alvo?.edital_id)} onClick={async()=>{
               const box=document.getElementById("confirmar-conteudo") as HTMLInputElement|null;

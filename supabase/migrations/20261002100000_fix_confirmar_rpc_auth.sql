@@ -39,30 +39,22 @@ ALTER TABLE public.editais_concurso
 ALTER TABLE public.edital_topicos
   ADD COLUMN IF NOT EXISTS subassunto_id uuid REFERENCES public.subassuntos(id) ON DELETE SET NULL;
 
-DO $$
-BEGIN
-  ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_edital_id_disciplina_id_assunto_id_key;
-  ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_edital_disciplina_assunto_subassunto_key;
-EXCEPTION
-  WHEN others THEN NULL;
-END $$;
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_edital_topicos_unique_subassunto
-  ON public.edital_topicos (
-    edital_id,
-    disciplina_id,
-    assunto_id,
-    COALESCE(subassunto_id, '00000000-0000-0000-0000-000000000000'::uuid)
-  );
+ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_edital_id_disciplina_id_assunto_id_key;
+ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_edital_disciplina_assunto_subassunto_key;
+ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_unico;
+DROP INDEX IF EXISTS public.idx_edital_topicos_unique_subassunto;
+ALTER TABLE public.edital_topicos ADD CONSTRAINT edital_topicos_unico UNIQUE NULLS NOT DISTINCT (edital_id, disciplina_id, assunto_id, subassunto_id);
 
 -- 3. Drop de versões anteriores da RPC confirmar_edital_usuario
 DROP FUNCTION IF EXISTS public.confirmar_edital_usuario(uuid, uuid, uuid, jsonb);
 DROP FUNCTION IF EXISTS public.confirmar_edital_usuario(uuid, uuid);
+DROP FUNCTION IF EXISTS public.confirmar_edital_usuario(uuid, uuid, text);
 
--- 4. Nova versão segura da RPC confirmar_edital_usuario (SECURITY DEFINER + auth.uid() + 4 níveis de taxonomia)
+-- 4. Nova versão segura da RPC confirmar_edital_usuario (SECURITY DEFINER + auth.uid() + 4 níveis de taxonomia + seleção de cargo)
 CREATE OR REPLACE FUNCTION public.confirmar_edital_usuario(
     p_upload_id uuid,
-    p_edital_id uuid
+    p_edital_id uuid,
+    p_cargo text DEFAULT NULL
 ) RETURNS jsonb
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -79,7 +71,6 @@ DECLARE
     v_assunto_id uuid;
     v_subassunto_nome text;
     v_subassunto_id uuid;
-    v_cargo record;
     v_total_topicos int := 0;
     v_ordem int := 0;
     v_disciplinas_json jsonb;
@@ -131,18 +122,27 @@ BEGIN
     END IF;
 
     -- 5. Extração e gravação hierárquica (4 níveis: Cargos -> Disciplinas -> Assuntos -> Subassuntos/Tópicos)
-    -- Se a estrutura tiver 'cargos' estruturados, iteramos por cargos ou por disciplinas
-    v_disciplinas_json := COALESCE(v_upload.estrutura_extraida->'disciplinas', '[]'::jsonb);
+    -- Seleção do cargo caso haja múltiplos cargos estruturados
+    IF v_upload.estrutura_extraida ? 'cargos' AND jsonb_array_length(v_upload.estrutura_extraida->'cargos') > 0 THEN
+        IF jsonb_array_length(v_upload.estrutura_extraida->'cargos') > 1 AND (p_cargo IS NULL OR trim(p_cargo) = '') THEN
+            RAISE EXCEPTION 'O edital possui múltiplos cargos. Selecione um cargo para confirmar.';
+        END IF;
 
-    -- Se não houver disciplinas na raiz mas houver cargos, agrega disciplinas dos cargos
-    IF jsonb_array_length(v_disciplinas_json) = 0 AND v_upload.estrutura_extraida ? 'cargos' THEN
-        FOR v_cargo IN
-            SELECT * FROM jsonb_to_recordset(v_upload.estrutura_extraida->'cargos') AS c(nome text, disciplinas jsonb)
-        LOOP
-            IF v_cargo.disciplinas IS NOT NULL THEN
-                v_disciplinas_json := v_disciplinas_json || v_cargo.disciplinas;
+        IF p_cargo IS NOT NULL AND trim(p_cargo) <> '' THEN
+            SELECT c.disciplinas INTO v_disciplinas_json
+              FROM jsonb_to_recordset(v_upload.estrutura_extraida->'cargos') AS c(nome text, disciplinas jsonb)
+             WHERE lower(trim(c.nome)) = lower(trim(p_cargo))
+             LIMIT 1;
+
+            IF v_disciplinas_json IS NULL THEN
+                RAISE EXCEPTION 'Cargo "%" não encontrado na estrutura extraída do edital.', p_cargo;
             END IF;
-        END LOOP;
+        ELSE
+            -- Apenas 1 cargo e p_cargo é null
+            v_disciplinas_json := COALESCE((v_upload.estrutura_extraida->'cargos'->0)->'disciplinas', '[]'::jsonb);
+        END IF;
+    ELSE
+        v_disciplinas_json := COALESCE(v_upload.estrutura_extraida->'disciplinas', '[]'::jsonb);
     END IF;
 
     -- Inserir disciplinas, assuntos e subassuntos/tópicos
@@ -215,7 +215,7 @@ BEGIN
                         v_subassunto_id,
                         v_ordem
                     )
-                    ON CONFLICT (edital_id, disciplina_id, assunto_id, COALESCE(subassunto_id, '00000000-0000-0000-0000-000000000000'::uuid))
+                    ON CONFLICT (edital_id, disciplina_id, assunto_id, subassunto_id)
                     DO UPDATE SET ordem = excluded.ordem;
 
                     v_total_topicos := v_total_topicos + 1;
@@ -223,15 +223,16 @@ BEGIN
             ELSE
                 -- Inserção padrão a nível de assunto (sem subassunto)
                 INSERT INTO public.edital_topicos (
-                    edital_id, disciplina_id, assunto_id, ordem
+                    edital_id, disciplina_id, assunto_id, subassunto_id, ordem
                 )
                 VALUES (
                     p_edital_id,
                     v_disciplina_id,
                     v_assunto_id,
+                    NULL,
                     v_ordem
                 )
-                ON CONFLICT (edital_id, disciplina_id, assunto_id, COALESCE(subassunto_id, '00000000-0000-0000-0000-000000000000'::uuid))
+                ON CONFLICT (edital_id, disciplina_id, assunto_id, subassunto_id)
                 DO UPDATE SET ordem = excluded.ordem;
 
                 v_total_topicos := v_total_topicos + 1;
@@ -260,5 +261,5 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.confirmar_edital_usuario(uuid, uuid) FROM public, anon;
-GRANT EXECUTE ON FUNCTION public.confirmar_edital_usuario(uuid, uuid) TO authenticated;
+REVOKE ALL ON FUNCTION public.confirmar_edital_usuario(uuid, uuid, text) FROM public, anon;
+GRANT EXECUTE ON FUNCTION public.confirmar_edital_usuario(uuid, uuid, text) TO authenticated;

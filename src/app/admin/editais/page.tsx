@@ -48,7 +48,12 @@ interface EditalItem {
 
 interface PreviewDisciplina {
   nome: string;
-  assuntos?: string[];
+  assuntos?: Array<string | { nome: string; topicos?: string[]; subassuntos?: string[] }>;
+}
+
+interface PreviewCargo {
+  nome: string;
+  disciplinas?: PreviewDisciplina[];
 }
 
 interface PreviewData {
@@ -56,6 +61,7 @@ interface PreviewData {
   total_disciplinas?: number;
   total_assuntos?: number;
   estrutura?: {
+    cargos?: PreviewCargo[];
     disciplinas?: PreviewDisciplina[];
     observacoes?: string[];
   };
@@ -78,6 +84,7 @@ export default function AdminEditais() {
   const [form, setForm] = useState<EditalForm>(empty);
   const [msg, setMsg] = useState("");
   const [preview, setPreview] = useState<PreviewData | null>(null);
+  const [cargoSelecionado, setCargoSelecionado] = useState<string>("");
   const [uploadId, setUploadId] = useState("");
 
   async function loadData() {
@@ -101,6 +108,10 @@ export default function AdminEditais() {
     return () => { active = false; };
   }, []);
   const cargos: ConcursoCargo[] = (concursos.find(c => c.id === form.concurso_id)?.concurso_cargos || []);
+
+  const previewCargos = preview?.estrutura?.cargos || [];
+  const cargoAtivo = previewCargos.find(c => c.nome === cargoSelecionado);
+  const disciplinasExibidas: PreviewDisciplina[] = cargoAtivo?.disciplinas || preview?.estrutura?.disciplinas || (previewCargos.length === 1 ? previewCargos[0].disciplinas : []) || [];
 
   async function salvar() {
     const payload = { ...form };
@@ -134,10 +145,16 @@ export default function AdminEditais() {
       if (!pr.ok) throw new Error(pj.error || "Falha ao processar PDF");
 
       setMsg("PDF recebido. A análise está sendo executada...");
-      const resultado = await aguardarProcessamento(id, setMsg);
+      const resultado = (await aguardarProcessamento(id, setMsg)) as PreviewData;
 
       setUploadId(id);
       setPreview({ ...resultado, edital_id: edital.id });
+      const cargosList = resultado.estrutura?.cargos || [];
+      if (cargosList.length > 0) {
+        setCargoSelecionado(cargosList[0].nome);
+      } else {
+        setCargoSelecionado("");
+      }
       setMsg(`Prévia pronta: ${resultado.total_disciplinas} disciplinas e ${resultado.total_assuntos} assuntos. Revise antes de confirmar.`);
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Erro ao importar PDF");
@@ -147,11 +164,20 @@ export default function AdminEditais() {
   async function confirmarPdf() {
     if (!preview || !uploadId) return;
     setMsg("Confirmando conteúdo...");
-    const r = await fetch("/api/editais/confirmar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ edital_usuario_id: uploadId, edital_id: preview.edital_id }) });
+    const r = await fetch("/api/editais/confirmar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        edital_usuario_id: uploadId,
+        edital_id: preview.edital_id,
+        cargo_nome: cargoSelecionado || null
+      })
+    });
     const j = await r.json();
     if (!r.ok) { setMsg(j.error || "Falha ao confirmar"); return; }
     setMsg(`${j.total_topicos} tópicos confirmados no edital.`);
     setPreview(null);
+    setCargoSelecionado("");
     setUploadId("");
     await loadData();
   }
@@ -231,16 +257,49 @@ export default function AdminEditais() {
               <p className="text-xs text-slate-500">Nada abaixo será gravado até você confirmar.</p>
             </div>
             <div className="flex gap-2">
-              <button className="border rounded-lg px-3 py-2" onClick={() => { setPreview(null); setUploadId(""); }}>Descartar</button>
+              <button className="border rounded-lg px-3 py-2" onClick={() => { setPreview(null); setCargoSelecionado(""); setUploadId(""); }}>Descartar</button>
               <button className="bg-green-700 text-white rounded-lg px-3 py-2" onClick={confirmarPdf}>Confirmar importação</button>
             </div>
           </div>
+          {previewCargos.length > 1 && (
+            <div className="rounded-lg border p-3 bg-slate-50 dark:bg-slate-900">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Selecione o cargo a ser importado ({previewCargos.length} cargos detectados):
+              </label>
+              <select
+                value={cargoSelecionado}
+                onChange={e => setCargoSelecionado(e.target.value)}
+                className="w-full rounded-lg border bg-transparent p-2 text-sm font-semibold"
+              >
+                {previewCargos.map((c, i) => (
+                  <option key={i} value={c.nome}>
+                    {c.nome} ({c.disciplinas?.length || 0} disciplinas)
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <div className="max-h-96 overflow-auto space-y-3">
-            {preview.estrutura?.disciplinas?.map((d: PreviewDisciplina, i: number) => (
+            {disciplinasExibidas.map((d: PreviewDisciplina, i: number) => (
               <div key={i}>
                 <b>{d.nome}</b>
-                <ul className="list-disc ml-5 text-sm">
-                  {d.assuntos?.map((a: string, j: number) => <li key={j}>{a}</li>)}
+                <ul className="list-disc ml-5 text-sm space-y-1 mt-1">
+                  {d.assuntos?.map((a, j) => {
+                    if (typeof a === "object" && a !== null) {
+                      const sub = a.subassuntos || a.topicos || [];
+                      return (
+                        <li key={j}>
+                          <span className="font-medium">{a.nome}</span>
+                          {sub.length > 0 && (
+                            <ul className="list-disc ml-5 text-xs text-slate-500 space-y-0.5 mt-0.5">
+                              {sub.map((st, k) => <li key={k}>{st}</li>)}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    }
+                    return <li key={j}>{a}</li>;
+                  })}
                 </ul>
               </div>
             ))}

@@ -92,14 +92,8 @@ end $$;
 update public.mentoria_perfis set concurso_id = null where concurso_id is not null and concurso_id not in (select id from public.concursos);
 update public.mentoria_perfis set cargo_id = null where cargo_id is not null and cargo_id not in (select id from public.concurso_cargos);
 
-do $$ begin
-  alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_concurso_id_fkey;
-  alter table public.mentoria_perfis add constraint mentoria_perfis_concurso_id_fkey foreign key (concurso_id) references public.concursos(id) on delete set null;
-exception when others then null;
-end $$;
+alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_concurso_id_fkey;
+alter table public.mentoria_perfis add constraint mentoria_perfis_concurso_id_fkey foreign key (concurso_id) references public.concursos(id) on delete set null;
 
-do $$ begin
-  alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_cargo_id_fkey;
-  alter table public.mentoria_perfis add constraint mentoria_perfis_cargo_id_fkey foreign key (cargo_id) references public.concurso_cargos(id) on delete set null;
-exception when others then null;
-end $$;
+alter table public.mentoria_perfis drop constraint if exists mentoria_perfis_cargo_id_fkey;
+alter table public.mentoria_perfis add constraint mentoria_perfis_cargo_id_fkey foreign key (cargo_id) references public.concurso_cargos(id) on delete set null;

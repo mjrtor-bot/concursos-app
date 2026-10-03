@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json().catch(() => null);
   const uploadId = body?.edital_usuario_id, editalId = body?.edital_id;
+  const cargoNome = body?.cargo_nome || body?.cargo || null;
   if (!uploadId || !editalId) return NextResponse.json({ error: "edital_usuario_id e edital_id são obrigatórios" }, { status: 400 });
 
   const { data: upload } = await supabase.from("editais_usuario").select("id,status,estrutura_extraida").eq("id", uploadId).eq("usuario_id", user.id).maybeSingle();
@@ -19,7 +20,8 @@ export async function POST(request: NextRequest) {
 
   const { data: res, error: rpcError } = await supabase.rpc("confirmar_edital_usuario", {
     p_upload_id: uploadId,
-    p_edital_id: editalId
+    p_edital_id: editalId,
+    p_cargo: cargoNome
   });
   if (rpcError) return NextResponse.json({ error: rpcError.message }, { status: 500 });
 
