@@ -851,11 +851,13 @@ export class MentoriaService {
     const taxaAcertoMap = new Map<string, number>();
     const statsAssuntoMap = new Map<string, { total: number; acertos: number }>();
     const equivMapMissoes = new Map<string, Set<string>>();
+    const tarefasUsuarioMap = new Map<string, any>();
+    const tarefasOrdemMap = new Map<number, any>();
 
     const supabase = this.getClient();
     if (supabase && usuarioId) {
       try {
-        const [{ data: respostasHoje }, { data: todasRespostas }, { data: equivs }] = await Promise.all([
+        const [{ data: respostasHoje }, { data: todasRespostas }, { data: equivs }, { data: tarefasUsuario }] = await Promise.all([
           supabase
             .from("respostas_usuarios")
             .select("disciplina_id, questao_id, correta, created_at, questoes(assunto_id)")
@@ -868,7 +870,18 @@ export class MentoriaService {
           supabase
             .from("assunto_equivalencias")
             .select("assunto_questao_id, assunto_edital_id"),
+          supabase
+            .from("mentoria_tarefas")
+            .select("id, plano_id, ordem, status, concluido_em, disciplina_id, assunto_id")
+            .eq("usuario_id", usuarioId),
         ]);
+
+        if (tarefasUsuario) {
+          for (const t of tarefasUsuario as any[]) {
+            if (t.id) tarefasUsuarioMap.set(t.id, t);
+            if (typeof t.ordem === "number") tarefasOrdemMap.set(t.ordem, t);
+          }
+        }
 
         if (equivs) {
           for (const eq of equivs as any[]) {
@@ -931,8 +944,10 @@ export class MentoriaService {
       const isPrimeiroBloco = i === 0;
 
       // Calcular status e progresso
-      const status: MentoriaTarefaStatus = isPrimeiroBloco ? "em_andamento" : "pendente";
-      let progresso = 0;
+      const tDb = (bloco.id && tarefasUsuarioMap.get(bloco.id)) || tarefasOrdemMap.get(bloco.ordem_bloco || (i + 1));
+      const isConcluida = tDb?.status === "concluida" || bloco.concluido === true;
+      const status: MentoriaTarefaStatus = isConcluida ? "concluida" : isPrimeiroBloco ? "em_andamento" : "pendente";
+      let progresso = isConcluida ? 100 : 0;
 
       let questoesFeitas = 0;
       if (bloco.assunto_id) {

@@ -75,9 +75,26 @@ export function DailyMissionCard({
     }
   };
 
-  const handleToggleConcluir = () => {
+  const handleToggleConcluir = async () => {
     const novoStatus = statusLocal === "concluida" ? "pendente" : "concluida";
     setStatusLocal(novoStatus);
+
+    try {
+      await fetch("/api/mentoria/tarefas", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tarefa_id: missao.id,
+          plano_id: missao.plano_id,
+          bloco_ordem: missao.bloco_ordem,
+          status: novoStatus,
+          concluido_em: novoStatus === "concluida" ? new Date().toISOString() : null,
+        }),
+      });
+    } catch (err) {
+      console.error("Erro ao gravar status da tarefa:", err);
+    }
+
     if (onConcluir) {
       onConcluir(missao.id);
     }

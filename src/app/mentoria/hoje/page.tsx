@@ -726,7 +726,14 @@ export default function MentoriaHojePage() {
           <DailyMissionCard
             missao={missaoAtual}
             onIniciar={handleIniciar}
-            onConcluir={() => handleFinalizarSessao()}
+            onConcluir={async () => {
+              if (user?.id) {
+                const plano = await MentoriaCicloService.obterPlanoCiclo(user.id);
+                if (plano) {
+                  setPlanoCiclo(plano);
+                }
+              }
+            }}
           />
 
           <Card className="border-2 border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden bg-white dark:bg-slate-900">

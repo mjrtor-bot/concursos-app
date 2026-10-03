@@ -412,6 +412,17 @@ export class MentoriaCicloService {
               motivo_explicabilidade: t.motivo_recomendacao ? t.motivo_recomendacao.split(" | ") : [],
               concluido: t.status === "concluida",
             }));
+          } else if (blocos.length > 0 && tarefasDb && tarefasDb.length > 0) {
+            const tarefasMap = new Map(tarefasDb.map((t) => [t.id, t]));
+            const tarefasOrdemMap = new Map(tarefasDb.map((t) => [t.ordem, t]));
+            blocos = blocos.map((b, idx) => {
+              const t = (b.id && tarefasMap.get(b.id)) || tarefasOrdemMap.get(b.ordem_bloco || (idx + 1));
+              return {
+                ...b,
+                id: t?.id || b.id,
+                concluido: t ? t.status === "concluida" : b.concluido,
+              };
+            });
           }
 
           // Planos criados antes da inclusão de assuntos podem ter blocos sem
