@@ -283,15 +283,86 @@ export class MentoriaQuestoesService {
           .eq("desatualizada", false)
           .neq("auditoria_status", "irrecuperavel");
 
+        let idsAssunto: string[] | undefined = undefined;
+        if (assuntoId && !assuntoId.startsWith("ass-")) {
+          idsAssunto = [assuntoId];
+          try {
+            const { data: equivs } = await supabase
+              .from("assunto_equivalencias")
+              .select("assunto_questao_id, assunto_edital_id")
+              .or(`assunto_edital_id.eq.${assuntoId},assunto_questao_id.eq.${assuntoId}`);
+            if (equivs && equivs.length > 0) {
+              const equivIds = equivs
+                .flatMap((e: any) => [e.assunto_questao_id, e.assunto_edital_id])
+                .filter(Boolean);
+              idsAssunto = Array.from(new Set([assuntoId, ...equivIds]));
+            }
+          } catch (eqErr) {
+            console.warn("[MentoriaQuestoesService] Erro ao buscar equivalencias de assunto:", eqErr);
+          }
+        }
+
         if (disciplinaId && !disciplinaId.startsWith("disc-")) {
           query = query.eq("disciplina_id", disciplinaId);
         }
 
-        if (assuntoId && !assuntoId.startsWith("ass-")) {
-          query = query.eq("assunto_id", assuntoId);
+        if (idsAssunto && idsAssunto.length > 0) {
+          query = idsAssunto.length > 1
+            ? query.in("assunto_id", idsAssunto)
+            : query.eq("assunto_id", idsAssunto[0]);
         }
 
-        const { data, error } = await query.limit(200);
+        let { data, error } = await query.limit(200);
+
+        // Fallback: se buscou por assunto_id e não retornou questões, busca na disciplina inteira
+        if ((!data || data.length === 0) && idsAssunto && disciplinaId && !disciplinaId.startsWith("disc-")) {
+          try {
+            const fallbackRes = await supabase
+              .from("questoes")
+              .select(
+                `
+                id,
+                enunciado,
+                ano,
+                tipo,
+                dificuldade,
+                explicacao,
+                is_autoral_ia,
+                anulada,
+                desatualizada,
+                auditoria_status,
+                banca_nome,
+                orgao_nome,
+                cargo_nome,
+                disciplina_id,
+                assunto_id,
+                subassunto_id,
+                banca_id,
+                orgao_id,
+                cargo_id,
+                questoes_alternativas (
+                  id,
+                  texto,
+                  correta,
+                  ordem,
+                  letra
+                )
+              `
+              )
+              .eq("anulada", false)
+              .eq("desatualizada", false)
+              .neq("auditoria_status", "irrecuperavel")
+              .eq("disciplina_id", disciplinaId)
+              .limit(200);
+
+            if (fallbackRes.data && fallbackRes.data.length > 0) {
+              data = fallbackRes.data;
+              error = fallbackRes.error;
+            }
+          } catch (fallbackErr) {
+            console.warn("[MentoriaQuestoesService] Erro no fallback por disciplina:", fallbackErr);
+          }
+        }
 
         if (!error && data && data.length > 0) {
           questoesCandidatas = (data as Record<string, unknown>[]).map((q) => ({

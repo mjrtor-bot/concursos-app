@@ -16,6 +16,7 @@ import {
   Loader2,
   ChevronsLeft,
   ChevronsRight,
+  AlertCircle,
 } from "lucide-react";
 
 const PAGE_SIZE = 20; // questões por lote buscado da API
@@ -35,6 +36,8 @@ function QuestoesContent() {
   const [assuntos, setAssuntos] = useState<Assunto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingPage, setIsLoadingPage] = useState(false);
+  const [avisoFallback, setAvisoFallback] = useState<string | null>(null);
+  const [disciplinaSemQuestoes, setDisciplinaSemQuestoes] = useState(false);
 
   const [filtro, setFiltro] = useState<FiltroQuestoes>(() => {
     const rawOrigem = searchParams.get("origem");
@@ -126,17 +129,8 @@ function QuestoesContent() {
         params.set("disciplina_id", filtro.disciplina_id);
       }
 
-      const assuntoValido =
-        filtro.assunto_id && filtro.assunto_id !== "todos" && filtro.disciplina_id && assuntos.length > 0
-          ? assuntos.find((a) => a.id === filtro.assunto_id)?.disciplina_id === filtro.disciplina_id
-            ? filtro.assunto_id
-            : undefined
-          : filtro.assunto_id && filtro.assunto_id !== "todos"
-          ? filtro.assunto_id
-          : undefined;
-
-      if (assuntoValido) {
-        params.set("assunto_id", assuntoValido);
+      if (filtro.assunto_id && filtro.assunto_id !== "todos") {
+        params.set("assunto_id", filtro.assunto_id);
       }
       if (filtro.banca && filtro.banca !== "todas")
         params.set("banca", filtro.banca);
@@ -172,6 +166,8 @@ function QuestoesContent() {
             setApiPage(data.page ?? page);
             setTotalQuestoes(data.total ?? lista.length);
             setTotalApiPages(data.totalPages ?? 1);
+            setAvisoFallback(data.fallback_disciplina && data.aviso ? data.aviso : null);
+            setDisciplinaSemQuestoes(Boolean(data.disciplina_sem_questoes));
 
             // Navega até a questão específica se presente na URL
             const targetQId = searchParams.get("questaoId");
@@ -188,18 +184,22 @@ function QuestoesContent() {
         console.error("[QuestoesPage] API de questões indisponível");
         const lista: Questao[] = [];
         setQuestoes(lista);
-        setTotalQuestoes(lista.length);
+        setTotalQuestoes(0);
         setTotalApiPages(1);
         setApiPage(1);
         setCurrentIndex(0);
+        setAvisoFallback(null);
+        setDisciplinaSemQuestoes(false);
       } catch (error) {
         console.error("[QuestoesPage] Erro ao buscar questões:", error);
         const lista: Questao[] = [];
         setQuestoes(lista);
-        setTotalQuestoes(lista.length);
+        setTotalQuestoes(0);
         setTotalApiPages(1);
         setApiPage(1);
         setCurrentIndex(0);
+        setAvisoFallback(null);
+        setDisciplinaSemQuestoes(false);
       } finally {
         setIsLoading(false);
         setIsLoadingPage(false);
@@ -226,6 +226,8 @@ function QuestoesContent() {
             setApiPage(data.page ?? 1);
             setTotalQuestoes(data.total ?? lista.length);
             setTotalApiPages(data.totalPages ?? 1);
+            setAvisoFallback(data.fallback_disciplina && data.aviso ? data.aviso : null);
+            setDisciplinaSemQuestoes(Boolean(data.disciplina_sem_questoes));
 
             const targetQId = searchParams.get("questaoId");
             if (targetQId) {
@@ -243,6 +245,8 @@ function QuestoesContent() {
         setTotalApiPages(1);
         setApiPage(1);
         setCurrentIndex(0);
+        setAvisoFallback(null);
+        setDisciplinaSemQuestoes(false);
       } catch {
         if (!ignore) {
           setQuestoes([]);
@@ -250,6 +254,8 @@ function QuestoesContent() {
           setTotalApiPages(1);
           setApiPage(1);
           setCurrentIndex(0);
+          setAvisoFallback(null);
+          setDisciplinaSemQuestoes(false);
         }
       } finally {
         if (!ignore) {
@@ -297,6 +303,8 @@ function QuestoesContent() {
 
   const handleLimparFiltros = () => {
     setFiltro({ status: "todas", origem: "todas" });
+    setAvisoFallback(null);
+    setDisciplinaSemQuestoes(false);
   };
 
   const filtroSomenteOficiais = filtro.origem === "oficiais";
@@ -334,6 +342,14 @@ function QuestoesContent() {
         concursoNome={concursoAtivo ? `${concursoAtivo.orgao} - ${concursoAtivo.nome}` : undefined}
       />
 
+      {/* Aviso de fallback para disciplina quando o assunto não tem questões */}
+      {avisoFallback && (
+        <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4 flex items-center gap-3 text-amber-800 dark:text-amber-300 text-sm font-medium">
+          <AlertCircle className="w-5 h-5 shrink-0 text-amber-600 dark:text-amber-400" />
+          <span>{avisoFallback}</span>
+        </div>
+      )}
+
       {/* Main Question Interface */}
       {isLoading ? (
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center space-y-3">
@@ -343,13 +359,23 @@ function QuestoesContent() {
           </p>
         </div>
       ) : questoes.length === 0 ? (
-        <EmptyState
-          icon={<CheckSquare2 className="w-8 h-8" />}
-          title="Nenhuma questão encontrada com estes filtros"
-          description={filtroSomenteOficiais ? "Não há questões oficiais com procedência cadastradas para estes filtros. Selecione Todas as Questões ou Autorais / Criadas por IA para usar o acervo disponível." : "Tente ajustar ou limpar os filtros de matéria, banca ou status para visualizar mais questões."}
-          actionLabel="Limpar Filtros"
-          onAction={handleLimparFiltros}
-        />
+        disciplinaSemQuestoes ? (
+          <EmptyState
+            icon={<CheckSquare2 className="w-8 h-8" />}
+            title="Nenhuma questão encontrada para esta disciplina"
+            description="Ainda não há questões cadastradas para esta disciplina no acervo. Tente selecionar outra disciplina ou limpar os filtros."
+            actionLabel="Limpar Filtros"
+            onAction={handleLimparFiltros}
+          />
+        ) : (
+          <EmptyState
+            icon={<CheckSquare2 className="w-8 h-8" />}
+            title="Nenhuma questão encontrada com estes filtros"
+            description={filtroSomenteOficiais ? "Não há questões oficiais com procedência cadastradas para estes filtros. Selecione Todas as Questões ou Autorais / Criadas por IA para usar o acervo disponível." : "Tente ajustar ou limpar os filtros de matéria, banca ou status para visualizar mais questões."}
+            actionLabel="Limpar Filtros"
+            onAction={handleLimparFiltros}
+          />
+        )
       ) : (
         <div className="space-y-4">
           {/* Barra de navegação */}

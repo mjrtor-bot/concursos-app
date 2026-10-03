@@ -844,42 +844,74 @@ export class MentoriaService {
     const missoes: MissaoDiariaItem[] = [];
     const posAtual = plano.posicao_atual_index;
 
-    // Buscar respostas de hoje para calcular progresso real por disciplina
+    // Buscar respostas de hoje para calcular progresso real por disciplina e assunto (com equivalencias)
     const hojeIso = getDataBrasilia(new Date());
     const respostasHojeDiscMap = new Map<string, number>();
+    const respostasHojeAssuntoMap = new Map<string, number>();
     const taxaAcertoMap = new Map<string, number>();
+    const statsAssuntoMap = new Map<string, { total: number; acertos: number }>();
+    const equivMapMissoes = new Map<string, Set<string>>();
 
     const supabase = this.getClient();
     if (supabase && usuarioId) {
       try {
-        const [{ data: respostasHoje }, { data: todasRespostas }] = await Promise.all([
+        const [{ data: respostasHoje }, { data: todasRespostas }, { data: equivs }] = await Promise.all([
           supabase
             .from("respostas_usuarios")
-            .select("disciplina_id")
+            .select("disciplina_id, questao_id, correta, created_at, questoes(assunto_id)")
             .eq("usuario_id", usuarioId)
             .gte("created_at", hojeIso + "T00:00:00"),
           supabase
             .from("respostas_usuarios")
-            .select("disciplina_id, correta")
+            .select("disciplina_id, correta, questoes(assunto_id)")
             .eq("usuario_id", usuarioId),
+          supabase
+            .from("assunto_equivalencias")
+            .select("assunto_questao_id, assunto_edital_id"),
         ]);
 
+        if (equivs) {
+          for (const eq of equivs as any[]) {
+            if (eq.assunto_edital_id && eq.assunto_questao_id) {
+              if (!equivMapMissoes.has(eq.assunto_edital_id)) equivMapMissoes.set(eq.assunto_edital_id, new Set([eq.assunto_edital_id]));
+              equivMapMissoes.get(eq.assunto_edital_id)!.add(eq.assunto_questao_id);
+              if (!equivMapMissoes.has(eq.assunto_questao_id)) equivMapMissoes.set(eq.assunto_questao_id, new Set([eq.assunto_questao_id]));
+              equivMapMissoes.get(eq.assunto_questao_id)!.add(eq.assunto_edital_id);
+            }
+          }
+        }
+
         if (respostasHoje) {
-          for (const r of respostasHoje) {
+          for (const r of respostasHoje as any[]) {
             if (r.disciplina_id) {
               respostasHojeDiscMap.set(r.disciplina_id, (respostasHojeDiscMap.get(r.disciplina_id) || 0) + 1);
+            }
+            const questaoRel = r.questoes as unknown as { assunto_id?: string } | { assunto_id?: string }[] | null;
+            const questao = Array.isArray(questaoRel) ? questaoRel[0] : questaoRel;
+            const aId = questao?.assunto_id;
+            if (aId) {
+              respostasHojeAssuntoMap.set(aId, (respostasHojeAssuntoMap.get(aId) || 0) + 1);
             }
           }
         }
 
         if (todasRespostas && todasRespostas.length > 0) {
           const statsMap = new Map<string, { total: number; acertos: number }>();
-          for (const r of todasRespostas) {
+          for (const r of todasRespostas as any[]) {
             if (r.disciplina_id) {
               const current = statsMap.get(r.disciplina_id) || { total: 0, acertos: 0 };
               current.total += 1;
               if (r.correta) current.acertos += 1;
               statsMap.set(r.disciplina_id, current);
+            }
+            const questaoRel = r.questoes as unknown as { assunto_id?: string } | { assunto_id?: string }[] | null;
+            const questao = Array.isArray(questaoRel) ? questaoRel[0] : questaoRel;
+            const aId = questao?.assunto_id;
+            if (aId) {
+              const curA = statsAssuntoMap.get(aId) || { total: 0, acertos: 0 };
+              curA.total += 1;
+              if (r.correta) curA.acertos += 1;
+              statsAssuntoMap.set(aId, curA);
             }
           }
           statsMap.forEach((val, discId) => {
@@ -902,12 +934,40 @@ export class MentoriaService {
       const status: MentoriaTarefaStatus = isPrimeiroBloco ? "em_andamento" : "pendente";
       let progresso = 0;
 
-      const questoesFeitas = respostasHojeDiscMap.get(bloco.disciplina_id) || 0;
+      let questoesFeitas = 0;
+      if (bloco.assunto_id) {
+        const matchingAssuntoIds = equivMapMissoes.get(bloco.assunto_id) || new Set([bloco.assunto_id]);
+        for (const aId of matchingAssuntoIds) {
+          questoesFeitas += respostasHojeAssuntoMap.get(aId) || 0;
+        }
+      }
+      if (questoesFeitas === 0 && bloco.disciplina_id) {
+        questoesFeitas = respostasHojeDiscMap.get(bloco.disciplina_id) || 0;
+      }
+
       if (bloco.tipo === "QUESTOES") {
         progresso = Math.min(100, Math.round((questoesFeitas / (bloco.quantidade_questoes_sugerida || 15)) * 100));
       }
 
-      const taxaAcerto = taxaAcertoMap.get(bloco.disciplina_id);
+      let taxaAcerto: number | undefined = undefined;
+      if (bloco.assunto_id) {
+        const matchingAssuntoIds = equivMapMissoes.get(bloco.assunto_id) || new Set([bloco.assunto_id]);
+        let totAss = 0;
+        let acAss = 0;
+        for (const aId of matchingAssuntoIds) {
+          const st = statsAssuntoMap.get(aId);
+          if (st) {
+            totAss += st.total;
+            acAss += st.acertos;
+          }
+        }
+        if (totAss > 0) {
+          taxaAcerto = Math.round((acAss / totAss) * 100);
+        }
+      }
+      if (taxaAcerto === undefined && bloco.disciplina_id) {
+        taxaAcerto = taxaAcertoMap.get(bloco.disciplina_id);
+      }
 
       missoes.push({
         id: bloco.id || `missao-${i + 1}-${bloco.disciplina_id.slice(0, 8)}`,
@@ -966,7 +1026,7 @@ export class MentoriaService {
         return { total_topicos: 0, topicos_estudados: 0, topicos_dominados: 0, percentual_conclusao: 0, taxa_acerto_global: 0, disciplinas: [] };
       }
 
-      const [resTopicosEdital, resTopicosSalvos, resRespostas] = await Promise.all([
+      const [resTopicosEdital, resTopicosSalvos, resRespostas, resEquivs] = await Promise.all([
         supabase
           .from("edital_topicos")
           .select("disciplina_id, assunto_id, peso, incidencia, ordem, disciplinas(id,nome), assuntos(id,nome)")
@@ -974,6 +1034,7 @@ export class MentoriaService {
           .order("ordem", { ascending: true }),
         supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
         supabase.from("respostas_usuarios").select("correta, created_at, questoes(assunto_id)").eq("usuario_id", usuarioId),
+        supabase.from("assunto_equivalencias").select("assunto_questao_id, assunto_edital_id"),
       ]);
 
       if (resTopicosEdital.error) throw resTopicosEdital.error;
@@ -981,6 +1042,17 @@ export class MentoriaService {
         console.error("[mentoriaService] Erro ao carregar respostas_usuarios para estatísticas:", resRespostas.error);
       }
       topicosSalvos = (resTopicosSalvos.data || []) as MentoriaEditalTopico[];
+
+      const equivMap = new Map<string, Set<string>>();
+      for (const eq of (resEquivs.data || []) as any[]) {
+        if (eq.assunto_edital_id && eq.assunto_questao_id) {
+          if (!equivMap.has(eq.assunto_edital_id)) equivMap.set(eq.assunto_edital_id, new Set([eq.assunto_edital_id]));
+          equivMap.get(eq.assunto_edital_id)!.add(eq.assunto_questao_id);
+
+          if (!equivMap.has(eq.assunto_questao_id)) equivMap.set(eq.assunto_questao_id, new Set([eq.assunto_questao_id]));
+          equivMap.get(eq.assunto_questao_id)!.add(eq.assunto_edital_id);
+        }
+      }
 
       const statsPorAssunto = new Map<string, { total: number; acertos: number; ultimaData?: string }>();
       for (const r of (resRespostas.data || []) as any[]) {
@@ -1006,7 +1078,22 @@ export class MentoriaService {
         if (!row.disciplina_id || !row.assunto_id || !disc?.nome || !assunto?.nome) continue;
 
         const salvo = mapaSalvos.get(row.assunto_id);
-        const stats = statsPorAssunto.get(row.assunto_id) || { total: 0, acertos: 0 };
+        const matchingIds = equivMap.get(row.assunto_id) || new Set([row.assunto_id]);
+        let totalAssunto = 0;
+        let acertosAssunto = 0;
+        let ultimaDataAssunto: string | undefined = undefined;
+
+        for (const assId of matchingIds) {
+          const s = statsPorAssunto.get(assId);
+          if (s) {
+            totalAssunto += s.total;
+            acertosAssunto += s.acertos;
+            if (s.ultimaData && (!ultimaDataAssunto || s.ultimaData > ultimaDataAssunto)) {
+              ultimaDataAssunto = s.ultimaData;
+            }
+          }
+        }
+        const stats = { total: totalAssunto, acertos: acertosAssunto, ultimaData: ultimaDataAssunto };
         const taxa = stats.total > 0 ? Math.round((stats.acertos / stats.total) * 100) : 0;
         let status: "nao_iniciado" | "estudando" | "revisando" | "dominado" = "nao_iniciado";
         let estudado = false;

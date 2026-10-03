@@ -31,7 +31,7 @@ export async function GET(
     )
   );
 
-  const [topicosRes, salvosRes, respostasRes] = await Promise.all([
+  const [topicosRes, salvosRes, respostasRes, equivsRes] = await Promise.all([
     supabase
       .from("edital_topicos")
       .select("disciplina_id,assunto_id,peso,incidencia,ordem,disciplinas(id,nome),assuntos(id,nome)")
@@ -39,11 +39,23 @@ export async function GET(
       .order("ordem", { ascending: true }),
     supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", user.id),
     supabase.from("respostas_usuarios").select("correta,created_at,questoes(assunto_id)").eq("usuario_id", user.id),
+    supabase.from("assunto_equivalencias").select("assunto_questao_id,assunto_edital_id"),
   ]);
 
   if (topicosRes.error) return NextResponse.json({ error: topicosRes.error.message }, { status: 500 });
   if (respostasRes.error) {
     console.error("[verticalizado/route] Erro ao buscar respostas_usuarios:", respostasRes.error);
+  }
+
+  const equivMap = new Map<string, Set<string>>();
+  for (const eq of (equivsRes.data || []) as any[]) {
+    if (eq.assunto_edital_id && eq.assunto_questao_id) {
+      if (!equivMap.has(eq.assunto_edital_id)) equivMap.set(eq.assunto_edital_id, new Set([eq.assunto_edital_id]));
+      equivMap.get(eq.assunto_edital_id)!.add(eq.assunto_questao_id);
+
+      if (!equivMap.has(eq.assunto_questao_id)) equivMap.set(eq.assunto_questao_id, new Set([eq.assunto_questao_id]));
+      equivMap.get(eq.assunto_questao_id)!.add(eq.assunto_edital_id);
+    }
   }
 
   const salvos = new Map((salvosRes.data || []).map((x: any) => [x.assunto_id, x]));
@@ -69,7 +81,23 @@ export async function GET(
     if (paresImportados.size > 0 && !paresImportados.has(`${String(disc.nome).trim()}|||${String(assunto.nome).trim()}`)) continue;
 
     const saved = salvos.get(row.assunto_id);
-    const st = stats.get(row.assunto_id) || { total: 0, acertos: 0 };
+    const matchingIds = equivMap.get(row.assunto_id) || new Set([row.assunto_id]);
+    let totalAssunto = 0;
+    let acertosAssunto = 0;
+    let ultimaDataAssunto: string | undefined = undefined;
+
+    for (const assId of matchingIds) {
+      const s = stats.get(assId);
+      if (s) {
+        totalAssunto += s.total;
+        acertosAssunto += s.acertos;
+        if (s.ultimaData && (!ultimaDataAssunto || s.ultimaData > ultimaDataAssunto)) {
+          ultimaDataAssunto = s.ultimaData;
+        }
+      }
+    }
+
+    const st = { total: totalAssunto, acertos: acertosAssunto, ultimaData: ultimaDataAssunto };
     const taxa = st.total ? Math.round((st.acertos / st.total) * 100) : 0;
 
     let status = saved?.status || "nao_iniciado";

@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
 
       // Filtros
       // 1. Escopo "Meu Edital" / Concurso Alvo
+      let editalDiscIds: string[] | undefined = undefined;
       if (
         (escopo === "meu_edital" || ((concurso_id || edital_id) && escopo !== "todos")) &&
         (!disciplina_id || disciplina_id === "todos")
@@ -98,6 +99,7 @@ export async function GET(request: NextRequest) {
                 new Set(topicos.map((t: any) => t.disciplina_id).filter(Boolean))
               );
               if (discIds.length > 0) {
+                editalDiscIds = discIds;
                 query = query.in("disciplina_id", discIds);
               }
             }
@@ -107,19 +109,47 @@ export async function GET(request: NextRequest) {
         }
       }
 
+      let idsDisciplina: string[] | undefined = undefined;
       if (disciplina_id && disciplina_id !== "todos") {
-        let idsDisciplina = [disciplina_id];
+        idsDisciplina = [disciplina_id];
         if (disciplina_nome) {
-          const normalizar = (v:string) => v.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/^nocoes de /, "").replace(/ e tecnologia$/, "").replace(/ basica$/, "").trim();
+          const normalizar = (v: string) =>
+            v
+              .normalize("NFD")
+              .replace(/[̀-ͯ]/g, "")
+              .toLowerCase()
+              .replace(/^nocoes de /, "")
+              .replace(/ e tecnologia$/, "")
+              .replace(/ basica$/, "")
+              .trim();
           const base = normalizar(disciplina_nome);
           const { data: catalogo } = await supabase.from("disciplinas").select("id,nome");
-          const equivalentes = (catalogo || []).filter((d:any) => normalizar(d.nome) === base);
-          if (equivalentes.length) idsDisciplina = Array.from(new Set([disciplina_id, ...equivalentes.map((d:any)=>d.id)]));
+          const equivalentes = (catalogo || []).filter((d: any) => normalizar(d.nome) === base);
+          if (equivalentes.length)
+            idsDisciplina = Array.from(new Set([disciplina_id, ...equivalentes.map((d: any) => d.id)]));
         }
         query = idsDisciplina.length > 1 ? query.in("disciplina_id", idsDisciplina) : query.eq("disciplina_id", disciplina_id);
       }
+
+      let idsAssunto: string[] | undefined = undefined;
       if (assunto_id && assunto_id !== "todos") {
-        query = query.eq("assunto_id", assunto_id);
+        idsAssunto = [assunto_id];
+        try {
+          const { data: equivs } = await supabase
+            .from("assunto_equivalencias")
+            .select("assunto_questao_id, assunto_edital_id")
+            .or(`assunto_edital_id.eq.${assunto_id},assunto_questao_id.eq.${assunto_id}`);
+
+          if (equivs && equivs.length > 0) {
+            const equivIds = equivs
+              .flatMap((e: any) => [e.assunto_questao_id, e.assunto_edital_id])
+              .filter(Boolean);
+            idsAssunto = Array.from(new Set([assunto_id, ...equivIds]));
+          }
+        } catch (eqErr) {
+          console.warn("[API /questoes] Erro ao consultar equivalencias de assunto:", eqErr);
+        }
+        query = idsAssunto.length > 1 ? query.in("assunto_id", idsAssunto) : query.eq("assunto_id", idsAssunto[0]);
       }
       if (subassunto_id && subassunto_id !== "todos") {
         query = query.eq("subassunto_id", subassunto_id);
@@ -169,6 +199,8 @@ export async function GET(request: NextRequest) {
       // Questões anuladas/desativadas continuam fora da listagem pública pelo filtro acima.
 
       // Status é filtrado no servidor para manter lista, total e paginação consistentes.
+      let statusIds: string[] | null = null;
+      let statusNotIds: string[] | null = null;
       if (status !== "todas") {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return NextResponse.json({ success:false, error:"Não autenticado" }, { status:401 });
@@ -176,6 +208,7 @@ export async function GET(request: NextRequest) {
           const { data: favs } = await supabase.from("questoes_favoritas").select("questao_id").eq("usuario_id", user.id);
           const ids=(favs||[]).map((x:any)=>x.questao_id);
           if (!ids.length) return NextResponse.json({success:true,questoes:[],total:0,page,pageSize,totalPages:1,hasMore:false,fonte:"supabase"});
+          statusIds = ids;
           query=query.in("id",ids);
         } else {
           const { data: respostas } = await supabase.from("respostas_usuarios").select("questao_id,correta,created_at").eq("usuario_id", user.id).order("created_at",{ascending:false});
@@ -186,9 +219,13 @@ export async function GET(request: NextRequest) {
           if(status==="erradas") ids=[...latest].filter(([,ok])=>!ok).map(([id])=>id);
           if(status==="nao_resolvidas") {
             const done=[...latest.keys()];
-            if(done.length) query=query.not("id","in",`(${done.join(",")})`);
+            if(done.length) {
+              statusNotIds = done;
+              query=query.not("id","in",`(${done.join(",")})`);
+            }
           } else {
             if(!ids.length) return NextResponse.json({success:true,questoes:[],total:0,page,pageSize,totalPages:1,hasMore:false,fonte:"supabase"});
+            statusIds = ids;
             query=query.in("id",ids);
           }
         }
@@ -198,7 +235,110 @@ export async function GET(request: NextRequest) {
       const offset = (page - 1) * pageSize;
       query = query.range(offset, offset + pageSize - 1);
 
-      const { data, error, count } = await query;
+      let { data, error, count } = await query;
+
+      let fallback_disciplina = false;
+      let disciplina_sem_questoes = false;
+      let aviso: string | null = null;
+
+      // ── 3-Tier Fallback Cascade ──────────────────────────────────────────
+      // Se assunto_id foi filtrado mas retornou 0 questões, tenta fallback para a disciplina
+      if (assunto_id && assunto_id !== "todos" && (!count || count === 0)) {
+        let discIdParaFallback = disciplina_id && disciplina_id !== "todos" ? disciplina_id : undefined;
+
+        if (!discIdParaFallback) {
+          try {
+            const { data: assObj } = await supabase
+              .from("assuntos")
+              .select("disciplina_id")
+              .eq("id", assunto_id)
+              .maybeSingle();
+            if (assObj?.disciplina_id) {
+              discIdParaFallback = assObj.disciplina_id;
+            } else {
+              const { data: topicoObj } = await supabase
+                .from("edital_topicos")
+                .select("disciplina_id")
+                .eq("assunto_id", assunto_id)
+                .maybeSingle();
+              if (topicoObj?.disciplina_id) {
+                discIdParaFallback = topicoObj.disciplina_id;
+              }
+            }
+          } catch (discErr) {
+            console.warn("[API /questoes] Erro ao recuperar disciplina do assunto para fallback:", discErr);
+          }
+        }
+
+        if (discIdParaFallback) {
+          let discQuery = supabase
+            .from("questoes")
+            .select(
+              `
+              id, disciplina_id, assunto_id, subassunto_id, prova_id,
+              banca_nome, orgao_nome, cargo_nome, ano, tipo, dificuldade,
+              enunciado, texto_apoio, explicacao,
+              is_autoral_ia, modelo_ia, prompt_versao, revisada_por_especialista,
+              anulada, desatualizada, motivo_desatualizacao, auditoria_status, auditoria_motivo, auditada_em, versao,
+              fingerprint_hash, total_respostas, total_acertos, taxa_acerto,
+              created_at, updated_at
+            `,
+              { count: "exact" }
+            )
+            .neq("auditoria_status", "irrecuperavel")
+            .order("created_at", { ascending: false });
+
+          if (idsDisciplina && idsDisciplina.length > 0) {
+            discQuery = idsDisciplina.length > 1
+              ? discQuery.in("disciplina_id", idsDisciplina)
+              : discQuery.eq("disciplina_id", idsDisciplina[0]);
+          } else {
+            discQuery = discQuery.eq("disciplina_id", discIdParaFallback);
+          }
+
+          if (banca && banca !== "todas") discQuery = discQuery.ilike("banca_nome", `%${banca}%`);
+          if (ano && !isNaN(ano)) discQuery = discQuery.eq("ano", ano);
+          if (tipo && tipo !== "todos") discQuery = discQuery.eq("tipo", tipo);
+          if (dificuldade && dificuldade !== "todos") discQuery = discQuery.eq("dificuldade", dificuldade);
+          if (origem === "oficiais") discQuery = discQuery.eq("is_autoral_ia", false);
+          else if (origem === "autorais_ia") discQuery = discQuery.eq("is_autoral_ia", true);
+          if (anuladaParam === "false") discQuery = discQuery.eq("anulada", false);
+          else if (anuladaParam === "true") discQuery = discQuery.eq("anulada", true);
+          else discQuery = discQuery.eq("anulada", false);
+          if (desatualizadaParam === "false") discQuery = discQuery.eq("desatualizada", false);
+          else if (desatualizadaParam === "true") discQuery = discQuery.eq("desatualizada", true);
+
+          if (termo_busca && termo_busca.trim()) {
+            discQuery = discQuery.textSearch("busca_vetor", termo_busca.trim(), {
+              config: "portuguese",
+              type: "websearch",
+            });
+          }
+
+          if (statusIds) discQuery = discQuery.in("id", statusIds);
+          if (statusNotIds) discQuery = discQuery.not("id", "in", `(${statusNotIds.join(",")})`);
+
+          discQuery = discQuery.range(offset, offset + pageSize - 1);
+
+          const { data: fallbackData, count: fallbackCount, error: fallbackError } = await discQuery;
+
+          if (!fallbackError && fallbackCount && fallbackCount > 0) {
+            data = fallbackData;
+            count = fallbackCount;
+            fallback_disciplina = true;
+            aviso = "Não há questões deste assunto ainda; mostrando a disciplina inteira";
+          } else {
+            disciplina_sem_questoes = true;
+            aviso = "Não há questões cadastradas para esta disciplina no momento.";
+          }
+        } else {
+          disciplina_sem_questoes = true;
+          aviso = "Não há questões cadastradas para esta disciplina no momento.";
+        }
+      } else if (disciplina_id && disciplina_id !== "todos" && (!count || count === 0)) {
+        disciplina_sem_questoes = true;
+        aviso = "Não há questões cadastradas para esta disciplina no momento.";
+      }
 
       if (error) {
         console.error("[API /questoes] Supabase error:", error);
@@ -303,6 +443,9 @@ export async function GET(request: NextRequest) {
         totalPages,
         hasMore: page < totalPages,
         fonte: "supabase",
+        fallback_disciplina,
+        disciplina_sem_questoes,
+        aviso,
       });
     }
 
