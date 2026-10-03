@@ -40,9 +40,8 @@ ALTER TABLE public.edital_topicos
   ADD COLUMN IF NOT EXISTS subassunto_id uuid REFERENCES public.subassuntos(id) ON DELETE SET NULL;
 
 ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_edital_id_disciplina_id_assunto_id_key;
-ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_edital_disciplina_assunto_subassunto_key;
-ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_unico;
 DROP INDEX IF EXISTS public.idx_edital_topicos_unique_subassunto;
+ALTER TABLE public.edital_topicos DROP CONSTRAINT IF EXISTS edital_topicos_unico;
 ALTER TABLE public.edital_topicos ADD CONSTRAINT edital_topicos_unico UNIQUE NULLS NOT DISTINCT (edital_id, disciplina_id, assunto_id, subassunto_id);
 
 -- 3. Drop de versões anteriores da RPC confirmar_edital_usuario
@@ -125,7 +124,7 @@ BEGIN
     -- Seleção do cargo caso haja múltiplos cargos estruturados
     IF v_upload.estrutura_extraida ? 'cargos' AND jsonb_array_length(v_upload.estrutura_extraida->'cargos') > 0 THEN
         IF jsonb_array_length(v_upload.estrutura_extraida->'cargos') > 1 AND (p_cargo IS NULL OR trim(p_cargo) = '') THEN
-            RAISE EXCEPTION 'O edital possui múltiplos cargos. Selecione um cargo para confirmar.';
+            RAISE EXCEPTION 'Escolha o cargo antes de confirmar.';
         END IF;
 
         IF p_cargo IS NOT NULL AND trim(p_cargo) <> '' THEN
