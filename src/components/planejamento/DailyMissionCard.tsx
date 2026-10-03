@@ -41,30 +41,26 @@ export function DailyMissionCard({
 }: DailyMissionCardProps) {
   const [isCadernoOpen, setIsCadernoOpen] = useState(false);
   const [isCronometroOpen, setIsCronometroOpen] = useState(false);
-  const [cadernoTexto, setCadernoTexto] = useState("");
-  const [salvoCaderno, setSalvoCaderno] = useState(false);
-  const [statusLocal, setStatusLocal] = useState(missao.status);
-
-  useEffect(() => {
-    setStatusLocal(missao.status);
-  }, [missao.status]);
-
-  // Carregar notas do caderno para esta missão/tópico
-  useEffect(() => {
+  const [cadernoTexto, setCadernoTexto] = useState(() => {
     if (typeof window !== "undefined") {
       try {
         const key = `concursos_caderno_${missao.disciplina_id}_${missao.assunto_id || "geral"}`;
         const saved = localStorage.getItem(key);
-        if (saved) {
-          setCadernoTexto(saved);
-        } else if (missao.anotacoes) {
-          setCadernoTexto(missao.anotacoes);
-        }
+        if (saved) return saved;
       } catch {
         // Ignore
       }
     }
-  }, [missao.disciplina_id, missao.assunto_id, missao.anotacoes]);
+    return missao.anotacoes || "";
+  });
+  const [salvoCaderno, setSalvoCaderno] = useState(false);
+  const [statusLocal, setStatusLocal] = useState(missao.status);
+  const [prevMissaoKey, setPrevMissaoKey] = useState(`${missao.id}_${missao.status}`);
+
+  if (`${missao.id}_${missao.status}` !== prevMissaoKey) {
+    setPrevMissaoKey(`${missao.id}_${missao.status}`);
+    setStatusLocal(missao.status);
+  }
 
   const handleSalvarCaderno = () => {
     if (typeof window !== "undefined") {

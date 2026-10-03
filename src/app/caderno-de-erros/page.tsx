@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { StatCard } from "@/components/ui/StatCard";
 import { Badge } from "@/components/ui/Badge";
@@ -32,7 +32,7 @@ export default function CadernoErrosPage() {
   const [editandoNotaId, setEditandoNotaId] = useState<string | null>(null);
   const [notaTexto, setNotaTexto] = useState("");
 
-  const carregarDados = async () => {
+  const carregarDados = useCallback(async () => {
     try {
       const [res, taxonomia] = await Promise.all([
         fetch("/api/caderno-erros", { cache: "no-store" }),
@@ -47,10 +47,36 @@ export default function CadernoErrosPage() {
       setItens(DataService.getCadernoErros());
       setDisciplinas(DataService.getDisciplinas());
     }
-  };
+  }, []);
 
   useEffect(() => {
-    void carregarDados();
+    let ignore = false;
+    async function init() {
+      try {
+        const [res, taxonomia] = await Promise.all([
+          fetch("/api/caderno-erros", { cache: "no-store" }),
+          DataService.carregarDisciplinasTaxonomia(),
+        ]);
+        if (ignore) return;
+        if (res.ok) {
+          const json = await res.json();
+          setItens(Array.isArray(json.itens) ? json.itens : []);
+        } else {
+          setItens(DataService.getCadernoErros());
+        }
+        setDisciplinas(taxonomia.disciplinas);
+      } catch (err) {
+        console.warn("[CadernoErros] Usando cache local:", err);
+        if (!ignore) {
+          setItens(DataService.getCadernoErros());
+          setDisciplinas(DataService.getDisciplinas());
+        }
+      }
+    }
+    void init();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const itensFiltrados = itens.filter((item) => {

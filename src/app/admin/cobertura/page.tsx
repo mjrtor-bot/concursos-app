@@ -10,7 +10,6 @@ import {
   Layers,
   ChevronDown,
   ChevronRight,
-  Database,
   ArrowLeft,
   Search,
   Filter,
@@ -111,7 +110,30 @@ export default function AdminCoberturaPage() {
   }
 
   useEffect(() => {
-    void carregar();
+    let ignore = false;
+    async function init() {
+      try {
+        const res = await fetch("/api/admin/cobertura", { cache: "no-store" });
+        const json = await res.json();
+        if (ignore) return;
+        if (!res.ok) throw new Error(json.error || "Falha ao carregar relatório de cobertura");
+        setData(json);
+        if (json.relatorios?.length > 0) {
+          setEditalAberto((prev) => prev || json.relatorios[0].edital.id);
+        }
+      } catch (e) {
+        if (ignore) return;
+        setErro(e instanceof Error ? e.message : "Erro desconhecido");
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    void init();
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   const relatoriosFiltrados = (data?.relatorios || []).filter((r) => {

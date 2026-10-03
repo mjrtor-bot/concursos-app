@@ -142,7 +142,52 @@ export default function BibliotecaEditaisPage() {
     }
   }
 
-  useEffect(()=>{void carregarAlvo(); void carregarMeusEditais()},[user?.id]);
+  useEffect(() => {
+    let ignore = false;
+    async function init() {
+      try {
+        const [rMeus, rAlvo] = await Promise.all([
+          fetch("/api/editais/importados", { cache: "no-store" }),
+          fetch("/api/concursos/alvo", { cache: "no-store" }),
+        ]);
+
+        if (ignore) return;
+
+        if (rMeus.ok) {
+          const j = await rMeus.json();
+          setMeusEditais(j.editais || []);
+        }
+
+        if (rAlvo.ok) {
+          const j = await rAlvo.json();
+          setAlvo(j.alvo || null);
+          const concurso = (j.concursos || []).find((c: any) => c.id === j.alvo?.concurso_id);
+          const cargo = (concurso?.concurso_cargos || []).find((c: any) => c.id === j.alvo?.cargo_id);
+          const edital = (cargo?.editais_concurso || []).find((e: any) => e.id === j.alvo?.edital_id);
+          if (concurso && cargo) {
+            setAlvoDetalhe({
+              concurso: concurso.nome,
+              cargo: cargo.nome,
+              edital: edital?.titulo || edital?.numero || "Edital do concurso alvo",
+            });
+            if (edital?.id && !destinoEditalId) {
+              setDestinoEditalId(edital.id);
+            }
+          }
+        }
+      } catch (e) {
+        if (!ignore) {
+          setAlvo(null);
+          setAlvoDetalhe(null);
+          setMensagem(e instanceof Error ? e.message : "Não foi possível identificar o concurso alvo.");
+        }
+      }
+    }
+    void init();
+    return () => {
+      ignore = true;
+    };
+  }, [user?.id, destinoEditalId]);
   useEffect(()=>{const t=setTimeout(carregar,250);return()=>clearTimeout(t);},[q,carreira,uf,status]);
 
   const ufs=useMemo(()=>Array.from(new Set(editais.map(e=>e.uf).filter(Boolean) as string[])).sort(),[editais]);

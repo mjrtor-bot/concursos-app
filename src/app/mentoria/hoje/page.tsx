@@ -55,7 +55,18 @@ export default function MentoriaHojePage() {
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
   const [loading, setLoading] = useState(true);
-  const [hojeFormatado, setHojeFormatado] = useState("");
+  const [hojeFormatado] = useState(() => {
+    try {
+      return new Intl.DateTimeFormat("pt-BR", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(new Date());
+    } catch {
+      return "";
+    }
+  });
 
   // ── ESTADO DO CRONÔMETRO DE ESTUDO REAL ────────────────────────────────────
   const [cronometroAtivo, setCronometroAtivo] = useState(false);
@@ -132,19 +143,9 @@ export default function MentoriaHojePage() {
     return resto === 0 ? `${minutos} min` : `${minutos}min ${String(resto).padStart(2, "0")}s`;
   };
 
-  useEffect(() => {
-    setHojeFormatado(
-      new Intl.DateTimeFormat("pt-BR", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      }).format(new Date())
-    );
-  }, []);
-
   // Carregamento inicial do perfil e ciclo
   useEffect(() => {
+    let ignore = false;
     async function carregar() {
       if (!user) {
         setLoading(false);
@@ -155,15 +156,22 @@ export default function MentoriaHojePage() {
           MentoriaService.getPerfil(user.id),
           MentoriaCicloService.obterPlanoCiclo(user.id),
         ]);
-        setPerfil(p);
-        setPlanoCiclo(ciclo);
+        if (!ignore) {
+          setPerfil(p);
+          setPlanoCiclo(ciclo);
+        }
       } catch (err) {
         console.error("Erro ao carregar dados do estudo de hoje:", err);
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
-    carregar();
+    void carregar();
+    return () => {
+      ignore = true;
+    };
   }, [user]);
 
   // Carregamento dinâmico de dados baseado no bloco ativo

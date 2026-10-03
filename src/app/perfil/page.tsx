@@ -18,16 +18,22 @@ export default function PerfilPage() {
   const { user, updateUser } = useAuth();
   const { success, info } = useToast();
   const { recarregarConcursoAlvo } = useConcurso();
-  const [nome,setNome]=useState("");
-  const [email,setEmail]=useState("");
-  const [metaDiaria,setMetaDiaria]=useState(30);
-  const [concursos,setConcursos]=useState<ConcursoReal[]>([]);
-  const [concursoId,setConcursoId]=useState("");
-  const [cargoId,setCargoId]=useState("");
-  const [editalId,setEditalId]=useState("");
-  const [carregandoAlvo,setCarregandoAlvo]=useState(true);
+  const [nome, setNome] = useState(user?.nome || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [metaDiaria, setMetaDiaria] = useState(user?.meta_diaria_questoes || 30);
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+  const [concursos, setConcursos] = useState<ConcursoReal[]>([]);
+  const [concursoId, setConcursoId] = useState("");
+  const [cargoId, setCargoId] = useState("");
+  const [editalId, setEditalId] = useState("");
+  const [carregandoAlvo, setCarregandoAlvo] = useState(true);
 
-  useEffect(()=>{ if(user){setNome(user.nome||"");setEmail(user.email||"");setMetaDiaria(user.meta_diaria_questoes||30)} },[user]);
+  if (user && user.id !== prevUserId) {
+    setPrevUserId(user.id);
+    setNome(user.nome || "");
+    setEmail(user.email || "");
+    setMetaDiaria(user.meta_diaria_questoes || 30);
+  }
 
   useEffect(()=>{
     let ativo=true;

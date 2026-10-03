@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -13,7 +13,6 @@ import {
   Building2,
   AlertCircle,
   CheckCircle2,
-  HelpCircle,
 } from "lucide-react";
 import { Questao, Alternativa, Disciplina, Assunto, QuestaoTipo, QuestaoDificuldade } from "@/types";
 import { DataService } from "@/services/dataService";
@@ -25,12 +24,43 @@ import { Button } from "@/components/ui/Button";
 export default function AdminNovaQuestaoPage() {
   const router = useRouter();
 
-  const [disciplinas, setDisciplinas] = useState<Disciplina[]>(mockDisciplinas);
-  const [assuntos, setAssuntos] = useState<Assunto[]>(mockAssuntos);
+  const [disciplinas] = useState<Disciplina[]>(() => {
+    try {
+      const discs = DataService.getDisciplinas();
+      return discs && discs.length > 0 ? discs : mockDisciplinas;
+    } catch {
+      return mockDisciplinas;
+    }
+  });
+
+  const [assuntos] = useState<Assunto[]>(() => {
+    try {
+      const ass = DataService.getAssuntos();
+      return ass && ass.length > 0 ? ass : mockAssuntos;
+    } catch {
+      return mockAssuntos;
+    }
+  });
 
   // Form State
-  const [disciplinaId, setDisciplinaId] = useState("");
-  const [assuntoId, setAssuntoId] = useState("");
+  const [disciplinaId, setDisciplinaId] = useState<string>(() => {
+    try {
+      const discs = DataService.getDisciplinas();
+      return discs && discs.length > 0 ? discs[0].id : (mockDisciplinas[0]?.id || "");
+    } catch {
+      return mockDisciplinas[0]?.id || "";
+    }
+  });
+
+  const [assuntoId, setAssuntoId] = useState<string>(() => {
+    try {
+      const ass = DataService.getAssuntos();
+      return ass && ass.length > 0 ? ass[0].id : (mockAssuntos[0]?.id || "");
+    } catch {
+      return mockAssuntos[0]?.id || "";
+    }
+  });
+
   const [banca, setBanca] = useState("FGV");
   const [ano, setAno] = useState<number>(new Date().getFullYear());
   const [orgao, setOrgao] = useState("Tribunal de Justiça");
@@ -62,33 +92,13 @@ export default function AdminNovaQuestaoPage() {
 
   // Status & Erros
   const [erroValidacao, setErroValidacao] = useState<string | null>(null);
-  const [duplicataDetectada, setDuplicataDetectada] = useState<string | null>(null);
   const [salvando, setSalvando] = useState(false);
   const [sucesso, setSucesso] = useState(false);
 
-  useEffect(() => {
-    try {
-      const discs = DataService.getDisciplinas();
-      if (discs && discs.length > 0) {
-        setDisciplinas(discs);
-        setDisciplinaId(discs[0].id);
-      }
-      const ass = DataService.getAssuntos();
-      if (ass && ass.length > 0) {
-        setAssuntos(ass);
-      }
-    } catch {
-      // fallback
-    }
-  }, []);
-
-  const assuntosFiltrados = assuntos.filter((a) => !disciplinaId || a.disciplina_id === disciplinaId);
-
-  useEffect(() => {
-    if (assuntosFiltrados.length > 0 && (!assuntoId || !assuntosFiltrados.some((a) => a.id === assuntoId))) {
-      setAssuntoId(assuntosFiltrados[0].id);
-    }
-  }, [disciplinaId, assuntosFiltrados, assuntoId]);
+  const assuntosFiltrados = useMemo(
+    () => assuntos.filter((a) => !disciplinaId || a.disciplina_id === disciplinaId),
+    [assuntos, disciplinaId]
+  );
 
   // Montagem da Questão Preview
   const montarQuestaoObjeto = (): Questao => {
@@ -131,7 +141,7 @@ export default function AdminNovaQuestaoPage() {
     });
 
     return {
-      id: `q_preview_${Date.now()}`,
+      id: "q_preview",
       disciplina_id: disciplinaId || "disc_dir_const",
       assunto_id: assuntoId || "ass_dc_dir_fund",
       enunciado: enunciado || "Enunciado da questão em preenchimento...",
@@ -152,27 +162,26 @@ export default function AdminNovaQuestaoPage() {
       desatualizada: false,
       versao: 1,
       fingerprint_hash,
-      created_at: new Date().toISOString(),
+      created_at: "2026-01-01T00:00:00.000Z",
     };
   };
 
-  // Checagem de duplicidade em tempo real
-  useEffect(() => {
-    if (!enunciado || enunciado.length < 15) {
-      setDuplicataDetectada(null);
-      return;
-    }
+  // Checagem de duplicidade em tempo real via useMemo
+  const duplicataDetectada = useMemo(() => {
+    if (!enunciado || enunciado.length < 15) return null;
     const questaoObj = montarQuestaoObjeto();
-    const todas = DataService.getTodasQuestoes();
-    const hash = questaoObj.fingerprint_hash;
-    const existente = todas.find((q) => q.fingerprint_hash === hash);
-
-    if (existente) {
-      setDuplicataDetectada(`Uma questão idêntica já existe no catálogo (ID: ${existente.id.substring(0, 8)}...).`);
-    } else {
-      setDuplicataDetectada(null);
+    try {
+      const todas = DataService.getTodasQuestoes();
+      const hash = questaoObj.fingerprint_hash;
+      const existente = todas.find((q) => q.fingerprint_hash === hash);
+      if (existente) {
+        return `Uma questão idêntica já existe no catálogo (ID: ${existente.id.substring(0, 8)}...).`;
+      }
+    } catch {
+      // fallback
     }
-  }, [enunciado, tipo, banca, ano, orgao, alternativasME, gabaritoME, gabaritoCE]);
+    return null;
+  }, [enunciado, tipo, banca, ano, orgao, alternativasME, gabaritoME, gabaritoCE, disciplinaId, assuntoId, dificuldade, explicacao, textoApoio, isAutoralIA, modeloIA, promptVersao, revisadaEspecialista]);
 
   const handleSalvar = (e: React.FormEvent) => {
     e.preventDefault();
@@ -347,7 +356,16 @@ export default function AdminNovaQuestaoPage() {
                 </label>
                 <select
                   value={disciplinaId}
-                  onChange={(e) => setDisciplinaId(e.target.value)}
+                  onChange={(e) => {
+                    const newDiscId = e.target.value;
+                    setDisciplinaId(newDiscId);
+                    const matching = assuntos.filter((a) => !newDiscId || a.disciplina_id === newDiscId);
+                    if (matching.length > 0) {
+                      setAssuntoId(matching[0].id);
+                    } else {
+                      setAssuntoId("");
+                    }
+                  }}
                   className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 font-medium"
                 >
                   {disciplinas.map((d) => (

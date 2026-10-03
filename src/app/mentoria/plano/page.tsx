@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   Target,
@@ -48,11 +48,12 @@ export default function MentoriaPlanoPage() {
   const [disciplinaExplicando, setDisciplinaExplicando] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<{ tipo: "success" | "error"; texto: string } | null>(null);
 
-  const carregarDados = async () => {
+  const carregarDados = useCallback(async () => {
     if (!user) {
       setLoading(false);
       return;
     }
+    setLoading(true);
     try {
       const [p, d, ciclo, grade] = await Promise.all([
         MentoriaService.getPerfil(user.id),
@@ -69,10 +70,40 @@ export default function MentoriaPlanoPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    carregarDados();
+    let ignore = false;
+    async function init() {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const [p, d, ciclo, grade] = await Promise.all([
+          MentoriaService.getPerfil(user.id),
+          MentoriaService.getDisponibilidade(user.id),
+          MentoriaCicloService.obterPlanoCiclo(user.id),
+          MentoriaService.getGradeSemanalDistribuida(user.id),
+        ]);
+        if (!ignore) {
+          setPerfil(p);
+          setDisp(d);
+          setPlanoCiclo(ciclo);
+          setGradeSemanal(grade);
+        }
+      } catch (err) {
+        console.error("Erro ao carregar plano de estudos adaptativo:", err);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    void init();
+    return () => {
+      ignore = true;
+    };
   }, [user]);
 
   async function handleRecalcularCiclo() {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import {
   FileText,
@@ -57,18 +57,18 @@ export default function MentoriaEditalPage() {
   const [filtroPeso, setFiltroPeso] = useState<PesoFiltro>("todos");
   const [disciplinasAbertas, setDisciplinasAbertas] = useState<Record<string, boolean>>({});
 
-  const carregarDados = async () => {
+  const carregarDados = useCallback(async () => {
     const importedId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("importado") : null;
     if (!user) {
       setLoading(false);
       return;
     }
+    setLoading(true);
     try {
-      setLoading(true);
       const [p, edital, alvoResp] = await Promise.all([
         MentoriaService.getPerfil(user.id),
         importedId ? Promise.resolve(null) : MentoriaService.getEditalVerticalizado(user.id),
-        fetch("/api/concursos/alvo", { cache: "no-store" }).then(r => r.ok ? r.json() : null),
+        fetch("/api/concursos/alvo", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
       ]);
       setPerfil(p);
       if (importedId) {
@@ -91,12 +91,13 @@ export default function MentoriaEditalPage() {
         const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
         const ed = cargo?.editais_concurso?.find((x: any) => x.id === alvoResp.alvo.edital_id);
         setAlvoOficial(c && cargo && ed ? { concurso: c.nome, cargo: cargo.nome, edital: ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo, fonte: ed.fonte_oficial_url } : null);
-      } else setAlvoOficial(null);
+      } else if (!importedId) {
+        setAlvoOficial(null);
+      }
 
-      // Abrir todas as disciplinas por padrão
       const abertas: Record<string, boolean> = {};
       const disciplinasBase = importedId
-        ? ((await fetch(`/api/editais/importados/${importedId}/verticalizado`, { cache: "no-store" }).then(r => r.ok ? r.json() : null))?.resumo?.disciplinas || [])
+        ? ((await fetch(`/api/editais/importados/${importedId}/verticalizado`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)))?.resumo?.disciplinas || [])
         : (edital?.disciplinas || []);
       disciplinasBase.forEach((d: any) => {
         abertas[d.disciplina_id] = true;
@@ -107,10 +108,71 @@ export default function MentoriaEditalPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    carregarDados();
+    let ignore = false;
+    async function init() {
+      const importedId = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("importado") : null;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const [p, edital, alvoResp] = await Promise.all([
+          MentoriaService.getPerfil(user.id),
+          importedId ? Promise.resolve(null) : MentoriaService.getEditalVerticalizado(user.id),
+          fetch("/api/concursos/alvo", { cache: "no-store" }).then(r => r.ok ? r.json() : null),
+        ]);
+        if (ignore) return;
+        setPerfil(p);
+        if (importedId) {
+          const importedResp = await fetch(`/api/editais/importados/${importedId}/verticalizado`, { cache: "no-store" });
+          const importedJson = await importedResp.json();
+          if (!importedResp.ok) throw new Error(importedJson.error || "Falha ao carregar o edital importado.");
+          if (ignore) return;
+          setResumoEdital(importedJson.resumo);
+          setEditalImportado(true);
+          setAlvoOficial({
+            concurso: importedJson.edital.orgao || "Edital importado",
+            cargo: importedJson.edital.cargo || "Cargo não informado",
+            edital: importedJson.edital.nome || importedJson.edital.arquivo_nome || "Edital importado",
+            fonte: "#",
+          });
+        } else {
+          setResumoEdital(edital);
+        }
+        if (!importedId && alvoResp?.alvo) {
+          const c = (alvoResp.concursos || []).find((x: any) => x.id === alvoResp.alvo.concurso_id);
+          const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
+          const ed = cargo?.editais_concurso?.find((x: any) => x.id === alvoResp.alvo.edital_id);
+          setAlvoOficial(c && cargo && ed ? { concurso: c.nome, cargo: cargo.nome, edital: ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo, fonte: ed.fonte_oficial_url } : null);
+        } else if (!importedId) {
+          setAlvoOficial(null);
+        }
+
+        // Abrir todas as disciplinas por padrão
+        const abertas: Record<string, boolean> = {};
+        const disciplinasBase = importedId
+          ? ((await fetch(`/api/editais/importados/${importedId}/verticalizado`, { cache: "no-store" }).then(r => r.ok ? r.json() : null))?.resumo?.disciplinas || [])
+          : (edital?.disciplinas || []);
+        if (ignore) return;
+        disciplinasBase.forEach((d: any) => {
+          abertas[d.disciplina_id] = true;
+        });
+        setDisciplinasAbertas(abertas);
+      } catch (err) {
+        console.error("Erro ao carregar edital verticalizado:", err);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    void init();
+    return () => {
+      ignore = true;
+    };
   }, [user]);
 
   const toggleDisciplina = (disciplinaId: string) => {

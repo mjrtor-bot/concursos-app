@@ -85,11 +85,68 @@ export default function AdminUsuariosPage() {
   }, [termoBusca, roleFiltro, concursoFiltro]);
 
   useEffect(() => {
-    carregarUsuarios();
-    fetch("/api/concursos/alvo",{cache:"no-store"}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{
-      setConcursos(((j.concursos||[]).map((x:any)=>({id:x.id,nome:x.nome,orgao:x.orgao,sigla:(x.orgao.match(/\\b[A-Z]{2,6}\\b/g)||[]).pop()||x.orgao.replace(/[^A-Za-z]/g,"").slice(0,6).toUpperCase(),ano:new Date().getFullYear(),nivel:"medio",esfera:x.esfera||"estadual",status:x.status||"previsto",banca:"",descricao:"",vagas_totais:0,salario_max:0,data_prova:null,edital_url:x.fonte_oficial_url,created_at:""}))) as Concurso[]);
-    }).catch(()=>setConcursos([]));
-  }, [carregarUsuarios]);
+    let ignore = false;
+    async function init() {
+      try {
+        const params = new URLSearchParams();
+        if (termoBusca.trim()) params.set("termo", termoBusca.trim());
+        if (roleFiltro !== "todos") params.set("role", roleFiltro);
+        if (concursoFiltro !== "todos") params.set("concurso_id", concursoFiltro);
+
+        const [resUsers, resConcursos] = await Promise.all([
+          fetch(`/api/admin/usuarios?${params.toString()}`, { cache: "no-store" }),
+          fetch("/api/concursos/alvo", { cache: "no-store" }).catch(() => null),
+        ]);
+
+        if (ignore) return;
+
+        if (resUsers.ok) {
+          const json = await resUsers.json();
+          if (json.success && Array.isArray(json.usuarios)) {
+            setUsuarios(json.usuarios);
+          } else {
+            setUsuarios([]);
+          }
+        }
+
+        if (resConcursos && resConcursos.ok) {
+          const j = await resConcursos.json();
+          setConcursos(
+            (j.concursos || []).map((x: any) => ({
+              id: x.id,
+              nome: x.nome,
+              orgao: x.orgao,
+              sigla: (x.orgao.match(/\b[A-Z]{2,6}\b/g) || []).pop() || x.orgao.replace(/[^A-Za-z]/g, "").slice(0, 6).toUpperCase(),
+              ano: new Date().getFullYear(),
+              nivel: "medio",
+              esfera: x.esfera || "estadual",
+              status: x.status || "previsto",
+              banca: "",
+              descricao: "",
+              vagas_totais: 0,
+              salario_max: 0,
+              data_prova: null,
+              edital_url: x.fonte_oficial_url,
+              created_at: "",
+            })) as Concurso[]
+          );
+        }
+      } catch {
+        if (!ignore) {
+          setUsuarios([]);
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void init();
+    return () => {
+      ignore = true;
+    };
+  }, [termoBusca, roleFiltro, concursoFiltro]);
 
   const handleAbrirEdicao = (u: Profile) => {
     setUsuarioEditando(u);

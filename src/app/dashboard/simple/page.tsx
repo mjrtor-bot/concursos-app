@@ -6,17 +6,16 @@ import { EstatisticasGerais } from "@/types";
 import Link from "next/link";
 
 export default function SimpleDashboardPage() {
-  const [stats, setStats] = useState<EstatisticasGerais | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Inicializar dados
-    DataService.inicializarDadosDemonstracaoSeNecessario();
-
-    const s = DataService.getEstatisticas();
-    setStats(s);
-    setLoading(false);
-  }, []);
+  const [stats] = useState<EstatisticasGerais | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      DataService.inicializarDadosDemonstracaoSeNecessario();
+      return DataService.getEstatisticas();
+    } catch {
+      return null;
+    }
+  });
+  const loading = false;
 
   if (loading) {
     return (

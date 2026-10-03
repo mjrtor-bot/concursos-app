@@ -30,7 +30,30 @@ export default function EditaisImportadosPage() {
     }
   }
 
-  useEffect(() => { void carregar(); }, []);
+  useEffect(() => {
+    let ignore = false;
+    async function init() {
+      try {
+        const r = await fetch("/api/editais/importados", { cache: "no-store" });
+        const j = await r.json();
+        if (ignore) return;
+        if (!r.ok) throw new Error(j.error || "Falha ao carregar seus editais.");
+        setEditais(j.editais || []);
+      } catch (e) {
+        if (!ignore) {
+          setErro(e instanceof Error ? e.message : "Falha ao carregar seus editais.");
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+    void init();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 space-y-6">
