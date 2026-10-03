@@ -13,6 +13,9 @@ export async function GET(request: NextRequest) {
     const disciplina_nome = searchParams.get("disciplina_nome") || undefined;
     const assunto_id = searchParams.get("assunto_id") || undefined;
     const subassunto_id = searchParams.get("subassunto_id") || undefined;
+    const concurso_id = searchParams.get("concurso_id") || undefined;
+    const edital_id = searchParams.get("edital_id") || undefined;
+    const escopo = searchParams.get("escopo") || undefined; // "meu_edital" | "todos"
     const banca = searchParams.get("banca") || undefined;
     const ano = searchParams.get("ano") ? parseInt(searchParams.get("ano")!, 10) : undefined;
     const tipo = (searchParams.get("tipo") as any) || undefined;
@@ -49,6 +52,61 @@ export async function GET(request: NextRequest) {
         .order("created_at", { ascending: false });
 
       // Filtros
+      // 1. Escopo "Meu Edital" / Concurso Alvo
+      if (
+        (escopo === "meu_edital" || ((concurso_id || edital_id) && escopo !== "todos")) &&
+        (!disciplina_id || disciplina_id === "todos")
+      ) {
+        try {
+          let targetEditalIds: string[] = [];
+          if (edital_id) {
+            targetEditalIds = [edital_id];
+          } else if (concurso_id) {
+            const { data: directEditais } = await supabase
+              .from("editais_concurso")
+              .select("id")
+              .eq("concurso_id", concurso_id);
+            if (directEditais && directEditais.length > 0) {
+              targetEditalIds = directEditais.map((e: any) => e.id);
+            }
+            if (targetEditalIds.length === 0) {
+              const { data: cargos } = await supabase
+                .from("concurso_cargos")
+                .select("id, editais_concurso(id)")
+                .eq("concurso_id", concurso_id);
+              if (cargos) {
+                for (const c of cargos) {
+                  const eds = (c as any).editais_concurso || [];
+                  for (const ed of eds) {
+                    if (ed.id && !targetEditalIds.includes(ed.id)) {
+                      targetEditalIds.push(ed.id);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          if (targetEditalIds.length > 0) {
+            const { data: topicos } = await supabase
+              .from("edital_topicos")
+              .select("disciplina_id")
+              .in("edital_id", targetEditalIds);
+
+            if (topicos && topicos.length > 0) {
+              const discIds = Array.from(
+                new Set(topicos.map((t: any) => t.disciplina_id).filter(Boolean))
+              );
+              if (discIds.length > 0) {
+                query = query.in("disciplina_id", discIds);
+              }
+            }
+          }
+        } catch (editalErr) {
+          console.warn("[API /questoes] Erro ao filtrar por edital:", editalErr);
+        }
+      }
+
       if (disciplina_id && disciplina_id !== "todos") {
         let idsDisciplina = [disciplina_id];
         if (disciplina_nome) {

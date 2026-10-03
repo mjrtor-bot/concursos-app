@@ -2,7 +2,7 @@
 
 import React from "react";
 import { FiltroQuestoes, Disciplina, Assunto } from "@/types";
-import { Search, Filter, RotateCcw, X, Sparkles } from "lucide-react";
+import { Search, Filter, RotateCcw, X, Sparkles, Layers } from "lucide-react";
 
 interface QuestionFilterProps {
   filtro: FiltroQuestoes;
@@ -13,6 +13,7 @@ interface QuestionFilterProps {
   totalEncontradas?: number;
   bancas?: string[];
   anos?: number[];
+  concursoNome?: string | null;
 }
 
 const DEFAULT_BANCAS = [
@@ -36,6 +37,7 @@ export function QuestionFilter({
   totalEncontradas,
   bancas = DEFAULT_BANCAS,
   anos = DEFAULT_ANOS,
+  concursoNome,
 }: QuestionFilterProps) {
   const listaBancas = bancas && bancas.length > 0 ? bancas : DEFAULT_BANCAS;
   const listaAnos = anos && anos.length > 0 ? anos : DEFAULT_ANOS;
@@ -90,6 +92,58 @@ export function QuestionFilter({
             <RotateCcw className="w-3 h-3" />
             Limpar filtros
           </button>
+        )}
+      </div>
+
+      {/* Selector: Meu Edital vs Banco Inteiro */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+        <div className="flex items-center gap-1.5 bg-slate-200/70 dark:bg-slate-900/80 p-1 rounded-xl">
+          <button
+            type="button"
+            onClick={() => {
+              onFiltroChange({
+                ...filtro,
+                escopo: "meu_edital",
+                disciplina_id: undefined,
+                assunto_id: undefined,
+              });
+            }}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              filtro.escopo !== "todos"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span>Meu Edital {concursoNome ? `(${concursoNome})` : ""}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              onFiltroChange({
+                ...filtro,
+                escopo: "todos",
+              });
+            }}
+            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              filtro.escopo === "todos"
+                ? "bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Banco Inteiro</span>
+          </button>
+        </div>
+
+        {filtro.escopo !== "todos" && concursoNome && (
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1.5 font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-1 rounded-lg border border-blue-200/60 dark:border-blue-800/60">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              Disciplinas do seu edital ativo ({concursoNome})
+            </span>
+          </div>
         )}
       </div>
 

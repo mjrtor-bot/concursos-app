@@ -289,6 +289,8 @@ export interface FiltroQuestoes {
   banca?: string;
   ano?: number | string;
   concurso_id?: string;
+  edital_id?: string;
+  escopo?: "meu_edital" | "todos";
   tipo?: QuestaoTipo | "todos";
   dificuldade?: QuestaoDificuldade | "todos";
   status?: "todas" | "nao_resolvidas" | "acertadas" | "erradas" | "favoritas";

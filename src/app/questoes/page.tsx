@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { DataService } from "@/services/dataService";
 import { Questao, FiltroQuestoes, Disciplina, Assunto, OrigemQuestaoFiltro } from "@/types";
+import { useConcurso } from "@/contexts/ConcursoContext";
 import {
   CheckSquare2,
   ChevronLeft,
@@ -21,6 +22,7 @@ const PAGE_SIZE = 20; // questões por lote buscado da API
 
 function QuestoesContent() {
   const searchParams = useSearchParams();
+  const { concursoAtivo } = useConcurso();
 
   // ── Estado principal ─────────────────────────────────────────────────────
   const [questoes, setQuestoes] = useState<Questao[]>([]);
@@ -40,11 +42,16 @@ function QuestoesContent() {
       rawOrigem === "oficiais" || rawOrigem === "autorais_ia" || rawOrigem === "todas"
         ? rawOrigem
         : "todas";
+    const rawEscopo = searchParams.get("escopo");
+    const escopoValido: "meu_edital" | "todos" | undefined =
+      rawEscopo === "meu_edital" || rawEscopo === "todos" ? rawEscopo : undefined;
 
     return {
       disciplina_id: searchParams.get("disciplina_id") || undefined,
       assunto_id: searchParams.get("assunto_id") || undefined,
       concurso_id: searchParams.get("concurso_id") || undefined,
+      edital_id: searchParams.get("edital_id") || undefined,
+      escopo: escopoValido,
       banca: searchParams.get("banca") || undefined,
       origem: origemValida,
       status: "todas",
@@ -98,6 +105,23 @@ function QuestoesContent() {
   const buildParams = useCallback(
     (page: number) => {
       const params = new URLSearchParams();
+
+      if (filtro.escopo) {
+        params.set("escopo", filtro.escopo);
+      } else if (concursoAtivo) {
+        params.set("escopo", "meu_edital");
+      }
+
+      if (filtro.concurso_id) {
+        params.set("concurso_id", filtro.concurso_id);
+      } else if (concursoAtivo?.id) {
+        params.set("concurso_id", concursoAtivo.id);
+      }
+
+      if (filtro.edital_id) {
+        params.set("edital_id", filtro.edital_id);
+      }
+
       if (filtro.disciplina_id && filtro.disciplina_id !== "todos") {
         params.set("disciplina_id", filtro.disciplina_id);
       }
@@ -129,7 +153,7 @@ function QuestoesContent() {
       params.set("pageSize", String(PAGE_SIZE));
       return params;
     },
-    [filtro, assuntos]
+    [filtro, assuntos, concursoAtivo]
   );
 
   // ── Busca questões (reseta para página 1 quando filtro muda) ─────────────
@@ -307,6 +331,7 @@ function QuestoesContent() {
         assuntos={assuntos}
         onLimparFiltros={handleLimparFiltros}
         totalEncontradas={totalQuestoes}
+        concursoNome={concursoAtivo ? `${concursoAtivo.orgao} - ${concursoAtivo.nome}` : undefined}
       />
 
       {/* Main Question Interface */}
