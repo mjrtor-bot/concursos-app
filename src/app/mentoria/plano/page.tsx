@@ -35,6 +35,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { WeeklyScheduleGrid } from "@/components/planejamento/WeeklyScheduleGrid";
+import { MeuPlanoDropdownMenu } from "@/components/planejamento/MeuPlanoDropdownMenu";
 
 export default function MentoriaPlanoPage() {
   const { user } = useAuth();
@@ -47,30 +48,31 @@ export default function MentoriaPlanoPage() {
   const [disciplinaExplicando, setDisciplinaExplicando] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<{ tipo: "success" | "error"; texto: string } | null>(null);
 
-  useEffect(() => {
-    async function carregar() {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const [p, d, ciclo, grade] = await Promise.all([
-          MentoriaService.getPerfil(user.id),
-          MentoriaService.getDisponibilidade(user.id),
-          MentoriaCicloService.obterPlanoCiclo(user.id),
-          MentoriaService.getGradeSemanalDistribuida(user.id),
-        ]);
-        setPerfil(p);
-        setDisp(d);
-        setPlanoCiclo(ciclo);
-        setGradeSemanal(grade);
-      } catch (err) {
-        console.error("Erro ao carregar plano de estudos adaptativo:", err);
-      } finally {
-        setLoading(false);
-      }
+  const carregarDados = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
     }
-    carregar();
+    try {
+      const [p, d, ciclo, grade] = await Promise.all([
+        MentoriaService.getPerfil(user.id),
+        MentoriaService.getDisponibilidade(user.id),
+        MentoriaCicloService.obterPlanoCiclo(user.id),
+        MentoriaService.getGradeSemanalDistribuida(user.id),
+      ]);
+      setPerfil(p);
+      setDisp(d);
+      setPlanoCiclo(ciclo);
+      setGradeSemanal(grade);
+    } catch (err) {
+      console.error("Erro ao carregar plano de estudos adaptativo:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarDados();
   }, [user]);
 
   async function handleRecalcularCiclo() {
@@ -165,6 +167,11 @@ export default function MentoriaPlanoPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          <MeuPlanoDropdownMenu
+            variant="button"
+            onPlanUpdated={carregarDados}
+          />
+
           <Button
             variant="outline"
             size="md"

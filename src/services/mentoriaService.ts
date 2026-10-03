@@ -222,6 +222,36 @@ export class MentoriaService {
     return { success: true, perfil: savedPerfil };
   }
 
+  static async atualizarPerfil(
+    usuarioId: string,
+    updates: Partial<MentoriaPerfil>
+  ): Promise<{ success: boolean; perfil?: MentoriaPerfil; error?: string }> {
+    if (!usuarioId) return { success: false, error: "Usuário não autenticado." };
+    const supabase = this.getClient();
+    if (supabase) {
+      try {
+        const { data, error } = await supabase
+          .from("mentoria_perfis")
+          .update({ ...updates, updated_at: new Date().toISOString() })
+          .eq("usuario_id", usuarioId)
+          .select()
+          .single();
+
+        if (error) {
+          console.error("[MentoriaService] Erro ao atualizar perfil no Supabase:", error.message);
+          return { success: false, error: error.message };
+        }
+        if (data && typeof window !== "undefined") {
+          localStorage.setItem(`${STORAGE_KEYS.PERFIL}_${usuarioId}`, JSON.stringify(data));
+        }
+        return { success: true, perfil: data as MentoriaPerfil };
+      } catch (err: any) {
+        return { success: false, error: err.message };
+      }
+    }
+    return { success: true };
+  }
+
   // ── 2. DISPONIBILIDADE SEMANAL ─────────────────────────────────────────────
   static async getDisponibilidade(usuarioId: string): Promise<MentoriaDisponibilidade[]> {
     if (!usuarioId) return [];

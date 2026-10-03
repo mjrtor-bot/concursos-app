@@ -33,6 +33,7 @@ import { useConcurso } from "@/contexts/ConcursoContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ConcursoSelectorModal } from "@/components/concursos/ConcursoSelectorModal";
 import { DataService } from "@/services/dataService";
+import { MeuPlanoDropdownMenu } from "@/components/planejamento/MeuPlanoDropdownMenu";
 
 interface SidebarProps {
   isOpenMobile?: boolean;
@@ -338,43 +339,51 @@ export function Sidebar({ isOpenMobile, onCloseMobile }: SidebarProps) {
                   const isSubActive = sub.isExact
                     ? pathname === sub.href
                     : pathname.startsWith(sub.href);
+                  const isMeuPlano = sub.href === "/mentoria/plano";
 
                   return (
-                    <Link
-                      key={sub.href}
-                      href={sub.href}
-                      onClick={onCloseMobile}
-                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
-                        isSubActive
-                          ? "bg-blue-600 text-white font-bold shadow-xs shadow-blue-500/20"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <SubIcon
-                          className={`w-3.5 h-3.5 shrink-0 ${
-                            isSubActive
-                              ? "text-white"
-                              : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"
-                          }`}
-                        />
-                        <span className="truncate">{sub.label}</span>
-                      </div>
+                    <div key={sub.href} className="flex items-center gap-1 group/item">
+                      <Link
+                        href={sub.href}
+                        onClick={onCloseMobile}
+                        className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-all group ${
+                          isSubActive
+                            ? "bg-blue-600 text-white font-bold shadow-xs shadow-blue-500/20"
+                            : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <SubIcon
+                            className={`w-3.5 h-3.5 shrink-0 ${
+                              isSubActive
+                                ? "text-white"
+                                : "text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200"
+                            }`}
+                          />
+                          <span className="truncate">{sub.label}</span>
+                        </div>
 
-                      {sub.badge ? (
-                        <span
-                          className={`text-[9px] font-bold px-1.5 py-0.2 rounded shrink-0 ${
-                            isSubActive
-                              ? "bg-white/20 text-white"
-                              : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
-                          }`}
-                        >
-                          {sub.badge}
-                        </span>
-                      ) : (
-                        isSubActive && <ChevronRight className="w-3.5 h-3.5 opacity-70 shrink-0" />
+                        {sub.badge ? (
+                          <span
+                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded shrink-0 ${
+                              isSubActive
+                                ? "bg-white/20 text-white"
+                                : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
+                            }`}
+                          >
+                            {sub.badge}
+                          </span>
+                        ) : (
+                          isSubActive && !isMeuPlano && <ChevronRight className="w-3.5 h-3.5 opacity-70 shrink-0" />
+                        )}
+                      </Link>
+
+                      {isMeuPlano && (
+                        <div className="shrink-0">
+                          <MeuPlanoDropdownMenu variant="sidebar" />
+                        </div>
                       )}
-                    </Link>
+                    </div>
                   );
                 })}
               </div>
