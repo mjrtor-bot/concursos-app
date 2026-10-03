@@ -22,6 +22,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { createClient } from "@/lib/supabase/client";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 import { MentoriaDiagnosticoService } from "@/services/mentoriaDiagnosticoService";
@@ -43,6 +44,7 @@ export default function MentoriaPlanoPage() {
   const { user } = useAuth();
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [diagnostico, setDiagnostico] = useState<MentoriaDiagnostico | null>(null);
+  const [concursoAlvoReal, setConcursoAlvoReal] = useState<{ concurso_nome: string; cargo_nome: string } | null>(null);
   const [disp, setDisp] = useState<MentoriaDisponibilidade[]>([]);
   const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
   const [gradeSemanal, setGradeSemanal] = useState<GradeSemanalDia[]>([]);
@@ -51,6 +53,34 @@ export default function MentoriaPlanoPage() {
   const [disciplinaExplicando, setDisciplinaExplicando] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<{ tipo: "success" | "error"; texto: string } | null>(null);
 
+  async function carregarConcursoAlvoReal(usuarioId: string) {
+    const supabase = createClient();
+    if (!supabase) return null;
+    try {
+      const { data: alvo } = await supabase
+        .from("usuario_concurso_alvo")
+        .select("concurso_id, cargo_id")
+        .eq("usuario_id", usuarioId)
+        .maybeSingle();
+
+      if (!alvo?.concurso_id) return null;
+
+      const [{ data: conc }, { data: carg }] = await Promise.all([
+        supabase.from("concursos").select("nome").eq("id", alvo.concurso_id).maybeSingle(),
+        alvo.cargo_id
+          ? supabase.from("concurso_cargos").select("nome").eq("id", alvo.cargo_id).maybeSingle()
+          : Promise.resolve({ data: null }),
+      ]);
+
+      if (conc?.nome) {
+        return { concurso_nome: conc.nome, cargo_nome: carg?.nome || "" };
+      }
+    } catch (err) {
+      console.warn("Erro ao buscar concurso alvo real:", err);
+    }
+    return null;
+  }
+
   const carregarDados = useCallback(async () => {
     if (!user) {
       setLoading(false);
@@ -58,18 +88,20 @@ export default function MentoriaPlanoPage() {
     }
     setLoading(true);
     try {
-      const [p, d, ciclo, grade, diag] = await Promise.all([
+      const [p, d, ciclo, grade, diag, alvoReal] = await Promise.all([
         MentoriaService.getPerfil(user.id),
         MentoriaService.getDisponibilidade(user.id),
         MentoriaCicloService.obterPlanoCiclo(user.id),
         MentoriaService.getGradeSemanalDistribuida(user.id),
         MentoriaDiagnosticoService.getUltimoDiagnostico(user.id),
+        carregarConcursoAlvoReal(user.id),
       ]);
       setPerfil(p);
       setDisp(d);
       setPlanoCiclo(ciclo);
       setGradeSemanal(grade);
       setDiagnostico(diag);
+      setConcursoAlvoReal(alvoReal);
     } catch (err) {
       console.error("Erro ao carregar plano de estudos adaptativo:", err);
     } finally {
@@ -85,12 +117,13 @@ export default function MentoriaPlanoPage() {
         return;
       }
       try {
-        const [p, d, ciclo, grade, diag] = await Promise.all([
+        const [p, d, ciclo, grade, diag, alvoReal] = await Promise.all([
           MentoriaService.getPerfil(user.id),
           MentoriaService.getDisponibilidade(user.id),
           MentoriaCicloService.obterPlanoCiclo(user.id),
           MentoriaService.getGradeSemanalDistribuida(user.id),
           MentoriaDiagnosticoService.getUltimoDiagnostico(user.id),
+          carregarConcursoAlvoReal(user.id),
         ]);
         if (!ignore) {
           setPerfil(p);
@@ -98,6 +131,7 @@ export default function MentoriaPlanoPage() {
           setPlanoCiclo(ciclo);
           setGradeSemanal(grade);
           setDiagnostico(diag);
+          setConcursoAlvoReal(alvoReal);
         }
       } catch (err) {
         console.error("Erro ao carregar plano de estudos adaptativo:", err);
@@ -199,8 +233,8 @@ export default function MentoriaPlanoPage() {
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
             {(() => {
-              const concursoNome = perfil?.concurso_nome || diagnostico?.concurso_nome;
-              const cargoNome = perfil?.cargo_nome || diagnostico?.cargo_nome;
+              const concursoNome = concursoAlvoReal?.concurso_nome || perfil?.concurso_nome || diagnostico?.concurso_nome;
+              const cargoNome = concursoAlvoReal?.cargo_nome || perfil?.cargo_nome || diagnostico?.cargo_nome;
               if (concursoNome) {
                 return cargoNome
                   ? `Foco em ${concursoNome} (${cargoNome}). O ciclo é contínuo: sem acúmulo de atraso em dias de imprevisto.`
