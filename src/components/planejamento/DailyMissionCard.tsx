@@ -101,16 +101,159 @@ export function DailyMissionCard({
     }
   };
 
+  // Classificação da Área da Disciplina para Contexto Pedagógico
+  const getAreaDisciplina = (disciplinaNome?: string): "juridica" | "portugues" | "exatas" | "informatica" | "geral" => {
+    if (!disciplinaNome) return "geral";
+    const nome = disciplinaNome
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "");
+
+    if (
+      nome.includes("direito") ||
+      nome.includes("legislacao") ||
+      nome.includes("estatuto") ||
+      nome.includes("constitucional") ||
+      nome.includes("penal") ||
+      nome.includes("processual") ||
+      nome.includes("administrativ") ||
+      nome.includes("tributario") ||
+      nome.includes("previdenciario") ||
+      nome.includes("eleitoral") ||
+      nome.includes("criminolog") ||
+      nome.includes("juridic") ||
+      nome.includes("normas") ||
+      nome.includes("lei") ||
+      nome.includes("humanos") ||
+      nome.includes("trabalho") ||
+      nome.includes("civil")
+    ) {
+      return "juridica";
+    }
+
+    if (
+      nome.includes("portugues") ||
+      nome.includes("lingua portuguesa") ||
+      nome.includes("redacao") ||
+      nome.includes("gramatica") ||
+      nome.includes("interpretacao") ||
+      nome.includes("linguagens") ||
+      nome.includes("literatura")
+    ) {
+      return "portugues";
+    }
+
+    if (
+      nome.includes("raciocinio") ||
+      nome.includes("logico") ||
+      nome.includes("matematica") ||
+      nome.includes("estatistica") ||
+      nome.includes("contabilidade") ||
+      nome.includes("financeir") ||
+      nome.includes("fisica") ||
+      nome.includes("quimica") ||
+      nome.includes("rlm")
+    ) {
+      return "exatas";
+    }
+
+    if (
+      nome.includes("informatica") ||
+      nome.includes("tecnologia") ||
+      nome.includes("computacao") ||
+      nome.includes("dados") ||
+      nome.includes("sistemas") ||
+      nome.includes("redes") ||
+      nome.includes("seguranca da informacao") ||
+      nome.includes("programacao")
+    ) {
+      return "informatica";
+    }
+
+    return "geral";
+  };
+
+  // Dica Pedagógica Contextualizada por Tipo de Meta e Área da Disciplina
+  const getDicaPedagogica = (tipo: MentoriaTarefaTipo, disciplinaNome?: string): string => {
+    const area = getAreaDisciplina(disciplinaNome);
+
+    if (tipo === "SIMULADO") {
+      return "Simule as condições reais de prova: cronômetro ativo, sem consultas paralelas e reservando os minutos finais para o preenchimento do cartão-resposta.";
+    }
+
+    if (tipo === "TEORIA") {
+      switch (area) {
+        case "juridica":
+          return "Estude com foco na literalidade da lei seca e nas súmulas mais recorrentes da banca. Destaque prazos, exceções e palavras-chave usando o botão Caderno para sintetizar os esquemas.";
+        case "portugues":
+          return "Foque nas regras gramaticais centrais e nos padrões de cobrança da banca. Analise exemplos práticos de sintaxe, concordância e pontuação, registrando casos especiais no Caderno.";
+        case "exatas":
+          return "Compreenda os conceitos fundamentais, propriedades lógicas e fórmulas antes de partir para atalhos. Registre o passo a passo da resolução teórica no Caderno.";
+        case "informatica":
+          return "Atente-se aos conceitos de arquitetura, ferramentas e sistemas operacionais. Destaque atalhos de teclado, protocolos e termos técnicos no seu Caderno.";
+        default:
+          return "Faça uma leitura ativa identificando os conceitos-chave e a estrutura do conteúdo. Destaque pontos centrais e anote resumos no Caderno para fixação.";
+      }
+    }
+
+    if (tipo === "QUESTOES") {
+      switch (area) {
+        case "juridica":
+          return "Resolva aplicando a letra da lei e a interpretação jurisprudencial. Ao errar, confira o dispositivo legal citado no gabarito comentado e registre no Caderno.";
+        case "portugues":
+          return "Analise com atenção o enunciado e os trechos do texto. Identifique o padrão de pegadinhas da banca em interpretação, reescrita de frases e tipologia textual.";
+        case "exatas":
+          return "Treine o raciocínio estruturado: isole os dados, identifique a fórmula e resolva com controle do tempo por questão (máximo de 2 a 3 minutos).";
+        case "informatica":
+          return "Foque no comportamento real das ferramentas e sistemas cobrados. Cuidado com pegadinhas que inventam botões, menus ou comandos inexistentes.";
+        default:
+          return "Resolva as questões mantendo ritmo de prova (máximo de 2 a 3 minutos por questão). Ao errar, leia os comentários com atenção e registre os pontos fracos no seu Caderno.";
+      }
+    }
+
+    if (tipo === "REVISAO") {
+      switch (area) {
+        case "juridica":
+          return "Pratique a recuperação ativa (active recall): tente lembrar dos artigos da lei seca, prazos e entendimentos sumulados antes de consultar as anotações do Caderno.";
+        case "portugues":
+          return "Revise seus resumos de regras gramaticais e casos especiais. Teste sua memória sobre regência, crase e valores semânticos de conectivos antes de abrir as notas.";
+        case "exatas":
+          return "Refaça as fórmulas e propriedades lógicas de memória. Resolva no rascunho ao menos um exemplo de cada modelo mental para reativar o raciocínio.";
+        case "informatica":
+          return "Relembre os atalhos de teclado, extensões de arquivos e protocolos de rede sem olhar o material antes de checar suas anotações.";
+        default:
+          return "Pratique a recuperação ativa (active recall): tente lembrar das regras, mnemônicos e exceções antes de consultar as notas. Isso fortalece a consolidação neural de longo prazo.";
+      }
+    }
+
+    if (tipo === "CADERNO_ERROS") {
+      switch (area) {
+        case "juridica":
+          return "Identifique se o erro decorreu de confusão na literalidade do texto legal ou jurisprudência. Releia o artigo com atenção e anote a fundamentação.";
+        case "portugues":
+          return "Analise se o erro foi por leitura apressada do enunciado ou regra sintática específica. Registre a pegadinha clássica da banca no Caderno.";
+        case "exatas":
+          return "Verifique a causa raiz do erro: conta, interpretação do enunciado ou aplicação errada de fórmula. Refaça a resolução passo a passo do zero.";
+        case "informatica":
+          return "Analise se a pegadinha envolveu versão de software ou nomenclatura técnica. Registre a funcionalidade correta no seu resumo.";
+        default:
+          return "Identifique a causa raiz de cada erro anterior: foi falta de atenção, pegadinha da banca ou lacuna teórica? Compreenda a fundamentação para blindar sua pontuação.";
+      }
+    }
+
+    return "Mantenha o foco contínuo e cumpra o tempo estipulado para maximizar a retenção do conteúdo programático.";
+  };
+
   // Informações Visuais por Tipo de Estudo
-  const getTipoEstudoInfo = (tipo: MentoriaTarefaTipo) => {
+  const getTipoEstudoInfo = (tipo: MentoriaTarefaTipo, disciplinaNome?: string) => {
     switch (tipo) {
       case "TEORIA":
         return {
-          label: "Teoria Policial",
+          label: "Estudo Teórico",
           icon: BookOpen,
           bgBadge: "bg-blue-600 text-white",
           boxBg: "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200/80 dark:border-blue-800/60",
-          dica: "Estude com foco na literalidade da lei seca e nas súmulas mais recorrentes da banca. Destaque prazos, exceções e palavras-chave usando o botão Caderno para sintetizar os esquemas.",
+          dica: getDicaPedagogica(tipo, disciplinaNome),
         };
       case "QUESTOES":
         return {
@@ -118,7 +261,7 @@ export function DailyMissionCard({
           icon: HelpCircle,
           bgBadge: "bg-indigo-600 text-white",
           boxBg: "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/60",
-          dica: "Resolva as questões mantendo o ritmo de prova (máximo de 2 a 3 minutos por questão). Ao errar, leia os comentários com atenção e registre os pontos fracos no seu Caderno.",
+          dica: getDicaPedagogica(tipo, disciplinaNome),
         };
       case "REVISAO":
         return {
@@ -126,7 +269,7 @@ export function DailyMissionCard({
           icon: RotateCcw,
           bgBadge: "bg-amber-600 text-white",
           boxBg: "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/60",
-          dica: "Pratique a recuperação ativa (active recall): tente lembrar das regras, mnemônicos e exceções antes de consultar as notas. Isso fortalece a consolidação neural de longo prazo.",
+          dica: getDicaPedagogica(tipo, disciplinaNome),
         };
       case "CADERNO_ERROS":
         return {
@@ -134,15 +277,15 @@ export function DailyMissionCard({
           icon: AlertTriangle,
           bgBadge: "bg-rose-600 text-white",
           boxBg: "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200/80 dark:border-rose-800/60",
-          dica: "Identifique a causa raiz de cada erro anterior: foi falta de atenção, pegadinha da banca ou lacuna teórica? Compreenda a fundamentação para blindar sua pontuação.",
+          dica: getDicaPedagogica(tipo, disciplinaNome),
         };
       case "SIMULADO":
         return {
-          label: "Simulado Policial",
+          label: "Simulado de Prova",
           icon: FileCheck,
           bgBadge: "bg-purple-600 text-white",
           boxBg: "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-200/80 dark:border-purple-800/60",
-          dica: "Simule as condições reais de prova: cronômetro ativo, sem consultas paralelas e reservando os minutos finais para o preenchimento do cartão-resposta.",
+          dica: getDicaPedagogica(tipo, disciplinaNome),
         };
       default:
         return {
@@ -150,12 +293,12 @@ export function DailyMissionCard({
           icon: BookOpen,
           bgBadge: "bg-slate-600 text-white",
           boxBg: "bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200",
-          dica: "Mantenha o foco contínuo e cumpra o tempo estipulado para maximizar a retenção do conteúdo programático.",
+          dica: getDicaPedagogica(tipo, disciplinaNome),
         };
     }
   };
 
-  const tipoInfo = getTipoEstudoInfo(missao.tipo);
+  const tipoInfo = getTipoEstudoInfo(missao.tipo, missao.disciplina_nome);
   const Icone = tipoInfo.icon;
   const concluida = statusLocal === "concluida";
 
