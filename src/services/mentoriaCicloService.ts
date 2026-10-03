@@ -811,16 +811,19 @@ export class MentoriaCicloService {
       return { success: false, error: "Não foi possível gerar os blocos de estudo." };
     }
 
-    // 5. Determina a versão do plano
+    // 5. Determina se houve mudança efetiva na estrutura ou se podemos manter o plano ativo
     let novaVersao = 1;
     let planoId = `plano-ciclo-${usuarioId}-${Date.now()}`;
     const hojeData = new Date().toISOString().split("T")[0];
+    const agoraIso = new Date().toISOString();
+    let mudancaEfetiva = true;
+    let planoAtivoExistente: any = null;
 
     if (supabase) {
       try {
         const { data: planoAntigo } = await supabase
           .from("mentoria_planos")
-          .select("id, versao")
+          .select("*")
           .eq("usuario_id", usuarioId)
           .eq("status", "ativo")
           .order("versao", { ascending: false })
@@ -828,93 +831,213 @@ export class MentoriaCicloService {
           .maybeSingle();
 
         if (planoAntigo) {
-          novaVersao = (planoAntigo.versao || 1) + 1;
-          // Arquiva o plano anterior
-          await supabase
-            .from("mentoria_planos")
-            .update({ status: "arquivado", updated_at: new Date().toISOString() })
-            .eq("usuario_id", usuarioId)
-            .eq("status", "ativo");
+          planoAtivoExistente = planoAntigo;
+          novaVersao = planoAntigo.versao || 1;
+          planoId = planoAntigo.id;
+
+          // Verifica se houve mudança estrutural real em relação ao plano ativo
+          const mesmaMetaSemanal = (planoAntigo.meta_semanal_minutos || 0) === metaSemanalMinutos;
+          const mesmoEdital = (planoAntigo.edital_id || null) === (editalSelecionadoId || null);
+
+          const blocosAntigos: MentoriaCicloItem[] = Array.isArray(planoAntigo.estrutura_ciclo)
+            ? planoAntigo.estrutura_ciclo
+            : [];
+          let mesmosBlocos = blocosAntigos.length === blocos.length;
+          if (mesmosBlocos) {
+            for (let i = 0; i < blocos.length; i++) {
+              const bNovo = blocos[i];
+              const bAntigo = blocosAntigos[i];
+              if (
+                !bAntigo ||
+                bNovo.disciplina_id !== bAntigo.disciplina_id ||
+                (bNovo.assunto_id || null) !== (bAntigo.assunto_id || null) ||
+                bNovo.tipo !== bAntigo.tipo ||
+                bNovo.duracao_minutos !== bAntigo.duracao_minutos ||
+                bNovo.quantidade_questoes_sugerida !== bAntigo.quantidade_questoes_sugerida
+              ) {
+                mesmosBlocos = false;
+                break;
+              }
+            }
+          }
+
+          const prioridadesAntigas: MentoriaCicloDisciplinaPrioridade[] = Array.isArray(
+            planoAntigo.prioridades_disciplinas
+          )
+            ? planoAntigo.prioridades_disciplinas
+            : [];
+          let mesmasPrioridades = prioridadesAntigas.length === prioridades.length;
+          if (mesmasPrioridades) {
+            for (let i = 0; i < prioridades.length; i++) {
+              const pNova = prioridades[i];
+              const pAntiga = prioridadesAntigas[i];
+              if (
+                !pAntiga ||
+                pNova.disciplina_id !== pAntiga.disciplina_id ||
+                pNova.blocos_semanais !== pAntiga.blocos_semanais ||
+                pNova.minutos_semanais !== pAntiga.minutos_semanais ||
+                pNova.prioridade_nivel !== pAntiga.prioridade_nivel
+              ) {
+                mesmasPrioridades = false;
+                break;
+              }
+            }
+          }
+
+          if (mesmaMetaSemanal && mesmoEdital && mesmosBlocos && mesmasPrioridades) {
+            mudancaEfetiva = false;
+          }
         }
       } catch (err) {
         console.warn("[MentoriaCicloService] Erro ao verificar versão anterior do plano:", err);
       }
     }
 
-    const agoraIso = new Date().toISOString();
-    const payloadPlano = {
-      usuario_id: usuarioId,
-      data_inicio: hojeData,
-      status: "ativo",
-      versao: novaVersao,
-      meta_semanal_minutos: metaSemanalMinutos,
-      minutos_concluidos: 0,
-      ciclo_posicao_atual: 0,
-      ciclo_concluidos_contagem: 0,
-      prioridades_disciplinas: prioridades,
-      estrutura_ciclo: blocos,
-      edital_id: editalSelecionadoId,
-      updated_at: agoraIso,
-    };
-
-    // 6. Grava plano no Supabase
-    if (supabase) {
-      try {
-        const { data: insertedPlano, error: insErr } = await supabase
-          .from("mentoria_planos")
-          .insert(payloadPlano)
-          .select()
-          .single();
-
-        if (insErr) {
-          console.error("[MentoriaCicloService] Erro ao gravar plano no Supabase:", insErr.message);
-        } else if (insertedPlano) {
-          planoId = insertedPlano.id;
-
-          // Grava tarefas do plano em mentoria_tarefas
-          const tarefasPayload = blocos.map((b) => ({
-            plano_id: planoId,
-            usuario_id: usuarioId,
-            data: hojeData,
-            ordem: b.ordem_bloco,
-            tipo: b.tipo,
-            disciplina_id: b.disciplina_id.startsWith("disc-") ? null : b.disciplina_id,
-            assunto_id: b.assunto_id || null,
-            titulo: b.assunto_nome ? `${b.disciplina_nome} — ${b.assunto_nome}` : b.disciplina_nome,
-            duracao_prevista_minutos: b.duracao_minutos,
-            quantidade_questoes: b.quantidade_questoes_sugerida,
-            prioridade: b.prioridade_nivel,
-            motivo_recomendacao: b.motivo_explicabilidade.join(" | "),
-            status: "pendente",
-          }));
-
-          await supabase.from("mentoria_tarefas").insert(tarefasPayload);
+    if (mudancaEfetiva) {
+      if (planoAtivoExistente) {
+        novaVersao = (planoAtivoExistente.versao || 1) + 1;
+        if (supabase) {
+          // Arquiva o plano anterior apenas quando há mudança estrutural efetiva
+          await supabase
+            .from("mentoria_planos")
+            .update({ status: "arquivado", updated_at: agoraIso })
+            .eq("usuario_id", usuarioId)
+            .eq("status", "ativo");
         }
-      } catch (err) {
-        console.error("[MentoriaCicloService] Exceção ao gravar plano:", err);
       }
+
+      const payloadPlano = {
+        usuario_id: usuarioId,
+        data_inicio: hojeData,
+        status: "ativo",
+        versao: novaVersao,
+        meta_semanal_minutos: metaSemanalMinutos,
+        minutos_concluidos: 0,
+        ciclo_posicao_atual: 0,
+        ciclo_concluidos_contagem: 0,
+        prioridades_disciplinas: prioridades,
+        estrutura_ciclo: blocos,
+        edital_id: editalSelecionadoId,
+        updated_at: agoraIso,
+      };
+
+      // 6. Grava novo plano no Supabase
+      if (supabase) {
+        try {
+          const { data: insertedPlano, error: insErr } = await supabase
+            .from("mentoria_planos")
+            .insert(payloadPlano)
+            .select()
+            .single();
+
+          if (insErr) {
+            console.error("[MentoriaCicloService] Erro ao gravar plano no Supabase:", insErr.message);
+          } else if (insertedPlano) {
+            planoId = insertedPlano.id;
+
+            // Grava tarefas do plano em mentoria_tarefas
+            const tarefasPayload = blocos.map((b) => ({
+              plano_id: planoId,
+              usuario_id: usuarioId,
+              data: hojeData,
+              ordem: b.ordem_bloco,
+              tipo: b.tipo,
+              disciplina_id: b.disciplina_id.startsWith("disc-") ? null : b.disciplina_id,
+              assunto_id: b.assunto_id || null,
+              titulo: b.assunto_nome ? `${b.disciplina_nome} — ${b.assunto_nome}` : b.disciplina_nome,
+              duracao_prevista_minutos: b.duracao_minutos,
+              quantidade_questoes: b.quantidade_questoes_sugerida,
+              prioridade: b.prioridade_nivel,
+              motivo_recomendacao: b.motivo_explicabilidade.join(" | "),
+              status: "pendente",
+            }));
+
+            await supabase.from("mentoria_tarefas").insert(tarefasPayload);
+          }
+        } catch (err) {
+          console.error("[MentoriaCicloService] Exceção ao gravar plano:", err);
+        }
+      }
+
+      const planoCompleto: MentoriaCicloPlanoCompleto = {
+        plano_id: planoId,
+        usuario_id: usuarioId,
+        versao: novaVersao,
+        data_inicio: agoraIso,
+        meta_semanal_minutos: metaSemanalMinutos,
+        minutos_concluidos: 0,
+        duracao_bloco_minutos: duracaoBlocoMinutos,
+        total_blocos_ciclo: blocos.length,
+        posicao_atual_index: 0,
+        ciclo_concluidos_voltas: 0,
+        disciplinas_prioridades: prioridades,
+        blocos,
+        bloco_atual: blocos[0] || null,
+        proximo_bloco: blocos[1] || blocos[0] || null,
+        blocos_restantes_na_volta: blocos.length,
+      };
+
+      this.salvarPlanoLocal(usuarioId, planoCompleto);
+      return { success: true, plano: planoCompleto };
+    } else {
+      // Plano não sofreu mudanças efetivas: mantém versão, ID e tarefas existentes
+      if (supabase && planoAtivoExistente) {
+        try {
+          await supabase
+            .from("mentoria_planos")
+            .update({ updated_at: agoraIso })
+            .eq("id", planoAtivoExistente.id);
+
+          // Sincroniza estado de conclusão das tarefas existentes
+          const { data: tarefasDb } = await supabase
+            .from("mentoria_tarefas")
+            .select("*")
+            .eq("plano_id", planoAtivoExistente.id)
+            .order("ordem", { ascending: true });
+
+          if (tarefasDb && tarefasDb.length > 0) {
+            const tarefasMap = new Map(tarefasDb.map((t) => [t.id, t]));
+            const tarefasOrdemMap = new Map(tarefasDb.map((t) => [t.ordem, t]));
+            blocos = blocos.map((b, idx) => {
+              const t = (b.id && tarefasMap.get(b.id)) || tarefasOrdemMap.get(b.ordem_bloco || idx + 1);
+              return {
+                ...b,
+                id: t?.id || b.id,
+                concluido: t ? t.status === "concluida" : b.concluido,
+              };
+            });
+          }
+        } catch (err) {
+          console.warn("[MentoriaCicloService] Erro ao sincronizar tarefas do plano mantido:", err);
+        }
+      }
+
+      const posicaoAtual = planoAtivoExistente?.ciclo_posicao_atual ?? 0;
+      const voltasContagem = planoAtivoExistente?.ciclo_concluidos_contagem ?? 0;
+      const minutosConcluidos = planoAtivoExistente?.minutos_concluidos ?? 0;
+      const dataInicio = planoAtivoExistente?.data_inicio || agoraIso;
+
+      const planoCompleto: MentoriaCicloPlanoCompleto = {
+        plano_id: planoId,
+        usuario_id: usuarioId,
+        versao: novaVersao,
+        data_inicio: dataInicio,
+        meta_semanal_minutos: metaSemanalMinutos,
+        minutos_concluidos: minutosConcluidos,
+        duracao_bloco_minutos: duracaoBlocoMinutos,
+        total_blocos_ciclo: blocos.length,
+        posicao_atual_index: posicaoAtual,
+        ciclo_concluidos_voltas: voltasContagem,
+        disciplinas_prioridades: prioridades,
+        blocos,
+        bloco_atual: blocos[posicaoAtual] || blocos[0] || null,
+        proximo_bloco: blocos[(posicaoAtual + 1) % blocos.length] || null,
+        blocos_restantes_na_volta: Math.max(0, blocos.length - posicaoAtual),
+      };
+
+      this.salvarPlanoLocal(usuarioId, planoCompleto);
+      return { success: true, plano: planoCompleto };
     }
-
-    const planoCompleto: MentoriaCicloPlanoCompleto = {
-      plano_id: planoId,
-      usuario_id: usuarioId,
-      versao: novaVersao,
-      data_inicio: agoraIso,
-      meta_semanal_minutos: metaSemanalMinutos,
-      minutos_concluidos: 0,
-      duracao_bloco_minutos: duracaoBlocoMinutos,
-      total_blocos_ciclo: blocos.length,
-      posicao_atual_index: 0,
-      ciclo_concluidos_voltas: 0,
-      disciplinas_prioridades: prioridades,
-      blocos,
-      bloco_atual: blocos[0] || null,
-      proximo_bloco: blocos[1] || blocos[0] || null,
-      blocos_restantes_na_volta: blocos.length,
-    };
-
-    this.salvarPlanoLocal(usuarioId, planoCompleto);
-    return { success: true, plano: planoCompleto };
   }
 
   /**
