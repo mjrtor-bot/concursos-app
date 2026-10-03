@@ -29,6 +29,7 @@ import {
   MentoriaDisponibilidade,
   MentoriaCicloPlanoCompleto,
   MentoriaCicloItem,
+  MentoriaDiagnostico,
   GradeSemanalDia,
 } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
@@ -40,6 +41,7 @@ import { MeuPlanoDropdownMenu } from "@/components/planejamento/MeuPlanoDropdown
 export default function MentoriaPlanoPage() {
   const { user } = useAuth();
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
+  const [diagnostico, setDiagnostico] = useState<MentoriaDiagnostico | null>(null);
   const [disp, setDisp] = useState<MentoriaDisponibilidade[]>([]);
   const [planoCiclo, setPlanoCiclo] = useState<MentoriaCicloPlanoCompleto | null>(null);
   const [gradeSemanal, setGradeSemanal] = useState<GradeSemanalDia[]>([]);
@@ -55,16 +57,18 @@ export default function MentoriaPlanoPage() {
     }
     setLoading(true);
     try {
-      const [p, d, ciclo, grade] = await Promise.all([
+      const [p, d, ciclo, grade, diag] = await Promise.all([
         MentoriaService.getPerfil(user.id),
         MentoriaService.getDisponibilidade(user.id),
         MentoriaCicloService.obterPlanoCiclo(user.id),
         MentoriaService.getGradeSemanalDistribuida(user.id),
+        MentoriaService.getDiagnostico(user.id),
       ]);
       setPerfil(p);
       setDisp(d);
       setPlanoCiclo(ciclo);
       setGradeSemanal(grade);
+      setDiagnostico(diag);
     } catch (err) {
       console.error("Erro ao carregar plano de estudos adaptativo:", err);
     } finally {
@@ -80,17 +84,19 @@ export default function MentoriaPlanoPage() {
         return;
       }
       try {
-        const [p, d, ciclo, grade] = await Promise.all([
+        const [p, d, ciclo, grade, diag] = await Promise.all([
           MentoriaService.getPerfil(user.id),
           MentoriaService.getDisponibilidade(user.id),
           MentoriaCicloService.obterPlanoCiclo(user.id),
           MentoriaService.getGradeSemanalDistribuida(user.id),
+          MentoriaService.getDiagnostico(user.id),
         ]);
         if (!ignore) {
           setPerfil(p);
           setDisp(d);
           setPlanoCiclo(ciclo);
           setGradeSemanal(grade);
+          setDiagnostico(diag);
         }
       } catch (err) {
         console.error("Erro ao carregar plano de estudos adaptativo:", err);
@@ -191,9 +197,16 @@ export default function MentoriaPlanoPage() {
             Seu Ciclo de Estudos
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">
-            {perfil
-              ? `Foco em ${perfil.concurso_nome} (${perfil.cargo_nome}). O ciclo é contínuo: sem acúmulo de atraso em dias de imprevisto.`
-              : "Monte seu ciclo de estudos estratégico baseado no seu diagnóstico real."}
+            {(() => {
+              const concursoNome = perfil?.concurso_nome || diagnostico?.concurso_nome;
+              const cargoNome = perfil?.cargo_nome || diagnostico?.cargo_nome;
+              if (concursoNome) {
+                return cargoNome
+                  ? `Foco em ${concursoNome} (${cargoNome}). O ciclo é contínuo: sem acúmulo de atraso em dias de imprevisto.`
+                  : `Foco em ${concursoNome}. O ciclo é contínuo: sem acúmulo de atraso em dias de imprevisto.`;
+              }
+              return "Monte seu ciclo de estudos estratégico baseado no seu diagnóstico real.";
+            })()}
           </p>
         </div>
 
