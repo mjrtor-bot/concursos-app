@@ -715,16 +715,39 @@ export class MentoriaCicloService {
     if (supabase && blocos.length > 0) {
       try {
         const { data: alvo } = await supabase.from("usuario_concurso_alvo").select("edital_id").eq("usuario_id", usuarioId).maybeSingle();
-        const { data: topicos } = alvo?.edital_id
-          ? await supabase
-              .from("edital_topicos")
-              .select("disciplina_id, assunto_id, subassunto_id, ordem, assuntos(id,nome), subassuntos(id,nome)")
-              .eq("edital_id", alvo.edital_id)
-              .order("ordem", { ascending: true })
-          : { data: [] };
+        const [{ data: topicos }, { data: topicosUsuario }] = await Promise.all([
+          alvo?.edital_id
+            ? supabase
+                .from("edital_topicos")
+                .select("disciplina_id, assunto_id, subassunto_id, ordem, assuntos(id,nome), subassuntos(id,nome)")
+                .eq("edital_id", alvo.edital_id)
+                .order("ordem", { ascending: true })
+            : Promise.resolve({ data: [] }),
+          supabase
+            .from("mentoria_edital_topicos")
+            .select("disciplina_id, assunto_id, status, estudado, percentual_dominio")
+            .eq("usuario_id", usuarioId),
+        ]);
+
+        const topicosUsuarioMap = new Map<string, { status: string; estudado: boolean; dominio: number }>();
+        for (const tu of (topicosUsuario || []) as any[]) {
+          if (tu.assunto_id) {
+            const isEstudado = Boolean(
+              tu.estudado === true ||
+              tu.status === "dominado" ||
+              tu.status === "estudando" ||
+              tu.status === "revisando"
+            );
+            topicosUsuarioMap.set(tu.assunto_id, {
+              status: tu.status || "nao_iniciado",
+              estudado: isEstudado,
+              dominio: Number(tu.percentual_dominio) || 0,
+            });
+          }
+        }
 
         const assuntosAtivos: string[] = Array.isArray(planoAdv.assuntos_ativos) ? planoAdv.assuntos_ativos : [];
-        const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string; subassunto_id?: string; subassunto_nome?: string }>>();
+        const assuntosPorDisciplina = new Map<string, Array<{ id: string; nome: string; subassunto_id?: string; subassunto_nome?: string; estudado: boolean; status: string }>>();
         for (const t of (topicos || []) as any[]) {
           if (assuntosAtivos.length > 0 && t.assunto_id && !assuntosAtivos.includes(t.assunto_id)) continue;
           const rel = t.assuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
@@ -732,12 +755,15 @@ export class MentoriaCicloService {
           if (!t.disciplina_id || !t.assunto_id || !assunto?.nome) continue;
           const subRel = t.subassuntos as unknown as { id?: string; nome?: string } | { id?: string; nome?: string }[] | null;
           const subassunto = Array.isArray(subRel) ? subRel[0] : subRel;
+          const userTopico = topicosUsuarioMap.get(t.assunto_id);
           const lista = assuntosPorDisciplina.get(t.disciplina_id) || [];
           lista.push({
             id: t.assunto_id,
             nome: assunto.nome,
             subassunto_id: t.subassunto_id || subassunto?.id || undefined,
             subassunto_nome: subassunto?.nome || undefined,
+            estudado: userTopico?.estudado || false,
+            status: userTopico?.status || "nao_iniciado",
           });
           assuntosPorDisciplina.set(t.disciplina_id, lista);
         }
@@ -749,13 +775,31 @@ export class MentoriaCicloService {
           const indice = cursor.get(bloco.disciplina_id) || 0;
           const itemTopico = lista[indice % lista.length];
           cursor.set(bloco.disciplina_id, indice + 1);
+
+          let tipoFinal = bloco.tipo;
+          const isEstudadoOuDominado = itemTopico.estudado || itemTopico.status === "dominado";
+          const explicabilidades = [...bloco.motivo_explicabilidade];
+
+          // Se o tópico já foi estudado ou dominado, ele sai da fila de TEORIA e vai para REVISAO ou QUESTOES
+          if (isEstudadoOuDominado && tipoFinal === "TEORIA") {
+            if (itemTopico.status === "dominado") {
+              tipoFinal = "QUESTOES";
+              explicabilidades.push("Tópico dominado: direcionado para fixação por questões");
+            } else {
+              tipoFinal = "REVISAO";
+              explicabilidades.push("Tópico já estudado: direcionado para revisão periódica");
+            }
+          }
+
           return {
             ...bloco,
+            tipo: tipoFinal,
             assunto_id: itemTopico.id,
             assunto_nome: itemTopico.nome,
             subassunto_id: itemTopico.subassunto_id,
             subassunto_nome: itemTopico.subassunto_nome,
             topico_nome: itemTopico.subassunto_nome,
+            motivo_explicabilidade: explicabilidades,
           };
         });
       } catch (err) {
