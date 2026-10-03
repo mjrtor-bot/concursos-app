@@ -346,8 +346,8 @@ export function DailyMissionCard({
             {/* CTA Principal: Fazer Exercícios ou Iniciar Estudo */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Link
-                href={`/questoes?disciplina=${missao.disciplina_id}${
-                  missao.assunto_id ? `&assunto=${missao.assunto_id}` : ""
+                href={`/questoes?disciplina_id=${missao.disciplina_id}${
+                  missao.assunto_id ? `&assunto_id=${missao.assunto_id}` : ""
                 }`}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 transition-all"
               >
