@@ -10,15 +10,63 @@ async function auth() {
 }
 
 export async function GET() {
-  const ctx=await auth(); if(ctx.error) return ctx.error;
-  const { data: plano }=await ctx.supabase!.from("mentoria_planos").select("id").eq("usuario_id",ctx.user!.id).eq("status","ativo").order("created_at",{ascending:false}).limit(1).maybeSingle();
-  if(!plano) return NextResponse.json({tarefas:[],atrasadas:0,previsao_termino:null});
-  const {data,error}=await ctx.supabase!.from("mentoria_tarefas").select("*").eq("plano_id",plano.id).order("data_planejada").order("ordem_dia");
-  if(error) return NextResponse.json({error:error.message},{status:500});
-  const hoje=new Date().toISOString().slice(0,10);
-  const tarefas=(data||[]).map((t:any)=>({...t,status_calendario:t.status==="concluida"?"cumprida":t.data_planejada&&t.data_planejada<hoje?"atrasada":"planejada"}));
-  const pend=tarefas.filter((t:any)=>t.status!=="concluida");
-  return NextResponse.json({tarefas,atrasadas:pend.filter((t:any)=>t.status_calendario==="atrasada").length,previsao_termino:pend.map((t:any)=>t.data_planejada).filter(Boolean).sort().at(-1)||null});
+  const ctx = await auth();
+  if (ctx.error) return ctx.error;
+  const { data: plano } = await ctx.supabase!
+    .from("mentoria_planos")
+    .select("id")
+    .eq("usuario_id", ctx.user!.id)
+    .eq("status", "ativo")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!plano) {
+    return NextResponse.json({ tarefas: [], atrasadas: 0, previsao_termino: null, pausado: false, data_inicio_pausa: null, data_fim_pausa: null });
+  }
+
+  const { data: config } = await ctx.supabase!
+    .from("mentoria_config_plano")
+    .select("pausado, data_inicio_pausa, data_fim_pausa")
+    .eq("usuario_id", ctx.user!.id)
+    .maybeSingle();
+
+  const { data, error } = await ctx.supabase!
+    .from("mentoria_tarefas")
+    .select("*")
+    .eq("plano_id", plano.id)
+    .order("data_planejada")
+    .order("ordem_dia");
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  const hoje = new Date().toISOString().slice(0, 10);
+  const estaPausado = Boolean(config?.pausado) || Boolean(
+    config?.data_inicio_pausa && config?.data_fim_pausa && hoje >= config.data_inicio_pausa && hoje <= config.data_fim_pausa
+  );
+
+  const tarefas = (data || []).map((t: any) => {
+    let status_calendario = t.status === "concluida" ? "cumprida" : "planejada";
+    if (t.status !== "concluida" && t.data_planejada && t.data_planejada < hoje) {
+      const tarefaEmPeriodoPausa =
+        estaPausado ||
+        (config?.data_inicio_pausa && config?.data_fim_pausa && t.data_planejada >= config.data_inicio_pausa && t.data_planejada <= config.data_fim_pausa);
+      if (!tarefaEmPeriodoPausa) {
+        status_calendario = "atrasada";
+      }
+    }
+    return { ...t, status_calendario };
+  });
+
+  const pend = tarefas.filter((t: any) => t.status !== "concluida");
+  return NextResponse.json({
+    tarefas,
+    atrasadas: pend.filter((t: any) => t.status_calendario === "atrasada").length,
+    previsao_termino: pend.map((t: any) => t.data_planejada).filter(Boolean).sort().at(-1) || null,
+    pausado: estaPausado,
+    data_inicio_pausa: config?.data_inicio_pausa || null,
+    data_fim_pausa: config?.data_fim_pausa || null,
+  });
 }
 
 export async function POST() {

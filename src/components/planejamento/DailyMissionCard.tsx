@@ -23,6 +23,7 @@ import {
   Target,
   Calendar,
   Lightbulb,
+  PauseCircle,
 } from "lucide-react";
 import { MissaoDiariaItem, MentoriaTarefaTipo } from "@/types";
 
@@ -31,6 +32,8 @@ interface DailyMissionCardProps {
   onIniciar?: (missao: MissaoDiariaItem) => void;
   onConcluir?: (missaoId: string) => void;
   onAdiar?: (missaoId: string) => void;
+  planoPausado?: boolean;
+  dataFimPausa?: string | null;
 }
 
 export function DailyMissionCard({
@@ -38,9 +41,35 @@ export function DailyMissionCard({
   onIniciar,
   onConcluir,
   onAdiar,
+  planoPausado,
+  dataFimPausa,
 }: DailyMissionCardProps) {
   const [isCadernoOpen, setIsCadernoOpen] = useState(false);
   const [isCronometroOpen, setIsCronometroOpen] = useState(false);
+  const [pausadoInfo, setPausadoInfo] = useState<{ pausado: boolean; data_fim_pausa: string | null } | null>(
+    planoPausado !== undefined ? { pausado: planoPausado, data_fim_pausa: dataFimPausa || null } : null
+  );
+
+  useEffect(() => {
+    if (planoPausado !== undefined) {
+      setPausadoInfo({ pausado: planoPausado, data_fim_pausa: dataFimPausa || null });
+    } else {
+      async function carregarPausa() {
+        try {
+          const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
+          if (res?.config) {
+            setPausadoInfo({
+              pausado: Boolean(res.config.pausado),
+              data_fim_pausa: res.config.data_fim_pausa || null,
+            });
+          }
+        } catch {
+          // Ignore
+        }
+      }
+      carregarPausa();
+    }
+  }, [planoPausado, dataFimPausa]);
   const [cadernoTexto, setCadernoTexto] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -336,8 +365,21 @@ export function DailyMissionCard({
     }
   };
 
+  const formatarDataDDMM = (dataIso?: string | null) => {
+    if (!dataIso) return null;
+    try {
+      const parts = dataIso.slice(0, 10).split("-");
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+    } catch {}
+    return dataIso;
+  };
+
+  const estaPausado = Boolean(pausadoInfo?.pausado);
+  const dataFimPausaDDMM = formatarDataDDMM(pausadoInfo?.data_fim_pausa);
+
   // Verificar se a meta está atrasada
   const isAtrasada = () => {
+    if (estaPausado) return false;
     if (missao.atrasada) return true;
     if (missao.data_planejada && !concluida) {
       const hojeIso = new Date().toISOString().slice(0, 10);
@@ -376,6 +418,18 @@ export function DailyMissionCard({
         />
 
         <div className="p-5 sm:p-6 space-y-4">
+          {/* Aviso de Plano Pausado */}
+          {estaPausado && (
+            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs font-semibold">
+              <PauseCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+              <span>
+                {dataFimPausaDDMM
+                  ? `Plano pausado até ${dataFimPausaDDMM}`
+                  : "Plano pausado"}
+              </span>
+            </div>
+          )}
+
           {/* 1. LINHA DE BADGES (Acertos, Meta do Dia, Alerta de Atraso, Duração) */}
           <div className="flex items-center gap-2 flex-wrap text-xs">
             {/* Bloco */}

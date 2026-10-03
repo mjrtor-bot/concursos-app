@@ -33,6 +33,7 @@ import {
   Target,
   Zap,
   Calendar,
+  PauseCircle,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -42,6 +43,7 @@ export default function DashboardPage() {
   const [questoesRecentes, setQuestoesRecentes] = useState<Questao[]>([]);
   const [missoes, setMissoes] = useState<MissaoDiariaItem[]>([]);
   const [metas, setMetas] = useState<MetasEstudoConfig | null>(null);
+  const [configPlano, setConfigPlano] = useState<{ pausado?: boolean; data_inicio_pausa?: string | null; data_fim_pausa?: string | null } | null>(null);
   const [loadingPlanejamento, setLoadingPlanejamento] = useState(true);
 
   useEffect(() => {
@@ -49,16 +51,20 @@ export default function DashboardPage() {
       if (user) {
         try {
           setLoadingPlanejamento(true);
-          const [, taxonomia, mList, met] = await Promise.all([
+          const [, taxonomia, mList, met, cfg] = await Promise.all([
             DataService.sincronizarRespostasSupabase(),
             DataService.carregarDisciplinasTaxonomia(),
             MentoriaService.getMissoesDoDia(user.id),
             MentoriaService.getMetasEstudo(user.id),
+            fetch("/api/mentoria/config-plano").then((r) => r.json()).catch(() => null),
           ]);
           setStats(DataService.getEstatisticas(taxonomia.disciplinas));
           setQuestoesRecentes(DataService.getQuestoes().slice(0, 3));
           setMissoes(mList);
           setMetas(met);
+          if (cfg?.config) {
+            setConfigPlano(cfg.config);
+          }
         } catch (err) {
           console.error("Erro ao carregar planejamento do dashboard:", err);
         } finally {
@@ -77,8 +83,54 @@ export default function DashboardPage() {
   // A primeira missão sempre representa o ponteiro persistido do ciclo.
   const missaoAtiva = missoes[0];
 
+  const formatarDDMM = (dataStr?: string | null) => {
+    if (!dataStr) return null;
+    try {
+      const parts = dataStr.slice(0, 10).split("-");
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+    } catch {}
+    return dataStr;
+  };
+
+  const hojeIso = new Date().toISOString().slice(0, 10);
+  const planoEstaPausado = Boolean(configPlano?.pausado) || Boolean(
+    configPlano?.data_inicio_pausa &&
+    configPlano?.data_fim_pausa &&
+    hojeIso >= configPlano.data_inicio_pausa &&
+    hojeIso <= configPlano.data_fim_pausa
+  );
+  const dataFimPausaDDMM = formatarDDMM(configPlano?.data_fim_pausa);
+
   return (
     <div className="space-y-6 pb-12">
+      {/* Banner de Plano Pausado */}
+      {planoEstaPausado && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-3xl text-amber-900 dark:text-amber-200 shadow-sm animate-in fade-in">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-amber-100 dark:bg-amber-900/60 rounded-xl">
+              <PauseCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+            </div>
+            <div>
+              <p className="font-bold text-sm">
+                {dataFimPausaDDMM ? `Plano pausado até ${dataFimPausaDDMM}` : "Plano pausado"}
+              </p>
+              <p className="text-xs text-amber-700 dark:text-amber-300">
+                Suas metas diárias estão congeladas e não acumulam atraso durante o período de pausa.
+              </p>
+            </div>
+          </div>
+          <Link href="/mentoria/plano">
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/40 w-full sm:w-auto"
+            >
+              Opções do Plano
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* Welcome Banner */}
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-800 text-white rounded-3xl p-6 sm:p-8 shadow-lg shadow-blue-950/10">
         <div className="relative z-10 max-w-2xl">
@@ -237,7 +289,11 @@ export default function DashboardPage() {
           </div>
 
           {missaoAtiva ? (
-            <DailyMissionCard missao={missaoAtiva} />
+            <DailyMissionCard
+              missao={missaoAtiva}
+              planoPausado={planoEstaPausado}
+              dataFimPausa={configPlano?.data_fim_pausa}
+            />
           ) : (
             <div className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 text-center space-y-2">
               <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">

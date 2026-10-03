@@ -1525,38 +1525,86 @@ function ModalPausarPlano({
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [pausado, setPausado] = useState(false);
+  const [dataInicio, setDataInicio] = useState("");
+  const [dataFim, setDataFim] = useState("");
+  const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
     async function carregar() {
       try {
         const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
-        setPausado(Boolean(res?.config?.pausado));
+        const cfg = res?.config || {};
+        setPausado(Boolean(cfg.pausado));
+        const hojeIso = new Date().toISOString().slice(0, 10);
+        setDataInicio(cfg.data_inicio_pausa || hojeIso);
+        setDataFim(cfg.data_fim_pausa || "");
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
-    carregar();
-  }, []);
+    if (isOpen) {
+      setLoading(true);
+      setErro(null);
+      carregar();
+    }
+  }, [isOpen]);
 
-  const handleTogglePausa = async () => {
+  const formatarDDMM = (dataStr: string) => {
+    try {
+      const parts = dataStr.slice(0, 10).split("-");
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}`;
+    } catch {}
+    return dataStr;
+  };
+
+  const handleSalvarPausa = async (ativar: boolean) => {
+    setErro(null);
+    if (ativar) {
+      if (dataInicio && dataFim && dataFim < dataInicio) {
+        setErro("A data de término da pausa não pode ser anterior à data de início.");
+        return;
+      }
+    }
+
     setSalvando(true);
     try {
-      const novoStatus = !pausado;
-      await fetch("/api/mentoria/config-plano", {
+      const payload = ativar
+        ? {
+            pausado: true,
+            data_inicio_pausa: dataInicio || new Date().toISOString().slice(0, 10),
+            data_fim_pausa: dataFim || null,
+          }
+        : {
+            pausado: false,
+            data_inicio_pausa: null,
+            data_fim_pausa: null,
+          };
+
+      const res = await fetch("/api/mentoria/config-plano", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pausado: novoStatus }),
+        body: JSON.stringify(payload),
       });
-      setPausado(novoStatus);
-      onSuccess(
-        novoStatus
-          ? "Plano pausado com sucesso! Suas metas ficam congeladas até que você retome."
-          : "Plano retomado com sucesso! O ciclo voltou à atividade normal."
-      );
-    } catch (err) {
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Erro ao salvar pausa do plano");
+      }
+
+      setPausado(ativar);
+      if (ativar) {
+        const msgAviso = dataFim
+          ? `Plano pausado até ${formatarDDMM(dataFim)} com sucesso!`
+          : "Plano pausado com sucesso! Suas metas ficam congeladas até que você retome.";
+        onSuccess(msgAviso);
+      } else {
+        onSuccess("Plano retomado com sucesso! O ciclo voltou à atividade normal.");
+      }
+    } catch (err: any) {
       console.error(err);
+      setErro(err.message || "Falha ao atualizar status do plano.");
     } finally {
       setSalvando(false);
     }
@@ -1567,7 +1615,7 @@ function ModalPausarPlano({
       isOpen={isOpen}
       onClose={onClose}
       title="7. Pausar ou Retomar o Plano"
-      description="Congele seu plano temporariamente sem penalidades de atraso nas metas diárias."
+      description="Congele seu plano temporariamente com data de início e fim, sem penalidades de atraso nas metas diárias."
       size="md"
     >
       {loading ? (
@@ -1590,29 +1638,87 @@ function ModalPausarPlano({
             )}
             <div className="text-xs space-y-1">
               <p className="font-bold text-sm text-slate-900 dark:text-slate-100">
-                Status Atual: {pausado ? "Plano Pausado" : "Plano Ativo"}
+                Status Atual: {pausado ? (dataFim ? `Plano Pausado até ${formatarDDMM(dataFim)}` : "Plano Pausado") : "Plano Ativo"}
               </p>
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                 {pausado
-                  ? "Seu ciclo está congelado. Nenhuma tarefa acumula atraso ou altera seu streak."
+                  ? "Seu ciclo está congelado. Nenhuma tarefa acumula atraso ou altera sua sequência durante o período."
                   : "Seu ciclo está em andamento normal, calculando missões e rotatividade de matérias."}
               </p>
             </div>
+          </div>
+
+          <div className="space-y-3 pt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Data de Início da Pausa
+                </label>
+                <input
+                  type="date"
+                  value={dataInicio}
+                  onChange={(e) => setDataInicio(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Data de Fim da Pausa (opcional)
+                </label>
+                <input
+                  type="date"
+                  value={dataFim}
+                  min={dataInicio || undefined}
+                  onChange={(e) => setDataFim(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl"
+                />
+              </div>
+            </div>
+
+            {erro && (
+              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <span>{erro}</span>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
             <Button variant="ghost" size="sm" onClick={onClose} disabled={salvando}>
               Cancelar
             </Button>
-            <Button
-              variant={pausado ? "primary" : "outline"}
-              size="sm"
-              onClick={handleTogglePausa}
-              isLoading={salvando}
-              leftIcon={pausado ? <PlayCircle className="w-4 h-4" /> : <PauseCircle className="w-4 h-4" />}
-            >
-              {pausado ? "Retomar Plano" : "Pausar Plano"}
-            </Button>
+            {pausado ? (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleSalvarPausa(true)}
+                  isLoading={salvando}
+                  leftIcon={<Save className="w-4 h-4" />}
+                >
+                  Atualizar Período
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => handleSalvarPausa(false)}
+                  isLoading={salvando}
+                  leftIcon={<PlayCircle className="w-4 h-4" />}
+                >
+                  Retomar Plano
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => handleSalvarPausa(true)}
+                isLoading={salvando}
+                leftIcon={<PauseCircle className="w-4 h-4" />}
+              >
+                Pausar Plano
+              </Button>
+            )}
           </div>
         </div>
       )}
