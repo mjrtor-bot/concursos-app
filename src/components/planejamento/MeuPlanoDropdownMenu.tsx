@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
   Settings,
   BookOpen,
@@ -65,13 +66,51 @@ export function MeuPlanoDropdownMenu({
   const { success, error: showError, info } = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const triggerRef = useRef<HTMLButtonElement | HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const [menuCoords, setMenuCoords] = useState<{ top: number; left: number; width: number }>({
+    top: 0,
+    left: 0,
+    width: 360,
+  });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const updatePosition = useCallback(() => {
+    if (!triggerRef.current) return;
+    const rect = triggerRef.current.getBoundingClientRect();
+    const menuWidth = Math.min(384, window.innerWidth - 32);
+    const maxHeight = Math.min(540, window.innerHeight * 0.8);
+
+    // Sidebar: abre à direita do ícone
+    let left = rect.right + 10;
+    if (left + menuWidth > window.innerWidth - 16) {
+      left = Math.max(16, window.innerWidth - menuWidth - 16);
+    }
+    let top = rect.top;
+    if (top + maxHeight > window.innerHeight - 16) {
+      top = Math.max(16, window.innerHeight - maxHeight - 16);
+    }
+    if (top < 16) top = 16;
+
+    setMenuCoords({ top, left, width: menuWidth });
+  }, []);
 
   // Fechar menu ao clicar fora
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(target)
+      ) {
         setIsOpen(false);
       }
     }
@@ -82,6 +121,24 @@ export function MeuPlanoDropdownMenu({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
+
+  // Atualizar posição ao abrir, no scroll ou no resize quando variant === "sidebar"
+  useEffect(() => {
+    if (!isOpen || variant !== "sidebar") return;
+    updatePosition();
+
+    const handleScrollOrResize = () => {
+      updatePosition();
+    };
+
+    window.addEventListener("resize", handleScrollOrResize);
+    window.addEventListener("scroll", handleScrollOrResize, true);
+
+    return () => {
+      window.removeEventListener("resize", handleScrollOrResize);
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+    };
+  }, [isOpen, variant, updatePosition]);
 
   const handleOpenOption = (modal: ModalType) => {
     setIsOpen(false);
@@ -98,38 +155,220 @@ export function MeuPlanoDropdownMenu({
     if (onPlanUpdated) onPlanUpdated();
   };
 
+  const menuContent = (
+    <>
+      <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 shrink-0">
+        <p className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+          <Sliders className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          Gestão do Meu Plano de Estudos
+        </p>
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+          Personalize, replaneje ou ajuste as configurações do seu ciclo
+        </p>
+      </div>
+
+      <div className="py-1 overflow-y-auto max-h-[80vh] flex-1 divide-y divide-slate-100 dark:divide-slate-800/60 overscroll-contain">
+        {/* 1. Editar Matérias */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("materias")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+              1. Editar Matérias
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (quais disciplinas entram ou saem do plano)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 2. Editar Ciclo */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("ciclo")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <RotateCw className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+              2. Editar Ciclo
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (quantas vezes cada matéria aparece no ciclo)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 3. Editar Horários */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("horarios")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <Clock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+              3. Editar Horários
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (disponibilidade de tempo por dia da semana)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 4. Replanejar Atrasos */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("replanejar")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <CalendarDays className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400">
+              4. Replanejar Atrasos
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (redistribuir metas atrasadas nos próximos dias)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 5. Sinalizar Assuntos já Estudados */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("sinalizar")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400">
+              5. Sinalizar Assuntos já Estudados
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (marcar tópicos como concluídos)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 6. Rever Assuntos do Plano */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("rever")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <FileSearch className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-600 dark:group-hover:text-sky-400">
+              6. Rever Assuntos do Plano
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (visualizar status de cada tópico do edital)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 7. Pausar Plano */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("pausar")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <PauseCircle className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+              7. Pausar Plano
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (congelar o plano por um período)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 8. Ajustar Data Final */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("data_final")}
+          className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <Calendar className="w-4 h-4 text-cyan-600 dark:text-cyan-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
+              8. Ajustar Data Final
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
+              (recalcular o ritmo com nova data da prova)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+
+        {/* 9. Reiniciar o Plano */}
+        <button
+          type="button"
+          onClick={() => handleOpenOption("reiniciar")}
+          className="w-full px-4 py-2.5 text-left hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-start gap-3 transition-colors group cursor-pointer"
+        >
+          <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-semibold text-rose-700 dark:text-rose-400 group-hover:underline">
+              9. Reiniciar o Plano
+            </p>
+            <p className="text-[11px] text-rose-500/80 dark:text-rose-400/80 leading-tight">
+              (recomeçar do zero mantendo o histórico)
+            </p>
+          </div>
+          <ChevronRight className="w-3.5 h-3.5 text-rose-400 group-hover:translate-x-0.5 transition-transform" />
+        </button>
+      </div>
+    </>
+  );
+
   return (
-    <div className={`relative inline-block text-left ${className}`} ref={menuRef}>
+    <div className={`relative inline-block text-left ${className}`}>
       {/* Botão de Disparo */}
       {variant === "sidebar" ? (
         <button
+          ref={triggerRef as React.RefObject<HTMLButtonElement>}
           type="button"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            setIsOpen(!isOpen);
+            setIsOpen((prev) => !prev);
           }}
-          className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors"
+          className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors cursor-pointer"
           title="Gerenciar Meu Plano"
           aria-label="Gerenciar Meu Plano"
         >
           <Settings className="w-3.5 h-3.5" />
         </button>
       ) : variant === "button" ? (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsOpen(!isOpen)}
-          leftIcon={<Settings className="w-4 h-4 text-slate-600 dark:text-slate-300" />}
-          className="gap-1.5 font-semibold text-xs"
-        >
-          Opções do Plano
-        </Button>
+        <div ref={triggerRef as React.RefObject<HTMLDivElement>} className="inline-block">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsOpen((prev) => !prev)}
+            leftIcon={<Settings className="w-4 h-4 text-slate-600 dark:text-slate-300" />}
+            className="gap-1.5 font-semibold text-xs"
+          >
+            Opções do Plano
+          </Button>
+        </div>
       ) : (
         <button
+          ref={triggerRef as React.RefObject<HTMLButtonElement>}
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-xs transition-colors"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-xs transition-colors cursor-pointer"
           title="Opções do Plano"
           aria-label="Opções do Plano"
         >
@@ -139,172 +378,34 @@ export function MeuPlanoDropdownMenu({
 
       {/* Menu Suspenso */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-84 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-          <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
-            <p className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-              Gestão do Meu Plano de Estudos
-            </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Personalize, replaneje ou ajuste as configurações do seu ciclo
-            </p>
+        variant === "sidebar" ? (
+          mounted && typeof document !== "undefined" ? (
+            createPortal(
+              <div
+                ref={menuRef}
+                style={{
+                  position: "fixed",
+                  top: `${menuCoords.top}px`,
+                  left: `${menuCoords.left}px`,
+                  width: `${menuCoords.width}px`,
+                  maxHeight: "80vh",
+                  zIndex: 9999,
+                }}
+                className="flex flex-col rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 py-2 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
+              >
+                {menuContent}
+              </div>,
+              document.body
+            )
+          ) : null
+        ) : (
+          <div
+            ref={menuRef}
+            className="absolute right-0 mt-2 w-84 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150 flex flex-col overflow-hidden"
+          >
+            {menuContent}
           </div>
-
-          <div className="py-1 max-h-[70vh] overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
-            {/* 1. Editar Matérias */}
-            <button
-              onClick={() => handleOpenOption("materias")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                  1. Editar Matérias
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (quais disciplinas entram ou saem do plano)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 2. Editar Ciclo */}
-            <button
-              onClick={() => handleOpenOption("ciclo")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <RotateCw className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                  2. Editar Ciclo
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (quantas vezes cada matéria aparece no ciclo)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 3. Editar Horários */}
-            <button
-              onClick={() => handleOpenOption("horarios")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <Clock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                  3. Editar Horários
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (disponibilidade de tempo por dia da semana)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 4. Replanejar Atrasos */}
-            <button
-              onClick={() => handleOpenOption("replanejar")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <CalendarDays className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400">
-                  4. Replanejar Atrasos
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (redistribuir metas atrasadas nos próximos dias)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 5. Sinalizar Assuntos já Estudados */}
-            <button
-              onClick={() => handleOpenOption("sinalizar")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <CheckCircle2 className="w-4 h-4 text-teal-600 dark:text-teal-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                  5. Sinalizar Assuntos já Estudados
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (marcar tópicos como concluídos)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 6. Rever Assuntos do Plano */}
-            <button
-              onClick={() => handleOpenOption("rever")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <FileSearch className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-600 dark:group-hover:text-sky-400">
-                  6. Rever Assuntos do Plano
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (visualizar status de cada tópico do edital)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 7. Pausar Plano */}
-            <button
-              onClick={() => handleOpenOption("pausar")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <PauseCircle className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                  7. Pausar Plano
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (congelar o plano por um período)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 8. Ajustar Data Final */}
-            <button
-              onClick={() => handleOpenOption("data_final")}
-              className="w-full px-4 py-2.5 text-left hover:bg-blue-50/60 dark:hover:bg-blue-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <Calendar className="w-4 h-4 text-cyan-600 dark:text-cyan-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
-                  8. Ajustar Data Final
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
-                  (recalcular o ritmo com nova data da prova)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-
-            {/* 9. Reiniciar o Plano */}
-            <button
-              onClick={() => handleOpenOption("reiniciar")}
-              className="w-full px-4 py-2.5 text-left hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-start gap-3 transition-colors group"
-            >
-              <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-rose-700 dark:text-rose-400 group-hover:underline">
-                  9. Reiniciar o Plano
-                </p>
-                <p className="text-[11px] text-rose-500/80 dark:text-rose-400/80 leading-tight">
-                  (recomeçar do zero mantendo o histórico)
-                </p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-rose-400 group-hover:translate-x-0.5 transition-transform" />
-            </button>
-          </div>
-        </div>
+        )
       )}
 
       {/* ── MODAIS FUNCIONAIS ────────────────────────────────────────────── */}
