@@ -4,14 +4,14 @@ import { createClientServer, createAdminClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-async function requireAdmin() {
+async function requireAuth() {
   const supabase = await createClientServer();
   if (!supabase) return { error: NextResponse.json({ error: "Supabase indisponível" }, { status: 503 }) };
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: NextResponse.json({ error: "Não autenticado" }, { status: 401 }) };
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-  if (!profile || !["admin", "editor"].includes(profile.role)) return { error: NextResponse.json({ error: "Sem permissão" }, { status: 403 }) };
-  return { supabase, user };
+  const isAdminOrEditor = Boolean(profile && ["admin", "editor"].includes(profile.role));
+  return { supabase, user, isAdminOrEditor };
 }
 
 function extractOutputText(json: any) {
@@ -23,32 +23,8 @@ function extractOutputText(json: any) {
     .join("");
 }
 
-function schema() {
-  return {
-    type: "object",
-    additionalProperties: false,
-    required: ["titulo_detectado", "disciplinas", "observacoes"],
-    properties: {
-      titulo_detectado: { type: "string" },
-      observacoes: { type: "array", items: { type: "string" } },
-      disciplinas: {
-        type: "array",
-        items: {
-          type: "object",
-          additionalProperties: false,
-          required: ["nome", "assuntos"],
-          properties: {
-            nome: { type: "string" },
-            assuntos: { type: "array", items: { type: "string" } }
-          }
-        }
-      }
-    }
-  };
-}
-
 export async function GET(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAuth();
   if (auth.error) return auth.error;
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "OPENAI_API_KEY não configurada no servidor." }, { status: 503 });
 
@@ -63,16 +39,16 @@ export async function GET(request: NextRequest) {
     .eq("id", id)
     .maybeSingle();
 
-  if (registro && registro.usuario_id !== auth.user!.id) {
-    return NextResponse.json({ error: "PDF não pertence ao usuário autenticado." }, { status: 403 });
-  }
-
   if (registroError) {
     console.error("[status/route] Erro ao consultar edital_usuario no polling:", registroError);
-    return NextResponse.json({ error: registroError.message }, { status: 500 });
+    return NextResponse.json({ error: (registroError as any).message || "Erro de banco" }, { status: 500 });
   }
 
   if (!registro) return NextResponse.json({ error: "PDF não encontrado." }, { status: 404 });
+
+  if (registro.usuario_id !== auth.user!.id && !auth.isAdminOrEditor) {
+    return NextResponse.json({ error: "PDF não pertence ao usuário autenticado." }, { status: 403 });
+  }
 
   if (registro.status === "aguardando_revisao" && registro.estrutura_extraida) {
     const estrutura: any = registro.estrutura_extraida;

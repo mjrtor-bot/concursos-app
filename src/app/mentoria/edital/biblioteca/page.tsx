@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState, useCallback } from "react";
 import { AlertCircle, CheckCircle2, ChevronDown, ExternalLink, Loader2, RefreshCw, Search, Trash2, Upload } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConcurso } from "@/contexts/ConcursoContext";
@@ -93,52 +93,97 @@ export default function BibliotecaEditaisPage() {
   const [alvo,setAlvo]=useState<Alvo|null>(null);
   const [alvoDetalhe,setAlvoDetalhe]=useState<AlvoDetalhe|null>(null);
 
-  async function carregarMeusEditais(){
-    try{
-      const r=await fetch("/api/editais/importados",{cache:"no-store"});
-      const j=await r.json();
-      if(r.ok)setMeusEditais(j.editais||[]);
-    }catch{ /* a biblioteca oficial continua disponível mesmo se a consulta dos importados falhar */ }
+  const reconciliarProcessando = useCallback(async (lista: MeuEditalUpload[]) => {
+    const pendentes = lista.filter((x) => x.status === "processando");
+    if (!pendentes.length) return;
+
+    let houveMudanca = false;
+    await Promise.all(
+      pendentes.map(async (p) => {
+        try {
+          const res = await fetch(`/api/editais/processar/status?edital_usuario_id=${encodeURIComponent(p.id)}`, {
+            cache: "no-store",
+          });
+          const data = await res.json();
+          if (data.done || (data.status && data.status !== "processando")) {
+            houveMudanca = true;
+          }
+        } catch {
+          // Continua em caso de erro individual
+        }
+      })
+    );
+
+    if (houveMudanca) {
+      try {
+        const r = await fetch("/api/editais/importados", { cache: "no-store" });
+        if (r.ok) {
+          const j = await r.json();
+          setMeusEditais(j.editais || []);
+        }
+      } catch {
+        // Ignore
+      }
+    }
+  }, []);
+
+  const carregarMeusEditais = useCallback(async () => {
+    try {
+      const r = await fetch("/api/editais/importados", { cache: "no-store" });
+      const j = await r.json();
+      if (r.ok) {
+        const list = j.editais || [];
+        setMeusEditais(list);
+        void reconciliarProcessando(list);
+      }
+    } catch {
+      /* a biblioteca oficial continua disponível mesmo se a consulta dos importados falhar */
+    }
+  }, [reconciliarProcessando]);
+
+  async function carregar() {
+    setLoading(true);
+    setErro("");
+    const p = new URLSearchParams();
+    if (q.trim()) p.set("q", q.trim());
+    if (carreira !== "todos") p.set("carreira", carreira);
+    if (uf !== "todos") p.set("uf", uf);
+    if (status !== "todos") p.set("status", status);
+    try {
+      const r = await fetch("/api/editais?" + p.toString(), { cache: "no-store" });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || "Falha ao carregar editais");
+      setEditais(j.editais || []);
+    } catch (e) {
+      setErro(e instanceof Error ? e.message : "Falha ao carregar editais");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  async function carregar(){
-    setLoading(true); setErro("");
-    const p=new URLSearchParams();
-    if(q.trim())p.set("q",q.trim());
-    if(carreira!=="todos")p.set("carreira",carreira);
-    if(uf!=="todos")p.set("uf",uf);
-    if(status!=="todos")p.set("status",status);
-    try{
-      const r=await fetch("/api/editais?"+p.toString(),{cache:"no-store"});
-      const j=await r.json();
-      if(!r.ok)throw new Error(j.error||"Falha ao carregar editais");
-      setEditais(j.editais||[]);
-    }catch(e){setErro(e instanceof Error?e.message:"Falha ao carregar editais");}
-    finally{setLoading(false);}
-  }
-
-  async function carregarAlvo(){
-    try{
-      const r=await fetch("/api/concursos/alvo",{cache:"no-store"});
-      const j=await r.json();
-      if(!r.ok)throw new Error(j.error||"Falha ao carregar concurso alvo");
-      setAlvo(j.alvo||null);
-      const concurso=(j.concursos||[]).find((c:any)=>c.id===j.alvo?.concurso_id);
-      const cargo=(concurso?.concurso_cargos||[]).find((c:any)=>c.id===j.alvo?.cargo_id);
-      const edital=(cargo?.editais_concurso||[]).find((e:any)=>e.id===j.alvo?.edital_id);
-      if(concurso&&cargo) {
+  async function carregarAlvo() {
+    try {
+      const r = await fetch("/api/concursos/alvo", { cache: "no-store" });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || "Falha ao carregar concurso alvo");
+      setAlvo(j.alvo || null);
+      const concurso = (j.concursos || []).find((c: any) => c.id === j.alvo?.concurso_id);
+      const cargo = (concurso?.concurso_cargos || []).find((c: any) => c.id === j.alvo?.cargo_id);
+      const edital = (cargo?.editais_concurso || []).find((e: any) => e.id === j.alvo?.edital_id);
+      if (concurso && cargo) {
         setAlvoDetalhe({
-          concurso:concurso.nome,
-          cargo:cargo.nome,
-          edital:edital?.titulo||edital?.numero||"Edital do concurso alvo",
+          concurso: concurso.nome,
+          cargo: cargo.nome,
+          edital: edital?.titulo || edital?.numero || "Edital do concurso alvo",
         });
         if (edital?.id && !destinoEditalId) {
           setDestinoEditalId(edital.id);
         }
       }
-    }catch(e){
-      setAlvo(null); setAlvoDetalhe(null);
-      setMensagem(e instanceof Error?e.message:"Não foi possível identificar o concurso alvo.");
+    } catch (e) {
+      setAlvo(null);
+      setAlvoDetalhe(null);
+      setMensagem(e instanceof Error ? e.message : "Não foi possível identificar o concurso alvo.");
     }
   }
 
@@ -155,7 +200,9 @@ export default function BibliotecaEditaisPage() {
 
         if (rMeus.ok) {
           const j = await rMeus.json();
-          setMeusEditais(j.editais || []);
+          const list = j.editais || [];
+          setMeusEditais(list);
+          void reconciliarProcessando(list);
         }
 
         if (rAlvo.ok) {
@@ -187,7 +234,7 @@ export default function BibliotecaEditaisPage() {
     return () => {
       ignore = true;
     };
-  }, [user?.id, destinoEditalId]);
+  }, [user?.id, destinoEditalId, reconciliarProcessando]);
   useEffect(()=>{const t=setTimeout(carregar,250);return()=>clearTimeout(t);},[q,carreira,uf,status]);
 
   const ufs=useMemo(()=>Array.from(new Set(editais.map(e=>e.uf).filter(Boolean) as string[])).sort(),[editais]);

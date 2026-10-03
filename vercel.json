@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/editais/processar/reconciliar",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }
