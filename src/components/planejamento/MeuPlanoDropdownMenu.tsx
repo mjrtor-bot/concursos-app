@@ -1742,15 +1742,25 @@ function ModalAjustarDataFinal({
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [dataProva, setDataProva] = useState("");
+  const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
+  const [disponibilidade, setDisponibilidade] = useState<MentoriaDisponibilidade[]>([]);
+  const [edital, setEdital] = useState<EditalVerticalizadoResumo | null>(null);
 
   useEffect(() => {
     async function carregar() {
       if (!user) return;
       try {
-        const perfil = await MentoriaService.getPerfil(user.id);
-        if (perfil?.data_prova) {
-          setDataProva(perfil.data_prova);
+        const [p, d, e] = await Promise.all([
+          MentoriaService.getPerfil(user.id),
+          MentoriaService.getDisponibilidade(user.id),
+          MentoriaService.getEditalVerticalizado(user.id).catch(() => null),
+        ]);
+        if (p?.data_prova) {
+          setDataProva(p.data_prova);
         }
+        setPerfil(p);
+        setDisponibilidade(d || []);
+        setEdital(e);
       } catch (err) {
         console.error(err);
       } finally {
@@ -1771,8 +1781,44 @@ function ModalAjustarDataFinal({
 
   const dias = calcularDiasRestantes();
 
+  // Cálculo de disponibilidade semanal e diária
+  const totalMinutosSemanais = disponibilidade.reduce(
+    (acc, curr) => acc + (curr.minutos_disponiveis || 0),
+    0
+  );
+  const mediaMinutosDiariosDisponiveis = totalMinutosSemanais > 0 ? totalMinutosSemanais / 7 : 120;
+  const mediaHorasDiariasDisponiveis = mediaMinutosDiariosDisponiveis / 60;
+  const horasSemanais = totalMinutosSemanais / 60;
+
+  // Cálculo da carga horária necessária para cobrir o edital
+  const topicosRestantes = Math.max(
+    1,
+    (edital?.total_topicos || 0) > 0
+      ? (edital?.total_topicos || 0) - (edital?.topicos_estudados || 0)
+      : 20
+  );
+  const duracaoBlocoMinutos = perfil?.duracao_bloco_minutos || 40;
+  const minutosTotaisNecessarios = topicosRestantes * duracaoBlocoMinutos;
+
+  const minutosNecessariosPorDia = dias && dias > 0 ? minutosTotaisNecessarios / dias : 0;
+  const horasNecessariasPorDia = minutosNecessariosPorDia / 60;
+
+  const excedeDisponibilidade =
+    dias !== null && dias > 0 && minutosNecessariosPorDia > mediaMinutosDiariosDisponiveis;
+
   const handleSalvar = async () => {
     if (!user) return;
+
+    if (excedeDisponibilidade) {
+      const dataFormatada = dataProva
+        ? new Date(dataProva + "T00:00:00").toLocaleDateString("pt-BR")
+        : "";
+      const confirma = window.confirm(
+        `Aviso de Sobrecarga de Horários:\n\nPara cobrir os ${topicosRestantes} tópicos restantes até a data ${dataFormatada}, você precisará de ~${horasNecessariasPorDia.toFixed(1)}h por dia (${Math.round(minutosNecessariosPorDia)} min/dia).\n\nSua disponibilidade semanal configurada é de ${horasSemanais.toFixed(1)}h/semana (~${mediaHorasDiariasDisponiveis.toFixed(1)}h/dia).\n\nDeseja salvar e recalcular o plano mesmo com a sobrecarga de carga diária?`
+      );
+      if (!confirma) return;
+    }
+
     setSalvando(true);
     try {
       await Promise.all([
@@ -1819,11 +1865,44 @@ function ModalAjustarDataFinal({
           </div>
 
           {dias !== null && (
-            <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-xl text-xs flex items-center justify-between">
-              <span className="text-slate-600 dark:text-slate-400">Contagem Regressiva:</span>
-              <span className="font-bold text-blue-700 dark:text-blue-300">
-                {dias > 0 ? `${dias} dias até a prova` : dias === 0 ? "A prova é hoje! 🎯" : "Data no passado"}
-              </span>
+            <div className="space-y-3">
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-xl text-xs flex items-center justify-between">
+                <span className="text-slate-600 dark:text-slate-400">Contagem Regressiva:</span>
+                <span className="font-bold text-blue-700 dark:text-blue-300">
+                  {dias > 0 ? `${dias} dias até a prova` : dias === 0 ? "A prova é hoje! 🎯" : "Data no passado"}
+                </span>
+              </div>
+
+              {dias > 0 && (
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl">
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Carga Diária Necessária</p>
+                    <p className={`text-sm font-bold mt-0.5 ${excedeDisponibilidade ? "text-amber-600 dark:text-amber-400" : "text-slate-800 dark:text-slate-200"}`}>
+                      ~{horasNecessariasPorDia.toFixed(1)}h/dia
+                    </p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{Math.round(minutosNecessariosPorDia)} min/dia ({topicosRestantes} tópicos)</p>
+                  </div>
+                  <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl">
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Disponibilidade Atual</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                      ~{mediaHorasDiariasDisponiveis.toFixed(1)}h/dia
+                    </p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{horasSemanais.toFixed(1)}h/semana configuradas</p>
+                  </div>
+                </div>
+              )}
+
+              {excedeDisponibilidade && (
+                <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-xl text-xs text-amber-900 dark:text-amber-200 flex gap-2.5 items-start">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold">Atenção: Sobrecarga de Horários!</p>
+                    <p className="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">
+                      A carga necessária (~{horasNecessariasPorDia.toFixed(1)}h/dia) excede a sua disponibilidade configurada (~{mediaHorasDiariasDisponiveis.toFixed(1)}h/dia). Ao salvar, o plano será recalculado considerando esse ritmo acelerado.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
