@@ -44,11 +44,13 @@ import {
   MentoriaTopicoFraco,
   MentoriaQuestoesSelecaoResultado,
   Assunto,
+  MissaoDiariaItem,
 } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { QuestionCard } from "@/components/questoes/QuestionCard";
+import { DailyMissionCard } from "@/components/planejamento/DailyMissionCard";
 
 export default function MentoriaHojePage() {
   const { user } = useAuth();
@@ -573,6 +575,34 @@ export default function MentoriaHojePage() {
 
   const blocoAtual = planoCiclo?.bloco_atual;
 
+  const missaoAtual: MissaoDiariaItem | null =
+    blocoAtual && planoCiclo
+      ? {
+          id: blocoAtual.id,
+          plano_id: planoCiclo.plano_id,
+          bloco_ordem: blocoAtual.ordem_bloco,
+          tipo: blocoAtual.tipo,
+          disciplina_id: blocoAtual.disciplina_id,
+          disciplina_nome: blocoAtual.disciplina_nome,
+          assunto_id: blocoAtual.assunto_id,
+          assunto_nome: blocoAtual.assunto_nome,
+          subassunto_id: blocoAtual.subassunto_id,
+          subassunto_nome: blocoAtual.subassunto_nome,
+          topico_nome: blocoAtual.topico_nome,
+          duracao_minutos: blocoAtual.duracao_minutos,
+          quantidade_questoes: blocoAtual.quantidade_questoes_sugerida || 15,
+          prioridade: blocoAtual.prioridade_nivel,
+          status: cronometroIniciado ? "em_andamento" : "pendente",
+          motivo_explicabilidade: blocoAtual.motivo_explicabilidade || [],
+          progresso_percentual: percentualConcluido,
+          taxa_acerto:
+            questoesRespondidas > 0
+              ? Math.round((questoesAcertadas / questoesRespondidas) * 100)
+              : undefined,
+          anotacoes: anotacoesTeoria,
+        }
+      : null;
+
   // Persiste o resumo imediatamente no servidor (mesma linha da sessão ativa do bloco).
   const salvarResumo = async () => {
     if (!planoCiclo?.bloco_atual || !anotacoesTeoria.trim() || salvandoResumo) return;
@@ -691,72 +721,28 @@ export default function MentoriaHojePage() {
       )}
 
       {/* BLOCO ATIVO & CRONÔMETRO INTEGRADO */}
-      {blocoAtual ? (
+      {blocoAtual && missaoAtual ? (
         <div className="space-y-6">
-          <Card className="border-2 border-blue-500 dark:border-blue-600 shadow-lg overflow-hidden">
+          <DailyMissionCard
+            missao={missaoAtual}
+            onIniciar={handleIniciar}
+            onConcluir={() => handleFinalizarSessao()}
+          />
+
+          <Card className="border-2 border-slate-200 dark:border-slate-800 shadow-lg overflow-hidden bg-white dark:bg-slate-900">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Play className="w-4 h-4 fill-white" />
                 <span className="text-xs font-black uppercase tracking-wider">
-                  BLOCO ATIVO DO CICLO #{blocoAtual.ordem_bloco}
+                  PAINEL DE EXECUÇÃO EM TEMPO REAL • BLOCO #{blocoAtual.ordem_bloco}
                 </span>
               </div>
               <Badge variant="secondary" className="font-bold text-xs capitalize">
-                Prioridade {blocoAtual.prioridade_nivel} ({blocoAtual.prioridade_score} pts)
+                {estadoBloco}
               </Badge>
             </div>
 
             <CardContent className="p-6 sm:p-8 space-y-6">
-              {/* Informações da Disciplina */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50">
-                    {blocoAtual.disciplina_nome}
-                  </h2>
-                  {blocoAtual.assunto_nome && (
-                    <p className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">
-                      Assunto: {blocoAtual.assunto_nome}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400">
-                    <Badge
-                      variant={
-                        blocoAtual.tipo === "TEORIA"
-                          ? "primary"
-                          : blocoAtual.tipo === "QUESTOES"
-                          ? "success"
-                          : "warning"
-                      }
-                      className="font-bold text-xs"
-                    >
-                      {blocoAtual.tipo === "TEORIA"
-                        ? "ESTUDO TEÓRICO"
-                        : blocoAtual.tipo === "QUESTOES"
-                        ? "QUESTÕES COMENTADAS"
-                        : "REVISÃO ESPAÇADA"}
-                    </Badge>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-blue-600" />
-                      Meta: {blocoAtual.duracao_minutos} minutos
-                    </span>
-                    {blocoAtual.tipo === "QUESTOES" && (
-                      <span className="flex items-center gap-1">
-                        <CheckSquare2 className="w-3.5 h-3.5 text-emerald-600" />
-                        Sugerido: ~{blocoAtual.quantidade_questoes_sugerida} questões
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Link href={`/questoes?busca=${encodeURIComponent(blocoAtual.disciplina_nome)}`}>
-                    <Button variant="outline" size="sm" className="font-bold text-xs">
-                      Abrir Banco Geral
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
               {/* CRONÔMETRO DE SESSÃO */}
               <div className="p-6 bg-slate-900 dark:bg-slate-950 text-white rounded-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-6 shadow-inner">
                 <div className="space-y-1">
@@ -817,6 +803,13 @@ export default function MentoriaHojePage() {
                       variant="outline"
                       onClick={handleEncerrarSemConcluir}
                       disabled={finalizando}
+                      className="w-full sm:w-auto font-bold border-rose-700 text-rose-100 hover:bg-rose-950/40"
+                    >
+                      Encerrar sem concluir
+                    </Button>
+                  )}
+                </div>
+              </div>
                       className="w-full sm:w-auto font-bold border-rose-700 text-rose-100 hover:bg-rose-950/40"
                     >
                       Encerrar sem concluir
