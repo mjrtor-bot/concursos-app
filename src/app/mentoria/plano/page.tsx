@@ -24,6 +24,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaCicloService } from "@/services/mentoriaCicloService";
+import { MentoriaDiagnosticoService } from "@/services/mentoriaDiagnosticoService";
 import {
   MentoriaPerfil,
   MentoriaDisponibilidade,
@@ -62,7 +63,7 @@ export default function MentoriaPlanoPage() {
         MentoriaService.getDisponibilidade(user.id),
         MentoriaCicloService.obterPlanoCiclo(user.id),
         MentoriaService.getGradeSemanalDistribuida(user.id),
-        MentoriaService.getDiagnostico(user.id),
+        MentoriaDiagnosticoService.getUltimoDiagnostico(user.id),
       ]);
       setPerfil(p);
       setDisp(d);
@@ -89,7 +90,7 @@ export default function MentoriaPlanoPage() {
           MentoriaService.getDisponibilidade(user.id),
           MentoriaCicloService.obterPlanoCiclo(user.id),
           MentoriaService.getGradeSemanalDistribuida(user.id),
-          MentoriaService.getDiagnostico(user.id),
+          MentoriaDiagnosticoService.getUltimoDiagnostico(user.id),
         ]);
         if (!ignore) {
           setPerfil(p);
