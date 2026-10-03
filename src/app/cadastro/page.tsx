@@ -82,10 +82,10 @@ export default function CadastroPage() {
         </div>
 
         <h2 className="mt-4 text-center text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-          "Crie sua conta gratuita"
+          Crie sua conta gratuita
         </h2>
         <p className="mt-1 text-center text-sm text-slate-500 dark:text-slate-400">
-          "Acelere sua aprovação com questões comentadas, simulados e IA"
+          Acelere sua aprovação com questões comentadas, simulados e IA
         </p>
       </div>
 

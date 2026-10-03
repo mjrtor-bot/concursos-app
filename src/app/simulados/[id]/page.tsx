@@ -2,7 +2,6 @@
 
 import React, { use, useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
 import { QuestionCard } from "@/components/questoes/QuestionCard";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -32,6 +31,8 @@ export default function SimuladoExecucaoPage({
   const [simulado, setSimulado] = useState<Simulado | null>(null);
   const [questoes, setQuestoes] = useState<Questao[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [carregando, setCarregando] = useState(true);
+  const [naoEncontrado, setNaoEncontrado] = useState(false);
 
   // Simulado attempt state
   const [tentativaId] = useState<string>(
@@ -80,12 +81,16 @@ export default function SimuladoExecucaoPage({
     let isCancelled = false;
 
     const carregar = async () => {
+      setCarregando(true);
       const sim =
         DataService.getSimuladoById(id) ||
         DataService.getSimulados().find((s) => s.id === id);
 
       if (!sim) {
-        notFound();
+        if (!isCancelled) {
+          setNaoEncontrado(true);
+          setCarregando(false);
+        }
         return;
       }
 
@@ -94,6 +99,9 @@ export default function SimuladoExecucaoPage({
       setTempoRestanteSegundos(sim.tempo_limite_minutos * 60);
 
       await carregarQuestoes(sim);
+      if (!isCancelled) {
+        setCarregando(false);
+      }
     };
 
     void carregar();
@@ -175,7 +183,35 @@ export default function SimuladoExecucaoPage({
     return () => clearInterval(interval);
   }, []);
 
-  if (!simulado || questoes.length === 0) return null;
+  if (naoEncontrado) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
+          <AlertTriangle className="w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+          Simulado não encontrado
+        </h2>
+        <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mb-6">
+          O simulado solicitado não está disponível ou foi removido.
+        </p>
+        <Button onClick={() => router.push("/simulados")}>
+          Voltar para Simulados
+        </Button>
+      </div>
+    );
+  }
+
+  if (carregando || !simulado || questoes.length === 0) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Carregando caderno do simulado...
+        </p>
+      </div>
+    );
+  }
 
   const questaoAtual = questoes[currentIdx];
   const respostaAtual = respostas[questaoAtual.id];

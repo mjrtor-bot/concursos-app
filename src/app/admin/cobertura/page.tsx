@@ -100,8 +100,8 @@ export default function AdminCoberturaPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Falha ao carregar relatório de cobertura");
       setData(json);
-      if (json.relatorios?.length > 0 && !editalAberto) {
-        setEditalAberto(json.relatorios[0].edital.id);
+      if (json.relatorios?.length > 0) {
+        setEditalAberto((prev) => prev || json.relatorios[0].edital.id);
       }
     } catch (e) {
       setErro(e instanceof Error ? e.message : "Erro desconhecido");

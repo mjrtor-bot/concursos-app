@@ -5,8 +5,30 @@ import { processarImportacaoQuestoes } from "@/services/questionImporter";
 import { mockQuestoes } from "@/data/mockData";
 import { ImportOptions, Questao } from "@/types";
 
+async function requireAdmin() {
+  const supabase = await createClientServer();
+  if (!supabase) {
+    return { error: NextResponse.json({ success: false, error: "Supabase indisponível" }, { status: 503 }) };
+  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: NextResponse.json({ success: false, error: "Não autenticado" }, { status: 401 }) };
+  }
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  if (!profile || !["admin", "editor"].includes(profile.role)) {
+    return { error: NextResponse.json({ success: false, error: "Sem permissão de acesso" }, { status: 403 }) };
+  }
+  return { supabase, user };
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const auth = await requireAdmin();
+    if (auth.error) return auth.error;
+    const supabase = auth.supabase;
+
     const body = await request.json();
     const { conteudo, formato, options } = body as {
       conteudo: string;
@@ -31,30 +53,39 @@ export async function POST(request: NextRequest) {
     const importOptions: ImportOptions = options || { politicaDuplicatas: "ignorar" };
 
     // ── Supabase path ───────────────────────────────────────────────────────
-    if (isSupabaseConfigured) {
-      const supabase = await createClientServer();
-      if (!supabase) {
-        return NextResponse.json(
-          { success: false, error: "Supabase indisponível." },
-          { status: 503 }
-        );
+    if (isSupabaseConfigured && supabase) {
+      // 1. Pré-processa localmente para obter os fingerprints deste lote
+      const { questoesValidadas: preValidadas } = processarImportacaoQuestoes(
+        conteudo,
+        formato,
+        [],
+        importOptions
+      );
+
+      const batchHashes = Array.from(
+        new Set(preValidadas.map((q) => q.fingerprint_hash).filter((h): h is string => Boolean(h)))
+      );
+
+      let existentes: any[] = [];
+      if (batchHashes.length > 0) {
+        // Busca apenas os fingerprints existentes no lote atual em vez de escanear o banco inteiro
+        const { data: encontrados, error: errFetch } = await supabase
+          .from("questoes")
+          .select("id, fingerprint_hash, versao")
+          .in("fingerprint_hash", batchHashes);
+
+        if (errFetch) {
+          console.error("[API /admin/import] Erro ao buscar fingerprints existentes:", errFetch);
+          return NextResponse.json(
+            { success: false, error: "Erro ao consultar fingerprints existentes.", message: errFetch.message },
+            { status: 500 }
+          );
+        }
+        existentes = encontrados || [];
       }
 
-      // Busca apenas os fingerprints já existentes (query leve — sem carregar todo o acervo)
-      const { data: existentes, error: errFetch } = await supabase
-        .from("questoes")
-        .select("id, fingerprint_hash, versao");
-
-      if (errFetch) {
-        console.error("[API /admin/import] Erro ao buscar fingerprints:", errFetch);
-        return NextResponse.json(
-          { success: false, error: "Erro ao consultar fingerprints existentes.", message: errFetch.message },
-          { status: 500 }
-        );
-      }
-
-      // Monta lista mínima de Questao para o motor de deduplicação (só precisa de id e fingerprint_hash)
-      const questoesExistentes: Partial<Questao>[] = (existentes ?? []).map((r: any) => ({
+      // Monta lista de Questao para o motor de deduplicação
+      const questoesExistentes: Partial<Questao>[] = existentes.map((r: any) => ({
         id: r.id,
         fingerprint_hash: r.fingerprint_hash,
         versao: r.versao ?? 1,
