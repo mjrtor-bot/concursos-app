@@ -24,6 +24,7 @@ import {
   Calendar,
   Lightbulb,
   PauseCircle,
+  FileText,
 } from "lucide-react";
 import { MissaoDiariaItem, MentoriaTarefaTipo } from "@/types";
 
@@ -85,6 +86,26 @@ export function DailyMissionCard({
   const [salvoCaderno, setSalvoCaderno] = useState(false);
   const [statusLocal, setStatusLocal] = useState(missao.status);
   const [prevMissaoKey, setPrevMissaoKey] = useState(`${missao.id}_${missao.status}`);
+  const [materiais, setMateriais] = useState<{ id: string; titulo: string; pdf_url?: string | null; pdf_nome?: string | null }[]>([]);
+
+  useEffect(() => {
+    if (!missao.assunto_id) {
+      setMateriais([]);
+      return;
+    }
+    let active = true;
+    fetch(`/api/mentoria/conteudos?assunto_id=${missao.assunto_id}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!active) return;
+        const pdfs = (data?.conteudos || []).filter((c: any) => c.pdf_url);
+        setMateriais(pdfs);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [missao.assunto_id]);
 
   if (`${missao.id}_${missao.status}` !== prevMissaoKey) {
     setPrevMissaoKey(`${missao.id}_${missao.status}`);
@@ -555,6 +576,25 @@ export function DailyMissionCard({
                 <Timer className="w-4 h-4 text-amber-500" />
                 <span>Opções de Cronômetro</span>
               </button>
+
+              {/* Botão Abrir PDF do Material */}
+              {materiais.length > 0 && (
+                <a
+                  href={materiais[0].pdf_url!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 transition-all cursor-pointer shadow-2xs"
+                  title={materiais[0].pdf_nome || materiais[0].titulo || "Abrir material de estudo em PDF"}
+                >
+                  <FileText className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                  <span>Abrir PDF</span>
+                  {materiais.length > 1 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-200 dark:bg-rose-800 text-rose-800 dark:text-rose-200">
+                      +{materiais.length - 1}
+                    </span>
+                  )}
+                </a>
+              )}
             </div>
 
             {/* CTA Principal: Fazer Exercícios ou Iniciar Estudo */}

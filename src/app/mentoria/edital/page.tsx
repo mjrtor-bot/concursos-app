@@ -49,6 +49,25 @@ export default function MentoriaEditalPage() {
   const [resumoEdital, setResumoEdital] = useState<EditalVerticalizadoResumo | null>(null);
   const [loading, setLoading] = useState(true);
   const [atualizandoTopico, setAtualizandoTopico] = useState<string | null>(null);
+  const [abrindoPdf, setAbrindoPdf] = useState<string | null>(null);
+
+  const handleAbrirPdf = async (assuntoId: string) => {
+    setAbrindoPdf(assuntoId);
+    try {
+      const res = await fetch(`/api/mentoria/conteudos?assunto_id=${assuntoId}`);
+      const data = await res.json();
+      const material = data?.conteudos?.find((c: any) => c.pdf_url);
+      if (material?.pdf_url) {
+        window.open(material.pdf_url, "_blank", "noopener,noreferrer");
+      } else {
+        alert("Nenhum material em PDF disponível para este assunto.");
+      }
+    } catch (err) {
+      console.error("Erro ao abrir PDF:", err);
+    } finally {
+      setAbrindoPdf(null);
+    }
+  };
 
   // Filtros e busca
   const [busca, setBusca] = useState("");
@@ -732,6 +751,18 @@ export default function MentoriaEditalPage() {
                               </span>
                               {getPesoBadge(item.peso)}
                               {getStatusBadge(item.status)}
+                              {item.tem_material && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleAbrirPdf(item.assunto_id)}
+                                  disabled={abrindoPdf === item.assunto_id}
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-50 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-300 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-colors cursor-pointer"
+                                  title={item.pdf_nome ? `Abrir PDF: ${item.pdf_nome}` : "Abrir material de estudo em PDF"}
+                                >
+                                  <FileText className="w-3 h-3 text-rose-600 dark:text-rose-400" />
+                                  <span>{abrindoPdf === item.assunto_id ? "..." : "PDF"}</span>
+                                </button>
+                              )}
                             </div>
 
                             {/* Estatísticas de Questões do Tópico */}
@@ -817,9 +848,23 @@ export default function MentoriaEditalPage() {
                             })}
                           </div>
 
+                          {/* Botão Abrir PDF (se houver material) */}
+                          {item.tem_material && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleAbrirPdf(item.assunto_id)}
+                              disabled={abrindoPdf === item.assunto_id}
+                              className="text-xs font-bold text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-950/60"
+                              leftIcon={<FileText className="w-3.5 h-3.5 text-rose-500" />}
+                            >
+                              {abrindoPdf === item.assunto_id ? "Abrindo..." : "Abrir PDF"}
+                            </Button>
+                          )}
+
                           {/* Botão Praticar Questões do Tópico */}
                           <Link
-                            href={`/questoes?disciplina=${item.disciplina_id}&assunto=${item.assunto_id}`}
+                            href={`/questoes?disciplina_id=${item.disciplina_id}&assunto_id=${item.assunto_id}`}
                           >
                             <Button
                               variant="outline"

@@ -1041,7 +1041,7 @@ export class MentoriaService {
         return { total_topicos: 0, topicos_estudados: 0, topicos_dominados: 0, percentual_conclusao: 0, taxa_acerto_global: 0, disciplinas: [] };
       }
 
-      const [resTopicosEdital, resTopicosSalvos, resRespostas, resEquivs] = await Promise.all([
+      const [resTopicosEdital, resTopicosSalvos, resRespostas, resEquivs, resConteudos] = await Promise.all([
         supabase
           .from("edital_topicos")
           .select("disciplina_id, assunto_id, peso, incidencia, ordem, disciplinas(id,nome), assuntos(id,nome)")
@@ -1050,6 +1050,7 @@ export class MentoriaService {
         supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", usuarioId),
         supabase.from("respostas_usuarios").select("correta, created_at, questoes(assunto_id)").eq("usuario_id", usuarioId),
         supabase.from("assunto_equivalencias").select("assunto_questao_id, assunto_edital_id"),
+        supabase.from("assunto_conteudos").select("assunto_id, pdf_path, pdf_url, pdf_nome").eq("ativo", true),
       ]);
 
       if (resTopicosEdital.error) throw resTopicosEdital.error;
@@ -1057,6 +1058,16 @@ export class MentoriaService {
         console.error("[mentoriaService] Erro ao carregar respostas_usuarios para estatísticas:", resRespostas.error);
       }
       topicosSalvos = (resTopicosSalvos.data || []) as MentoriaEditalTopico[];
+
+      const mapaMateriais = new Map<string, { tem_material: boolean; pdf_nome?: string | null }>();
+      for (const c of (resConteudos.data || []) as any[]) {
+        if (c.assunto_id && (c.pdf_path || c.pdf_url)) {
+          mapaMateriais.set(c.assunto_id, {
+            tem_material: true,
+            pdf_nome: c.pdf_nome || (c.pdf_path ? "Material em PDF" : "Link externo"),
+          });
+        }
+      }
 
       const equivMap = new Map<string, Set<string>>();
       for (const eq of (resEquivs.data || []) as any[]) {
@@ -1129,6 +1140,8 @@ export class MentoriaService {
         const peso: "baixo" | "medio" | "alto" | "critico" =
           pesoNum >= 85 ? "critico" : pesoNum >= 65 ? "alto" : pesoNum >= 35 ? "medio" : "baixo";
 
+        const matInfo = mapaMateriais.get(row.assunto_id);
+
         const item: EditalVerticalizadoItem = {
           id: salvo?.id || `topico-${row.disciplina_id}-${row.assunto_id}`,
           disciplina_id: row.disciplina_id,
@@ -1144,6 +1157,8 @@ export class MentoriaService {
           questoes_acertadas: stats.acertos,
           taxa_acerto: taxa,
           ultima_atividade: stats.ultimaData || salvo?.updated_at || null,
+          tem_material: !!matInfo?.tem_material,
+          pdf_nome: matInfo?.pdf_nome || null,
         };
 
         const grupo = grupos.get(row.disciplina_id) || { nome: disc.nome, topicos: [] };

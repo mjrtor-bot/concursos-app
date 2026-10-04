@@ -20,6 +20,7 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  FileText,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { createClient } from "@/lib/supabase/client";
@@ -52,6 +53,29 @@ export default function MentoriaPlanoPage() {
   const [recalculando, setRecalculando] = useState(false);
   const [disciplinaExplicando, setDisciplinaExplicando] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<{ tipo: "success" | "error"; texto: string } | null>(null);
+  const [abrindoPdf, setAbrindoPdf] = useState<string | null>(null);
+
+  const handleAbrirPdf = async (assuntoId?: string) => {
+    if (!assuntoId) {
+      alert("Nenhum assunto vinculado a este bloco.");
+      return;
+    }
+    setAbrindoPdf(assuntoId);
+    try {
+      const res = await fetch(`/api/mentoria/conteudos?assunto_id=${assuntoId}`);
+      const data = await res.json();
+      const material = data?.conteudos?.find((c: any) => c.pdf_url);
+      if (material?.pdf_url) {
+        window.open(material.pdf_url, "_blank", "noopener,noreferrer");
+      } else {
+        alert("Nenhum material em PDF disponível para este assunto.");
+      }
+    } catch (err) {
+      console.error("Erro ao abrir PDF:", err);
+    } finally {
+      setAbrindoPdf(null);
+    }
+  };
 
   async function carregarConcursoAlvoReal(usuarioId: string) {
     const supabase = createClient();
@@ -448,11 +472,26 @@ export default function MentoriaPlanoPage() {
               </div>
             </div>
 
-            <Link href="/mentoria/hoje">
-              <Button variant="primary" size="lg" className="w-full md:w-auto shadow-md" leftIcon={<Play className="w-4 h-4 fill-current" />}>
-                Iniciar Sessão de Estudo
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+              {planoCiclo.bloco_atual.assunto_id && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => handleAbrirPdf(planoCiclo.bloco_atual?.assunto_id)}
+                  disabled={abrindoPdf === planoCiclo.bloco_atual.assunto_id}
+                  className="w-full sm:w-auto text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-950/60 font-bold"
+                  leftIcon={<FileText className="w-4 h-4 text-rose-600 dark:text-rose-400" />}
+                >
+                  {abrindoPdf === planoCiclo.bloco_atual.assunto_id ? "Abrindo..." : "Abrir PDF"}
+                </Button>
+              )}
+              <Link href="/mentoria/hoje" className="w-full sm:w-auto">
+                <Button variant="primary" size="lg" className="w-full sm:w-auto shadow-md" leftIcon={<Play className="w-4 h-4 fill-current" />}>
+                  Iniciar Sessão de Estudo
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       )}
@@ -532,9 +571,22 @@ export default function MentoriaPlanoPage() {
                       <Clock className="w-3 h-3" />
                       {bloco.duracao_minutos} min
                     </span>
-                    <span className="font-semibold text-slate-600 dark:text-slate-400">
-                      Score: {bloco.prioridade_score}/100
-                    </span>
+                    {bloco.assunto_id ? (
+                      <button
+                        type="button"
+                        onClick={() => handleAbrirPdf(bloco.assunto_id)}
+                        disabled={abrindoPdf === bloco.assunto_id}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer"
+                        title="Abrir PDF do Material"
+                      >
+                        <FileText className="w-3 h-3 text-rose-600 dark:text-rose-400" />
+                        <span>{abrindoPdf === bloco.assunto_id ? "..." : "PDF"}</span>
+                      </button>
+                    ) : (
+                      <span className="font-semibold text-slate-600 dark:text-slate-400">
+                        Score: {bloco.prioridade_score}/100
+                      </span>
+                    )}
                   </div>
                 </div>
               );

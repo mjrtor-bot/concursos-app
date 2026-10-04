@@ -426,6 +426,8 @@ export interface EditalVerticalizadoItem {
   questoes_acertadas: number;
   taxa_acerto: number;
   ultima_atividade?: string | null;
+  tem_material?: boolean;
+  pdf_nome?: string | null;
 }
 
 export interface EditalVerticalizadoResumo {
