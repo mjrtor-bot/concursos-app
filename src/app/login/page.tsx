@@ -2,7 +2,7 @@
 
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { Button } from "@/components/ui/Button";
@@ -29,7 +29,6 @@ function sanitizeNext(nextParam: string | null): string {
 }
 
 function LoginContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { login, user, isLoading: isAuthLoading, isSupabaseConnected } = useAuth();
   const { success, error: showError } = useToast();
@@ -59,9 +58,9 @@ function LoginContent() {
   // Redireciona se usuário já estiver autenticado
   useEffect(() => {
     if (!isAuthLoading && user) {
-      router.replace("/dashboard");
+      window.location.replace("/dashboard");
     }
-  }, [isAuthLoading, router, user]);
+  }, [isAuthLoading, user]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,7 +81,7 @@ function LoginContent() {
       const result = await login(email, password);
       if (result.success) {
         success("Login realizado com sucesso! Bem-vindo(a) de volta.");
-        router.replace(nextUrl);
+        window.location.assign(nextUrl);
       } else {
         showError(result.error || "E-mail ou senha inválidos.");
       }
