@@ -47,28 +47,34 @@ export function DailyMissionCard({
 }: DailyMissionCardProps) {
   const [isCadernoOpen, setIsCadernoOpen] = useState(false);
   const [isCronometroOpen, setIsCronometroOpen] = useState(false);
-  const [pausaCarregada, setPausaCarregada] = useState<{ pausado: boolean; data_fim_pausa: string | null } | null>(null);
-  const pausadoInfo = planoPausado !== undefined
-    ? { pausado: planoPausado, data_fim_pausa: dataFimPausa || null }
-    : pausaCarregada;
+  const [fetchedPausadoInfo, setFetchedPausadoInfo] = useState<{ pausado: boolean; data_fim_pausa: string | null } | null>(null);
 
   useEffect(() => {
-    if (planoPausado !== undefined) return;
-    async function carregarPausa() {
-      try {
-        const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
-        if (res?.config) {
-          setPausaCarregada({
-            pausado: Boolean(res.config.pausado),
-            data_fim_pausa: res.config.data_fim_pausa || null,
-          });
+    if (planoPausado === undefined) {
+      let active = true;
+      async function carregarPausa() {
+        try {
+          const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
+          if (res?.config && active) {
+            setFetchedPausadoInfo({
+              pausado: Boolean(res.config.pausado),
+              data_fim_pausa: res.config.data_fim_pausa || null,
+            });
+          }
+        } catch {
+          // Ignore
         }
-      } catch {
-        // Ignore
       }
+      carregarPausa();
+      return () => {
+        active = false;
+      };
     }
-    carregarPausa();
   }, [planoPausado]);
+
+  const pausadoInfo = planoPausado !== undefined
+    ? { pausado: planoPausado, data_fim_pausa: dataFimPausa || null }
+    : fetchedPausadoInfo;
   const [cadernoTexto, setCadernoTexto] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -102,6 +108,8 @@ export function DailyMissionCard({
       active = false;
     };
   }, [missao.assunto_id]);
+
+  const materiaisExibidos = missao.assunto_id ? materiais : [];
 
   if (`${missao.id}_${missao.status}` !== prevMissaoKey) {
     setPrevMissaoKey(`${missao.id}_${missao.status}`);
@@ -574,19 +582,19 @@ export function DailyMissionCard({
               </button>
 
               {/* Botão Abrir PDF do Material */}
-              {materiais.length > 0 && (
+              {materiaisExibidos.length > 0 && (
                 <a
-                  href={materiais[0].pdf_url!}
+                  href={materiaisExibidos[0].pdf_url!}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 transition-all cursor-pointer shadow-2xs"
-                  title={materiais[0].pdf_nome || materiais[0].titulo || "Abrir material de estudo em PDF"}
+                  title={materiaisExibidos[0].pdf_nome || materiaisExibidos[0].titulo || "Abrir material de estudo em PDF"}
                 >
                   <FileText className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                   <span>Abrir PDF</span>
-                  {materiais.length > 1 && (
+                  {materiaisExibidos.length > 1 && (
                     <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-200 dark:bg-rose-800 text-rose-800 dark:text-rose-200">
-                      +{materiais.length - 1}
+                      +{materiaisExibidos.length - 1}
                     </span>
                   )}
                 </a>

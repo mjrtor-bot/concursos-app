@@ -16,8 +16,6 @@ import {
   Loader2,
   X,
   Layers,
-  Search,
-  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 

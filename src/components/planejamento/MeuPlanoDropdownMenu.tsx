@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import {
   Settings,
@@ -1526,9 +1526,12 @@ function ModalPausarPlano({
   const [erro, setErro] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+    let active = true;
     async function carregar() {
       try {
         const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
+        if (!active) return;
         const cfg = res?.config || {};
         setPausado(Boolean(cfg.pausado));
         const hojeIso = new Date().toISOString().slice(0, 10);
@@ -1537,12 +1540,21 @@ function ModalPausarPlano({
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        if (active) {
+          setLoading(false);
+        }
       }
     }
+<<<<<<< HEAD
     if (isOpen) {
       carregar();
     }
+=======
+    carregar();
+    return () => {
+      active = false;
+    };
+>>>>>>> 8f32e35 (feat(conteudos): gerador e cobertura completa de PDFs de estudo para todos os assuntos)
   }, [isOpen]);
 
   const formatarDDMM = (dataStr: string) => {
