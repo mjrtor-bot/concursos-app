@@ -311,6 +311,33 @@ export default function BibliotecaEditaisPage() {
     finally{setProcessando(false);}
   }
 
+  async function carregarPreviewExistente(id: string) {
+    setProcessando(true);
+    setMensagem("");
+    setConfirmado(false);
+    setPreview(null);
+    setMostrarPreview(false);
+    setUploadId(id);
+    try {
+      const response = await fetch(`/api/editais/processar/status?edital_usuario_id=${encodeURIComponent(id)}`, { cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Não foi possível abrir a prévia salva.");
+      if (!result.estrutura) throw new Error(result.error || "A prévia salva não está disponível. Tente processar o PDF novamente.");
+
+      const estrutura = result.estrutura as Preview;
+      setPreview(estrutura);
+      setCargoSelecionado(estrutura.cargos?.[0]?.nome || "");
+      setMostrarPreview(true);
+      setMensagem(`Prévia carregada: ${result.total_disciplinas || 0} disciplinas e ${result.total_assuntos || 0} assuntos. Revise e confirme a importação.`);
+      await carregarMeusEditais();
+      window.setTimeout(() => document.getElementById("preview-edital")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+    } catch (error) {
+      setMensagem(error instanceof Error ? error.message : "Falha ao abrir a prévia salva.");
+    } finally {
+      setProcessando(false);
+    }
+  }
+
   async function excluirUpload(id:string){
     if(!confirm("Tem certeza que deseja excluir este PDF e suas prévias?")) return;
     setExcluindoId(id);
@@ -477,7 +504,7 @@ export default function BibliotecaEditaisPage() {
             {ed.status !== "confirmado" && (
               <button
                 type="button"
-                onClick={()=>processarPdf(ed.id)}
+                onClick={()=>ed.status === "aguardando_revisao" ? carregarPreviewExistente(ed.id) : processarPdf(ed.id)}
                 disabled={processando}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 px-3 py-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100"
               >
@@ -580,7 +607,7 @@ export default function BibliotecaEditaisPage() {
 
       {processando&&<div className="mt-4 flex items-center gap-3 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/40 p-4 text-sm"><Loader2 className="h-5 w-5 animate-spin text-indigo-600"/><div><strong>Processando edital...</strong><p className="text-slate-600 dark:text-slate-400">O PDF inteiro está sendo analisado para localizar disciplinas e todos os assuntos.</p></div></div>}
 
-      {preview&&<section className="mt-5 rounded-2xl border border-indigo-200 bg-white dark:bg-slate-900 overflow-hidden">
+      {preview&&<section id="preview-edital" className="mt-5 rounded-2xl border border-indigo-200 bg-white dark:bg-slate-900 overflow-hidden">
         <button type="button" onClick={()=>setMostrarPreview(v=>!v)} className="w-full flex items-center justify-between gap-3 p-5 text-left">
           <div><p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Prévia estruturada</p><h3 className="text-xl font-black">{preview.titulo_detectado||"Edital importado"}</h3><p className="mt-1 text-sm text-slate-500">{disciplinasExibidas.length} disciplinas · {totalAssuntosExibidos} assuntos</p></div>
           <ChevronDown className={`h-5 w-5 transition-transform ${mostrarPreview?"rotate-180":""}`}/>
@@ -640,8 +667,9 @@ export default function BibliotecaEditaisPage() {
           {!confirmado&&<div className="mt-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 p-4">
             <p className="font-black">Revisou a prévia?</p>
             <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">A confirmação gravará os {totalAssuntosExibidos} assuntos no edital selecionado acima e atualizará seu planejamento.</p>
+            {!(destinoEditalId || alvo?.edital_id) && <p className="mt-2 text-sm font-semibold text-amber-700">Selecione seu concurso alvo antes de confirmar a importação.</p>}
             <label className="mt-3 flex items-start gap-2 text-sm"><input id="confirmar-conteudo" type="checkbox" className="mt-1" required/><span>Revisei o conteúdo e confirmo que os assuntos acima estão de acordo com o PDF.</span></label>
-            <button type="button" disabled={confirmando||!(destinoEditalId||alvo?.edital_id)} onClick={async()=>{
+            <button type="button" disabled={confirmando} onClick={async()=>{
               const box=document.getElementById("confirmar-conteudo") as HTMLInputElement|null;
               if(!box?.checked){setMensagem("Marque a confirmação após revisar a prévia.");return;}
               await confirmarPreview();
