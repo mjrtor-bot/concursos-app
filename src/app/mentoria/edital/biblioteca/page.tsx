@@ -367,6 +367,15 @@ export default function BibliotecaEditaisPage() {
     }
     setConfirmando(true); setMensagem("");
     try{
+      // Para contas comuns, materialize primeiro uma cópia privada do upload.
+      // Isso impede que a confirmação tente alterar o edital público do catálogo.
+      const isStaff = ["admin", "editor"].includes(user?.role || "");
+      if (!isStaff) {
+        const preparar = await fetch("/api/concursos/alvo", { cache: "no-store" });
+        const preparado = await preparar.json();
+        if (!preparar.ok) throw new Error(preparado.error || "Não foi possível preparar seu edital privado.");
+      }
+
       const r=await fetch("/api/editais/confirmar",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -379,7 +388,7 @@ export default function BibliotecaEditaisPage() {
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha ao confirmar e importar o conteúdo.");
 
-      if(alvo && targetEditalId === alvo.edital_id){
+      if(!j.private_copy && alvo && targetEditalId === alvo.edital_id){
         const sync=await fetch("/api/concursos/alvo",{
           method:"PUT",
           headers:{"Content-Type":"application/json"},
@@ -399,7 +408,9 @@ export default function BibliotecaEditaisPage() {
       await carregarMeusEditais();
 
       setConfirmado(true);
-      setMensagem(`Conteúdo confirmado: ${j.total_topicos} tópicos importados com sucesso.`);
+      setMensagem(j.private_copy
+        ? `Conteúdo salvo na sua cópia privada: ${j.total_topicos} assuntos importados. O edital público do catálogo não foi alterado.`
+        : `Conteúdo confirmado: ${j.total_topicos} tópicos importados com sucesso.`);
       setUploadId(null);
       setPreview(null);
       setCargoSelecionado("");
@@ -666,7 +677,9 @@ export default function BibliotecaEditaisPage() {
 
           {!confirmado&&<div className="mt-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 p-4">
             <p className="font-black">Revisou a prévia?</p>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">A confirmação gravará os {totalAssuntosExibidos} assuntos no edital selecionado acima e atualizará seu planejamento.</p>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{["admin", "editor"].includes(user?.role || "")
+              ? `A confirmação gravará os ${totalAssuntosExibidos} assuntos no edital selecionado acima e atualizará seu planejamento.`
+              : `A confirmação salvará os ${totalAssuntosExibidos} assuntos em uma cópia privada sua. O edital oficial do catálogo não será alterado.`}</p>
             {!(destinoEditalId || alvo?.edital_id) && <p className="mt-2 text-sm font-semibold text-amber-700">Selecione seu concurso alvo antes de confirmar a importação.</p>}
             <label className="mt-3 flex items-start gap-2 text-sm"><input id="confirmar-conteudo" type="checkbox" className="mt-1" required/><span>Revisei o conteúdo e confirmo que os assuntos acima estão de acordo com o PDF.</span></label>
             <button type="button" disabled={confirmando} onClick={async()=>{
@@ -674,7 +687,7 @@ export default function BibliotecaEditaisPage() {
               if(!box?.checked){setMensagem("Marque a confirmação após revisar a prévia.");return;}
               await confirmarPreview();
             }} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-black text-white disabled:opacity-50">
-              {confirmando?<><Loader2 className="h-4 w-4 animate-spin"/>Confirmando...</>:<>Confirmar e importar para o edital selecionado</>}
+              {confirmando?<><Loader2 className="h-4 w-4 animate-spin"/>Confirmando...</>:<>Confirmar {["admin", "editor"].includes(user?.role || "") ? "e importar para o edital selecionado" : "e salvar na minha cópia privada"}</>}
             </button>
           </div>}
 
