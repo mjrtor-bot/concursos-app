@@ -235,7 +235,10 @@ export async function GET(request: NextRequest) {
       const offset = (page - 1) * pageSize;
       query = query.range(offset, offset + pageSize - 1);
 
-      let { data, error, count } = await query;
+      const initialResult = await query;
+      let data = initialResult.data;
+      const error = initialResult.error;
+      let count = initialResult.count;
 
       let fallback_disciplina = false;
       let disciplina_sem_questoes = false;
