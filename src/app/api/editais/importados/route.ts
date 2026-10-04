@@ -15,25 +15,32 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  const editais = (data || []).map((e: any) => ({
-    id: e.id,
-    nome: e.nome,
-    orgao: e.orgao_nome,
-    cargo: e.cargo,
-    uf: e.uf,
-    status: e.status,
-    arquivo_nome: e.arquivo_nome,
-    arquivo_tamanho: e.arquivo_tamanho,
-    erro_processamento: e.erro_processamento,
-    edital_id: e.edital_id,
-    created_at: e.created_at,
-    updated_at: e.updated_at,
-    confirmado_em: e.confirmado_em,
-    total_disciplinas: Array.isArray(e.estrutura_extraida?.disciplinas) ? e.estrutura_extraida.disciplinas.length : 0,
-    total_topicos: Array.isArray(e.estrutura_extraida?.disciplinas)
-      ? e.estrutura_extraida.disciplinas.reduce((n: number, d: any) => n + (Array.isArray(d.assuntos) ? d.assuntos.length : 0), 0)
-      : 0,
-  }));
+  const editais = (data || []).map((e: any) => {
+    const estrutura = e.estrutura_extraida || {};
+    const disciplinas = Array.isArray(estrutura.disciplinas) && estrutura.disciplinas.length > 0
+      ? estrutura.disciplinas
+      : Array.isArray(estrutura.cargos)
+        ? estrutura.cargos.flatMap((cargo: any) => Array.isArray(cargo.disciplinas) ? cargo.disciplinas : [])
+        : [];
+
+    return {
+      id: e.id,
+      nome: e.nome,
+      orgao: e.orgao_nome,
+      cargo: e.cargo,
+      uf: e.uf,
+      status: e.status,
+      arquivo_nome: e.arquivo_nome,
+      arquivo_tamanho: e.arquivo_tamanho,
+      erro_processamento: e.erro_processamento,
+      edital_id: e.edital_id,
+      created_at: e.created_at,
+      updated_at: e.updated_at,
+      confirmado_em: e.confirmado_em,
+      total_disciplinas: disciplinas.length,
+      total_topicos: disciplinas.reduce((n: number, d: any) => n + (Array.isArray(d.assuntos) ? d.assuntos.length : 0), 0),
+    };
+  });
 
   return NextResponse.json({ editais });
 }
