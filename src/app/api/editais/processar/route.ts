@@ -4,13 +4,11 @@ import { createClientServer, createAdminClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-async function requireAdmin() {
+async function requireAuth() {
   const supabase = await createClientServer();
   if (!supabase) return { error: NextResponse.json({ error: "Supabase indisponível" }, { status: 503 }) };
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: NextResponse.json({ error: "Não autenticado" }, { status: 401 }) };
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-  if (!profile || !["admin", "editor"].includes(profile.role)) return { error: NextResponse.json({ error: "Sem permissão" }, { status: 403 }) };
   return { supabase, user };
 }
 
@@ -24,32 +22,44 @@ function extractOutputText(json: any) {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAuth();
   if (auth.error) return auth.error;
   if (!process.env.OPENAI_API_KEY) return NextResponse.json({ error: "OPENAI_API_KEY não configurada no servidor." }, { status: 503 });
 
-  const model = process.env.OPENAI_EDITAL_MODEL || "gpt-5.6-luna";
+  const body = await request.json().catch(() => null);
+  const editalUsuarioId = typeof body?.edital_usuario_id === "string" ? body.edital_usuario_id : "";
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if (!uuid.test(editalUsuarioId)) return NextResponse.json({ error: "edital_usuario_id inválido" }, { status: 400 });
 
-  // Preflight model validation
-  const modelRes = await fetch(`https://api.openai.com/v1/models/${model}`, {
-      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` }
-  });
-  if (!modelRes.ok) {
-      console.error(`Modelo ${model} inválido ou indisponível.`);
-      return NextResponse.json({ error: `Modelo configurado ${model} indisponível.` }, { status: 503 });
+  const db = createAdminClient() || auth.supabase;
+  const { data: registro, error: regError } = await db.from("editais_usuario").select("*").eq("id", editalUsuarioId).maybeSingle();
+  if (regError) return NextResponse.json({ error: "Não foi possível consultar o PDF enviado." }, { status: 500 });
+  if (!registro) return NextResponse.json({ error: "PDF não encontrado." }, { status: 404 });
+  if (registro.usuario_id !== auth.user.id) return NextResponse.json({ error: "PDF não pertence ao usuário autenticado." }, { status: 403 });
+
+  const statusesRetriaveis = ["aguardando_processamento", "erro", "aguardando_revisao", "revisao_sem_conteudo"];
+  if (!statusesRetriaveis.includes(registro.status)) {
+    return NextResponse.json({ error: "Este PDF já está em processamento ou não pode ser reprocessado." }, { status: 409 });
   }
 
-  const body = await request.json().catch(() => null);
-  const editalUsuarioId = body?.edital_usuario_id;
-  if (!editalUsuarioId) return NextResponse.json({ error: "edital_usuario_id obrigatório" }, { status: 400 });
+  const model = process.env.OPENAI_EDITAL_MODEL || "gpt-5.6-luna";
+  const modelRes = await fetch(`https://api.openai.com/v1/models/${model}`, {
+    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+  });
+  if (!modelRes.ok) {
+    console.error(`Modelo ${model} inválido ou indisponível.`);
+    return NextResponse.json({ error: `Modelo configurado ${model} indisponível.` }, { status: 503 });
+  }
 
-  const db = createAdminClient() || auth.supabase!;
-  const { data: registro, error: regError } = await db.from("editais_usuario").select("*").eq("id", editalUsuarioId).maybeSingle();
-  if (registro && registro.usuario_id !== auth.user!.id) return NextResponse.json({ error: "PDF não pertence ao usuário autenticado." }, { status: 403 });
-  if (regError || !registro) return NextResponse.json({ error: "PDF não encontrado ou não aguardando processamento." }, { status: 404 });
-
-  const { error: updateError } = await db.from("editais_usuario").update({ status: "processando", erro_processamento: null, updated_at: new Date().toISOString() }).eq("id", registro.id).eq("status", registro.status);
-  if (updateError) return NextResponse.json({ error: "Conflito de estado ao iniciar processamento." }, { status: 409 });
+  const { data: locked, error: updateError } = await db
+    .from("editais_usuario")
+    .update({ status: "processando", erro_processamento: null, updated_at: new Date().toISOString() })
+    .eq("id", registro.id)
+    .eq("usuario_id", auth.user.id)
+    .eq("status", registro.status)
+    .select("id")
+    .maybeSingle();
+  if (updateError || !locked) return NextResponse.json({ error: "Este edital já foi iniciado ou mudou de estado. Atualize a página e tente novamente." }, { status: 409 });
 
   try {
     const { data: arquivo, error: downloadError } = await db.storage.from("editais-usuario").download(registro.arquivo_path);
