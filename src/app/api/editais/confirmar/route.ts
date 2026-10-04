@@ -38,6 +38,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "A importação precisa ser confirmada em uma cópia privada sua. Atualize a prévia e tente novamente." }, { status: 403 });
     }
     privateCopy = true;
+
+    // O PDF já foi materializado em um edital rascunho particular. Para uma
+    // conta comum basta confirmar o próprio upload; a RPC de catálogo também
+    // grava na taxonomia global e deve ficar reservada à equipe.
+    const { count, error: topicsError } = await admin.from("edital_topicos")
+      .select("id", { count: "exact", head: true })
+      .eq("edital_id", destinationId);
+    if (topicsError) return NextResponse.json({ error: "Não foi possível conferir os assuntos do seu edital privado." }, { status: 500 });
+    if (!count) return NextResponse.json({ error: "Sua cópia privada ainda está sem assuntos. Atualize a prévia e tente novamente." }, { status: 409 });
+
+    const now = new Date().toISOString();
+    const { data: confirmado, error: confirmarError } = await supabase.from("editais_usuario")
+      .update({ status: "confirmado", edital_id: destinationId, confirmado_em: now, updated_at: now })
+      .eq("id", uploadId)
+      .eq("usuario_id", user.id)
+      .eq("status", "aguardando_revisao")
+      .select("id")
+      .maybeSingle();
+    if (confirmarError) return NextResponse.json({ error: confirmarError.message }, { status: 500 });
+    if (!confirmado) return NextResponse.json({ error: "O upload já foi confirmado ou mudou de estado. Atualize a página." }, { status: 409 });
+
+    return NextResponse.json({ ok: true, edital_id: destinationId, private_copy: true, total_topicos: count });
   } else {
     const { data: edital } = await supabase.from("editais_concurso").select("id").eq("id", destinationId).maybeSingle();
     if (!edital) return NextResponse.json({ error: "Edital de destino não encontrado." }, { status: 404 });
