@@ -62,14 +62,14 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
   if (item.edital_id) {
     const { data: atual } = await admin
       .from("editais_concurso")
-      .select("id,titulo,concurso_id,cargo_id")
+      .select("id,titulo,concurso_id,cargo_id,status,criado_por")
       .eq("id", item.edital_id)
       .maybeSingle();
 
     if (atual && atual.cargo_id) {
       const [{ data: atualCargo }, { data: atualConcurso }] = await Promise.all([
         admin.from("concurso_cargos").select("id,nome,concurso_id").eq("id", atual.cargo_id).maybeSingle(),
-        admin.from("concursos").select("id,nome,orgao").eq("id", atual.concurso_id).maybeSingle(),
+        admin.from("concursos").select("id,nome,orgao,criado_por").eq("id", atual.concurso_id).maybeSingle(),
       ]);
 
       const mesmoCargo =
@@ -79,14 +79,18 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       const mesmoNome =
         atualConcurso?.nome?.trim().toLowerCase() === concursoNome.toLowerCase();
 
-      if (mesmoCargo && mesmoOrgao && mesmoNome) {
+      const pertenceAoUsuario = Boolean(
+        userId && atual.criado_por === userId && atualConcurso?.criado_por === userId && atual.status === "rascunho"
+      );
+      if (mesmoCargo && mesmoOrgao && mesmoNome && pertenceAoUsuario) {
         return atual.id;
       }
     }
   }
 
+  // Uploads pessoais nunca são publicados automaticamente no catálogo global.
   const ehOficial = isConcursoOficialValido(item, item.estrutura_extraida?.fonte_oficial_url);
-  const statusConcurso = ehOficial ? "publicado" : "rascunho";
+  const statusConcurso = "rascunho";
 
   const { data: concurso, error: concursoError } = await admin
     .from("concursos")
@@ -135,7 +139,7 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       banca: ehOficial ? (item.estrutura_extraida?.banca || null) : null,
       fonte_conteudo_url: sourceUrl,
       criado_por: userId || null,
-      visibilidade: ehOficial ? "publico" : "privado",
+      visibilidade: "privado",
     })
     .select("id")
     .single();
