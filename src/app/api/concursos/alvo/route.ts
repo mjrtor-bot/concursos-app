@@ -62,14 +62,14 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
   if (item.edital_id) {
     const { data: atual } = await admin
       .from("editais_concurso")
-      .select("id,titulo,concurso_id,cargo_id")
+      .select("id,titulo,concurso_id,cargo_id,status,criado_por")
       .eq("id", item.edital_id)
       .maybeSingle();
 
     if (atual && atual.cargo_id) {
       const [{ data: atualCargo }, { data: atualConcurso }] = await Promise.all([
         admin.from("concurso_cargos").select("id,nome,concurso_id").eq("id", atual.cargo_id).maybeSingle(),
-        admin.from("concursos").select("id,nome,orgao").eq("id", atual.concurso_id).maybeSingle(),
+        admin.from("concursos").select("id,nome,orgao,criado_por").eq("id", atual.concurso_id).maybeSingle(),
       ]);
 
       const mesmoCargo =
@@ -79,7 +79,10 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       const mesmoNome =
         atualConcurso?.nome?.trim().toLowerCase() === concursoNome.toLowerCase();
 
-      if (mesmoCargo && mesmoOrgao && mesmoNome) {
+      const pertenceAoUsuario = Boolean(
+        userId && atual.criado_por === userId && atualConcurso?.criado_por === userId && atual.status === "rascunho"
+      );
+      if (mesmoCargo && mesmoOrgao && mesmoNome && pertenceAoUsuario) {
         return atual.id;
       }
     }
