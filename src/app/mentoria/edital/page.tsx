@@ -24,6 +24,7 @@ import {
   BarChart2,
   RefreshCw,
   SlidersHorizontal,
+  FileDown,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
@@ -68,6 +69,8 @@ export default function MentoriaEditalPage() {
       setAbrindoPdf(null);
     }
   };
+  const [gerandoMaterial, setGerandoMaterial] = useState<string | null>(null);
+  const [erroMaterial, setErroMaterial] = useState<{ id: string; mensagem: string } | null>(null);
 
   // Filtros e busca
   const [busca, setBusca] = useState("");
@@ -199,6 +202,127 @@ export default function MentoriaEditalPage() {
       ...prev,
       [disciplinaId]: !prev[disciplinaId],
     }));
+  };
+
+  const handleGerarMaterial = async (item: EditalVerticalizadoItem) => {
+    if (gerandoMaterial) return;
+    setGerandoMaterial(item.assunto_id);
+    setErroMaterial(null);
+    try {
+      const response = await fetch("/api/mentoria/material-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          disciplina_id: item.disciplina_id,
+          assunto_id: item.assunto_id,
+          importado_id: new URLSearchParams(window.location.search).get("importado"),
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Não foi possível gerar o material.");
+
+      const { jsPDF } = await import("jspdf");
+      const pdf = new jsPDF({ format: "a4", unit: "pt" });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 48;
+      const contentWidth = pageWidth - margin * 2;
+      let y = margin;
+      const newPageIfNeeded = (height: number) => {
+        if (y + height > pageHeight - margin) {
+          pdf.addPage();
+          y = margin;
+        }
+      };
+      const plainMarkdown = (line: string) => line
+        .replace(/^#{1,3}\s*/, "")
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/`(.*?)`/g, "$1");
+
+      pdf.setProperties({
+        title: `${result.assunto} — ${result.disciplina}`,
+        subject: "Material de revisão com fontes oficiais citadas",
+        creator: "Mentoria — material gerado com IA e pesquisa em fontes oficiais",
+      });
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(17);
+      const titleLines = pdf.splitTextToSize(result.assunto, contentWidth);
+      pdf.text(titleLines, margin, y);
+      y += titleLines.length * 21 + 4;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      pdf.setTextColor(75, 85, 99);
+      pdf.text(result.disciplina, margin, y);
+      y += 21;
+      pdf.setDrawColor(199, 210, 254);
+      pdf.line(margin, y, pageWidth - margin, y);
+      y += 18;
+      pdf.setTextColor(30, 41, 59);
+
+      const sourceNumbers = new Map<string, number>(result.fontes.map((source: { url: string }, index: number) => [source.url, index + 1]));
+      const body = String(result.material)
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_match: string, _label: string, url: string) => {
+          const number = sourceNumbers.get(url);
+          return number ? `[${number}]` : "";
+        });
+
+      for (const rawLine of body.split(/\r?\n/)) {
+        const sourceHeading = rawLine.match(/^#{1,3}\s+(.+)/);
+        const isHeading = Boolean(sourceHeading);
+        const line = plainMarkdown(rawLine).trim();
+        if (!line) {
+          y += 5;
+          continue;
+        }
+        pdf.setFont("helvetica", isHeading ? "bold" : "normal");
+        pdf.setFontSize(isHeading ? 13 : 10.5);
+        const wrapped = pdf.splitTextToSize(line, contentWidth);
+        newPageIfNeeded(wrapped.length * (isHeading ? 17 : 14) + 4);
+        pdf.text(wrapped, margin, y);
+        y += wrapped.length * (isHeading ? 17 : 14) + (isHeading ? 4 : 2);
+      }
+
+      newPageIfNeeded(64);
+      y += 8;
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(12);
+      pdf.text("Fontes oficiais consultadas", margin, y);
+      y += 19;
+      result.fontes.forEach((source: { title: string; url: string }, index: number) => {
+        const label = `[${index + 1}] ${source.title || new URL(source.url).hostname}`;
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(9.5);
+        const wrapped = pdf.splitTextToSize(label, contentWidth);
+        newPageIfNeeded(wrapped.length * 13 + 4);
+        const host = new URL(source.url).hostname;
+        pdf.textWithLink(wrapped[0], margin, y, { url: source.url });
+        y += 13;
+        for (const continuation of wrapped.slice(1)) {
+          newPageIfNeeded(13);
+          pdf.text(continuation, margin, y);
+          y += 13;
+        }
+        pdf.setTextColor(79, 70, 229);
+        pdf.textWithLink(host, margin + 10, y, { url: source.url });
+        pdf.setTextColor(30, 41, 59);
+        y += 16;
+      });
+
+      newPageIfNeeded(48);
+      pdf.setFont("helvetica", "italic");
+      pdf.setFontSize(8.5);
+      pdf.setTextColor(75, 85, 99);
+      const disclaimer = "Material de apoio gerado com IA a partir das fontes listadas. Não há garantia de ausência de erros; confira leis e orientações vigentes nos canais oficiais.";
+      const disclaimerLines = pdf.splitTextToSize(disclaimer, contentWidth);
+      pdf.text(disclaimerLines, margin, y + 4);
+      const slug = result.assunto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "topico";
+      pdf.save(`material-${slug}.pdf`);
+    } catch (error) {
+      setErroMaterial({ id: item.assunto_id, mensagem: error instanceof Error ? error.message : "Falha ao gerar o PDF." });
+    } finally {
+      setGerandoMaterial(null);
+    }
   };
 
   const handleAlterarStatus = async (
@@ -736,7 +860,7 @@ export default function MentoriaEditalPage() {
                     {disc.topicos.map((item, idx) => (
                       <div
                         key={item.id}
-                        className="p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-white dark:hover:bg-slate-850/60 transition-colors"
+                        className="p-3.5 sm:p-4 flex flex-col md:flex-row md:flex-wrap md:items-center justify-between gap-3 hover:bg-white dark:hover:bg-slate-850/60 transition-colors"
                       >
                         {/* Lado Esquerdo: Info do Tópico */}
                         <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -848,21 +972,19 @@ export default function MentoriaEditalPage() {
                             })}
                           </div>
 
-                          {/* Botão Abrir PDF (se houver material) */}
-                          {item.tem_material && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleAbrirPdf(item.assunto_id)}
-                              disabled={abrindoPdf === item.assunto_id}
-                              className="text-xs font-bold text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-950/60"
-                              leftIcon={<FileText className="w-3.5 h-3.5 text-rose-500" />}
-                            >
-                              {abrindoPdf === item.assunto_id ? "Abrindo..." : "Abrir PDF"}
-                            </Button>
-                          )}
-
                           {/* Botão Praticar Questões do Tópico */}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-xs font-bold hover:bg-emerald-50 dark:hover:bg-emerald-950/50 hover:text-emerald-700 hover:border-emerald-300"
+                            leftIcon={<FileDown className="w-3.5 h-3.5 text-emerald-600" />}
+                            onClick={() => void handleGerarMaterial(item)}
+                            disabled={gerandoMaterial !== null}
+                            aria-label={`Gerar PDF com fontes oficiais: ${item.assunto_nome}`}
+                            title="Gera uma apostila com pesquisa em fontes oficiais e inclui as referências no PDF."
+                          >
+                            {gerandoMaterial === item.assunto_id ? "Gerando…" : "Gerar PDF"}
+                          </Button>
                           <Link
                             href={`/questoes?disciplina_id=${item.disciplina_id}&assunto_id=${item.assunto_id}`}
                           >
@@ -876,6 +998,11 @@ export default function MentoriaEditalPage() {
                             </Button>
                           </Link>
                         </div>
+                        {erroMaterial?.id === item.assunto_id && (
+                          <p className="text-xs text-rose-600 dark:text-rose-400 md:basis-full md:text-right" role="alert">
+                            {erroMaterial.mensagem}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>

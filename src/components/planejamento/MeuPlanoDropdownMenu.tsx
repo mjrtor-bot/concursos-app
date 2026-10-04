@@ -66,7 +66,7 @@ export function MeuPlanoDropdownMenu({
   const { success, error: showError, info } = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = typeof document !== "undefined";
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const triggerRef = useRef<HTMLButtonElement | HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -76,10 +76,6 @@ export function MeuPlanoDropdownMenu({
     left: 0,
     width: 360,
   });
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const updatePosition = useCallback(() => {
     if (!triggerRef.current) return;
@@ -1545,8 +1541,6 @@ function ModalPausarPlano({
       }
     }
     if (isOpen) {
-      setLoading(true);
-      setErro(null);
       carregar();
     }
   }, [isOpen]);

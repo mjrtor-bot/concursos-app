@@ -47,30 +47,28 @@ export function DailyMissionCard({
 }: DailyMissionCardProps) {
   const [isCadernoOpen, setIsCadernoOpen] = useState(false);
   const [isCronometroOpen, setIsCronometroOpen] = useState(false);
-  const [pausadoInfo, setPausadoInfo] = useState<{ pausado: boolean; data_fim_pausa: string | null } | null>(
-    planoPausado !== undefined ? { pausado: planoPausado, data_fim_pausa: dataFimPausa || null } : null
-  );
+  const [pausaCarregada, setPausaCarregada] = useState<{ pausado: boolean; data_fim_pausa: string | null } | null>(null);
+  const pausadoInfo = planoPausado !== undefined
+    ? { pausado: planoPausado, data_fim_pausa: dataFimPausa || null }
+    : pausaCarregada;
 
   useEffect(() => {
-    if (planoPausado !== undefined) {
-      setPausadoInfo({ pausado: planoPausado, data_fim_pausa: dataFimPausa || null });
-    } else {
-      async function carregarPausa() {
-        try {
-          const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
-          if (res?.config) {
-            setPausadoInfo({
-              pausado: Boolean(res.config.pausado),
-              data_fim_pausa: res.config.data_fim_pausa || null,
-            });
-          }
-        } catch {
-          // Ignore
+    if (planoPausado !== undefined) return;
+    async function carregarPausa() {
+      try {
+        const res = await fetch("/api/mentoria/config-plano").then((r) => r.json());
+        if (res?.config) {
+          setPausaCarregada({
+            pausado: Boolean(res.config.pausado),
+            data_fim_pausa: res.config.data_fim_pausa || null,
+          });
         }
+      } catch {
+        // Ignore
       }
-      carregarPausa();
     }
-  }, [planoPausado, dataFimPausa]);
+    carregarPausa();
+  }, [planoPausado]);
   const [cadernoTexto, setCadernoTexto] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -86,20 +84,18 @@ export function DailyMissionCard({
   const [salvoCaderno, setSalvoCaderno] = useState(false);
   const [statusLocal, setStatusLocal] = useState(missao.status);
   const [prevMissaoKey, setPrevMissaoKey] = useState(`${missao.id}_${missao.status}`);
-  const [materiais, setMateriais] = useState<{ id: string; titulo: string; pdf_url?: string | null; pdf_nome?: string | null }[]>([]);
+  const [materiaisCarregados, setMateriaisCarregados] = useState<{ assuntoId: string; items: { id: string; titulo: string; pdf_url?: string | null; pdf_nome?: string | null }[] } | null>(null);
+  const materiais = materiaisCarregados && materiaisCarregados.assuntoId === missao.assunto_id ? materiaisCarregados.items : [];
 
   useEffect(() => {
-    if (!missao.assunto_id) {
-      setMateriais([]);
-      return;
-    }
+    if (!missao.assunto_id) return;
     let active = true;
     fetch(`/api/mentoria/conteudos?assunto_id=${missao.assunto_id}`)
       .then((r) => r.json())
       .then((data) => {
         if (!active) return;
         const pdfs = (data?.conteudos || []).filter((c: any) => c.pdf_url);
-        setMateriais(pdfs);
+        setMateriaisCarregados({ assuntoId: missao.assunto_id!, items: pdfs });
       })
       .catch(() => {});
     return () => {

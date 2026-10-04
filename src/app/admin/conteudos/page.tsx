@@ -110,10 +110,7 @@ export default function AdminConteudosPage() {
   }, []);
 
   useEffect(() => {
-    if (!disciplina) {
-      setAssuntos([]);
-      return;
-    }
+    if (!disciplina) return;
     let cancel = false;
     fetch(`/api/assuntos?disciplina_id=${encodeURIComponent(disciplina)}`)
       .then((r) => r.json())
@@ -439,7 +436,7 @@ export default function AdminConteudosPage() {
                 onChange={(e) => {
                   const val = e.target.value;
                   setDisciplina(val);
-                  if (!val) setAssuntos([]);
+                  setAssuntos([]);
                   setForm(vazio);
                   setLista([]);
                 }}
