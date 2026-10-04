@@ -88,8 +88,9 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
     }
   }
 
+  // Uploads pessoais nunca são publicados automaticamente no catálogo global.
   const ehOficial = isConcursoOficialValido(item, item.estrutura_extraida?.fonte_oficial_url);
-  const statusConcurso = ehOficial ? "publicado" : "rascunho";
+  const statusConcurso = "rascunho";
 
   const { data: concurso, error: concursoError } = await admin
     .from("concursos")
@@ -138,7 +139,7 @@ async function materializarImportado(admin: any, item: Importado, sourceUrl: str
       banca: ehOficial ? (item.estrutura_extraida?.banca || null) : null,
       fonte_conteudo_url: sourceUrl,
       criado_por: userId || null,
-      visibilidade: ehOficial ? "publico" : "privado",
+      visibilidade: "privado",
     })
     .select("id")
     .single();
