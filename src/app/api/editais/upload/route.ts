@@ -37,6 +37,22 @@ export async function POST(request: Request) {
   });
   if (storageError) return NextResponse.json({ error: storageError.message }, { status: 500 });
 
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  const isStaff = Boolean(profile && ["admin", "editor"].includes(profile.role));
+
+  let editalIdParaVincular: string | null = null;
+  const rawEditalId = form.get("edital_id") ? String(form.get("edital_id")).trim() : null;
+  if (rawEditalId && isStaff) {
+    const { data: editalExistente } = await supabase
+      .from("editais_concurso")
+      .select("id")
+      .eq("id", rawEditalId)
+      .maybeSingle();
+    if (editalExistente) {
+      editalIdParaVincular = editalExistente.id;
+    }
+  }
+
   const nome = String(form.get("nome") || file.name.replace(/\.pdf$/i, "")).slice(0,250);
   const { data, error } = await supabase.from("editais_usuario").insert({
     usuario_id: user.id,
@@ -44,7 +60,7 @@ export async function POST(request: Request) {
     orgao_nome: String(form.get("orgao") || "").slice(0,200) || null,
     cargo: String(form.get("cargo") || "").slice(0,200) || null,
     uf: String(form.get("uf") || "").slice(0,2).toUpperCase() || null,
-    edital_id: form.get("edital_id") ? String(form.get("edital_id")) : null,
+    edital_id: editalIdParaVincular,
     arquivo_path: path,
     arquivo_nome: safeName(file.name),
     arquivo_tamanho: file.size,

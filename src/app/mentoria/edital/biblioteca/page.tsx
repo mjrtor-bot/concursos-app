@@ -77,7 +77,6 @@ export default function BibliotecaEditaisPage() {
   const [status,setStatus]=useState("todos");
 
   const [formValues,setFormValues]=useState({nome:"",orgao:"",cargo:"",uf:""});
-  const [destinoEditalId,setDestinoEditalId]=useState<string>("");
   const [arquivo,setArquivo]=useState<File|null>(null);
   const [enviando,setEnviando]=useState(false);
   const [processando,setProcessando]=useState(false);
@@ -176,9 +175,6 @@ export default function BibliotecaEditaisPage() {
           cargo: cargo.nome,
           edital: edital?.titulo || edital?.numero || "Edital do concurso alvo",
         });
-        if (edital?.id && !destinoEditalId) {
-          setDestinoEditalId(edital.id);
-        }
       }
     } catch (e) {
       setAlvo(null);
@@ -217,9 +213,6 @@ export default function BibliotecaEditaisPage() {
               cargo: cargo.nome,
               edital: edital?.titulo || edital?.numero || "Edital do concurso alvo",
             });
-            if (edital?.id && !destinoEditalId) {
-              setDestinoEditalId(edital.id);
-            }
           }
         }
       } catch (e) {
@@ -234,7 +227,7 @@ export default function BibliotecaEditaisPage() {
     return () => {
       ignore = true;
     };
-  }, [user?.id, destinoEditalId, reconciliarProcessando]);
+  }, [user?.id, reconciliarProcessando]);
   useEffect(()=>{const t=setTimeout(carregar,250);return()=>clearTimeout(t);},[q,carreira,uf,status]);
 
   const ufs=useMemo(()=>Array.from(new Set(editais.map(e=>e.uf).filter(Boolean) as string[])).sort(),[editais]);
@@ -360,12 +353,6 @@ export default function BibliotecaEditaisPage() {
   async function confirmarPreview(){
     if(!uploadId){ setMensagem("O identificador do upload não está disponível. Atualize a página e gere uma nova prévia."); return; }
     if(!preview){ setMensagem("A prévia do edital ainda não está disponível."); return; }
-    const isStaff = ["admin", "editor"].includes(user?.role || "");
-    const targetEditalId = destinoEditalId || alvo?.edital_id;
-    if(isStaff && !targetEditalId){
-      setMensagem("Selecione um edital de destino no catálogo antes de confirmar a importação.");
-      return;
-    }
     setConfirmando(true); setMensagem("");
     try{
       const r=await fetch("/api/editais/confirmar",{
@@ -373,27 +360,11 @@ export default function BibliotecaEditaisPage() {
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
           edital_usuario_id:uploadId,
-          edital_id:targetEditalId || null,
           cargo_nome:cargoSelecionado || null
         })
       });
       const j=await r.json();
       if(!r.ok)throw new Error(j.error||"Falha ao confirmar e importar o conteúdo.");
-
-      if(!j.private_copy && alvo && targetEditalId === alvo.edital_id){
-        const sync=await fetch("/api/concursos/alvo",{
-          method:"PUT",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({concurso_id:alvo.concurso_id,cargo_id:alvo.cargo_id,edital_id:targetEditalId})
-        });
-        const sj=await sync.json();
-        if(!sync.ok)throw new Error(sj.error||"Conteúdo confirmado, mas a sincronização do planejamento falhou.");
-
-        if(user?.id){
-          const ciclo=await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
-          if(!ciclo.success)throw new Error(ciclo.error||"Conteúdo importado, mas o ciclo não pôde ser recalculado.");
-        }
-      }
 
       await recarregarConcursoAlvo();
       await carregar();
@@ -426,8 +397,6 @@ export default function BibliotecaEditaisPage() {
       fd.set("orgao",formValues.orgao);
       fd.set("cargo",formValues.cargo);
       fd.set("uf",formValues.uf);
-      const targetEditalId = destinoEditalId || alvo?.edital_id;
-      if (targetEditalId) fd.set("edital_id", targetEditalId);
       fd.set("arquivo",arquivo);
 
       const r=await fetch("/api/editais/upload",{method:"POST",body:fd});
@@ -556,45 +525,11 @@ export default function BibliotecaEditaisPage() {
     <section id="importar" className="rounded-2xl border bg-white dark:bg-slate-900 p-6">
       <div className="flex items-start gap-3"><Upload className="mt-1 h-5 w-5 text-indigo-600"/><div><h2 className="text-xl font-black">Importar edital em PDF</h2><p className="text-sm text-slate-600 dark:text-slate-400">Envie o edital, confira a prévia e só depois confirme a importação para o concurso selecionado.</p></div></div>
 
-      <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/40 p-4 text-sm space-y-3">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">Destino da importação</p>
-          {alvoDetalhe ? (
-            <div className="mt-1">
-              <p className="font-black">{alvoDetalhe.concurso}</p>
-              <p className="text-slate-700 dark:text-slate-300">{alvoDetalhe.cargo} · {alvoDetalhe.edital}</p>
-            </div>
-          ) : (
-            <p className="mt-1 text-slate-600">Nenhum concurso alvo selecionado.</p>
-          )}
-        </div>
-
-        {editais.length > 0 && (
-          <div className="pt-2 border-t border-indigo-200 dark:border-indigo-800">
-            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">
-              Vincular a outro edital do catálogo (opcional):
-            </label>
-            <select
-              value={destinoEditalId}
-              onChange={e=>setDestinoEditalId(e.target.value)}
-              className="w-full rounded-xl border bg-white dark:bg-slate-900 p-2.5 text-sm"
-            >
-              {alvo?.edital_id && (
-                <option value={alvo.edital_id}>
-                  Usar concurso alvo ({alvoDetalhe?.concurso || "Meu alvo"})
-                </option>
-              )}
-              <option value="">Selecione outro edital...</option>
-              {editais.map(e => (
-                <option key={e.id} value={e.id}>
-                  {e.orgao_nome} — {e.cargo} ({e.edital_numero || "Edital"})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        <p className="text-xs text-slate-600 dark:text-slate-400">A confirmação gravará os tópicos extraídos no edital selecionado.</p>
+      <div className="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-indigo-950/40 p-4 text-sm space-y-2">
+        <p className="text-xs font-bold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">Importação Privada</p>
+        <p className="text-slate-700 dark:text-slate-300">
+          O PDF enviado será estruturado e salvo exclusivamente como seu edital privado de estudos, sem alterar editais públicos do catálogo oficial.
+        </p>
       </div>
 
       <form onSubmit={enviar} className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -669,17 +604,16 @@ export default function BibliotecaEditaisPage() {
 
           {!confirmado&&<div className="mt-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 dark:bg-indigo-950/30 p-4">
             <p className="font-black">Revisou a prévia?</p>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{["admin", "editor"].includes(user?.role || "")
-              ? `A confirmação gravará os ${totalAssuntosExibidos} assuntos no edital selecionado acima e atualizará seu planejamento.`
-              : `A confirmação salvará os ${totalAssuntosExibidos} assuntos em uma cópia privada sua. O edital oficial do catálogo não será alterado.`}</p>
-            {!(destinoEditalId || alvo?.edital_id) && ["admin", "editor"].includes(user?.role || "") && <p className="mt-2 text-sm font-semibold text-amber-700">Selecione o edital de destino no catálogo antes de confirmar a importação.</p>}
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">
+              A confirmação salvará os {totalAssuntosExibidos} assuntos em sua cópia privada. O edital oficial do catálogo não será alterado.
+            </p>
             <label className="mt-3 flex items-start gap-2 text-sm"><input id="confirmar-conteudo" type="checkbox" className="mt-1" required/><span>Revisei o conteúdo e confirmo que os assuntos acima estão de acordo com o PDF.</span></label>
             <button type="button" disabled={confirmando} onClick={async()=>{
               const box=document.getElementById("confirmar-conteudo") as HTMLInputElement|null;
               if(!box?.checked){setMensagem("Marque a confirmação após revisar a prévia.");return;}
               await confirmarPreview();
             }} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 font-black text-white disabled:opacity-50">
-              {confirmando?<><Loader2 className="h-4 w-4 animate-spin"/>Confirmando...</>:<>Confirmar {["admin", "editor"].includes(user?.role || "") ? "e importar para o edital selecionado" : "e salvar na minha cópia privada"}</>}
+              {confirmando?<><Loader2 className="h-4 w-4 animate-spin"/>Confirmando...</>:<>Confirmar e salvar na minha cópia privada</>}
             </button>
           </div>}
 

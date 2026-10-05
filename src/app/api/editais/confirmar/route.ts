@@ -88,20 +88,25 @@ export async function POST(request: NextRequest) {
       total_topicos: count || 0,
     });
   } else {
-    // Para staff, se foi passado um edital_id oficial existente que queira popular globalmente:
-    const editalId = body?.edital_id || upload.edital_id;
-    if (editalId) {
-      const { data: edital } = await supabase.from("editais_concurso").select("id").eq("id", editalId).maybeSingle();
-      if (edital) {
+    // Para staff, se foi passado explicitamente um edital_id oficial de catálogo a ser populado globalmente via curadoria:
+    const explicitEditalId = body?.edital_id ? String(body.edital_id).trim() : null;
+    if (explicitEditalId) {
+      const { data: edital } = await supabase
+        .from("editais_concurso")
+        .select("id, criado_por")
+        .eq("id", explicitEditalId)
+        .maybeSingle();
+
+      if (edital && edital.criado_por === null) {
         const { data: res, error: rpcError } = await supabase.rpc("confirmar_edital_usuario", {
           p_upload_id: uploadId,
-          p_edital_id: editalId,
+          p_edital_id: explicitEditalId,
           p_cargo: cargoNome
         });
         if (!rpcError) {
           return NextResponse.json({
             ok: true,
-            edital_id: editalId,
+            edital_id: explicitEditalId,
             private_copy: false,
             total_topicos: (res as any)?.total_topicos ?? 0
           });
@@ -109,7 +114,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Se não for edital de catálogo oficial ou RPC falhar, materializa como cópia privada
+    // Se não for curadoria explícita de edital de catálogo oficial ou se o RPC não for aplicável, materializa como cópia privada
     if (!admin) {
       return NextResponse.json({ error: "Serviço administrativo indisponível." }, { status: 503 });
     }
