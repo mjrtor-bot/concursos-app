@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClientServer, createAdminClient } from "@/lib/supabase/server";
+import { normalizarEstruturaExtraida } from "@/lib/editais/normalizarEstrutura";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -182,8 +183,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
     }
 
-    let estrutura: any;
-    try { estrutura = JSON.parse(output); }
+    let rawEstrutura: any;
+    try { rawEstrutura = JSON.parse(output); }
     catch {
       const message = "A análise terminou, mas o conteúdo estruturado retornado pelo modelo é inválido.";
       const { error: updateError } = await db.from("editais_usuario").update({
@@ -196,23 +197,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ ok: false, done: true, status: "erro", error: message });
     }
 
-    const cargos = Array.isArray(estrutura.cargos) ? estrutura.cargos : [];
-    let disciplinas = Array.isArray(estrutura.disciplinas) ? estrutura.disciplinas : [];
-    if (disciplinas.length === 0 && cargos.length > 0) {
-      disciplinas = cargos.flatMap((c: any) => c.disciplinas || []);
-    }
+    const {
+      estrutura: estruturaNormalizada,
+      totalDisciplinas,
+      totalAssuntos,
+      semConteudo,
+      motivoSemConteudo
+    } = normalizarEstruturaExtraida(rawEstrutura);
 
-    const totalAssuntos = disciplinas.reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
-
-    if (!disciplinas.length || totalAssuntos === 0) {
-      const diagnostico = Array.isArray(estrutura.observacoes) && estrutura.observacoes.length
-        ? estrutura.observacoes.join(" | ")
-        : "Nenhum conteúdo programático foi localizado no PDF.";
+    if (semConteudo) {
+      const diagnostico = motivoSemConteudo || "Nenhum conteúdo programático foi localizado no PDF.";
 
       const { error: semConteudoError } = await db.from("editais_usuario").update({
         status: "revisao_sem_conteudo",
         provider_status: "completed",
-        estrutura_extraida: estrutura,
+        estrutura_extraida: estruturaNormalizada,
         erro_processamento: diagnostico,
         updated_at: new Date().toISOString()
       }).eq("id", id);
@@ -229,8 +228,8 @@ export async function GET(request: NextRequest) {
         ok: false,
         done: true,
         status: "revisao_sem_conteudo",
-        estrutura,
-        total_disciplinas: disciplinas.length,
+        estrutura: estruturaNormalizada,
+        total_disciplinas: totalDisciplinas,
         total_assuntos: totalAssuntos,
         aviso: diagnostico
       });
@@ -239,7 +238,7 @@ export async function GET(request: NextRequest) {
     const { error: finalUpdateError } = await db.from("editais_usuario").update({
       status: "aguardando_revisao",
       provider_status: "completed",
-      estrutura_extraida: estrutura,
+      estrutura_extraida: estruturaNormalizada,
       erro_processamento: null,
       updated_at: new Date().toISOString()
     }).eq("id", id);
@@ -259,8 +258,8 @@ export async function GET(request: NextRequest) {
       ok: true,
       done: true,
       status: "aguardando_revisao",
-      estrutura,
-      total_disciplinas: disciplinas.length,
+      estrutura: estruturaNormalizada,
+      total_disciplinas: totalDisciplinas,
       total_assuntos: totalAssuntos
     });
   }

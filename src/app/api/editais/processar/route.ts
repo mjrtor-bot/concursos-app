@@ -42,14 +42,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Este PDF já está em processamento ou não pode ser reprocessado." }, { status: 409 });
   }
 
-  const model = process.env.OPENAI_EDITAL_MODEL || "gpt-5.6-luna";
-  const modelRes = await fetch(`https://api.openai.com/v1/models/${model}`, {
-    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
-  });
-  if (!modelRes.ok) {
-    console.error(`Modelo ${model} inválido ou indisponível.`);
-    return NextResponse.json({ error: `Modelo configurado ${model} indisponível.` }, { status: 503 });
-  }
+  const defaultModel = "gpt-4o-mini";
+  const model = process.env.OPENAI_EDITAL_MODEL || defaultModel;
 
   const { data: locked, error: updateError } = await db
     .from("editais_usuario")
@@ -75,9 +69,12 @@ export async function POST(request: NextRequest) {
     const schema = {
       type: "object",
       additionalProperties: false,
-      required: ["titulo_detectado", "cargos", "disciplinas", "observacoes"],
+      required: ["titulo_detectado", "orgao", "banca", "uf", "cargos", "disciplinas", "observacoes"],
       properties: {
         titulo_detectado: { type: "string" },
+        orgao: { type: "string" },
+        banca: { type: "string" },
+        uf: { type: "string" },
         observacoes: { type: "array", items: { type: "string" } },
         cargos: {
           type: "array",
@@ -139,6 +136,28 @@ export async function POST(request: NextRequest) {
       }
     };
 
+    const promptText = `Você é um especialista em análise e verticalização de editais de concursos públicos.
+Analise com máxima precisão o conteúdo programático efetivamente presente no documento PDF anexado.
+
+REGRAS OBRIGATÓRIAS DE EXTRAÇÃO:
+1. HIERARQUIA TAXONÔMICA ESTRITA (4 NÍVEIS):
+   - Nível 1: CARGO (ex: "Cadete PM", "Aluno Oficial", "Agente", etc.). Se houver múltiplos cargos com conteúdos distintos no edital, extraia cada cargo separadamente no array "cargos". Se for cargo único ou conteúdo comum, preencha "disciplinas" ou "cargos". NUNCA misture conteúdos de cargos diferentes.
+   - Nível 2: DISCIPLINA (ex: "Língua Portuguesa", "Direito Constitucional", "Direito Administrativo", "Direito Penal", "Direito Processual Penal", "Direito Penal Militar", "Direito Processual Penal Militar", "Legislação Extravagante", "Realidade de Goiás", etc.).
+   - Nível 3: ASSUNTO (cada item temático numerado ou tópico principal do edital, ex: "1. Compreensão e interpretação de textos", "2. Tipologia textual", "1. Aplicação da lei penal militar", "2. Do crime militar").
+   - Nível 4: TÓPICOS/SUBASSUNTOS (subitens, leis específicas, parágrafos ou desdobramentos de cada assunto no array "topicos").
+
+2. BLOCOS E SEÇÕES NÃO SÃO DISCIPLINAS:
+   - Rótulos como "CONHECIMENTOS GERAIS", "CONHECIMENTOS ESPECÍFICOS", "BLOCO I", "MÓDULO BÁSICO", "PROVA OBJETIVA" NÃO são disciplinas. Identifique e extraia as disciplinas reais contidas dentro de cada bloco.
+
+3. CONSISTÊNCIA DE GRANULARIDADE:
+   - Cada item numerado ou tema substantivo DEVE ser um "assunto" individual.
+   - NUNCA agrupe uma disciplina inteira (como Direito Penal Militar ou Legislação Extravagante) em um único assunto genérico com todos os tópicos jogados dentro de "topicos". Cada unidade temática/lei/tópico numerado deve ser seu próprio assunto.
+
+4. METADADOS E FIDELIDADE:
+   - Identifique titulo_detectado, orgao, banca examinadora e uf (sigla com 2 letras, ex: "GO", "PR", "SP").
+   - Não invente, não resuma, não complete com informações externas. Extraia estritamente o conteúdo do edital.
+   - Se o PDF NÃO contiver anexo de conteúdo programático (ex: edital puramente administrativo sem disciplinas), retorne os arrays de disciplinas e cargos vazios e descreva explicitamente em "observacoes" (ex: "O documento não contém o anexo de conteúdo programático").`;
+
     // Iniciar processamento assíncrono (não aguarda GPT concluir)
     const resp = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -149,7 +168,7 @@ export async function POST(request: NextRequest) {
         input: [{
           role: "user", content: [
             { type: "input_file", file_id: uploaded.id },
-            { type: "input_text", text: "Analise somente o conteúdo programático efetivamente presente neste edital. Extraia a hierarquia completa de 4 níveis de taxonomia: Cargos -> Disciplinas -> Assuntos -> Subassuntos/Tópicos. Se o edital contiver múltiplos cargos, preencha o array 'cargos'; se for um cargo único ou conteúdo geral comum, preencha 'disciplinas' diretamente. Em cada assunto, liste detalhadamente seus subtópicos/itens no array 'topicos'. Não invente, complete, resuma ou acrescente conteúdo externo. Preserve nomes e granularidade do documento. Se uma seção estiver ambígua, registre em observacoes e não crie assunto especulativo." }
+            { type: "input_text", text: promptText }
           ]
         }],
         text: { format: { type: "json_schema", name: "edital_conteudo", strict: true, schema } }

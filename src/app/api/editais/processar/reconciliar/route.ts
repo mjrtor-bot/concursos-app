@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClientServer } from "@/lib/supabase/server";
+import { normalizarEstruturaExtraida } from "@/lib/editais/normalizarEstrutura";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -131,11 +132,11 @@ async function handleReconcile(request: NextRequest) {
 
         if (json.status === "completed") {
           const output = extractOutputText(json).trim();
-          let estrutura: any = null;
-          try { estrutura = JSON.parse(output); } catch { /* ignore */ }
+          let rawEstrutura: any = null;
+          try { rawEstrutura = JSON.parse(output); } catch { /* ignore */ }
 
-          if (!estrutura || !Array.isArray(estrutura.disciplinas)) {
-            const msg = "A análise da OpenAI terminou mas não retornou a lista de disciplinas esperada.";
+          if (!rawEstrutura || typeof rawEstrutura !== "object") {
+            const msg = "A análise da OpenAI terminou mas não retornou conteúdo estruturado válido.";
             await client.from("editais_usuario").update({
               status: "erro",
               provider_status: "completed",
@@ -144,15 +145,20 @@ async function handleReconcile(request: NextRequest) {
             }).eq("id", reg.id);
             resultados.push({ id: reg.id, anterior: reg.status, novo: "erro", motivo: msg });
           } else {
-            const totalAssuntos = estrutura.disciplinas.reduce((n: number, d: any) => n + (d.assuntos?.length || 0), 0);
-            if (!estrutura.disciplinas.length || totalAssuntos === 0) {
-              const diagnostico = Array.isArray(estrutura.observacoes) && estrutura.observacoes.length
-                ? estrutura.observacoes.join(" | ")
-                : "Nenhum conteúdo programático foi localizado no PDF.";
+            const {
+              estrutura: estruturaNormalizada,
+              totalDisciplinas,
+              totalAssuntos,
+              semConteudo,
+              motivoSemConteudo
+            } = normalizarEstruturaExtraida(rawEstrutura);
+
+            if (semConteudo) {
+              const diagnostico = motivoSemConteudo || "Nenhum conteúdo programático foi localizado no PDF.";
               await client.from("editais_usuario").update({
                 status: "revisao_sem_conteudo",
                 provider_status: "completed",
-                estrutura_extraida: estrutura,
+                estrutura_extraida: estruturaNormalizada,
                 erro_processamento: diagnostico,
                 updated_at: new Date().toISOString()
               }).eq("id", reg.id);
@@ -161,11 +167,11 @@ async function handleReconcile(request: NextRequest) {
               await client.from("editais_usuario").update({
                 status: "aguardando_revisao",
                 provider_status: "completed",
-                estrutura_extraida: estrutura,
+                estrutura_extraida: estruturaNormalizada,
                 erro_processamento: null,
                 updated_at: new Date().toISOString()
               }).eq("id", reg.id);
-              resultados.push({ id: reg.id, anterior: reg.status, novo: "aguardando_revisao", motivo: `${estrutura.disciplinas.length} disciplinas, ${totalAssuntos} assuntos` });
+              resultados.push({ id: reg.id, anterior: reg.status, novo: "aguardando_revisao", motivo: `${totalDisciplinas} disciplinas, ${totalAssuntos} assuntos` });
             }
           }
 
