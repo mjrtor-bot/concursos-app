@@ -283,7 +283,7 @@ export async function materializarImportado(
           }
 
           ordem += 1;
-          await admin.from("edital_topicos").upsert(
+          const { error: topicoError } = await admin.from("edital_topicos").upsert(
             {
               edital_id: finalEditalId,
               disciplina_id: d.id,
@@ -293,10 +293,14 @@ export async function materializarImportado(
             },
             { onConflict: "edital_id,disciplina_id,assunto_id,subassunto_id" }
           );
+          if (topicoError) {
+            console.error(`[materializarImportado] Erro ao inserir tópico (subassunto ${subNome}):`, topicoError);
+            throw new Error(`Falha ao inserir tópico do edital: ${topicoError.message}`);
+          }
         }
       } else {
         ordem += 1;
-        await admin.from("edital_topicos").upsert(
+        const { error: topicoError } = await admin.from("edital_topicos").upsert(
           {
             edital_id: finalEditalId,
             disciplina_id: d.id,
@@ -306,17 +310,25 @@ export async function materializarImportado(
           },
           { onConflict: "edital_id,disciplina_id,assunto_id,subassunto_id" }
         );
+        if (topicoError) {
+          console.error(`[materializarImportado] Erro ao inserir tópico (assunto ${assuntoNome}):`, topicoError);
+          throw new Error(`Falha ao inserir tópico do edital: ${topicoError.message}`);
+        }
       }
     }
   }
 
-  await admin
+  const { error: updateError } = await admin
     .from("editais_usuario")
     .update({
       edital_id: finalEditalId,
       updated_at: new Date().toISOString()
     })
     .eq("id", item.id);
+
+  if (updateError) {
+    console.error(`[materializarImportado] Erro ao atualizar edital_usuario id=${item.id}:`, updateError);
+  }
 
   return finalEditalId;
 }

@@ -22,28 +22,41 @@ export async function GET(request: Request) {
   const admin = createAdminClient();
   const sourceUrl = `https://${new URL(request.url).host}/mentoria/edital/importados`;
 
-  if (admin) {
+  if (!admin) {
+    console.warn("[concursos/alvo] createAdminClient() retornou null. Verifique se SUPABASE_SERVICE_ROLE_KEY está configurada no ambiente.");
+  } else {
     for (const item of (importados || []) as ImportadoItem[]) {
       try {
         const editalId = await materializarImportado(admin, item, sourceUrl, user.id, item.cargo);
-        const { data: materializado } = await admin
+        const { data: materializado, error: matError } = await admin
           .from("editais_concurso")
           .select("id,concurso_id,cargo_id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca")
           .eq("id", editalId)
           .maybeSingle();
 
+        if (matError) {
+          console.error(`[concursos/alvo] Erro ao buscar edital materializado id=${editalId}:`, matError);
+        }
+
         if (!materializado) continue;
 
-        const { data: concurso } = await admin
+        const { data: concurso, error: concError } = await admin
           .from("concursos")
           .select("id,nome,orgao,esfera,uf,status,fonte_oficial_url")
           .eq("id", materializado.concurso_id)
           .single();
-        const { data: cargo } = await admin
+        if (concError) {
+          console.error(`[concursos/alvo] Erro ao buscar concurso id=${materializado.concurso_id}:`, concError);
+        }
+
+        const { data: cargo, error: cargoError } = await admin
           .from("concurso_cargos")
           .select("id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo")
           .eq("id", materializado.cargo_id)
           .single();
+        if (cargoError) {
+          console.error(`[concursos/alvo] Erro ao buscar cargo id=${materializado.cargo_id}:`, cargoError);
+        }
 
         if (!concurso || !cargo) continue;
 
@@ -67,8 +80,14 @@ export async function GET(request: Request) {
             }],
           } as any);
         }
-      } catch {
-        // Um edital pessoal com falha de materialização não deve derrubar a lista oficial.
+      } catch (err: any) {
+        console.error(`[concursos/alvo] Falha ao materializar edital_usuario id=${item.id}:`, {
+          message: err?.message,
+          stack: err?.stack,
+          item_id: item.id,
+          arquivo_nome: item.arquivo_nome,
+          status: item.status,
+        });
       }
     }
   }
