@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { Badge } from "@/components/ui/Badge";
-import { Check, Search, Calendar, Award, Building2 } from "lucide-react";
+import { Check, Search, Calendar, Award, Building2, FileText, Sparkles, BookOpen } from "lucide-react";
 import { ConcursoStatus } from "@/types";
 
 interface ConcursoSelectorModalProps {
@@ -19,6 +19,10 @@ export function ConcursoSelectorModal({
   const { concursos, concursoAtivo, selecionarConcursoAtivo } = useConcurso();
   const [busca, setBusca] = useState("");
   const [statusFiltro, setStatusFiltro] = useState<string>("todos");
+  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "importados" | "oficiais">("todos");
+  const [selecionandoId, setSelecionandoId] = useState<string | null>(null);
+
+  const importadosCount = concursos.filter((c) => c.eh_importado).length;
 
   const filtrados = concursos.filter((c) => {
     const matchesBusca =
@@ -29,10 +33,25 @@ export function ConcursoSelectorModal({
     const matchesStatus =
       statusFiltro === "todos" ? true : c.status === statusFiltro;
 
-    return matchesBusca && matchesStatus;
+    const matchesTipo =
+      tipoFiltro === "todos"
+        ? true
+        : tipoFiltro === "importados"
+        ? Boolean(c.eh_importado)
+        : !c.eh_importado;
+
+    return matchesBusca && matchesStatus && matchesTipo;
   });
 
-  const getStatusBadge = (status: ConcursoStatus) => {
+  const getStatusBadge = (status: ConcursoStatus, ehImportado?: boolean) => {
+    if (ehImportado) {
+      return (
+        <Badge variant="primary" className="bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+          Edital Importado (PDF)
+        </Badge>
+      );
+    }
     switch (status) {
       case "aberto":
         return <Badge variant="success">Edital Aberto</Badge>;
@@ -45,9 +64,14 @@ export function ConcursoSelectorModal({
     }
   };
 
-  const handleSelect = (id: string) => {
-    selecionarConcursoAtivo(id);
-    onClose();
+  const handleSelect = async (id: string) => {
+    setSelecionandoId(id);
+    try {
+      await selecionarConcursoAtivo(id);
+      onClose();
+    } finally {
+      setSelecionandoId(null);
+    }
   };
 
   return (
@@ -55,10 +79,50 @@ export function ConcursoSelectorModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Escolha seu Concurso Alvo"
-      description="Selecione o concurso para o qual você está se preparando para personalizar questões, matérias e simulados."
+      description="Selecione o concurso para o qual você está se preparando para personalizar questões, matérias, cronograma e simulados."
       size="lg"
     >
       <div className="space-y-4">
+        {/* Filtro por Origem (se houver importados) */}
+        {importadosCount > 0 && (
+          <div className="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setTipoFiltro("todos")}
+              className={`flex-1 py-1.5 px-3 rounded-lg transition-all ${
+                tipoFiltro === "todos"
+                  ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+              }`}
+            >
+              Todos ({concursos.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setTipoFiltro("importados")}
+              className={`flex-1 py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all ${
+                tipoFiltro === "importados"
+                  ? "bg-purple-600 text-white shadow-xs"
+                  : "text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30"
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              Meus Editais ({importadosCount})
+            </button>
+            <button
+              type="button"
+              onClick={() => setTipoFiltro("oficiais")}
+              className={`flex-1 py-1.5 px-3 rounded-lg transition-all ${
+                tipoFiltro === "oficiais"
+                  ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+              }`}
+            >
+              Catálogo Oficial ({concursos.length - importadosCount})
+            </button>
+          </div>
+        )}
+
         {/* Search & Filter */}
         <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative flex-1">
@@ -92,13 +156,16 @@ export function ConcursoSelectorModal({
           ) : (
             filtrados.map((c) => {
               const isSelected = concursoAtivo?.id === c.id;
+              const isBusy = selecionandoId === c.id;
               return (
                 <div
                   key={c.id}
-                  onClick={() => handleSelect(c.id)}
+                  onClick={() => !isBusy && handleSelect(c.id)}
                   className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-4 ${
                     isSelected
                       ? "bg-blue-500/10 border-blue-500 dark:border-blue-500 shadow-xs"
+                      : c.eh_importado
+                      ? "bg-purple-50/40 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800/60 hover:border-purple-300 dark:hover:border-purple-700 hover:bg-purple-50/70"
                       : "bg-white dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
                   }`}
                 >
@@ -107,10 +174,12 @@ export function ConcursoSelectorModal({
                       <span className="font-bold text-sm text-slate-900 dark:text-slate-100">
                         {c.sigla}
                       </span>
-                      {getStatusBadge(c.status)}
-                      <Badge variant="outline" size="sm">
-                        {c.banca}
-                      </Badge>
+                      {getStatusBadge(c.status, c.eh_importado)}
+                      {c.banca && (
+                        <Badge variant="outline" size="sm">
+                          {c.banca}
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
                       {c.nome}
@@ -141,8 +210,11 @@ export function ConcursoSelectorModal({
                         <Check className="w-4 h-4" />
                       </div>
                     ) : (
-                      <button className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">
-                        Selecionar
+                      <button
+                        disabled={isBusy}
+                        className="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        {isBusy ? "Salvando..." : "Selecionar"}
                       </button>
                     )}
                   </div>

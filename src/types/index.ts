@@ -36,6 +36,7 @@ export interface Concurso {
   taxa_inscricao?: number | null;
   uf?: string | null; // null for federal
   created_at: string;
+  eh_importado?: boolean;
 }
 
 export interface Cargo {

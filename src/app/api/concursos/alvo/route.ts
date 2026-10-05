@@ -18,17 +18,17 @@ export async function GET(request: Request) {
   if (alvoError) return NextResponse.json({ error: alvoError.message }, { status: 500 });
   if (importadosError) return NextResponse.json({ error: importadosError.message }, { status: 500 });
 
-  const lista = [...(concursos || [])];
+  const lista: any[] = [...(concursos || [])];
   const admin = createAdminClient();
   const sourceUrl = `https://${new URL(request.url).host}/mentoria/edital/importados`;
 
   if (admin) {
     for (const item of (importados || []) as ImportadoItem[]) {
       try {
-        const editalId = await materializarImportado(admin, item, sourceUrl, user.id);
+        const editalId = await materializarImportado(admin, item, sourceUrl, user.id, item.cargo);
         const { data: materializado } = await admin
           .from("editais_concurso")
-          .select("id,concurso_id,cargo_id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status")
+          .select("id,concurso_id,cargo_id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca")
           .eq("id", editalId)
           .maybeSingle();
 
@@ -47,13 +47,26 @@ export async function GET(request: Request) {
 
         if (!concurso || !cargo) continue;
 
-        lista.push({
-          ...concurso,
-          concurso_cargos: [{
-            ...cargo,
-            editais_concurso: [materializado],
-          }],
-        } as any);
+        const indexExistente = lista.findIndex(x => x.id === concurso.id);
+        if (indexExistente >= 0) {
+          lista[indexExistente] = {
+            ...lista[indexExistente],
+            eh_importado: true,
+            concurso_cargos: [{
+              ...cargo,
+              editais_concurso: [materializado],
+            }],
+          };
+        } else {
+          lista.unshift({
+            ...concurso,
+            eh_importado: true,
+            concurso_cargos: [{
+              ...cargo,
+              editais_concurso: [materializado],
+            }],
+          } as any);
+        }
       } catch {
         // Um edital pessoal com falha de materialização não deve derrubar a lista oficial.
       }
@@ -74,31 +87,73 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Concurso e cargo são obrigatórios" }, { status: 400 });
   }
 
-  const { data: cargo } = await supabase.from("concurso_cargos").select("id").eq("id", body.cargo_id).eq("concurso_id", body.concurso_id).eq("ativo", true).maybeSingle();
-  if (!cargo) return NextResponse.json({ error: "Cargo não pertence ao concurso informado" }, { status: 400 });
+  const admin = createAdminClient();
+  const db = admin || supabase;
+
+  // 1. Validar cargo e concurso pertencente ao usuário ou público
+  const { data: cargo, error: cargoCheckError } = await db
+    .from("concurso_cargos")
+    .select("id,concurso_id,nome,concursos(id,nome,status,criado_por)")
+    .eq("id", body.cargo_id)
+    .eq("concurso_id", body.concurso_id)
+    .eq("ativo", true)
+    .maybeSingle();
+
+  if (cargoCheckError || !cargo) {
+    return NextResponse.json({ error: "Cargo não pertence ao concurso informado" }, { status: 400 });
+  }
+
+  const concursoRel = Array.isArray(cargo.concursos) ? cargo.concursos[0] : cargo.concursos;
+  if (concursoRel && concursoRel.status !== "publicado" && concursoRel.criado_por && concursoRel.criado_por !== user.id) {
+    return NextResponse.json({ error: "Acesso não autorizado a este concurso privado." }, { status: 403 });
+  }
 
   let editalId: string | null = body.edital_id ?? null;
   if (editalId) {
-    const { data: edital } = await supabase.from("editais_concurso").select("id").eq("id", editalId).eq("concurso_id", body.concurso_id).eq("cargo_id", body.cargo_id).maybeSingle();
-    if (!edital) return NextResponse.json({ error: "Edital não pertence ao concurso/cargo informado" }, { status: 400 });
+    const { data: edital } = await db
+      .from("editais_concurso")
+      .select("id,concurso_id,cargo_id,status,criado_por")
+      .eq("id", editalId)
+      .eq("concurso_id", body.concurso_id)
+      .eq("cargo_id", body.cargo_id)
+      .maybeSingle();
+
+    if (!edital) {
+      return NextResponse.json({ error: "Edital não pertence ao concurso/cargo informado" }, { status: 400 });
+    }
   } else {
-    const { data: edital } = await supabase.from("editais_concurso").select("id").eq("concurso_id", body.concurso_id).eq("cargo_id", body.cargo_id).order("publicado_em", { ascending: false }).limit(1).maybeSingle();
+    const { data: edital } = await db
+      .from("editais_concurso")
+      .select("id")
+      .eq("concurso_id", body.concurso_id)
+      .eq("cargo_id", body.cargo_id)
+      .order("publicado_em", { ascending: false })
+      .limit(1)
+      .maybeSingle();
     editalId = edital?.id ?? null;
   }
 
-  const { data: alvoAnterior } = await supabase.from("usuario_concurso_alvo").select("edital_id").eq("usuario_id", user.id).maybeSingle();
+  const { data: alvoAnterior } = await db
+    .from("usuario_concurso_alvo")
+    .select("edital_id")
+    .eq("usuario_id", user.id)
+    .maybeSingle();
   const mudouEdital = alvoAnterior?.edital_id !== editalId;
 
-  const { data, error } = await supabase.from("usuario_concurso_alvo").upsert({
-    usuario_id: user.id, concurso_id: body.concurso_id, cargo_id: body.cargo_id, edital_id: editalId, updated_at: new Date().toISOString(),
+  const { data, error } = await db.from("usuario_concurso_alvo").upsert({
+    usuario_id: user.id,
+    concurso_id: body.concurso_id,
+    cargo_id: body.cargo_id,
+    edital_id: editalId,
+    updated_at: new Date().toISOString(),
   }, { onConflict: "usuario_id" }).select("concurso_id,cargo_id,edital_id").single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Mantém o perfil da mentoria coerente com o concurso alvo (fonte única: usuario_concurso_alvo).
   const [{ data: concursoInfo }, { data: cargoInfo }] = await Promise.all([
-    supabase.from("concursos").select("nome").eq("id", body.concurso_id).maybeSingle(),
-    supabase.from("concurso_cargos").select("nome").eq("id", body.cargo_id).maybeSingle(),
+    db.from("concursos").select("nome").eq("id", body.concurso_id).maybeSingle(),
+    db.from("concurso_cargos").select("nome").eq("id", body.cargo_id).maybeSingle(),
   ]);
   const camposPerfil = {
     concurso_id: body.concurso_id,
@@ -107,24 +162,24 @@ export async function PUT(request: Request) {
     cargo_nome: cargoInfo?.nome ?? "",
     updated_at: new Date().toISOString(),
   };
-  const { data: perfilExistente } = await supabase.from("mentoria_perfis").select("id").eq("usuario_id", user.id).maybeSingle();
+  const { data: perfilExistente } = await db.from("mentoria_perfis").select("id").eq("usuario_id", user.id).maybeSingle();
   const { error: perfilError } = perfilExistente
-    ? await supabase.from("mentoria_perfis").update(camposPerfil).eq("usuario_id", user.id)
-    : await supabase.from("mentoria_perfis").insert({ usuario_id: user.id, ...camposPerfil, ativo: true });
+    ? await db.from("mentoria_perfis").update(camposPerfil).eq("usuario_id", user.id)
+    : await db.from("mentoria_perfis").insert({ usuario_id: user.id, ...camposPerfil, ativo: true });
   if (perfilError) return NextResponse.json({ error: `Alvo salvo, mas o perfil da mentoria não foi atualizado: ${perfilError.message}` }, { status: 500 });
 
   if (mudouEdital) {
-    const { error: archiveError } = await supabase.from("mentoria_planos")
+    const { error: archiveError } = await db.from("mentoria_planos")
       .update({ status: "arquivado", updated_at: new Date().toISOString() })
       .eq("usuario_id", user.id).eq("status", "ativo");
     if (archiveError) return NextResponse.json({ error: archiveError.message }, { status: 500 });
 
-    const { error: limparError } = await supabase.from("mentoria_edital_topicos").delete().eq("usuario_id", user.id);
+    const { error: limparError } = await db.from("mentoria_edital_topicos").delete().eq("usuario_id", user.id);
     if (limparError) return NextResponse.json({ error: limparError.message }, { status: 500 });
   }
 
   if (editalId) {
-    const { data: topicos, error: topicosError } = await supabase.from("edital_topicos")
+    const { data: topicos, error: topicosError } = await db.from("edital_topicos")
       .select("disciplina_id,assunto_id,peso,incidencia")
       .eq("edital_id", editalId)
       .not("assunto_id", "is", null);
@@ -144,7 +199,7 @@ export async function PUT(request: Request) {
         questoes_respondidas: 0,
         taxa_acerto: 0,
       }));
-      const { error: syncError } = await supabase.from("mentoria_edital_topicos")
+      const { error: syncError } = await db.from("mentoria_edital_topicos")
         .upsert(linhas, { onConflict: "usuario_id,disciplina_id,assunto_id" });
       if (syncError) return NextResponse.json({ error: syncError.message }, { status: 500 });
     }

@@ -6,9 +6,9 @@ import { calcularPrazoProva, PrazoProva } from "@/lib/prazoProva";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
 
-type ApiEdital = { id:string; prova_em:string|null; fonte_oficial_url:string; status:string };
+type ApiEdital = { id:string; prova_em:string|null; fonte_oficial_url:string; status:string; banca?:string|null };
 type ApiCargo = { id:string; nome:string; escolaridade:string|null; vagas:number|null; salario:number|null; ativo:boolean; editais_concurso?:ApiEdital[] };
-type ApiConcurso = { id:string; nome:string; orgao:string; esfera:string|null; uf:string|null; status:string; fonte_oficial_url:string|null; concurso_cargos?:ApiCargo[] };
+type ApiConcurso = { id:string; nome:string; orgao:string; esfera:string|null; uf:string|null; status:string; fonte_oficial_url:string|null; eh_importado?:boolean; concurso_cargos?:ApiCargo[] };
 type ApiAlvo = { concurso_id:string; cargo_id:string; edital_id:string|null };
 
 interface ConcursoContextType {
@@ -17,8 +17,8 @@ interface ConcursoContextType {
   concursos: Concurso[];
   cargosDoConcurso: Cargo[];
   prazoProva: PrazoProva;
-  selecionarConcursoAtivo: (concursoId: string) => Promise<void>;
-  selecionarCargoAtivo: (cargoId: string) => Promise<void>;
+  selecionarConcursoAtivo: (concursoId: string, cargoId?: string, editalId?: string) => Promise<void>;
+  selecionarCargoAtivo: (cargoId: string, editalId?: string) => Promise<void>;
   recarregarConcursoAlvo: () => Promise<void>;
 }
 
@@ -102,7 +102,25 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
     const sigla=acronimo(c.nome)[0]||acronimo(c.orgao).pop()||iniciais||c.nome.slice(0,10);
     const editalAtual=editais.find(e=>e.id===alvo?.edital_id)||editais[0];
     const banca=(editalAtual as {banca?:string|null}|undefined)?.banca||"";
-    return {id:c.id,nome:c.nome,orgao:c.orgao,sigla,ano:new Date().getFullYear(),nivel:nivel(cargos[0]?.escolaridade),esfera:(c.esfera==="municipal"||c.esfera==="estadual"||c.esfera==="federal"?c.esfera:"estadual") as Concurso["esfera"],status:status(c.status),banca,descricao:"Dados provenientes de fonte oficial cadastrada.",vagas_totais:cargos.reduce((s,x)=>s+(x.vagas||0),0),salario_max:Math.max(0,...cargos.map(x=>Number(x.salario||0))),data_prova:prova,edital_url:c.fonte_oficial_url,uf:c.uf,created_at:""};
+    return {
+      id:c.id,
+      nome:c.nome,
+      orgao:c.orgao,
+      sigla,
+      ano:new Date().getFullYear(),
+      nivel:nivel(cargos[0]?.escolaridade),
+      esfera:(c.esfera==="municipal"||c.esfera==="estadual"||c.esfera==="federal"?c.esfera:"estadual") as Concurso["esfera"],
+      status:status(c.status),
+      banca,
+      descricao: c.eh_importado ? "Edital personalizado importado pelo usuário via PDF." : "Dados provenientes de fonte oficial cadastrada.",
+      vagas_totais:cargos.reduce((s,x)=>s+(x.vagas||0),0),
+      salario_max:Math.max(0,...cargos.map(x=>Number(x.salario||0))),
+      data_prova:prova,
+      edital_url:c.fonte_oficial_url,
+      uf:c.uf,
+      created_at:"",
+      eh_importado: Boolean(c.eh_importado),
+    };
   }),[raw,alvo?.edital_id]);
 
   const concursoAtivo=concursos.find(c=>c.id===alvo?.concurso_id)||null;
@@ -110,19 +128,46 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
   const cargosDoConcurso:Cargo[]=(rawConcurso?.concurso_cargos||[]).filter(c=>c.ativo).map(c=>({id:c.id,concurso_id:rawConcurso!.id,nome:c.nome,vagas:c.vagas||0,salario:Number(c.salario||0),escolaridade:nivel(c.escolaridade),created_at:""}));
   const cargoAtivo=cargosDoConcurso.find(c=>c.id===alvo?.cargo_id)||null;
 
-  async function salvar(concursoId:string,cargoId:string){
-    const res=await fetch("/api/concursos/alvo",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({concurso_id:concursoId,cargo_id:cargoId})});
-    const json=await res.json(); if(!res.ok) throw new Error(json.error||"Falha ao salvar alvo");
+  async function salvar(concursoId:string, cargoId:string, editalId?: string | null){
+    const res=await fetch("/api/concursos/alvo",{
+      method:"PUT",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        concurso_id:concursoId,
+        cargo_id:cargoId,
+        edital_id: editalId || undefined,
+      })
+    });
+    const json=await res.json();
+    if(!res.ok) throw new Error(json.error||"Falha ao salvar alvo");
     setAlvo(json.alvo);
+    await carregar();
   }
-  const selecionarConcursoAtivo=async(id:string)=>{
-    const c=raw.find(x=>x.id===id); const cargo=c?.concurso_cargos?.find(x=>x.ativo);
-    if(!cargo){info("Este concurso ainda não possui cargo oficial ativo.");return;}
-    try{await salvar(id,cargo.id);success("Concurso alvo atualizado.");}catch(e){info(e instanceof Error?e.message:"Não foi possível alterar o concurso.");}
+
+  const selecionarConcursoAtivo=async(id:string, cargoId?: string, editalId?: string)=>{
+    const c=raw.find(x=>x.id===id);
+    const cargo=cargoId ? c?.concurso_cargos?.find(x=>x.id === cargoId) : (c?.concurso_cargos?.find(x=>x.ativo) || c?.concurso_cargos?.[0]);
+    if(!cargo){
+      info("Este concurso ainda não possui cargo oficial ativo.");
+      return;
+    }
+    const edital = editalId || cargo.editais_concurso?.[0]?.id;
+    try{
+      await salvar(id, cargo.id, edital);
+      success("Concurso alvo atualizado com sucesso!");
+    }catch(e){
+      info(e instanceof Error?e.message:"Não foi possível alterar o concurso.");
+    }
   };
-  const selecionarCargoAtivo=async(id:string)=>{
+
+  const selecionarCargoAtivo=async(id:string, editalId?: string)=>{
     if(!alvo?.concurso_id)return;
-    try{await salvar(alvo.concurso_id,id);success("Cargo alvo atualizado.");}catch(e){info(e instanceof Error?e.message:"Não foi possível alterar o cargo.");}
+    try{
+      await salvar(alvo.concurso_id, id, editalId);
+      success("Cargo alvo atualizado com sucesso!");
+    }catch(e){
+      info(e instanceof Error?e.message:"Não foi possível alterar o cargo.");
+    }
   };
   const prazoProva=useMemo(()=>calcularPrazoProva(concursoAtivo?.data_prova),[concursoAtivo?.data_prova]);
   return <ConcursoContext.Provider value={{concursoAtivo,cargoAtivo,concursos,cargosDoConcurso,prazoProva,selecionarConcursoAtivo,selecionarCargoAtivo,recarregarConcursoAlvo:carregar}}>{children}</ConcursoContext.Provider>;
