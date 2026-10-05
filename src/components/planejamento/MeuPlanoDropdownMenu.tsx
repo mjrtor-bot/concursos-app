@@ -1545,16 +1545,12 @@ function ModalPausarPlano({
         }
       }
     }
-<<<<<<< HEAD
     if (isOpen) {
       carregar();
     }
-=======
-    carregar();
     return () => {
       active = false;
     };
->>>>>>> 8f32e35 (feat(conteudos): gerador e cobertura completa de PDFs de estudo para todos os assuntos)
   }, [isOpen]);
 
   const formatarDDMM = (dataStr: string) => {
