@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { createClientServer } from "@/lib/supabase/server";
+import { createAdminClient, createClientServer } from "@/lib/supabase/server";
+import { materializarImportado, ImportadoItem } from "@/lib/editais/materializarImportado";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClientServer();
@@ -12,31 +13,94 @@ export async function GET(
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
 
   const { id } = await params;
-  const { data: edital, error: editalError } = await supabase
+  const admin = createAdminClient();
+
+  // Buscar edital importado (aceita aguardando_revisao e confirmado)
+  const clientToQuery = admin || supabase;
+  const { data: edital, error: editalError } = await clientToQuery
     .from("editais_usuario")
     .select("id,nome,orgao_nome,cargo,uf,arquivo_nome,status,confirmado_em,edital_id,estrutura_extraida")
     .eq("id", id)
     .eq("usuario_id", user.id)
-    .eq("status", "confirmado")
+    .in("status", ["aguardando_revisao", "confirmado"])
     .maybeSingle();
 
   if (editalError) return NextResponse.json({ error: editalError.message }, { status: 500 });
-  if (!edital) return NextResponse.json({ error: "Edital importado não encontrado." }, { status: 404 });
-  if (!edital.edital_id) return NextResponse.json({ error: "O edital importado não possui edital de destino vinculado." }, { status: 409 });
+  if (!edital) return NextResponse.json({ error: "Edital importado não encontrado ou ainda em processamento." }, { status: 404 });
+
+  let targetEditalId = edital.edital_id;
+
+  // Se ainda não tem edital_id ou não tem tópicos gerados, materializa agora
+  if (!targetEditalId && admin && edital.estrutura_extraida) {
+    try {
+      const sourceUrl = new URL(request.url).origin || "https://concursos.app";
+      targetEditalId = await materializarImportado(
+        admin,
+        edital as unknown as ImportadoItem,
+        sourceUrl,
+        user.id,
+        edital.cargo
+      );
+    } catch (err: any) {
+      console.error("[verticalizado/route] Erro ao materializar importado:", err);
+    }
+  }
+
+  if (!targetEditalId) {
+    return NextResponse.json({ error: "O edital importado ainda está preparando a estrutura de tópicos." }, { status: 409 });
+  }
 
   const estrutura = (edital as any).estrutura_extraida || {};
-  const paresImportados = new Set(
-    (Array.isArray(estrutura.disciplinas) ? estrutura.disciplinas : []).flatMap((d: any) =>
-      (Array.isArray(d.assuntos) ? d.assuntos : []).map((a: any) => `${String(d.nome).trim()}||| ${String(a).trim()}`.replace("||| ","|||"))
-    )
-  );
+  let disciplinasEstrutura: any[] = [];
+  if (Array.isArray(estrutura.disciplinas) && estrutura.disciplinas.length > 0) {
+    disciplinasEstrutura = estrutura.disciplinas;
+  } else if (Array.isArray(estrutura.cargos) && estrutura.cargos.length > 0) {
+    const cargoMatch = edital.cargo
+      ? estrutura.cargos.find((c: any) => c.nome?.trim().toLowerCase() === edital.cargo?.trim().toLowerCase())
+      : estrutura.cargos[0];
+    disciplinasEstrutura = cargoMatch?.disciplinas || estrutura.cargos.flatMap((c: any) => c.disciplinas || []);
+  }
 
-  const [topicosRes, salvosRes, respostasRes, equivsRes] = await Promise.all([
-    supabase
-      .from("edital_topicos")
-      .select("disciplina_id,assunto_id,peso,incidencia,ordem,disciplinas(id,nome),assuntos(id,nome)")
-      .eq("edital_id", edital.edital_id)
-      .order("ordem", { ascending: true }),
+  const paresImportados = new Set<string>();
+  for (const d of disciplinasEstrutura) {
+    const dNome = String(d?.nome || "").trim().toLowerCase();
+    const assuntos = Array.isArray(d?.assuntos) ? d.assuntos : [];
+    for (const a of assuntos) {
+      const aNome = (typeof a === "object" && a !== null ? String(a.nome || "") : String(a || "")).trim().toLowerCase();
+      if (dNome && aNome) {
+        paresImportados.add(`${dNome}|||${aNome}`);
+      }
+    }
+  }
+
+  let topicosRes = await clientToQuery
+    .from("edital_topicos")
+    .select("disciplina_id,assunto_id,peso,incidencia,ordem,disciplinas(id,nome),assuntos(id,nome)")
+    .eq("edital_id", targetEditalId)
+    .order("ordem", { ascending: true });
+
+  // Se não encontrou tópicos cadastrados no banco, tenta materializar e recarrega
+  if ((!topicosRes.data || topicosRes.data.length === 0) && admin && edital.estrutura_extraida) {
+    try {
+      const sourceUrl = new URL(request.url).origin || "https://concursos.app";
+      await materializarImportado(
+        admin,
+        edital as unknown as ImportadoItem,
+        sourceUrl,
+        user.id,
+        edital.cargo
+      );
+      topicosRes = await clientToQuery
+        .from("edital_topicos")
+        .select("disciplina_id,assunto_id,peso,incidencia,ordem,disciplinas(id,nome),assuntos(id,nome)")
+        .eq("edital_id", targetEditalId)
+        .order("ordem", { ascending: true });
+    } catch (err) {
+      console.error("[verticalizado/route] Erro ao re-materializar tópicos:", err);
+    }
+  }
+
+  const [salvosRes, respostasRes, equivsRes] = await Promise.all([
     supabase.from("mentoria_edital_topicos").select("*").eq("usuario_id", user.id),
     supabase.from("respostas_usuarios").select("correta,created_at,questoes(assunto_id)").eq("usuario_id", user.id),
     supabase.from("assunto_equivalencias").select("assunto_questao_id,assunto_edital_id"),
@@ -78,7 +142,10 @@ export async function GET(
     const disc = Array.isArray(row.disciplinas) ? row.disciplinas[0] : row.disciplinas;
     const assunto = Array.isArray(row.assuntos) ? row.assuntos[0] : row.assuntos;
     if (!row.disciplina_id || !row.assunto_id || !disc?.nome || !assunto?.nome) continue;
-    if (paresImportados.size > 0 && !paresImportados.has(`${String(disc.nome).trim()}|||${String(assunto.nome).trim()}`)) continue;
+
+    const normDisc = String(disc.nome).trim().toLowerCase();
+    const normAssunto = String(assunto.nome).trim().toLowerCase();
+    if (paresImportados.size > 0 && !paresImportados.has(`${normDisc}|||${normAssunto}`)) continue;
 
     const saved = salvos.get(row.assunto_id);
     const matchingIds = equivMap.get(row.assunto_id) || new Set([row.assunto_id]);
@@ -156,13 +223,14 @@ export async function GET(
   return NextResponse.json({
     edital: {
       id: edital.id,
-      edital_id: edital.edital_id,
+      edital_id: targetEditalId,
       nome: edital.nome,
       orgao: edital.orgao_nome,
       cargo: edital.cargo,
       uf: edital.uf,
       arquivo_nome: edital.arquivo_nome,
       confirmado_em: edital.confirmado_em,
+      status: edital.status,
     },
     resumo: {
       total_topicos: total,

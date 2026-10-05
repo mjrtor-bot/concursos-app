@@ -360,28 +360,20 @@ export default function BibliotecaEditaisPage() {
   async function confirmarPreview(){
     if(!uploadId){ setMensagem("O identificador do upload não está disponível. Atualize a página e gere uma nova prévia."); return; }
     if(!preview){ setMensagem("A prévia do edital ainda não está disponível."); return; }
+    const isStaff = ["admin", "editor"].includes(user?.role || "");
     const targetEditalId = destinoEditalId || alvo?.edital_id;
-    if(!targetEditalId){
-      setMensagem("Selecione um edital de destino antes de confirmar a importação.");
+    if(isStaff && !targetEditalId){
+      setMensagem("Selecione um edital de destino no catálogo antes de confirmar a importação.");
       return;
     }
     setConfirmando(true); setMensagem("");
     try{
-      // Para contas comuns, materialize primeiro uma cópia privada do upload.
-      // Isso impede que a confirmação tente alterar o edital público do catálogo.
-      const isStaff = ["admin", "editor"].includes(user?.role || "");
-      if (!isStaff) {
-        const preparar = await fetch("/api/concursos/alvo", { cache: "no-store" });
-        const preparado = await preparar.json();
-        if (!preparar.ok) throw new Error(preparado.error || "Não foi possível preparar seu edital privado.");
-      }
-
       const r=await fetch("/api/editais/confirmar",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
           edital_usuario_id:uploadId,
-          edital_id:targetEditalId,
+          edital_id:targetEditalId || null,
           cargo_nome:cargoSelecionado || null
         })
       });
@@ -680,7 +672,7 @@ export default function BibliotecaEditaisPage() {
             <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{["admin", "editor"].includes(user?.role || "")
               ? `A confirmação gravará os ${totalAssuntosExibidos} assuntos no edital selecionado acima e atualizará seu planejamento.`
               : `A confirmação salvará os ${totalAssuntosExibidos} assuntos em uma cópia privada sua. O edital oficial do catálogo não será alterado.`}</p>
-            {!(destinoEditalId || alvo?.edital_id) && <p className="mt-2 text-sm font-semibold text-amber-700">Selecione seu concurso alvo antes de confirmar a importação.</p>}
+            {!(destinoEditalId || alvo?.edital_id) && ["admin", "editor"].includes(user?.role || "") && <p className="mt-2 text-sm font-semibold text-amber-700">Selecione o edital de destino no catálogo antes de confirmar a importação.</p>}
             <label className="mt-3 flex items-start gap-2 text-sm"><input id="confirmar-conteudo" type="checkbox" className="mt-1" required/><span>Revisei o conteúdo e confirmo que os assuntos acima estão de acordo com o PDF.</span></label>
             <button type="button" disabled={confirmando} onClick={async()=>{
               const box=document.getElementById("confirmar-conteudo") as HTMLInputElement|null;
