@@ -407,6 +407,38 @@ export default function BibliotecaEditaisPage() {
       setUploadId(id);
       setFormValues({nome:"",orgao:"",cargo:"",uf:""}); setArquivo(null);
       await carregarMeusEditais();
+
+      if (j.deduplicated) {
+        if (j.status === "aguardando_revisao") {
+          setMensagem(j.message || "Prévia carregada do upload existente.");
+          await carregarPreviewExistente(id);
+          return;
+        }
+        if (j.status === "processando") {
+          setMensagem(j.message || "PDF já está sendo processado.");
+          const sj = await aguardarProcessamento(id, setMensagem);
+          const est = sj.estrutura as Preview;
+          setPreview(est);
+          if (est?.cargos && est.cargos.length > 0) {
+            setCargoSelecionado(est.cargos[0].nome);
+          } else {
+            setCargoSelecionado("");
+          }
+          setMostrarPreview(true);
+          setMensagem(`PDF processado: ${sj.total_disciplinas} disciplinas e ${sj.total_assuntos} assuntos encontrados.`);
+          await carregarMeusEditais();
+          return;
+        }
+        if (j.status === "revisao_sem_conteudo") {
+          setMensagem(j.message || "Este PDF não contém anexo de conteúdo programático.");
+          return;
+        }
+        if (j.status === "confirmado") {
+          setMensagem(j.message || "Este edital já foi importado e confirmado.");
+          return;
+        }
+      }
+
       await processarPdf(id);
     }catch(err){setMensagem(err instanceof Error?err.message:"Falha no upload");}
     finally{setEnviando(false);}

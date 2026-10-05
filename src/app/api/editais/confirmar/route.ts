@@ -26,6 +26,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Não há prévia processada para este edital." }, { status: 409 });
   }
 
+  if (upload.status === "revisao_sem_conteudo") {
+    return NextResponse.json({
+      error: "Este edital não possui conteúdo programático estruturado para ser importado."
+    }, { status: 422 });
+  }
+
+  if (upload.status === "processando") {
+    return NextResponse.json({
+      error: "A análise deste edital ainda está em andamento. Aguarde a conclusão da prévia para confirmar."
+    }, { status: 409 });
+  }
+
   if (upload.status === "confirmado" && upload.edital_id) {
     return NextResponse.json({
       ok: true,

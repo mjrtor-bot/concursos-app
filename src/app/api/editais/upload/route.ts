@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
+import crypto from "crypto";
 
 const MAX_BYTES = 20 * 1024 * 1024;
 
@@ -30,7 +31,44 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "O conteúdo enviado não possui assinatura de PDF." }, { status: 415 });
   }
 
-  const path = `${user.id}/${crypto.randomUUID()}-${safeName(file.name)}`;
+  const sanitisedFileName = safeName(file.name);
+  const fileHash = crypto.createHash("sha256").update(bytes).digest("hex");
+
+  // Deduplicação: verificar se o usuário já possui um upload recente idêntico (mesmo nome e tamanho)
+  const { data: existingUploads } = await supabase
+    .from("editais_usuario")
+    .select("id, nome, status, created_at, arquivo_nome, arquivo_tamanho, estrutura_extraida, erro_processamento, edital_id")
+    .eq("usuario_id", user.id)
+    .eq("arquivo_nome", sanitisedFileName)
+    .eq("arquivo_tamanho", file.size)
+    .order("created_at", { ascending: false });
+
+  if (existingUploads && existingUploads.length > 0) {
+    const active = existingUploads.find(u => ["processando", "aguardando_revisao", "revisao_sem_conteudo", "confirmado", "aguardando_processamento"].includes(u.status));
+    if (active) {
+      let msg = "Arquivo já enviado anteriormente.";
+      if (active.status === "processando") {
+        msg = "Este arquivo PDF já está sendo processado.";
+      } else if (active.status === "aguardando_revisao") {
+        msg = "Este arquivo PDF já foi analisado e possui prévia pronta para revisão.";
+      } else if (active.status === "revisao_sem_conteudo") {
+        msg = "Este arquivo PDF já foi analisado anteriormente e não contém conteúdo programático identificável.";
+      } else if (active.status === "confirmado") {
+        msg = "Este edital já foi confirmado e importado para o seu planejamento.";
+      }
+
+      return NextResponse.json({
+        edital: active,
+        edital_usuario_id: active.id,
+        deduplicated: true,
+        status: active.status,
+        hash: fileHash,
+        message: msg,
+      }, { status: 200 });
+    }
+  }
+
+  const path = `${user.id}/${crypto.randomUUID()}-${sanitisedFileName}`;
   const { error: storageError } = await supabase.storage.from("editais-usuario").upload(path, bytes, {
     contentType: "application/pdf",
     upsert: false,
@@ -62,7 +100,7 @@ export async function POST(request: Request) {
     uf: String(form.get("uf") || "").slice(0,2).toUpperCase() || null,
     edital_id: editalIdParaVincular,
     arquivo_path: path,
-    arquivo_nome: safeName(file.name),
+    arquivo_nome: sanitisedFileName,
     arquivo_tamanho: file.size,
     mime_type: "application/pdf",
     status: "aguardando_processamento",
@@ -76,6 +114,8 @@ export async function POST(request: Request) {
   return NextResponse.json({
     edital: data,
     edital_usuario_id: data.id,
+    deduplicated: false,
+    hash: fileHash,
     message: "PDF armazenado com segurança. Agora processe o arquivo para gerar a prévia estruturada.",
   }, { status: 201 });
 }
