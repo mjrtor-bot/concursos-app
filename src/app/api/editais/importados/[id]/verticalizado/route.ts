@@ -224,6 +224,7 @@ export async function GET(
       topicos_estudados: e,
       topicos_dominados: d,
       percentual_conclusao: Math.round((e / Math.max(1, g.topicos.length)) * 100),
+      taxa_acerto_media: q ? Math.round((a / q) * 100) : 0,
     };
   });
 

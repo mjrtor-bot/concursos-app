@@ -37,6 +37,7 @@ export interface Concurso {
   uf?: string | null; // null for federal
   created_at: string;
   eh_importado?: boolean;
+  cargos_nomes?: string[];
 }
 
 export interface Cargo {

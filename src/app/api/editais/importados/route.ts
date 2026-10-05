@@ -26,9 +26,10 @@ export async function GET() {
     return {
       id: e.id,
       nome: e.nome,
-      orgao: e.orgao_nome,
+      orgao: e.orgao_nome || estrutura.orgao || null,
+      banca: estrutura.banca || null,
       cargo: e.cargo,
-      uf: e.uf,
+      uf: e.uf || estrutura.uf || null,
       status: e.status,
       arquivo_nome: e.arquivo_nome,
       arquivo_tamanho: e.arquivo_tamanho,

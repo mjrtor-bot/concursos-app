@@ -25,10 +25,14 @@ export function ConcursoSelectorModal({
   const importadosCount = concursos.filter((c) => c.eh_importado).length;
 
   const filtrados = concursos.filter((c) => {
-    const matchesBusca =
-      c.nome.toLowerCase().includes(busca.toLowerCase()) ||
-      c.orgao.toLowerCase().includes(busca.toLowerCase()) ||
-      c.sigla.toLowerCase().includes(busca.toLowerCase());
+    const termo = busca.trim().toLowerCase();
+    const matchesBusca = !termo ||
+      c.nome.toLowerCase().includes(termo) ||
+      c.orgao.toLowerCase().includes(termo) ||
+      c.sigla.toLowerCase().includes(termo) ||
+      (c.uf && c.uf.toLowerCase().includes(termo)) ||
+      (c.banca && c.banca.toLowerCase().includes(termo)) ||
+      Boolean(c.cargos_nomes && c.cargos_nomes.some((cargo) => cargo.toLowerCase().includes(termo)));
 
     const matchesStatus =
       statusFiltro === "todos" ? true : c.status === statusFiltro;
@@ -175,6 +179,11 @@ export function ConcursoSelectorModal({
                         {c.sigla}
                       </span>
                       {getStatusBadge(c.status, c.eh_importado)}
+                      {c.uf && (
+                        <Badge variant="outline" size="sm">
+                          {c.uf}
+                        </Badge>
+                      )}
                       {c.banca && (
                         <Badge variant="outline" size="sm">
                           {c.banca}

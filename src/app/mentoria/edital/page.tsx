@@ -828,7 +828,7 @@ export default function MentoriaEditalPage() {
                         </span>
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        {disc.topicos_estudados} estudados • {disc.topicos_dominados} dominados • Taxa de acerto média: {disc.taxa_acerto_media}%
+                        {disc.topicos_estudados} estudados • {disc.topicos_dominados} dominados • Taxa de acerto média: {disc.taxa_acerto_media ?? 0}%
                       </p>
                     </div>
                   </div>

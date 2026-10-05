@@ -120,6 +120,7 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
       uf:c.uf,
       created_at:"",
       eh_importado: Boolean(c.eh_importado),
+      cargos_nomes: cargos.map((x) => x.nome),
     };
   }),[raw,alvo?.edital_id]);
 
