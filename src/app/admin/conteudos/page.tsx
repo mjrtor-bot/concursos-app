@@ -173,10 +173,11 @@ export default function AdminConteudosPage() {
         currentPdfPath = uploadResult.pdf_path;
         currentPdfNome = uploadResult.pdf_nome;
         currentPdfTamanho = uploadResult.pdf_tamanho;
-      } catch (err: any) {
+      } catch (err: unknown) {
         setIsUploadingSingle(false);
         setSaving(false);
-        setMsg({ type: "error", text: err.message || "Erro no upload do PDF" });
+        const errorMsg = err instanceof Error ? err.message : "Erro no upload do PDF";
+        setMsg({ type: "error", text: errorMsg });
         return;
       } finally {
         setIsUploadingSingle(false);
@@ -309,10 +310,10 @@ export default function AdminConteudosPage() {
 
       updateBatchItem(item.id, { status: "success" });
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       updateBatchItem(item.id, {
         status: "error",
-        errorMsg: err.message || "Erro desconhecido",
+        errorMsg: err instanceof Error ? err.message : "Erro desconhecido",
       });
       return false;
     }

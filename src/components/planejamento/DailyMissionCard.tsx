@@ -25,6 +25,7 @@ import {
   Lightbulb,
   PauseCircle,
   FileText,
+  ExternalLink,
 } from "lucide-react";
 import { MissaoDiariaItem, MentoriaTarefaTipo } from "@/types";
 
@@ -555,64 +556,154 @@ export function DailyMissionCard({
             </div>
           )}
 
-          {/* 3. BOTÕES DE AÇÃO: Caderno, Cronômetro, Fazer Exercícios */}
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Botão Caderno */}
-              <button
-                type="button"
-                onClick={() => setIsCadernoOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-              >
-                <BookMarked className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <span>Caderno</span>
-                {cadernoTexto.trim() && (
-                  <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />
-                )}
-              </button>
-
-              {/* Botão Opções de Cronômetro */}
-              <button
-                type="button"
-                onClick={() => setIsCronometroOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-              >
-                <Timer className="w-4 h-4 text-amber-500" />
-                <span>Opções de Cronômetro</span>
-              </button>
-
-              {/* Botão Abrir PDF do Material */}
-              {materiaisExibidos.length > 0 && (
+          {/* 3. BLOCO DE AÇÕES E FERRAMENTAS INTUITIVAS */}
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-3">
+            {/* A. AÇÕES PRINCIPAIS DE ESTUDO (Hero Buttons) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Botão 1: Ler Teoria / PDF do Assunto */}
+              {materiaisExibidos.length > 0 ? (
                 <a
                   href={materiaisExibidos[0].pdf_url!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 transition-all cursor-pointer shadow-2xs"
+                  className="flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-200 bg-rose-50/90 dark:bg-rose-950/50 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800/80 transition-all shadow-xs group"
                   title={materiaisExibidos[0].pdf_nome || materiaisExibidos[0].titulo || "Abrir material de estudo em PDF"}
                 >
-                  <FileText className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                  <span>Abrir PDF</span>
-                  {materiaisExibidos.length > 1 && (
-                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-200 dark:bg-rose-800 text-rose-800 dark:text-rose-200">
-                      +{materiaisExibidos.length - 1}
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="p-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/80 text-rose-600 dark:text-rose-300 shrink-0">
+                      <FileText className="w-4 h-4" />
+                    </div>
+                    <div className="text-left truncate">
+                      <span className="block font-extrabold truncate">Ler Material Teórico (PDF)</span>
+                      <span className="block text-[10px] font-medium text-rose-600/80 dark:text-rose-400/90">
+                        {materiaisExibidos.length > 1 ? `${materiaisExibidos.length} PDFs disponíveis` : "PDF formatado com teoria"}
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-rose-500 group-hover:translate-x-0.5 transition-transform shrink-0" />
                 </a>
+              ) : (
+                <div className="flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-slate-400" />
+                    <span>Teoria do Edital</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400">Diretriz da Banca</span>
+                </div>
               )}
+
+              {/* Botão 2: Resolver Questões Práticas */}
+              <Link
+                href={
+                  missao.tipo === "CADERNO_ERROS"
+                    ? "/caderno-erros"
+                    : missao.tipo === "SIMULADO"
+                    ? "/simulados"
+                    : `/questoes?disciplina_id=${missao.disciplina_id}${
+                        missao.assunto_id ? `&assunto_id=${missao.assunto_id}` : ""
+                      }`
+                }
+                className="flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 shadow-md shadow-indigo-500/20 transition-all group"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="p-1.5 rounded-lg bg-white/20 text-white shrink-0">
+                    <CheckSquare className="w-4 h-4" />
+                  </div>
+                  <div className="text-left truncate">
+                    <span className="block font-extrabold truncate">
+                      {missao.tipo === "CADERNO_ERROS"
+                        ? "Revisar Caderno de Erros"
+                        : missao.tipo === "SIMULADO"
+                        ? "Fazer Simulado Completo"
+                        : "Resolver Questões do Assunto"}
+                    </span>
+                    <span className="block text-[10px] font-medium text-indigo-100">
+                      Banco oficial com comentários
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-indigo-200 group-hover:translate-x-0.5 transition-transform shrink-0" />
+              </Link>
             </div>
 
-            {/* CTA Principal: Fazer Exercícios ou Iniciar Estudo */}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Link
-                href={`/questoes?disciplina_id=${missao.disciplina_id}${
-                  missao.assunto_id ? `&assunto_id=${missao.assunto_id}` : ""
+            {/* B. BARRA DE FERRAMENTAS DE APOIO & PRODUTIVIDADE */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* 1. Caderno de Anotações */}
+                <button
+                  type="button"
+                  onClick={() => setIsCadernoOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
+                  title="Abrir anotações e resumos pessoais para este tópico"
+                >
+                  <BookMarked className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>Meu Caderno</span>
+                  {cadernoTexto.trim() ? (
+                    <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />
+                  ) : null}
+                </button>
+
+                {/* 2. Cronômetro & Modo Foco */}
+                <button
+                  type="button"
+                  onClick={() => setIsCronometroOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
+                  title="Ajustar tempo ou modo Pomodoro"
+                >
+                  <Timer className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Cronômetro & Foco</span>
+                </button>
+
+                {/* 3. Iniciar Estudo Guiado (se onIniciar presente) ou Link direto */}
+                {onIniciar ? (
+                  <button
+                    type="button"
+                    onClick={() => onIniciar(missao)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 transition-all cursor-pointer"
+                    title="Iniciar cronômetro de estudo guiado agora"
+                  >
+                    <Play className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Iniciar Bloco</span>
+                  </button>
+                ) : (
+                  <Link
+                    href={`/mentoria/hoje?bloco=${missao.bloco_ordem}&iniciar=1`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-800 transition-all"
+                    title="Abrir sessão de estudo guiado com cronômetro integrado"
+                  >
+                    <Flame className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    <span>Sessão Guiada</span>
+                  </Link>
+                )}
+
+                {/* 4. Adiar Meta (se onAdiar disponível) */}
+                {onAdiar && (
+                  <button
+                    type="button"
+                    onClick={() => onAdiar(missao.id)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
+                    title="Adiar esta meta para outro momento"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Adiar</span>
+                  </button>
+                )}
+              </div>
+
+              {/* 5. Alternador Rápido de Conclusão */}
+              <button
+                type="button"
+                onClick={handleToggleConcluir}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  concluida
+                    ? "bg-emerald-500 text-white shadow-xs"
+                    : "bg-slate-100 dark:bg-slate-800 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-300"
                 }`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-extrabold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 transition-all"
+                title={concluida ? "Missão concluída (clique para reabrir)" : "Marcar como concluída"}
               >
-                <CheckSquare className="w-4 h-4" />
-                <span>Fazer Exercícios</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
+                <CheckCircle2 className={`w-3.5 h-3.5 ${concluida ? "text-white" : "text-slate-400"}`} />
+                <span>{concluida ? "Concluída" : "Concluir"}</span>
+              </button>
             </div>
           </div>
 

@@ -119,10 +119,11 @@ export async function POST(req: NextRequest) {
       pdf_tamanho: file.size,
       conteudo: createdConteudo,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro inesperado no upload de PDF:", error);
+    const message = error instanceof Error ? error.message : "Erro inesperado ao processar upload";
     return NextResponse.json(
-      { error: error?.message || "Erro inesperado ao processar upload" },
+      { error: message },
       { status: 500 }
     );
   }

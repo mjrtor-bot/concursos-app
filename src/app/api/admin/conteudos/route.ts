@@ -90,7 +90,7 @@ export async function PUT(req: NextRequest) {
 
   if (!body.id) return NextResponse.json({ error: "ID obrigatório" }, { status: 400 });
 
-  const payload: Record<string, any> = {
+  const payload: Record<string, string | number | boolean | null> = {
     titulo: body.titulo?.trim(),
     orientacao: body.orientacao || null,
     lei_seca: body.lei_seca || null,
