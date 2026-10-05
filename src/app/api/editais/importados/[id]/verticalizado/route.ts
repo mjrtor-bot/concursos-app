@@ -31,7 +31,13 @@ export async function GET(
   let targetEditalId = edital.edital_id;
 
   // Se ainda não tem edital_id ou não tem tópicos gerados, materializa agora
-  if (!targetEditalId && admin && edital.estrutura_extraida) {
+  if (!targetEditalId && edital.estrutura_extraida) {
+    if (!admin) {
+      return NextResponse.json(
+        { error: "Serviço de materialização indisponível. Verifique as credenciais administrativas." },
+        { status: 503 }
+      );
+    }
     try {
       const sourceUrl = new URL(request.url).origin || "https://concursos.app";
       targetEditalId = await materializarImportado(
@@ -43,6 +49,7 @@ export async function GET(
       );
     } catch (err: any) {
       console.error("[verticalizado/route] Erro ao materializar importado:", err);
+      return NextResponse.json({ error: err?.message || "Falha ao preparar tópicos do edital." }, { status: 500 });
     }
   }
 

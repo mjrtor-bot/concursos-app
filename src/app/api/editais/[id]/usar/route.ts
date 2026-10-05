@@ -26,7 +26,13 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   if (editalUsuario) {
     if (editalUsuario.edital_id) {
       editalConcursoId = editalUsuario.edital_id;
-    } else if (admin && editalUsuario.estrutura_extraida) {
+    } else if (editalUsuario.estrutura_extraida) {
+      if (!admin) {
+        return NextResponse.json(
+          { error: "Serviço de materialização indisponível. Verifique as credenciais administrativas." },
+          { status: 503 }
+        );
+      }
       const sourceUrl = `https://concursos.app/mentoria/edital/importados`;
       editalConcursoId = await materializarImportado(
         admin,
