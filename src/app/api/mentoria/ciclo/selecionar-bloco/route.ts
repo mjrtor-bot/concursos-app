@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
+import { MentoriaCicloService } from "@/services/mentoriaCicloService";
 
 export async function POST(req: Request) {
   const supabase = await createClientServer();
@@ -22,70 +23,47 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bloco_id é obrigatório" }, { status: 400 });
   }
 
-  // Verificar se há sessão ativa em andamento para o usuário
-  const { data: sessaoAtiva, error: sessaoError } = await supabase
+  // Verificar se há sessão ativa em andamento para o usuário (fail-closed)
+  const { data: sessoesAtivas, error: sessaoError } = await supabase
     .from("mentoria_sessoes_ativas")
-    .select("id, cronometro_iniciado")
+    .select("id")
     .eq("usuario_id", user.id)
     .eq("cronometro_iniciado", true)
-    .maybeSingle();
+    .limit(1);
 
   if (sessaoError) {
     console.error("[selecionar-bloco] Erro ao consultar sessão ativa:", sessaoError);
+    return NextResponse.json(
+      { error: "Erro ao verificar sessão ativa." },
+      { status: 500 }
+    );
   }
 
-  if (sessaoAtiva) {
+  if (sessoesAtivas && sessoesAtivas.length > 0) {
     return NextResponse.json(
       { error: "Finalize ou descarte a sessão em andamento antes de trocar de bloco." },
       { status: 409 }
     );
   }
 
-  // Obter o plano ativo do usuário
-  const { data: plano, error: planoError } = await supabase
-    .from("mentoria_planos")
-    .select("id, ciclo_posicao_atual, estrutura_ciclo")
-    .eq("usuario_id", user.id)
-    .eq("status", "ativo")
-    .order("versao", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+  const resultado = await MentoriaCicloService.selecionarBlocoInicial(user.id, blocoId, supabase);
 
-  if (planoError) {
-    return NextResponse.json({ error: planoError.message }, { status: 500 });
-  }
+  if (!resultado.success) {
+    const isClientError =
+      resultado.error?.includes("não pertence ao ciclo") ||
+      resultado.error?.includes("incompletos");
+    const isNotFound = resultado.error?.includes("Nenhum ciclo");
+    const status = isClientError ? 400 : isNotFound ? 404 : 500;
 
-  if (!plano) {
-    return NextResponse.json({ error: "Nenhum ciclo ativo encontrado." }, { status: 404 });
-  }
-
-  const blocos = (plano.estrutura_ciclo || []) as Array<{ id: string }>;
-  const novoIndex = blocos.findIndex((b) => b.id === blocoId);
-
-  if (novoIndex === -1) {
     return NextResponse.json(
-      { error: "O bloco informado não pertence ao ciclo atual." },
-      { status: 400 }
+      { error: resultado.error || "Não foi possível selecionar o bloco." },
+      { status }
     );
   }
 
-  if (novoIndex === plano.ciclo_posicao_atual) {
-    return NextResponse.json({ success: true, posicao_atual: novoIndex, plano_id: plano.id });
-  }
-
-  // Atualiza apenas a posição atual e updated_at (não altera voltas, minutos nem estrutura)
-  const { error: updateError } = await supabase
-    .from("mentoria_planos")
-    .update({
-      ciclo_posicao_atual: novoIndex,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", plano.id)
-    .eq("usuario_id", user.id);
-
-  if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ success: true, posicao_atual: novoIndex, plano_id: plano.id });
+  return NextResponse.json({
+    success: true,
+    posicao_atual: resultado.plano?.posicao_atual_index,
+    plano_id: resultado.plano?.plano_id,
+  });
 }

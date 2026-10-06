@@ -14,7 +14,8 @@ import { MentoriaDiagnosticoService } from "./mentoriaDiagnosticoService";
 const STORAGE_CICLO_PREFIX = "concursos_app_ciclo_";
 
 export class MentoriaCicloService {
-  private static getClient() {
+  private static getClient(customClient?: any) {
+    if (customClient) return customClient;
     if (!isSupabaseConfigured) return null;
     return createClient();
   }
@@ -358,10 +359,10 @@ export class MentoriaCicloService {
   /**
    * Obter ou inicializar o Ciclo Adaptativo Completo para o usuário.
    */
-  static async obterPlanoCiclo(usuarioId: string): Promise<MentoriaCicloPlanoCompleto | null> {
+  static async obterPlanoCiclo(usuarioId: string, customClient?: any): Promise<MentoriaCicloPlanoCompleto | null> {
     if (!usuarioId) return null;
 
-    const supabase = this.getClient();
+    const supabase = this.getClient(customClient);
 
     // Um plano só é válido quando está vinculado ao edital oficial atualmente selecionado.
     // Planos legados ficam preservados no histórico, mas deixam de alimentar Missão/Plano/Semana.
@@ -397,8 +398,9 @@ export class MentoriaCicloService {
           let blocos: MentoriaCicloItem[] = (planoDb.estrutura_ciclo as MentoriaCicloItem[]) || [];
 
           if (blocos.length === 0 && tarefasDb && tarefasDb.length > 0) {
-            blocos = tarefasDb.map((t) => ({
+            blocos = (tarefasDb as any[]).map((t: any) => ({
               id: t.id,
+              bloco_id: t.id,
               ordem_bloco: t.ordem,
               disciplina_id: t.disciplina_id || "disc-geral",
               disciplina_nome: t.titulo || "Disciplina",
@@ -413,12 +415,13 @@ export class MentoriaCicloService {
               concluido: t.status === "concluida",
             }));
           } else if (blocos.length > 0 && tarefasDb && tarefasDb.length > 0) {
-            const tarefasMap = new Map(tarefasDb.map((t) => [t.id, t]));
-            const tarefasOrdemMap = new Map(tarefasDb.map((t) => [t.ordem, t]));
+            const tarefasMap = new Map((tarefasDb as any[]).map((t: any) => [t.id, t]));
+            const tarefasOrdemMap = new Map((tarefasDb as any[]).map((t: any) => [t.ordem, t]));
             blocos = blocos.map((b, idx) => {
-              const t = (b.id && tarefasMap.get(b.id)) || tarefasOrdemMap.get(b.ordem_bloco || (idx + 1));
+              const t: any = (b.id && tarefasMap.get(b.id)) || tarefasOrdemMap.get(b.ordem_bloco || (idx + 1));
               return {
                 ...b,
+                bloco_id: b.bloco_id || b.id,
                 id: t?.id || b.id,
                 concluido: t ? t.status === "concluida" : b.concluido,
               };
@@ -995,11 +998,11 @@ export class MentoriaCicloService {
             .eq("plano_id", planoAtivoExistente.id)
             .order("ordem", { ascending: true });
 
-          if (tarefasDb && tarefasDb.length > 0) {
-            const tarefasMap = new Map(tarefasDb.map((t) => [t.id, t]));
-            const tarefasOrdemMap = new Map(tarefasDb.map((t) => [t.ordem, t]));
+          if (tarefasDb && (tarefasDb as any[]).length > 0) {
+            const tarefasMap = new Map((tarefasDb as any[]).map((t: any) => [t.id, t]));
+            const tarefasOrdemMap = new Map((tarefasDb as any[]).map((t: any) => [t.ordem, t]));
             blocos = blocos.map((b, idx) => {
-              const t = (b.id && tarefasMap.get(b.id)) || tarefasOrdemMap.get(b.ordem_bloco || idx + 1);
+              const t: any = (b.id && tarefasMap.get(b.id)) || tarefasOrdemMap.get(b.ordem_bloco || idx + 1);
               return {
                 ...b,
                 id: t?.id || b.id,
@@ -1375,18 +1378,21 @@ export class MentoriaCicloService {
    */
   static async selecionarBlocoInicial(
     usuarioId: string,
-    blocoId: string
+    blocoId: string,
+    customClient?: any
   ): Promise<{ success: boolean; plano?: MentoriaCicloPlanoCompleto; error?: string }> {
     if (!usuarioId || !blocoId) {
       return { success: false, error: "Dados incompletos para seleção de bloco." };
     }
 
-    const plano = await this.obterPlanoCiclo(usuarioId);
+    const plano = await this.obterPlanoCiclo(usuarioId, customClient);
     if (!plano || plano.total_blocos_ciclo === 0) {
       return { success: false, error: "Nenhum ciclo ativo disponível." };
     }
 
-    const index = plano.blocos.findIndex((b) => b.id === blocoId);
+    const index = plano.blocos.findIndex(
+      (b) => b.id === blocoId || (b as any).bloco_id === blocoId
+    );
     if (index === -1) {
       return { success: false, error: "O bloco informado não pertence ao ciclo atual." };
     }
@@ -1397,7 +1403,7 @@ export class MentoriaCicloService {
     }
 
     const nova_posicao = index;
-    const supabase = this.getClient();
+    const supabase = this.getClient(customClient);
 
     if (supabase && plano.plano_id && !plano.plano_id.startsWith("plano-ciclo-")) {
       try {

@@ -621,6 +621,7 @@ export type MentoriaCicloStatusSessao = "concluida" | "parcial" | "abandonada";
 
 export interface MentoriaCicloItem {
   id: string;
+  bloco_id?: string;
   ordem_bloco: number; // 1, 2, 3, ..., N
   disciplina_id: string;
   disciplina_nome: string;
