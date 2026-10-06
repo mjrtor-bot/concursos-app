@@ -28,6 +28,8 @@ import {
   Target,
   ListCheck,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
@@ -49,6 +51,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Modal } from "@/components/ui/Modal";
 import { QuestionCard } from "@/components/questoes/QuestionCard";
 import { DailyMissionCard } from "@/components/planejamento/DailyMissionCard";
 
@@ -112,7 +115,12 @@ export default function MentoriaHojePage() {
   const [anotacoesTeoria, setAnotacoesTeoria] = useState<string>("");
   const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
   const [salvandoResumo, setSalvandoResumo] = useState<boolean>(false);
-  const { success: toastSucessoResumo, info: toastInfoResumo } = useToast();
+  const { success: toastSuccess, error: toastError, info: toastInfo } = useToast();
+
+  // ── ESTADOS DE SELEÇÃO DE BLOCO INICIAL ────────────────────────────────────
+  const [expandirTodosBlocos, setExpandirTodosBlocos] = useState<boolean>(false);
+  const [blocoParaIniciar, setBlocoParaIniciar] = useState<MentoriaCicloItem | null>(null);
+  const [trocandoBloco, setTrocandoBloco] = useState<boolean>(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -557,6 +565,65 @@ export default function MentoriaHojePage() {
     }
   }
 
+  const handleSolicitarTrocaBloco = (bloco: MentoriaCicloItem) => {
+    if (cronometroIniciado) {
+      toastInfo("Finalize a sessão atual para trocar de bloco");
+      return;
+    }
+    setBlocoParaIniciar(bloco);
+  };
+
+  const handleConfirmarTrocaBloco = async () => {
+    if (!blocoParaIniciar || !user || trocandoBloco) return;
+    setTrocandoBloco(true);
+
+    try {
+      const res = await fetch("/api/mentoria/ciclo/selecionar-bloco", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bloco_id: blocoParaIniciar.id }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 409) {
+        toastError(data.error || "Finalize ou descarte a sessão em andamento antes de trocar de bloco.");
+        setBlocoParaIniciar(null);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error || "Erro ao alterar bloco inicial.");
+      }
+
+      // Sincroniza plano local/offline se aplicável
+      await MentoriaCicloService.selecionarBlocoInicial(user.id, blocoParaIniciar.id);
+
+      // Recarrega o plano atualizado
+      const planoAtualizado = await MentoriaCicloService.obterPlanoCiclo(user.id);
+      if (planoAtualizado) {
+        setPlanoCiclo(planoAtualizado);
+      }
+
+      // Reseta cronômetro e formulário local
+      handleZerar();
+      setQuestoesRespondidas(0);
+      setQuestoesAcertadas(0);
+      setObservacoesSessao("");
+      setAnotacoesTeoria("");
+      setAnotacoesSalvas(false);
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      toastSuccess("Bloco inicial do ciclo alterado com sucesso.");
+      setBlocoParaIniciar(null);
+    } catch (err: any) {
+      console.error("Erro ao selecionar bloco inicial:", err);
+      toastError(err?.message || "Não foi possível alterar o bloco inicial.");
+    } finally {
+      setTrocandoBloco(false);
+    }
+  };
+
   const formatarTempo = (totalSegundos: number) => {
     const horas = Math.floor(totalSegundos / 3600);
     const minutos = Math.floor((totalSegundos % 3600) / 60);
@@ -622,9 +689,9 @@ export default function MentoriaHojePage() {
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error || "Falha ao salvar o resumo.");
       setAnotacoesSalvas(true);
-      toastSucessoResumo("Resumo salvo na sua conta.");
+      toastSuccess("Resumo salvo na sua conta.");
     } catch (err) {
-      toastInfoResumo("Não foi possível salvar o resumo", err instanceof Error ? err.message : "Tente novamente.");
+      toastInfo("Não foi possível salvar o resumo", err instanceof Error ? err.message : "Tente novamente.");
     } finally {
       setSalvandoResumo(false);
     }
@@ -1221,53 +1288,145 @@ export default function MentoriaHojePage() {
             </div>
           )}
 
-          {/* PRÓXIMOS BLOCOS NA FILA CONTÍNUA */}
-          {planoCiclo.blocos.length > 1 && (
-            <div className="space-y-3 pt-4">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-indigo-600" />
-                Próximos Blocos do Ciclo
-              </h3>
+          {/* BLOCOS DO CICLO COM SELEÇÃO DE BLOCO INICIAL */}
+          {planoCiclo.blocos.length > 1 && (() => {
+            const totalBlocos = planoCiclo.blocos.length;
+            const blocosOrdenados = Array.from({ length: totalBlocos }, (_, i) =>
+              planoCiclo.blocos[(planoCiclo.posicao_atual_index + i) % totalBlocos]
+            );
+            const blocosVisiveis = expandirTodosBlocos
+              ? blocosOrdenados
+              : blocosOrdenados.slice(0, 5);
+            const temMaisBlocos = totalBlocos > 5;
 
-              <div className="space-y-2">
-                {Array.from(
-                  { length: Math.min(4, planoCiclo.blocos.length - 1) },
-                  (_, offset) =>
-                    planoCiclo.blocos[
-                      (planoCiclo.posicao_atual_index + offset + 1) % planoCiclo.blocos.length
-                    ]
-                ).map((bloco) => (
-                  <div
-                    key={bloco.id}
-                    className="p-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-xs flex items-center justify-center">
-                        {bloco.ordem_bloco}
-                      </span>
-                      <div>
-                        <p className="font-extrabold text-sm text-slate-900 dark:text-slate-100">
-                          {bloco.disciplina_nome}
-                        </p>
-                        {bloco.assunto_nome && (
-                          <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mt-0.5">
-                            {bloco.assunto_nome}
-                          </p>
-                        )}
-                        <p className="text-xs text-slate-500">
-                          {bloco.tipo} • {bloco.duracao_minutos} minutos • Prioridade {bloco.prioridade_nivel}
-                        </p>
+            return (
+              <div className="space-y-3 pt-4">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-indigo-600" />
+                  Blocos do Ciclo
+                  <span className="text-xs font-normal text-slate-500 ml-1">
+                    ({totalBlocos} {totalBlocos === 1 ? "bloco" : "blocos"})
+                  </span>
+                </h3>
+
+                <div className="space-y-2">
+                  {blocosVisiveis.map((bloco) => {
+                    const ehAtual = bloco.id === planoCiclo.bloco_atual?.id;
+                    return (
+                      <div
+                        key={bloco.id}
+                        className={`p-3.5 bg-white dark:bg-slate-900 border rounded-xl flex items-center justify-between gap-2 ${
+                          ehAtual
+                            ? "border-indigo-400 dark:border-indigo-600 ring-1 ring-indigo-200 dark:ring-indigo-900"
+                            : "border-slate-200 dark:border-slate-800"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span
+                            className={`w-6 h-6 rounded-full font-bold text-xs flex items-center justify-center shrink-0 ${
+                              ehAtual
+                                ? "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                            }`}
+                          >
+                            {bloco.ordem_bloco}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="font-extrabold text-sm text-slate-900 dark:text-slate-100 truncate">
+                              {bloco.disciplina_nome}
+                            </p>
+                            {bloco.assunto_nome && (
+                              <p className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mt-0.5 truncate">
+                                {bloco.assunto_nome}
+                              </p>
+                            )}
+                            <p className="text-xs text-slate-500">
+                              {bloco.tipo} • {bloco.duracao_minutos} min • Prioridade {bloco.prioridade_nivel}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="shrink-0">
+                          {ehAtual ? (
+                            <Badge variant="primary" className="text-xs font-bold !bg-indigo-600 !text-white !border-indigo-600">
+                              Atual
+                            </Badge>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled={cronometroIniciado || trocandoBloco}
+                              title={
+                                cronometroIniciado
+                                  ? "Finalize a sessão atual para trocar de bloco"
+                                  : `Começar pelo bloco ${bloco.ordem_bloco}`
+                              }
+                              onClick={() => handleSolicitarTrocaBloco(bloco)}
+                              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors whitespace-nowrap px-2 py-1 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950/50"
+                            >
+                              Começar por este
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    );
+                  })}
+                </div>
 
-                    <Badge variant="outline" className="text-xs font-semibold">
-                      Aguardando
-                    </Badge>
-                  </div>
-                ))}
+                {temMaisBlocos && (
+                  <button
+                    type="button"
+                    onClick={() => setExpandirTodosBlocos((prev) => !prev)}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors mx-auto"
+                  >
+                    {expandirTodosBlocos ? (
+                      <>
+                        <ChevronUp className="w-3.5 h-3.5" />
+                        Recolher
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-3.5 h-3.5" />
+                        Ver todos os {totalBlocos} blocos
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Modal de confirmação de troca de bloco */}
+          <Modal
+            isOpen={!!blocoParaIniciar}
+            onClose={() => !trocandoBloco && setBlocoParaIniciar(null)}
+            title="Alterar bloco inicial"
+            description={blocoParaIniciar ? `Começar pelo bloco ${blocoParaIniciar.ordem_bloco}: ${blocoParaIniciar.disciplina_nome}` : ""}
+            size="sm"
+          >
+            <div className="space-y-4">
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                Os blocos anteriores continuam no ciclo e voltam na próxima volta.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBlocoParaIniciar(null)}
+                  disabled={trocandoBloco}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={handleConfirmarTrocaBloco}
+                  disabled={trocandoBloco}
+                >
+                  {trocandoBloco ? "Alterando..." : "Confirmar"}
+                </Button>
               </div>
             </div>
-          )}
+          </Modal>
         </div>
       ) : (
         <Card className="border-slate-200 dark:border-slate-800">

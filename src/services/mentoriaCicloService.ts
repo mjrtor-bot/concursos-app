@@ -1369,6 +1369,72 @@ export class MentoriaCicloService {
     return { success: true, plano };
   }
 
+  /**
+   * Escolhe um bloco inicial arbitrário do ciclo ativo sem alterar contagem de voltas,
+   * minutos concluídos ou a estrutura do ciclo.
+   */
+  static async selecionarBlocoInicial(
+    usuarioId: string,
+    blocoId: string
+  ): Promise<{ success: boolean; plano?: MentoriaCicloPlanoCompleto; error?: string }> {
+    if (!usuarioId || !blocoId) {
+      return { success: false, error: "Dados incompletos para seleção de bloco." };
+    }
+
+    const plano = await this.obterPlanoCiclo(usuarioId);
+    if (!plano || plano.total_blocos_ciclo === 0) {
+      return { success: false, error: "Nenhum ciclo ativo disponível." };
+    }
+
+    const index = plano.blocos.findIndex((b) => b.id === blocoId);
+    if (index === -1) {
+      return { success: false, error: "O bloco informado não pertence ao ciclo atual." };
+    }
+
+    // Se o bloco já for o atual, retornar sucesso sem gravar
+    if (index === plano.posicao_atual_index) {
+      return { success: true, plano };
+    }
+
+    const nova_posicao = index;
+    const supabase = this.getClient();
+
+    if (supabase && plano.plano_id && !plano.plano_id.startsWith("plano-ciclo-")) {
+      try {
+        const { data, error } = await supabase
+          .from("mentoria_planos")
+          .update({
+            ciclo_posicao_atual: nova_posicao,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", plano.plano_id)
+          .eq("usuario_id", usuarioId)
+          .select("id");
+
+        if (error) {
+          return { success: false, error: error.message };
+        }
+        if (!data || data.length !== 1) {
+          return {
+            success: false,
+            error: "O ciclo não foi atualizado. Verifique sua permissão e tente novamente.",
+          };
+        }
+      } catch (err) {
+        console.error("[MentoriaCicloService] Erro ao selecionar bloco inicial:", err);
+        return { success: false, error: "Não foi possível persistir a nova posição do ciclo." };
+      }
+    }
+
+    plano.posicao_atual_index = nova_posicao;
+    plano.bloco_atual = plano.blocos[nova_posicao] || null;
+    plano.proximo_bloco = plano.blocos[(nova_posicao + 1) % plano.total_blocos_ciclo] || null;
+    plano.blocos_restantes_na_volta = Math.max(0, plano.total_blocos_ciclo - nova_posicao);
+
+    this.salvarPlanoLocal(usuarioId, plano);
+    return { success: true, plano };
+  }
+
   // ══════════════════════════════════════════════════════════════════════════════
   // ── HELPERS DE STORAGE LOCAL (CACHE) ──────────────────────────────────────────
   // ══════════════════════════════════════════════════════════════════════════════
