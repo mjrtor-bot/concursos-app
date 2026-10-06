@@ -23,27 +23,47 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "bloco_id é obrigatório" }, { status: 400 });
   }
 
-  // Verificar se há sessão ativa em andamento para o usuário (fail-closed)
-  const { data: sessoesAtivas, error: sessaoError } = await supabase
-    .from("mentoria_sessoes_ativas")
-    .select("id")
-    .eq("usuario_id", user.id)
-    .eq("cronometro_iniciado", true)
-    .limit(1);
-
-  if (sessaoError) {
-    console.error("[selecionar-bloco] Erro ao consultar sessão ativa:", sessaoError);
-    return NextResponse.json(
-      { error: "Erro ao verificar sessão ativa." },
-      { status: 500 }
-    );
+  // 1. Obter plano do ciclo para identificar o bloco atual
+  const plano = await MentoriaCicloService.obterPlanoCiclo(user.id, supabase);
+  if (!plano || plano.total_blocos_ciclo === 0) {
+    return NextResponse.json({ error: "Nenhum ciclo ativo disponível." }, { status: 404 });
   }
 
-  if (sessoesAtivas && sessoesAtivas.length > 0) {
-    return NextResponse.json(
-      { error: "Finalize ou descarte a sessão em andamento antes de trocar de bloco." },
-      { status: 409 }
-    );
+  // 2. Verificar se há sessão ativa recente (últimas 12h) APENAS para o bloco atual do ciclo (fail-closed)
+  const idsBlocoAtual: string[] = [];
+  if (plano.bloco_atual) {
+    if (plano.bloco_atual.id) idsBlocoAtual.push(plano.bloco_atual.id);
+    if ((plano.bloco_atual as any).bloco_id && (plano.bloco_atual as any).bloco_id !== plano.bloco_atual.id) {
+      idsBlocoAtual.push((plano.bloco_atual as any).bloco_id);
+    }
+  }
+
+  if (idsBlocoAtual.length > 0) {
+    const dozeHorasAtras = new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString();
+
+    const { data: sessoesAtivas, error: sessaoError } = await supabase
+      .from("mentoria_sessoes_ativas")
+      .select("id")
+      .eq("usuario_id", user.id)
+      .eq("cronometro_iniciado", true)
+      .in("tarefa_id", idsBlocoAtual)
+      .gte("updated_at", dozeHorasAtras)
+      .limit(1);
+
+    if (sessaoError) {
+      console.error("[selecionar-bloco] Erro ao consultar sessão ativa:", sessaoError);
+      return NextResponse.json(
+        { error: "Erro ao verificar sessão ativa." },
+        { status: 500 }
+      );
+    }
+
+    if (sessoesAtivas && sessoesAtivas.length > 0) {
+      return NextResponse.json(
+        { error: "Finalize ou descarte a sessão em andamento antes de trocar de bloco." },
+        { status: 409 }
+      );
+    }
   }
 
   const resultado = await MentoriaCicloService.selecionarBlocoInicial(user.id, blocoId, supabase);
