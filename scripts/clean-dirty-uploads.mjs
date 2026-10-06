@@ -44,23 +44,35 @@ async function main() {
 
   console.log(`Checking ${uploads?.length || 0} non-confirmed uploads with edital_id...`);
 
-  let cleaned = 0;
+  const isDryRun = process.argv.includes("--dry-run") || process.argv.includes("--read-only") || !process.argv.includes("--apply");
+  if (isDryRun) {
+    console.log("=== MODO SOMENTE LEITURA (DRY-RUN) ATIVO ===");
+    console.log("Nenhuma alteração será gravada no banco de dados.");
+  }
+
+  let wouldClean = 0;
   for (const u of uploads || []) {
     if (officialIds.has(u.edital_id)) {
-      console.log(`Clearing invalid official edital_id ${u.edital_id} from upload ${u.id} (status: ${u.status}, nome: ${u.nome})`);
-      const { error } = await supabase
-        .from("editais_usuario")
-        .update({ edital_id: null })
-        .eq("id", u.id);
-      if (error) {
-        console.error(`Error updating upload ${u.id}:`, error);
-      } else {
-        cleaned++;
+      wouldClean++;
+      console.log(`[${isDryRun ? "SIMULAÇÃO - NÃO GRAVADO" : "LIMPANDO"}] Upload ID: ${u.id} | Status: ${u.status} | Nome: "${u.nome}" | edital_id oficial vinculado: ${u.edital_id} -> Seria alterado para null`);
+
+      if (!isDryRun) {
+        const { error } = await supabase
+          .from("editais_usuario")
+          .update({ edital_id: null })
+          .eq("id", u.id);
+        if (error) {
+          console.error(`Erro ao atualizar upload ${u.id}:`, error);
+        }
       }
     }
   }
 
-  console.log(`Cleaned ${cleaned} uploads.`);
+  if (isDryRun) {
+    console.log(`\nResultado da Simulação: ${wouldClean} upload(s) seriam limpos (nenhum foi modificado).`);
+  } else {
+    console.log(`\nConcluído: ${wouldClean} upload(s) limpos com sucesso.`);
+  }
 }
 
 main().catch(console.error);

@@ -44,7 +44,7 @@ type PesoFiltro = "todos" | "baixo" | "medio" | "alto" | "critico";
 export default function MentoriaEditalPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [alvoOficial, setAlvoOficial] = useState<{ concurso:string; cargo:string; edital:string; fonte:string } | null>(null);
+  const [alvoOficial, setAlvoOficial] = useState<{ concurso: string; cargo: string; edital: string; fonte: string; ehPrivado?: boolean } | null>(null);
   const [editalImportado, setEditalImportado] = useState(false);
   const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [resumoEdital, setResumoEdital] = useState<EditalVerticalizadoResumo | null>(null);
@@ -99,11 +99,16 @@ export default function MentoriaEditalPage() {
         if (!importedResp.ok) throw new Error(importedJson.error || "Falha ao carregar o edital importado.");
         setResumoEdital(importedJson.resumo);
         setEditalImportado(true);
+        const editalNome = (importedJson.edital.nome || importedJson.edital.arquivo_nome || "Edital importado")
+          .replace(/\bOFICIAL\b/gi, "")
+          .replace(/\s*—\s*$/, "")
+          .trim();
         setAlvoOficial({
-          concurso: importedJson.edital.orgao || "Edital importado",
-          cargo: importedJson.edital.cargo || "Cargo não informado",
-          edital: importedJson.edital.nome || importedJson.edital.arquivo_nome || "Edital importado",
+          concurso: (importedJson.edital.orgao || "Edital importado").replace(/\bOFICIAL\b/gi, "").trim(),
+          cargo: (importedJson.edital.cargo || "Cargo não informado").replace(/\bOFICIAL\b/gi, "").trim(),
+          edital: editalNome,
           fonte: "#",
+          ehPrivado: true,
         });
       } else {
         setResumoEdital(edital);
@@ -112,7 +117,24 @@ export default function MentoriaEditalPage() {
         const c = (alvoResp.concursos || []).find((x: any) => x.id === alvoResp.alvo.concurso_id);
         const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
         const ed = cargo?.editais_concurso?.find((x: any) => x.id === alvoResp.alvo.edital_id);
-        setAlvoOficial(c && cargo && ed ? { concurso: c.nome, cargo: cargo.nome, edital: ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo, fonte: ed.fonte_oficial_url } : null);
+        const ehPrivado = Boolean(ed?.criado_por || c?.criado_por || c?.eh_importado || ed?.visibilidade === "privado");
+        setEditalImportado(ehPrivado);
+
+        if (c && cargo && ed) {
+          let editalTitulo = ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo;
+          if (ehPrivado) {
+            editalTitulo = editalTitulo.replace(/\bOFICIAL\b/gi, "").replace(/\s*—\s*$/, "").trim();
+          }
+          setAlvoOficial({
+            concurso: ehPrivado ? c.nome.replace(/\bOFICIAL\b/gi, "").trim() : c.nome,
+            cargo: ehPrivado ? cargo.nome.replace(/\bOFICIAL\b/gi, "").trim() : cargo.nome,
+            edital: editalTitulo,
+            fonte: ed.fonte_oficial_url,
+            ehPrivado,
+          });
+        } else {
+          setAlvoOficial(null);
+        }
       } else if (!importedId) {
         setAlvoOficial(null);
       }
@@ -155,11 +177,16 @@ export default function MentoriaEditalPage() {
           if (ignore) return;
           setResumoEdital(importedJson.resumo);
           setEditalImportado(true);
+          const editalNome = (importedJson.edital.nome || importedJson.edital.arquivo_nome || "Edital importado")
+            .replace(/\bOFICIAL\b/gi, "")
+            .replace(/\s*—\s*$/, "")
+            .trim();
           setAlvoOficial({
-            concurso: importedJson.edital.orgao || "Edital importado",
-            cargo: importedJson.edital.cargo || "Cargo não informado",
-            edital: importedJson.edital.nome || importedJson.edital.arquivo_nome || "Edital importado",
+            concurso: (importedJson.edital.orgao || "Edital importado").replace(/\bOFICIAL\b/gi, "").trim(),
+            cargo: (importedJson.edital.cargo || "Cargo não informado").replace(/\bOFICIAL\b/gi, "").trim(),
+            edital: editalNome,
             fonte: "#",
+            ehPrivado: true,
           });
         } else {
           setResumoEdital(edital);
@@ -168,7 +195,24 @@ export default function MentoriaEditalPage() {
           const c = (alvoResp.concursos || []).find((x: any) => x.id === alvoResp.alvo.concurso_id);
           const cargo = c?.concurso_cargos?.find((x: any) => x.id === alvoResp.alvo.cargo_id);
           const ed = cargo?.editais_concurso?.find((x: any) => x.id === alvoResp.alvo.edital_id);
-          setAlvoOficial(c && cargo && ed ? { concurso: c.nome, cargo: cargo.nome, edital: ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo, fonte: ed.fonte_oficial_url } : null);
+          const ehPrivado = Boolean(ed?.criado_por || c?.criado_por || c?.eh_importado || ed?.visibilidade === "privado");
+          setEditalImportado(ehPrivado);
+
+          if (c && cargo && ed) {
+            let editalTitulo = ed.numero ? `${ed.numero} — ${ed.titulo}` : ed.titulo;
+            if (ehPrivado) {
+              editalTitulo = editalTitulo.replace(/\bOFICIAL\b/gi, "").replace(/\s*—\s*$/, "").trim();
+            }
+            setAlvoOficial({
+              concurso: ehPrivado ? c.nome.replace(/\bOFICIAL\b/gi, "").trim() : c.nome,
+              cargo: ehPrivado ? cargo.nome.replace(/\bOFICIAL\b/gi, "").trim() : cargo.nome,
+              edital: editalTitulo,
+              fonte: ed.fonte_oficial_url,
+              ehPrivado,
+            });
+          } else {
+            setAlvoOficial(null);
+          }
         } else if (!importedId) {
           setAlvoOficial(null);
         }
@@ -547,7 +591,7 @@ export default function MentoriaEditalPage() {
         <div className="space-y-1.5">
           <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-xs uppercase tracking-wider">
             <FileText className="w-4 h-4" />
-            <span>Conteúdo oficial do edital selecionado</span>
+            <span>{editalImportado || alvoOficial?.ehPrivado ? "Edital importado (privado)" : "Conteúdo oficial do edital selecionado"}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">
             Edital Verticalizado

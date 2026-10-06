@@ -52,6 +52,78 @@ export function slugify(value: string): string {
     .slice(0, 100);
 }
 
+export function extrairDisciplinasEstrutura(item: ImportadoItem, cargoPreferido?: string | null): any[] {
+  if (Array.isArray(item.estrutura_extraida?.disciplinas) && item.estrutura_extraida.disciplinas.length > 0) {
+    return item.estrutura_extraida.disciplinas;
+  }
+  if (Array.isArray(item.estrutura_extraida?.cargos) && item.estrutura_extraida.cargos.length > 0) {
+    const cargoMatch = cargoPreferido
+      ? item.estrutura_extraida.cargos.find((c: any) => c.nome?.trim().toLowerCase() === cargoPreferido.trim().toLowerCase())
+      : item.estrutura_extraida.cargos[0];
+
+    return cargoMatch?.disciplinas || item.estrutura_extraida.cargos.flatMap((c: any) => c.disciplinas || []);
+  }
+  return [];
+}
+
+export function calcularTotalTopicosEsperados(item: ImportadoItem, cargoPreferido?: string | null): number {
+  const disciplinas = extrairDisciplinasEstrutura(item, cargoPreferido);
+  let total = 0;
+
+  for (const disciplina of disciplinas) {
+    const disciplinaNome = String(disciplina?.nome || "").trim();
+    if (!disciplinaNome) continue;
+
+    const assuntos = Array.isArray(disciplina?.assuntos) ? disciplina.assuntos : [];
+    for (const assuntoRaw of assuntos) {
+      let assuntoNome = "";
+      let subtopicos: any[] = [];
+
+      if (typeof assuntoRaw === "object" && assuntoRaw !== null) {
+        assuntoNome = String(assuntoRaw.nome || "").trim();
+        subtopicos = Array.isArray(assuntoRaw.subassuntos)
+          ? assuntoRaw.subassuntos
+          : (Array.isArray(assuntoRaw.topicos) ? assuntoRaw.topicos : []);
+      } else {
+        assuntoNome = String(assuntoRaw || "").trim();
+      }
+
+      if (!assuntoNome) continue;
+
+      if (subtopicos.length > 0) {
+        for (const subRaw of subtopicos) {
+          const subNome = typeof subRaw === "object" && subRaw !== null
+            ? String(subRaw.nome || "").trim()
+            : String(subRaw || "").trim();
+          if (!subNome) continue;
+          total += 1;
+        }
+      } else {
+        total += 1;
+      }
+    }
+  }
+
+  return total;
+}
+
+export function formatarTituloEditalPrivado(tituloBase: string, cargoNome: string): string {
+  const baseLimpa = (tituloBase || "Edital importado")
+    .replace(/\bOFICIAL\b/gi, "")
+    .replace(/\s*—\s*$/, "")
+    .trim() || "Edital importado";
+
+  const cargoLimpo = (cargoNome || "")
+    .replace(/\bOFICIAL\b/gi, "")
+    .replace(/^—\s*|—\s*$/g, "")
+    .trim();
+
+  if (!cargoLimpo || cargoLimpo.toLowerCase() === baseLimpa.toLowerCase()) {
+    return baseLimpa;
+  }
+  return `${baseLimpa} — ${cargoLimpo}`;
+}
+
 export async function materializarImportado(
   admin: SupabaseClient,
   item: ImportadoItem,
@@ -60,11 +132,15 @@ export async function materializarImportado(
   cargoPreferido?: string | null
 ): Promise<string> {
   const tituloBase = (item.nome || item.arquivo_nome || "Edital importado").trim();
-  const concursoNome = tituloBase;
+  const concursoNome = tituloBase.replace(/\bOFICIAL\b/gi, "").replace(/\s*—\s*$/, "").trim() || "Concurso importado";
   const cargoNome = (cargoPreferido || item.cargo || "Cargo importado").trim();
   const orgao = (item.orgao_nome || "Edital importado").trim();
 
   let targetEditalId: string | null = null;
+  let concursoId: string | null = null;
+  let cargoId: string | null = null;
+
+  const totalEsperado = calcularTotalTopicosEsperados(item, cargoPreferido);
 
   // 1. Verificar se o upload já possui um edital_id válido associado ao usuário
   if (item.edital_id) {
@@ -80,16 +156,19 @@ export async function materializarImportado(
         .select("id", { count: "exact", head: true })
         .eq("edital_id", atual.id);
 
-      if (count && count > 0) {
+      const countReal = count || 0;
+      if (totalEsperado > 0 && countReal >= totalEsperado) {
         return atual.id;
       }
+      // Se tiver menos tópicos que o esperado, reaproveita o mesmo edital para sincronização idempotente
       targetEditalId = atual.id;
+      concursoId = atual.concurso_id;
+      cargoId = atual.cargo_id;
     }
   }
 
   // 2. Reaproveitamento ou criação de Concurso Privado do Usuário
-  let concursoId: string | null = null;
-  if (userId) {
+  if (!concursoId && userId) {
     const { data: existingConcursos } = await admin
       .from("concursos")
       .select("id,nome,orgao")
@@ -98,6 +177,7 @@ export async function materializarImportado(
     const matchConcurso = existingConcursos?.find(
       (c) =>
         c.nome?.trim().toLowerCase() === concursoNome.toLowerCase() ||
+        c.nome?.trim().toLowerCase() === tituloBase.toLowerCase() ||
         (c.orgao?.trim().toLowerCase() === orgao.toLowerCase() &&
           c.nome?.trim().toLowerCase() === tituloBase.toLowerCase())
     );
@@ -130,75 +210,91 @@ export async function materializarImportado(
   }
 
   // 3. Reaproveitamento ou criação de Cargo do Concurso
-  let cargoId: string | null = null;
-  const { data: existingCargos } = await admin
-    .from("concurso_cargos")
-    .select("id,nome")
-    .eq("concurso_id", concursoId);
-
-  const matchCargo = existingCargos?.find(
-    (c) => c.nome?.trim().toLowerCase() === cargoNome.toLowerCase()
-  );
-
-  if (matchCargo) {
-    cargoId = matchCargo.id;
-  } else {
-    const { data: cargo, error: cargoError } = await admin
+  if (!cargoId) {
+    const { data: existingCargos } = await admin
       .from("concurso_cargos")
-      .insert({
-        concurso_id: concursoId,
-        nome: cargoNome,
-        escolaridade: "superior",
-        vagas: null,
-        salario: null,
-        fonte_oficial_url: sourceUrl,
-        ativo: true,
-      })
-      .select("id")
-      .single();
+      .select("id,nome")
+      .eq("concurso_id", concursoId);
 
-    if (cargoError || !cargo) {
-      throw new Error(cargoError?.message || "Não foi possível criar o cargo do edital importado.");
+    const cargoLimpo = cargoNome.replace(/\bOFICIAL\b/gi, "").trim();
+    const matchCargo = existingCargos?.find(
+      (c) =>
+        c.nome?.trim().toLowerCase() === cargoNome.toLowerCase() ||
+        (cargoLimpo && c.nome?.trim().toLowerCase() === cargoLimpo.toLowerCase())
+    );
+
+    if (matchCargo) {
+      cargoId = matchCargo.id;
+    } else {
+      const { data: cargo, error: cargoError } = await admin
+        .from("concurso_cargos")
+        .insert({
+          concurso_id: concursoId,
+          nome: cargoLimpo || cargoNome || "Cargo importado",
+          escolaridade: "superior",
+          vagas: null,
+          salario: null,
+          fonte_oficial_url: sourceUrl,
+          ativo: true,
+        })
+        .select("id")
+        .single();
+
+      if (cargoError || !cargo) {
+        throw new Error(cargoError?.message || "Não foi possível criar o cargo do edital importado.");
+      }
+      cargoId = cargo.id;
     }
-    cargoId = cargo.id;
   }
 
   // 4. Reaproveitamento ou criação de Edital Concurso Privado
   if (!targetEditalId && userId) {
     const { data: existingEditais } = await admin
       .from("editais_concurso")
-      .select("id,titulo")
+      .select("id,titulo,created_at")
       .eq("concurso_id", concursoId)
       .eq("cargo_id", cargoId)
-      .eq("criado_por", userId);
+      .eq("criado_por", userId)
+      .order("created_at", { ascending: true });
 
     if (existingEditais && existingEditais.length > 0) {
-      const ed = existingEditais[0];
-      const { count } = await admin
-        .from("edital_topicos")
-        .select("id", { count: "exact", head: true })
-        .eq("edital_id", ed.id);
+      let bestEdital = existingEditais[0];
+      let maxCount = -1;
 
-      if (count && count > 0) {
+      for (const ed of existingEditais) {
+        const { count } = await admin
+          .from("edital_topicos")
+          .select("id", { count: "exact", head: true })
+          .eq("edital_id", ed.id);
+        const cnt = count || 0;
+        if (cnt > maxCount) {
+          maxCount = cnt;
+          bestEdital = ed;
+        }
+      }
+
+      if (totalEsperado > 0 && maxCount >= totalEsperado) {
         await admin
           .from("editais_usuario")
-          .update({ edital_id: ed.id, updated_at: new Date().toISOString() })
+          .update({ edital_id: bestEdital.id, updated_at: new Date().toISOString() })
           .eq("id", item.id);
-        return ed.id;
+        return bestEdital.id;
       }
-      targetEditalId = ed.id;
+      targetEditalId = bestEdital.id;
     }
   }
 
   if (!targetEditalId) {
     const ehOficial = isConcursoOficialValido(item, item.estrutura_extraida?.fonte_oficial_url);
+    const tituloFinal = formatarTituloEditalPrivado(tituloBase, cargoNome);
+
     const { data: edital, error: editalError } = await admin
       .from("editais_concurso")
       .insert({
         concurso_id: concursoId,
         cargo_id: cargoId,
         numero: null,
-        titulo: `${tituloBase} — ${cargoNome}`,
+        titulo: tituloFinal,
         publicado_em: new Date().toISOString().slice(0, 10),
         prova_em: null,
         fonte_oficial_url: sourceUrl,
@@ -225,16 +321,7 @@ export async function materializarImportado(
   const finalEditalId: string = targetEditalId;
 
   // 5. Extração e normalização de disciplinas/assuntos/subassuntos
-  let disciplinas: any[] = [];
-  if (Array.isArray(item.estrutura_extraida?.disciplinas) && item.estrutura_extraida.disciplinas.length > 0) {
-    disciplinas = item.estrutura_extraida.disciplinas;
-  } else if (Array.isArray(item.estrutura_extraida?.cargos) && item.estrutura_extraida.cargos.length > 0) {
-    const cargoMatch = cargoPreferido
-      ? item.estrutura_extraida.cargos.find((c: any) => c.nome?.trim().toLowerCase() === cargoPreferido.trim().toLowerCase())
-      : item.estrutura_extraida.cargos[0];
-
-    disciplinas = cargoMatch?.disciplinas || item.estrutura_extraida.cargos.flatMap((c: any) => c.disciplinas || []);
-  }
+  const disciplinas = extrairDisciplinasEstrutura(item, cargoPreferido);
 
   async function getOrCreateDisciplina(nome: string, slug: string): Promise<string> {
     const { data: existing } = await admin
@@ -353,15 +440,15 @@ export async function materializarImportado(
           const subassuntoId = await getOrCreateSubassunto(assuntoId, subNome, subSlug);
 
           ordem += 1;
-          let query = admin
+          const { data: existingTopico } = await admin
             .from("edital_topicos")
             .select("id")
             .eq("edital_id", finalEditalId)
             .eq("disciplina_id", disciplinaId)
             .eq("assunto_id", assuntoId)
-            .eq("subassunto_id", subassuntoId);
+            .eq("subassunto_id", subassuntoId)
+            .maybeSingle();
 
-          const { data: existingTopico } = await query.maybeSingle();
           if (existingTopico) {
             await admin
               .from("edital_topicos")
@@ -378,23 +465,47 @@ export async function materializarImportado(
                 ordem,
               });
 
-            if (topicoError && !topicoError.message.includes("duplicate") && !topicoError.message.includes("unique")) {
-              console.error(`[materializarImportado] Erro ao inserir tópico (subassunto ${subNome}):`, topicoError);
-              throw new Error(`Falha ao inserir tópico do edital: ${topicoError.message}`);
+            if (topicoError) {
+              // Checagem rigorosa: só ignora erro de duplicidade se o registro no banco for estritamente idêntico
+              const { data: verifyIdentical } = await admin
+                .from("edital_topicos")
+                .select("id,edital_id,disciplina_id,assunto_id,subassunto_id")
+                .eq("edital_id", finalEditalId)
+                .eq("disciplina_id", disciplinaId)
+                .eq("assunto_id", assuntoId)
+                .eq("subassunto_id", subassuntoId)
+                .maybeSingle();
+
+              if (verifyIdentical) {
+                await admin
+                  .from("edital_topicos")
+                  .update({ ordem })
+                  .eq("id", verifyIdentical.id);
+              } else {
+                console.error(`[materializarImportado] Erro estruturado ao inserir tópico (subassunto "${subNome}"):`, {
+                  error: topicoError,
+                  edital_id: finalEditalId,
+                  disciplina_id: disciplinaId,
+                  assunto_id: assuntoId,
+                  subassunto_id: subassuntoId,
+                  ordem,
+                });
+                throw new Error(`Falha ao inserir tópico do edital (subassunto "${subNome}"): ${topicoError.message}`);
+              }
             }
           }
         }
       } else {
         ordem += 1;
-        let query = admin
+        const { data: existingTopico } = await admin
           .from("edital_topicos")
           .select("id")
           .eq("edital_id", finalEditalId)
           .eq("disciplina_id", disciplinaId)
           .eq("assunto_id", assuntoId)
-          .is("subassunto_id", null);
+          .is("subassunto_id", null)
+          .maybeSingle();
 
-        const { data: existingTopico } = await query.maybeSingle();
         if (existingTopico) {
           await admin
             .from("edital_topicos")
@@ -411,13 +522,60 @@ export async function materializarImportado(
               ordem,
             });
 
-          if (topicoError && !topicoError.message.includes("duplicate") && !topicoError.message.includes("unique")) {
-            console.error(`[materializarImportado] Erro ao inserir tópico (assunto ${assuntoNome}):`, topicoError);
-            throw new Error(`Falha ao inserir tópico do edital: ${topicoError.message}`);
+          if (topicoError) {
+            // Checagem rigorosa: só ignora erro de duplicidade se o registro no banco for estritamente idêntico
+            const { data: verifyIdentical } = await admin
+              .from("edital_topicos")
+              .select("id,edital_id,disciplina_id,assunto_id,subassunto_id")
+              .eq("edital_id", finalEditalId)
+              .eq("disciplina_id", disciplinaId)
+              .eq("assunto_id", assuntoId)
+              .is("subassunto_id", null)
+              .maybeSingle();
+
+            if (verifyIdentical) {
+              await admin
+                .from("edital_topicos")
+                .update({ ordem })
+                .eq("id", verifyIdentical.id);
+            } else {
+              console.error(`[materializarImportado] Erro estruturado ao inserir tópico (assunto "${assuntoNome}"):`, {
+                error: topicoError,
+                edital_id: finalEditalId,
+                disciplina_id: disciplinaId,
+                assunto_id: assuntoId,
+                subassunto_id: null,
+                ordem,
+              });
+              throw new Error(`Falha ao inserir tópico do edital (assunto "${assuntoNome}"): ${topicoError.message}`);
+            }
           }
         }
       }
     }
+  }
+
+  // 6. Validação final: count real === esperado
+  const { count: countRealFinal, error: countFinalErr } = await admin
+    .from("edital_topicos")
+    .select("id", { count: "exact", head: true })
+    .eq("edital_id", finalEditalId);
+
+  if (countFinalErr) {
+    console.error(`[materializarImportado] Erro ao validar contagem de tópicos do edital ${finalEditalId}:`, countFinalErr);
+    throw new Error(`Erro ao validar tópicos do edital: ${countFinalErr.message}`);
+  }
+
+  const real = countRealFinal || 0;
+  if (totalEsperado > 0 && real !== totalEsperado) {
+    const motivo = `Divergência na contagem de tópicos: esperado ${totalEsperado}, gravado ${real} no edital ${finalEditalId}.`;
+    console.error(`[materializarImportado] ${motivo}`, {
+      upload_id: item.id,
+      edital_id: finalEditalId,
+      esperado: totalEsperado,
+      real,
+    });
+    throw new Error(motivo);
   }
 
   const { error: updateError } = await admin
@@ -430,6 +588,7 @@ export async function materializarImportado(
 
   if (updateError) {
     console.error(`[materializarImportado] Erro ao vincular edital_id=${finalEditalId} a editais_usuario id=${item.id}:`, updateError);
+    throw new Error(`Falha ao atualizar edital_id no upload: ${updateError.message}`);
   }
 
   return finalEditalId;

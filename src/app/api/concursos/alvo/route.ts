@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
 
   const [{ data: concursos, error: concursosError }, { data: alvo, error: alvoError }, { data: importados, error: importadosError }] = await Promise.all([
-    supabase.from("concursos").select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,concurso_cargos(id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo,editais_concurso(id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca))").eq("status", "publicado").order("nome"),
+    supabase.from("concursos").select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,criado_por,concurso_cargos(id,nome,escolaridade,vagas,salario,fonte_oficial_url,ativo,editais_concurso(id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca,criado_por,visibilidade))").eq("status", "publicado").order("nome"),
     supabase.from("usuario_concurso_alvo").select("concurso_id,cargo_id,edital_id").eq("usuario_id", user.id).maybeSingle(),
     supabase.from("editais_usuario").select("id,nome,orgao_nome,cargo,uf,status,arquivo_nome,estrutura_extraida,edital_id").eq("usuario_id", user.id).in("status", ["aguardando_revisao","confirmado"]).order("updated_at", { ascending: false }),
   ]);
@@ -30,7 +30,7 @@ export async function GET(request: Request) {
         const editalId = await materializarImportado(admin, item, sourceUrl, user.id, item.cargo);
         const { data: materializado, error: matError } = await admin
           .from("editais_concurso")
-          .select("id,concurso_id,cargo_id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca")
+          .select("id,concurso_id,cargo_id,numero,titulo,publicado_em,prova_em,fonte_oficial_url,pdf_url,status,banca,criado_por,visibilidade")
           .eq("id", editalId)
           .maybeSingle();
 
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 
         const { data: concurso, error: concError } = await admin
           .from("concursos")
-          .select("id,nome,orgao,esfera,uf,status,fonte_oficial_url")
+          .select("id,nome,orgao,esfera,uf,status,fonte_oficial_url,criado_por")
           .eq("id", materializado.concurso_id)
           .single();
         if (concError) {
