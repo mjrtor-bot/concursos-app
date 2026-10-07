@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { Questao } from "@/types";
+import { aplicarFiltroBanca } from "@/lib/bancaFiltro";
 
 export async function GET(request: NextRequest) {
   try {
@@ -155,7 +156,7 @@ export async function GET(request: NextRequest) {
         query = query.eq("subassunto_id", subassunto_id);
       }
       if (banca && banca !== "todas") {
-        query = query.ilike("banca_nome", `%${banca}%`);
+        query = aplicarFiltroBanca(query, banca);
       }
       if (ano && !isNaN(ano)) {
         query = query.eq("ano", ano);
@@ -299,7 +300,7 @@ export async function GET(request: NextRequest) {
             discQuery = discQuery.eq("disciplina_id", discIdParaFallback);
           }
 
-          if (banca && banca !== "todas") discQuery = discQuery.ilike("banca_nome", `%${banca}%`);
+          if (banca && banca !== "todas") discQuery = aplicarFiltroBanca(discQuery, banca);
           if (ano && !isNaN(ano)) discQuery = discQuery.eq("ano", ano);
           if (tipo && tipo !== "todos") discQuery = discQuery.eq("tipo", tipo);
           if (dificuldade && dificuldade !== "todos") discQuery = discQuery.eq("dificuldade", dificuldade);
