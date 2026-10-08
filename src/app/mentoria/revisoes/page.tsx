@@ -6,23 +6,17 @@ import {
   RotateCcw,
   ArrowLeft,
   Clock,
-  Calendar,
   CheckCircle2,
-  AlertCircle,
-  Layers,
-  Sparkles,
-  BookOpen,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaPerfil } from "@/types";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 
 export default function MentoriaRevisoesPage() {
   const { user } = useAuth();
-  const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
+  const [, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

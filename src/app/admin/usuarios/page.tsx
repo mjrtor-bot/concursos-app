@@ -6,21 +6,15 @@ import {
   Users,
   Shield,
   Search,
-  Filter,
   GraduationCap,
   Target,
-  Calendar,
   CheckCircle2,
   Edit3,
-  UserCheck,
-  UserX,
   Mail,
   RefreshCw,
-  Award,
   BookOpen,
   ArrowLeft,
   ChevronRight,
-  Sparkles,
 } from "lucide-react";
 import { Profile, Concurso } from "@/types";
 
@@ -554,7 +548,7 @@ export default function AdminUsuariosPage() {
                 </label>
                 <select
                   value={novoRole}
-                  onChange={(e) => setNovoRole(e.target.value as any)}
+                  onChange={(e) => setNovoRole(e.target.value as "user" | "admin" | "editor")}
                   className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500 font-medium"
                 >
                   <option value="user">Aluno (Acesso Padrão)</option>

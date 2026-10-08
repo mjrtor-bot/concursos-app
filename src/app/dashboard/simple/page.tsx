@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DataService } from "@/services/dataService";
 import { EstatisticasGerais } from "@/types";
 import Link from "next/link";

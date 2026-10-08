@@ -89,8 +89,8 @@ export default function BibliotecaEditaisPage() {
   const [preview,setPreview]=useState<Preview|null>(null);
   const [cargoSelecionado,setCargoSelecionado]=useState<string>("");
   const [mostrarPreview,setMostrarPreview]=useState(false);
-  const [alvo,setAlvo]=useState<Alvo|null>(null);
-  const [alvoDetalhe,setAlvoDetalhe]=useState<AlvoDetalhe|null>(null);
+  const [,setAlvo]=useState<Alvo|null>(null);
+  const [,setAlvoDetalhe]=useState<AlvoDetalhe|null>(null);
 
   const reconciliarProcessando = useCallback(async (lista: MeuEditalUpload[]) => {
     const pendentes = lista.filter((x) => x.status === "processando");
@@ -157,29 +157,6 @@ export default function BibliotecaEditaisPage() {
       setErro(e instanceof Error ? e.message : "Falha ao carregar editais");
     } finally {
       setLoading(false);
-    }
-  }
-
-  async function carregarAlvo() {
-    try {
-      const r = await fetch("/api/concursos/alvo", { cache: "no-store" });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error || "Falha ao carregar concurso alvo");
-      setAlvo(j.alvo || null);
-      const concurso = (j.concursos || []).find((c: any) => c.id === j.alvo?.concurso_id);
-      const cargo = (concurso?.concurso_cargos || []).find((c: any) => c.id === j.alvo?.cargo_id);
-      const edital = (cargo?.editais_concurso || []).find((e: any) => e.id === j.alvo?.edital_id);
-      if (concurso && cargo) {
-        setAlvoDetalhe({
-          concurso: concurso.nome,
-          cargo: cargo.nome,
-          edital: edital?.titulo || edital?.numero || "Edital do concurso alvo",
-        });
-      }
-    } catch (e) {
-      setAlvo(null);
-      setAlvoDetalhe(null);
-      setMensagem(e instanceof Error ? e.message : "Não foi possível identificar o concurso alvo.");
     }
   }
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -10,21 +10,16 @@ import { DataService } from "@/services/dataService";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { Simulado, SimuladoTentativa, Concurso } from "@/types";
+import { Simulado, SimuladoTentativa } from "@/types";
 import {
   FileSpreadsheet,
   Clock,
-  CheckCircle2,
   Play,
   PlusCircle,
-  Award,
-  BarChart,
-  Calendar,
-  Sparkles,
 } from "lucide-react";
 
 export default function SimuladosPage() {
-  const { concursos, concursoAtivo } = useConcurso();
+  const { concursoAtivo } = useConcurso();
   const { success, error: toastError } = useToast();
   const { user } = useAuth();
   const [simulados, setSimulados] = useState<Simulado[]>([]);

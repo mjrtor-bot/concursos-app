@@ -1012,7 +1012,6 @@ export class MentoriaService {
   static async getEditalVerticalizado(usuarioId: string): Promise<EditalVerticalizadoResumo> {
     const supabase = this.getClient();
     let topicosSalvos: MentoriaEditalTopico[] = [];
-    const respostasUsuario: { assunto_id: string; correta: boolean; created_at: string }[] = [];
 
     // Sem backend, preserva somente o cache do próprio usuário; não exibe
     // taxonomia genérica como se fosse o edital oficial selecionado.

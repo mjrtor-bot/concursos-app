@@ -53,21 +53,6 @@ export default function EditaisImportadosPage() {
   const [filtroStatus, setFiltroStatus] = useState<StatusFilter>("todos");
   const [busca, setBusca] = useState("");
 
-  async function carregar() {
-    setLoading(true);
-    setErro("");
-    try {
-      const r = await fetch("/api/editais/importados", { cache: "no-store" });
-      const j = await r.json();
-      if (!r.ok) throw new Error(j.error || "Falha ao carregar seus editais.");
-      setEditais(j.editais || []);
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : "Falha ao carregar seus editais.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function usarComoAlvo(id: string) {
     setAplicandoId(id);
     try {

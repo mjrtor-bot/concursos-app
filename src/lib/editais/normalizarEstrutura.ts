@@ -193,7 +193,7 @@ export function normalizarEstruturaExtraida(raw: any): ResultadoNormalizacao {
     ? raw.observacoes.map((o: any) => String(o || "").trim()).filter(Boolean)
     : [];
 
-  let cargosNormalizados: CargoExtraido[] = [];
+  const cargosNormalizados: CargoExtraido[] = [];
   if (Array.isArray(raw.cargos) && raw.cargos.length > 0) {
     for (const c of raw.cargos) {
       const cargoNome = limparNome(String(c?.nome || ""));

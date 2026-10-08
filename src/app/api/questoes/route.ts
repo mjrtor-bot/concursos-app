@@ -18,9 +18,9 @@ export async function GET(request: NextRequest) {
     const escopo = searchParams.get("escopo") || undefined; // "meu_edital" | "todos"
     const banca = searchParams.get("banca") || undefined;
     const ano = searchParams.get("ano") ? parseInt(searchParams.get("ano")!, 10) : undefined;
-    const tipo = (searchParams.get("tipo") as any) || undefined;
-    const dificuldade = (searchParams.get("dificuldade") as any) || undefined;
-    const origem = (searchParams.get("origem") as any) || "todas";
+    const tipo = searchParams.get("tipo") || undefined;
+    const dificuldade = searchParams.get("dificuldade") || undefined;
+    const origem = searchParams.get("origem") || "todas";
     const termo_busca = searchParams.get("termo_busca") || undefined;
     const status = searchParams.get("status") || "todas";
     const anuladaParam = searchParams.get("anulada");
@@ -53,7 +53,6 @@ export async function GET(request: NextRequest) {
 
       // Filtros
       // 1. Escopo "Meu Edital" / Concurso Alvo
-      let editalDiscIds: string[] | undefined = undefined;
       if (
         (escopo === "meu_edital" || ((concurso_id || edital_id) && escopo !== "todos")) &&
         (!disciplina_id || disciplina_id === "todos")
@@ -99,7 +98,6 @@ export async function GET(request: NextRequest) {
                 new Set(topicos.map((t: any) => t.disciplina_id).filter(Boolean))
               );
               if (discIds.length > 0) {
-                editalDiscIds = discIds;
                 query = query.in("disciplina_id", discIds);
               }
             }

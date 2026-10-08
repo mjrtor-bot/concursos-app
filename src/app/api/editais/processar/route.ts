@@ -12,15 +12,6 @@ async function requireAuth() {
   return { supabase, user };
 }
 
-function extractOutputText(json: any) {
-  if (typeof json.output_text === "string") return json.output_text;
-  return (json.output || [])
-    .flatMap((x: any) => x.content || [])
-    .filter((x: any) => x.type === "output_text")
-    .map((x: any) => x.text)
-    .join("");
-}
-
 export async function POST(request: NextRequest) {
   const auth = await requireAuth();
   if (auth.error) return auth.error;

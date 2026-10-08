@@ -147,7 +147,7 @@ function QuestoesContent() {
       params.set("pageSize", String(PAGE_SIZE));
       return params;
     },
-    [filtro, assuntos, concursoAtivo]
+    [filtro, concursoAtivo]
   );
 
   // ── Busca questões (reseta para página 1 quando filtro muda) ─────────────

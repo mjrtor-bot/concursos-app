@@ -17,7 +17,7 @@ export default function ResetPage() {
       DataService.resetarRespostas();
       setStatus("success");
       setMessage("✅ Todas as respostas foram removidas! Você pode começar do zero.");
-    } catch (error) {
+    } catch {
       setStatus("error");
       setMessage("❌ Erro ao limpar respostas. Tente novamente.");
     }
@@ -31,7 +31,7 @@ export default function ResetPage() {
       DataService.resetarDadosParaPadrao();
       setStatus("success");
       setMessage("✅ Todos os dados foram resetados para o estado padrão.");
-    } catch (error) {
+    } catch {
       setStatus("error");
       setMessage("❌ Erro ao resetar dados. Tente novamente.");
     }
@@ -45,7 +45,7 @@ export default function ResetPage() {
       DataService.inicializarSemRespostas();
       setStatus("success");
       setMessage("✅ Sistema inicializado sem respostas. Você começa do zero.");
-    } catch (error) {
+    } catch {
       setStatus("error");
       setMessage("❌ Erro ao inicializar. Tente novamente.");
     }

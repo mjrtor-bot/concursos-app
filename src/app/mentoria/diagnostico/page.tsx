@@ -2,25 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   BrainCircuit,
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
-  AlertTriangle,
   Clock,
-  Target,
   Sparkles,
   BookOpen,
   Award,
-  Zap,
-  TrendingUp,
   BarChart3,
-  HelpCircle,
-  RotateCw,
   Sliders,
-  ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
@@ -30,7 +22,6 @@ import {
   MentoriaDiagnostico,
   MentoriaDiagnosticoHistorico,
   MentoriaAutoavaliacao,
-  MentoriaNivelCalculado,
   Questao,
 } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
@@ -57,7 +48,6 @@ const DIFICULDADES_OPCOES = [
 
 export default function MentoriaDiagnosticoPage() {
   const { user } = useAuth();
-  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -447,7 +437,7 @@ export default function MentoriaDiagnosticoPage() {
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setHistorico({ ...historico, preferencia_estudo: item.id as any })}
+                    onClick={() => setHistorico({ ...historico, preferencia_estudo: item.id as "teoria" | "questoes" | "equilibrado" })}
                     className={`p-4 text-left rounded-xl border transition-all ${
                       historico.preferencia_estudo === item.id
                         ? "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-600 text-indigo-900 dark:text-indigo-100 ring-1 ring-indigo-600 shadow-sm"

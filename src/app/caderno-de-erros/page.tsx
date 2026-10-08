@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { StatCard } from "@/components/ui/StatCard";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -14,12 +14,10 @@ import {
   AlertTriangle,
   CheckCircle2,
   RotateCcw,
-  BookOpen,
   Trash2,
   Pencil,
   Sparkles,
   Save,
-  Check,
 } from "lucide-react";
 
 export default function CadernoErrosPage() {

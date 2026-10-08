@@ -6,19 +6,16 @@ import {
   TrendingUp,
   ArrowLeft,
   Calendar,
-  CheckCircle2,
   Clock,
   Target,
   BarChart3,
   Award,
-  Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { MentoriaService } from "@/services/mentoriaService";
 import { MentoriaDashboardStats } from "@/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 
 export default function MentoriaEvolucaoPage() {
   const { user } = useAuth();

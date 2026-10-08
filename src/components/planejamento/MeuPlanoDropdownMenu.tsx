@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import {
   Settings,
@@ -17,12 +17,9 @@ import {
   ChevronRight,
   Search,
   Check,
-  Sparkles,
   Save,
   Trash2,
-  ArrowRight,
   Sliders,
-  Filter,
 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
@@ -35,7 +32,6 @@ import {
   MentoriaPerfil,
   MentoriaDisponibilidade,
   EditalVerticalizadoResumo,
-  EditalVerticalizadoItem,
   MentoriaHorario,
 } from "@/types";
 
@@ -62,8 +58,7 @@ export function MeuPlanoDropdownMenu({
   variant = "icon",
   className = "",
 }: MeuPlanoDropdownMenuProps) {
-  const { user } = useAuth();
-  const { success, error: showError, info } = useToast();
+  const { success } = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
   const mounted = typeof document !== "undefined";
@@ -1190,16 +1185,6 @@ function ModalSinalizarEstudados({
     setStatusMarcados(novo);
   };
 
-  const marcarTodosDisciplina = (discId: string, novoStatus: "dominado" | "nao_iniciado") => {
-    const disc = edital?.disciplinas.find((d) => d.disciplina_id === discId);
-    if (!disc) return;
-    const novo = new Map(statusMarcados);
-    for (const t of disc.topicos) {
-      novo.set(t.assunto_id, novoStatus);
-    }
-    setStatusMarcados(novo);
-  };
-
   const handleSalvar = async () => {
     if (!user || !edital) return;
     setSalvando(true);
@@ -1441,7 +1426,7 @@ function ModalReverAssuntos({
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setFiltroAba(tab.id as any)}
+                  onClick={() => setFiltroAba(tab.id as "todos" | "estudados" | "pendentes" | "dominados")}
                   className={`px-2.5 py-1 rounded-lg transition-all ${
                     filtroAba === tab.id
                       ? "bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow-xs font-bold"

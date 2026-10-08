@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/Card";
-import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { DataService } from "@/services/dataService";
 import { Disciplina, Assunto, EstatisticasGerais } from "@/types";
@@ -12,9 +11,6 @@ import {
   ChevronDown,
   ChevronUp,
   Play,
-  CheckCircle2,
-  ListOrdered,
-  Sparkles,
   Layers,
 } from "lucide-react";
 

@@ -18,7 +18,7 @@ import {
 
 export default function CadastroPage() {
   const router = useRouter();
-  const { signup, isSupabaseConnected } = useAuth();
+  const { signup } = useAuth();
   const { success, error: showError } = useToast();
 
   const [nome, setNome] = useState("");

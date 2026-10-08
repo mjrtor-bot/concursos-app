@@ -371,7 +371,6 @@ export function DailyMissionCard({
   };
 
   const tipoInfo = getTipoEstudoInfo(missao.tipo, missao.disciplina_nome);
-  const Icone = tipoInfo.icon;
   const concluida = statusLocal === "concluida";
 
   // Data formatada para a meta do dia (DD/MM)

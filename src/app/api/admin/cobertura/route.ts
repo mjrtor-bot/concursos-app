@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 
 async function getAdminClient() {
@@ -13,7 +13,7 @@ async function getAdminClient() {
   return { s };
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const auth = await getAdminClient();
   if (auth.e) return auth.e;
   const s = auth.s!;
@@ -206,7 +206,7 @@ export async function GET(request: NextRequest) {
   }
 
   const editaisDuplicados = Array.from(titulosCount.entries())
-    .filter(([_, list]) => list.length > 1)
+    .filter(([, list]) => list.length > 1)
     .map(([chave, itens]) => ({
       chave,
       total: itens.length,

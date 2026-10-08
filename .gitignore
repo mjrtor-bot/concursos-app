@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent / assistant local state (worktrees e config local do Claude)
+# Obs: isto NÃO desversiona arquivos já rastreados — apenas impede novos.
+.claude/
+
+# cache e temporários
+.eslintcache
+.turbo/
+*.log
+Thumbs.db
+.freebuff/
+.vscode/

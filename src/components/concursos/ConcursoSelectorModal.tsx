@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { useConcurso } from "@/contexts/ConcursoContext";
 import { Badge } from "@/components/ui/Badge";
-import { Check, Search, Calendar, Award, Building2, FileText, Sparkles, BookOpen } from "lucide-react";
+import { Check, Search, Calendar, Award, Building2, FileText, Sparkles } from "lucide-react";
 import { ConcursoStatus } from "@/types";
 
 interface ConcursoSelectorModalProps {

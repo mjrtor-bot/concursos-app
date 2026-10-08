@@ -6,7 +6,6 @@ import {
   FileText,
   ArrowLeft,
   Search,
-  Filter,
   CheckCircle2,
   Circle,
   AlertCircle,
@@ -17,7 +16,6 @@ import {
   ChevronDown,
   ChevronUp,
   HelpCircle,
-  Check,
   Clock,
   Flame,
   Award,
@@ -34,9 +32,8 @@ import {
   EditalVerticalizadoResumo,
   EditalVerticalizadoItem,
 } from "@/types";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 
 type StatusFiltro = "todos" | "nao_iniciado" | "estudando" | "revisando" | "dominado";
 type PesoFiltro = "todos" | "baixo" | "medio" | "alto" | "critico";
@@ -46,7 +43,7 @@ export default function MentoriaEditalPage() {
   const router = useRouter();
   const [alvoOficial, setAlvoOficial] = useState<{ concurso: string; cargo: string; edital: string; fonte: string; ehPrivado?: boolean } | null>(null);
   const [editalImportado, setEditalImportado] = useState(false);
-  const [perfil, setPerfil] = useState<MentoriaPerfil | null>(null);
+  const [, setPerfil] = useState<MentoriaPerfil | null>(null);
   const [resumoEdital, setResumoEdital] = useState<EditalVerticalizadoResumo | null>(null);
   const [loading, setLoading] = useState(true);
   const [atualizandoTopico, setAtualizandoTopico] = useState<string | null>(null);

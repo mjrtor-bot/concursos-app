@@ -17,7 +17,6 @@ import {
   Check,
   ArrowLeft,
   Play,
-  Clock,
   BookOpen,
   Briefcase,
   ChevronRight,

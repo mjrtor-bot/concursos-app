@@ -221,7 +221,7 @@ async function handleReconcile(request: NextRequest) {
             }).eq("id", reg.id);
           }
         }
-      } catch (err: any) {
+      } catch (err) {
         console.error(`[reconciliar] Erro ao consultar OpenAI para registro ${reg.id}:`, err);
       }
     }

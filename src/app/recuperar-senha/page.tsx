@@ -10,7 +10,6 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
-  KeyRound,
   ShieldCheck,
 } from "lucide-react";
 

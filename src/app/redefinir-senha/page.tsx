@@ -2,7 +2,6 @@
 
 import React, { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/contexts/ToastContext";
 import { Button } from "@/components/ui/Button";
@@ -17,7 +16,6 @@ import {
 } from "lucide-react";
 
 function RedefinirSenhaContent() {
-  const router = useRouter();
   const { success, error: showError } = useToast();
 
   const [password, setPassword] = useState("");

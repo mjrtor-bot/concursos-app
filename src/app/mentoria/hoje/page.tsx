@@ -17,19 +17,17 @@ import {
   RotateCw,
   Award,
   AlertCircle,
-  HelpCircle,
   ChevronRight,
-  TrendingUp,
   Check,
   FileText,
   Save,
   AlertTriangle,
   Brain,
-  Target,
   ListCheck,
   ChevronLeft,
   ChevronDown,
   ChevronUp,
+  PlusCircle,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
@@ -107,7 +105,7 @@ export default function MentoriaHojePage() {
   const [revisoesPendentes, setRevisoesPendentes] = useState<MentoriaRevisaoItem[]>([]);
   const [topicosFracos, setTopicosFracos] = useState<MentoriaTopicoFraco[]>([]);
   const [loadingRevisoes, setLoadingRevisoes] = useState<boolean>(false);
-  const [revisaoQuestaoAtiva, setRevisaoQuestaoAtiva] = useState<Questao | null>(null);
+  const [, setRevisaoQuestaoAtiva] = useState<Questao | null>(null);
 
   // Modo Teoria
   const [assuntoRoteiro, setAssuntoRoteiro] = useState<Assunto | null>(null);
@@ -116,6 +114,14 @@ export default function MentoriaHojePage() {
   const [anotacoesSalvas, setAnotacoesSalvas] = useState<boolean>(false);
   const [salvandoResumo, setSalvandoResumo] = useState<boolean>(false);
   const { success: toastSuccess, error: toastError, info: toastInfo } = useToast();
+
+  // ── ESTADO DE LANÇAMENTO DE QUESTÕES FORA DO BLOCO (EXTERNAS) ────────────────
+  const [isModalQuestoesExternasOpen, setIsModalQuestoesExternasOpen] = useState<boolean>(false);
+  const [questoesExternasQtd, setQuestoesExternasQtd] = useState<number>(10);
+  const [questoesExternasAcertos, setQuestoesExternasAcertos] = useState<number>(8);
+  const [questoesExternasFonte, setQuestoesExternasFonte] = useState<string>("PDF / Livro / Outra Plataforma");
+  const [questoesExternasObs, setQuestoesExternasObs] = useState<string>("");
+  const [salvandoQuestoesExternas, setSalvandoQuestoesExternas] = useState<boolean>(false);
 
   // ── ESTADOS DE SELEÇÃO DE BLOCO INICIAL ────────────────────────────────────
   const [expandirTodosBlocos, setExpandirTodosBlocos] = useState<boolean>(false);
@@ -126,9 +132,6 @@ export default function MentoriaHojePage() {
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
   const finalizacaoEmAndamentoRef = useRef(false);
 
-  const blocoStorageKey = user && planoCiclo?.bloco_atual
-    ? `concursos_app_missao_diaria_sessao_${user.id}_${planoCiclo.plano_id}_${planoCiclo.bloco_atual.id}`
-    : null;
   const duracaoPlanejadaSegundos = (planoCiclo?.bloco_atual?.duracao_minutos || 40) * 60;
   const minimoNecessarioSegundos = Math.ceil(duracaoPlanejadaSegundos * 0.7);
   const percentualConcluido = Math.min(
@@ -428,8 +431,6 @@ export default function MentoriaHojePage() {
   }
 
   function getMensagemBloqueioConclusao() {
-    const minimo = formatarMinutos(minimoNecessarioSegundos);
-    const estudado = formatarMinutos(segundosLiquidos);
     if (!cronometroIniciado) {
       return "Inicie o bloco antes de concluí-lo.";
     }
@@ -621,6 +622,75 @@ export default function MentoriaHojePage() {
       toastError(err?.message || "Não foi possível alterar o bloco inicial.");
     } finally {
       setTrocandoBloco(false);
+    }
+  };
+
+  const handleSalvarQuestoesExternas = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !planoCiclo?.bloco_atual) return;
+    const bloco = planoCiclo.bloco_atual;
+
+    const qtd = Number(questoesExternasQtd);
+    const acertos = Number(questoesExternasAcertos);
+
+    if (!questoesExternasFonte.trim()) {
+      toastError("Informe a fonte ou material das questões.");
+      return;
+    }
+    if (!qtd || qtd < 1) {
+      toastError("Informe uma quantidade válida de questões.");
+      return;
+    }
+    if (acertos < 0 || acertos > qtd) {
+      toastError("O número de acertos deve ser entre 0 e a quantidade total.");
+      return;
+    }
+
+    setSalvandoQuestoesExternas(true);
+    try {
+      const res = await fetch("/api/questoes-externas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          disciplina_id: bloco.disciplina_id,
+          assunto_id: bloco.assunto_id || null,
+          fonte: questoesExternasFonte.trim(),
+          quantidade: qtd,
+          acertos: acertos,
+          data: new Date().toISOString().slice(0, 10),
+          observacao:
+            questoesExternasObs.trim() ||
+            `Realizado no bloco #${bloco.ordem_bloco} (${bloco.disciplina_nome}${
+              bloco.assunto_nome ? ` - ${bloco.assunto_nome}` : ""
+            })`,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Erro ao registrar questões externas.");
+      }
+
+      // Atualiza os contadores da sessão ao vivo
+      setQuestoesRespondidas((prev) => prev + qtd);
+      setQuestoesAcertadas((prev) => prev + acertos);
+
+      if (questoesExternasObs.trim()) {
+        setObservacoesSessao((prev) =>
+          prev
+            ? `${prev}\n[Externas: ${qtd}q (${acertos} acertos) - ${questoesExternasFonte}]: ${questoesExternasObs}`
+            : `[Externas: ${qtd}q (${acertos} acertos) - ${questoesExternasFonte}]: ${questoesExternasObs}`
+        );
+      }
+
+      toastSuccess(`+${qtd} questões registradas com sucesso (+XP)!`);
+      setIsModalQuestoesExternasOpen(false);
+      setQuestoesExternasObs("");
+    } catch (err: any) {
+      console.error("Erro ao salvar questões externas:", err);
+      toastError(err?.message || "Não foi possível registrar as questões.");
+    } finally {
+      setSalvandoQuestoesExternas(false);
     }
   };
 
@@ -882,6 +952,16 @@ export default function MentoriaHojePage() {
                       Encerrar sem concluir
                     </Button>
                   )}
+
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => setIsModalQuestoesExternasOpen(true)}
+                    className="w-full sm:w-auto font-bold border-indigo-500/50 text-indigo-300 hover:bg-indigo-950/60 hover:text-white"
+                    leftIcon={<PlusCircle className="w-5 h-5 text-indigo-400" />}
+                  >
+                    Lançar Questões Fora do Bloco (PDF/Livro)
+                  </Button>
                 </div>
               </div>
 
@@ -892,8 +972,8 @@ export default function MentoriaHojePage() {
                   <div className="text-xs text-amber-900 dark:text-amber-200 space-y-1">
                     <p className="font-bold">Atenção para Conclusão Integral do Bloco de Questões:</p>
                     <p>
-                      Você atingiu a meta de tempo líquido ({percentualConcluido}%), mas ainda não resolveu nenhuma questão abaixo.
-                      O recomendado é resolver pelo menos 1 questão antes de concluir. Se optar por finalizar agora, o sistema pedirá confirmação e registrará o progresso real.
+                      Você atingiu a meta de tempo líquido ({percentualConcluido}%), mas ainda não resolveu nenhuma questão no sistema.
+                      Se você resolveu questões em material externo (PDF, livro, apostila), clique em <strong>&quot;Lançar Questões Fora do Bloco&quot;</strong> acima para registrar seus acertos e pontuação.
                     </p>
                   </div>
                 </div>
@@ -965,7 +1045,7 @@ export default function MentoriaHojePage() {
           {/* ── 1. BLOCO DE QUESTÕES ── */}
           {blocoAtual.tipo === "QUESTOES" && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <CheckSquare2 className="w-5 h-5 text-emerald-600" />
                   <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
@@ -973,11 +1053,22 @@ export default function MentoriaHojePage() {
                   </h3>
                 </div>
 
-                {selecaoResultado && (
-                  <Badge variant="outline" className="text-xs font-semibold">
-                    {questoesPool.length} questões disponíveis
-                  </Badge>
-                )}
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setIsModalQuestoesExternasOpen(true)}
+                    className="text-xs font-bold border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
+                    leftIcon={<PlusCircle className="w-3.5 h-3.5" />}
+                  >
+                    Lançar Questões do PDF / Material
+                  </Button>
+                  {selecaoResultado && (
+                    <Badge variant="outline" className="text-xs font-semibold">
+                      {questoesPool.length} questões no sistema
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               {loadingQuestoes ? (
@@ -1426,6 +1517,126 @@ export default function MentoriaHojePage() {
                 </Button>
               </div>
             </div>
+          </Modal>
+
+          {/* Modal de Lançamento de Questões Externas (Fora da Plataforma / PDF / Livro) */}
+          <Modal
+            isOpen={isModalQuestoesExternasOpen}
+            onClose={() => !salvandoQuestoesExternas && setIsModalQuestoesExternasOpen(false)}
+            title="Lançar Questões Feitas Fora do Bloco"
+            description="Registre as questões que você resolveu em PDFs, livros ou outros materiais para contabilizar no ciclo ativo e ganhar XP."
+            size="md"
+          >
+            <form onSubmit={handleSalvarQuestoesExternas} className="space-y-4">
+              <div className="p-3 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Vínculo do Bloco Atual
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="primary">
+                    {blocoAtual.disciplina_nome}
+                  </Badge>
+                  {blocoAtual.assunto_nome && (
+                    <Badge variant="outline">
+                      {blocoAtual.assunto_nome}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Fonte / Material das Questões *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={questoesExternasFonte}
+                  onChange={(e) => setQuestoesExternasFonte(e.target.value)}
+                  placeholder="Ex: PDF do Estratégia, Livro Sinopses, Gran Cursos..."
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Total de Questões *
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={500}
+                    required
+                    value={questoesExternasQtd}
+                    onChange={(e) => setQuestoesExternasQtd(Math.max(1, Number(e.target.value)))}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Acertos *
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={questoesExternasQtd}
+                    required
+                    value={questoesExternasAcertos}
+                    onChange={(e) => setQuestoesExternasAcertos(Math.max(0, Math.min(questoesExternasQtd, Number(e.target.value))))}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-bold text-emerald-600 dark:text-emerald-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Pré-visualização de Desempenho e XP */}
+              <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-xl border border-indigo-200 dark:border-indigo-900/50 flex items-center justify-between text-xs">
+                <div>
+                  <span className="text-slate-500">Taxa de acerto calculada: </span>
+                  <strong className="text-indigo-700 dark:text-indigo-300">
+                    {questoesExternasQtd > 0 ? `${Math.round((questoesExternasAcertos / questoesExternasQtd) * 100)}%` : "0%"}
+                  </strong>
+                </div>
+                <Badge variant="success" size="sm" className="font-bold">
+                  +{Math.min(100, Number(questoesExternasQtd) + Number(questoesExternasAcertos))} XP
+                </Badge>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Observações / Tópicos de Atenção (Opcional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={questoesExternasObs}
+                  onChange={(e) => setQuestoesExternasObs(e.target.value)}
+                  placeholder="Ex: Errei 2 questões sobre prazo prescricional e súmula 123..."
+                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsModalQuestoesExternasOpen(false)}
+                  disabled={salvandoQuestoesExternas}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  disabled={salvandoQuestoesExternas}
+                  className="bg-indigo-600 hover:bg-indigo-700 font-bold"
+                >
+                  {salvandoQuestoesExternas ? "Registrando..." : "Registrar Questões (+XP)"}
+                </Button>
+              </div>
+            </form>
           </Modal>
         </div>
       ) : (

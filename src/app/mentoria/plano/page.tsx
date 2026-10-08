@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import {
-  Target,
   Calendar,
   Layers,
   ArrowLeft,
@@ -31,11 +30,10 @@ import {
   MentoriaPerfil,
   MentoriaDisponibilidade,
   MentoriaCicloPlanoCompleto,
-  MentoriaCicloItem,
   MentoriaDiagnostico,
   GradeSemanalDia,
 } from "@/types";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { WeeklyScheduleGrid } from "@/components/planejamento/WeeklyScheduleGrid";
@@ -191,7 +189,7 @@ export default function MentoriaPlanoPage() {
           texto: res.error || "Erro ao recalcular o ciclo.",
         });
       }
-    } catch (err: any) {
+    } catch {
       setFeedbackMsg({
         tipo: "error",
         texto: "Erro inesperado ao recalcular ciclo.",
