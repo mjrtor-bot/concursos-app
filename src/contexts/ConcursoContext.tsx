@@ -49,7 +49,7 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     try {
-      const res = await fetch("/api/concursos/alvo", { cache: "no-store" });
+      const res = await fetch(process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "/api/contabo/alvo" : "/api/concursos/alvo", { cache: "no-store" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Falha ao carregar concurso alvo");
       const lista = (json.concursos || []) as ApiConcurso[];
@@ -71,7 +71,7 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       try {
-        const res = await fetch("/api/concursos/alvo", { cache: "no-store" });
+        const res = await fetch(process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "/api/contabo/alvo" : "/api/concursos/alvo", { cache: "no-store" });
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Falha ao carregar concurso alvo");
         if (!ativo) return;

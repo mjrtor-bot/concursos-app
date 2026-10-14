@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import crypto from "crypto";
+import { contaboUpload } from "@/lib/contabo-upload";
 
 const MAX_BYTES = 20 * 1024 * 1024;
 
@@ -10,6 +11,7 @@ function safeName(name: string) {
 }
 
 export async function POST(request: Request) {
+  if (process.env.CONTABO_AUTH_HOMOLOGACAO === "enabled") return contaboUpload(request);
   const supabase = await createClientServer();
   if (!supabase) return NextResponse.json({ error: "Supabase não configurado" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();

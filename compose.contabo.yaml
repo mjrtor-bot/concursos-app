@@ -1,0 +1,18 @@
+﻿services:
+  mentoria-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.contabo
+    container_name: mentoria-app-homologacao
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3100:3000"
+    environment:
+      NODE_ENV: production
+      CONTABO_DATABASE_URL: ${CONTABO_DATABASE_URL:?Configure a conexao PostgreSQL}
+    networks:
+      - postgres_default
+
+networks:
+  postgres_default:
+    external: true

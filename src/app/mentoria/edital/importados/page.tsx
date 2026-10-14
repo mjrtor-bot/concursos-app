@@ -50,25 +50,77 @@ export default function EditaisImportadosPage() {
   const [erro, setErro] = useState("");
   const [aplicandoId, setAplicandoId] = useState<string | null>(null);
   const [excluindoId, setExcluindoId] = useState<string | null>(null);
+  const [extraindoId, setExtraindoId] = useState<string | null>(null);
+  const [confirmandoId, setConfirmandoId] = useState<string | null>(null);
   const [filtroStatus, setFiltroStatus] = useState<StatusFilter>("todos");
   const [busca, setBusca] = useState("");
 
   async function usarComoAlvo(id: string) {
     setAplicandoId(id);
     try {
-      const res = await fetch(`/api/editais/${id}/usar`, { method: "POST" });
+      const homologacao = process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao";
+      const res = await fetch(homologacao ? "/api/contabo/alvo" : `/api/editais/${id}/usar`, homologacao ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ edital_id: id }) } : { method: "POST" });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Falha ao definir como concurso alvo.");
 
       await recarregarConcursoAlvo();
-      if (user?.id) {
-        await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
-      }
-      success("Edital importado definido como seu Concurso Alvo com sucesso!");
+      if (!homologacao && user?.id) await MentoriaCicloService.gerarOuRecalcularCiclo(user.id);
+      success(homologacao ? "Edital-alvo salvo na Contabo. A integração do ciclo de estudos ainda está em homologação." : "Edital importado definido como seu Concurso Alvo com sucesso!");
     } catch (e) {
       toastError(e instanceof Error ? e.message : "Não foi possível aplicar este edital.");
     } finally {
       setAplicandoId(null);
+    }
+  }
+
+  async function confirmarContabo(id: string, acao: "confirmar" | "reabrir") {
+    setConfirmandoId(id);
+    try {
+      const res = await fetch(`/api/contabo/editais/${id}/confirmar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ acao }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json?.error || "Não foi possível atualizar o edital.");
+      const r = await fetch("/api/editais/importados", { cache: "no-store" });
+      const j = await r.json();
+      if (r.ok) setEditais(j.editais || []);
+      success(
+        acao === "confirmar"
+          ? "Edital confirmado. Agora você pode defini-lo como Concurso Alvo."
+          : "Edital reaberto para revisão."
+      );
+    } catch (e) {
+      toastError(e instanceof Error ? e.message : "Não foi possível atualizar o edital.");
+    } finally {
+      setConfirmandoId(null);
+    }
+  }
+
+  async function extrairAuto(id: string) {
+    setExtraindoId(id);
+    try {
+      const res = await fetch(`/api/contabo/editais/${id}/extrair`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ gravar: true }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const avisos: string[] = Array.isArray(json?.proposta?.avisos) ? json.proposta.avisos : [];
+        throw new Error([json?.error || "Falha na extração automática.", ...avisos].join(" "));
+      }
+      const r = await fetch("/api/editais/importados", { cache: "no-store" });
+      const j = await r.json();
+      if (r.ok) setEditais(j.editais || []);
+      success(
+        `Extração automática gravada: ${json?.proposta?.disciplinas ?? 0} disciplinas. Revise no verticalizado antes de confirmar.`
+      );
+    } catch (e) {
+      toastError(e instanceof Error ? e.message : "Não foi possível extrair este edital.");
+    } finally {
+      setExtraindoId(null);
     }
   }
 
@@ -416,6 +468,11 @@ export default function EditaisImportadosPage() {
                 {/* Barra de Ações */}
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2 flex-wrap">
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" && (
+                      <a href={`/api/contabo/editais/${ed.id}/pdf`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700">
+                        <FileText className="h-3.5 w-3.5" /> Abrir PDF
+                      </a>
+                    )}
                     {ed.status === "confirmado" && (
                       <>
                         <button
@@ -438,7 +495,7 @@ export default function EditaisImportadosPage() {
                         </button>
 
                         <Link
-                          href={`/mentoria/edital?importado=${ed.id}`}
+                          href={process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? `/homologacao/edital/${ed.id}` : `/mentoria/edital?importado=${ed.id}`}
                           className="inline-flex items-center gap-1 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                         >
                           <BookOpen className="h-3.5 w-3.5" /> Ver Verticalizado
@@ -446,7 +503,73 @@ export default function EditaisImportadosPage() {
                       </>
                     )}
 
-                    {ed.status === "aguardando_revisao" && (
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" && ed.status !== "confirmado" && ed.total_disciplinas > 0 && (
+                      <Link
+                        href={`/homologacao/edital/${ed.id}`}
+                        className="inline-flex items-center gap-1 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                      >
+                        <BookOpen className="h-3.5 w-3.5" /> Ver Verticalizado
+                      </Link>
+                    )}
+
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" && ed.status === "aguardando_revisao" && ed.total_disciplinas > 0 && (
+                      <button
+                        type="button"
+                        disabled={confirmandoId === ed.id}
+                        onClick={() => confirmarContabo(ed.id, "confirmar")}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-xs"
+                      >
+                        {confirmandoId === ed.id ? (
+                          <>
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Confirmando...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="h-3.5 w-3.5" /> Confirmar edital
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" && ed.status === "confirmado" && (
+                      <button
+                        type="button"
+                        disabled={confirmandoId === ed.id}
+                        onClick={() => confirmarContabo(ed.id, "reabrir")}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-50 transition-colors"
+                      >
+                        {confirmandoId === ed.id ? (
+                          <>
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Reabrindo...
+                          </>
+                        ) : (
+                          <>
+                            <Clock className="h-3.5 w-3.5" /> Reabrir revisão
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" && (ed.status === "erro" || ed.status === "revisao_sem_conteudo") && ed.total_disciplinas === 0 && (
+                      <button
+                        type="button"
+                        disabled={extraindoId === ed.id}
+                        onClick={() => extrairAuto(ed.id)}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors shadow-xs"
+                      >
+                        {extraindoId === ed.id ? (
+                          <>
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Extraindo...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-3.5 w-3.5" /> Extrair automaticamente
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE !== "homologacao" && ed.status === "aguardando_revisao" && (
                       <Link
                         href="/mentoria/edital/biblioteca"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"
@@ -455,7 +578,7 @@ export default function EditaisImportadosPage() {
                       </Link>
                     )}
 
-                    {(ed.status === "erro" || ed.status === "revisao_sem_conteudo") && (
+                    {process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE !== "homologacao" && (ed.status === "erro" || ed.status === "revisao_sem_conteudo") && (
                       <Link
                         href="/mentoria/edital/biblioteca#importar"
                         className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 transition-colors shadow-xs"

@@ -1,8 +1,10 @@
+import { contaboAnswer } from "@/lib/contabo-answer";
 import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (process.env.CONTABO_AUTH_HOMOLOGACAO === "enabled") return contaboAnswer(request);
   try {
     if (!isSupabaseConfigured) {
       return NextResponse.json({ success: false, error: "Supabase não configurado" }, { status: 503 });
@@ -67,6 +69,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (process.env.CONTABO_AUTH_HOMOLOGACAO === "enabled") return contaboAnswer(request);
   try {
     if (!isSupabaseConfigured) {
       return NextResponse.json({ success: true, saved: false, reason: "supabase_not_configured" });

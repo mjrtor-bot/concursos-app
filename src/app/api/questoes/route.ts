@@ -1,9 +1,11 @@
+import { contaboQuestions } from "@/lib/contabo-questions";
 import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { Questao } from "@/types";
 
 export async function GET(request: NextRequest) {
+  if (process.env.CONTABO_AUTH_HOMOLOGACAO === "enabled") return contaboQuestions(request);
   try {
     const { searchParams } = new URL(request.url);
 

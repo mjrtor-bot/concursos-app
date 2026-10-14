@@ -1,7 +1,9 @@
+import { contaboEditais } from "@/lib/contabo-editais";
 import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  if (process.env.CONTABO_AUTH_HOMOLOGACAO === "enabled") return contaboEditais(request);
   const supabase = await createClientServer();
   if (!supabase) return NextResponse.json({ error: "Supabase indisponível" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();
@@ -47,6 +49,7 @@ export async function GET() {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (process.env.CONTABO_AUTH_HOMOLOGACAO === "enabled") return contaboEditais(request);
   const supabase = await createClientServer();
   if (!supabase) return NextResponse.json({ error: "Supabase indisponível" }, { status: 503 });
   const { data: { user } } = await supabase.auth.getUser();

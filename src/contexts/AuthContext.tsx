@@ -25,6 +25,12 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const contaboAuth = process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao";
+async function contaboRequest(body: Record<string, string>): Promise<AuthResult & { user?: { id: string; email: string; nome: string; role?: "user" | "admin" | "editor" } }> {
+  const response = await fetch("/api/contabo/auth", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify(body) });
+  const data = await response.json();
+  return { success: Boolean(data.success), error: data.error, user: data.user };
+}
 
 // ── Parser de Erros do Supabase com Códigos Estruturados ─────────────────────
 function parseAuthError(error: unknown): { message: string; code: string } {
@@ -129,6 +135,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── Inicialização: carrega a sessão atual do Supabase ─────────────────────
   useEffect(() => {
+    if (!contaboAuth) return;
+    let mounted = true;
+    fetch("/api/contabo/auth", { credentials: "same-origin" })
+      .then(async (response) => response.json())
+      .then((data) => {
+        if (!mounted) return;
+        if (data.success && data.user) {
+          setUser({ ...data.user, role: data.user.role || "user", created_at: new Date().toISOString() } as Profile);
+        } else setUser(null);
+      })
+      .catch(() => { if (mounted) setUser(null); })
+      .finally(() => { if (mounted) setIsLoading(false); });
+    return () => { mounted = false; };
+  }, []);
+  useEffect(() => {
+    if (contaboAuth) return;
     if (!isSupabaseConfigured) {
       queueMicrotask(() => {
         setIsLoading(false);
@@ -178,6 +200,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ── login ─────────────────────────────────────────────────────────────────
   const login = useCallback(
     async (email: string, password: string): Promise<AuthResult> => {
+      if (contaboAuth) {
+        try { const result = await contaboRequest({ action: "login", email, password }); if (result.success && result.user) setUser({ ...result.user, role: result.user.role || "user", created_at: new Date().toISOString() } as Profile); return result; } catch { return { success: false, error: "Falha de conexao com a Contabo" }; }
+      }
       if (!isSupabaseConfigured) {
         return {
           success: false,
@@ -238,6 +263,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: string,
       password: string
     ): Promise<AuthResult> => {
+      if (contaboAuth) {
+        try { const result = await contaboRequest({ action: "signup", nome, email, password }); if (result.success && result.user) setUser({ ...result.user, role: result.user.role || "user", created_at: new Date().toISOString() } as Profile); return result; } catch { return { success: false, error: "Falha de conexao com a Contabo" }; }
+      }
       if (!isSupabaseConfigured) {
         return {
           success: false,
@@ -299,6 +327,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ── logout ────────────────────────────────────────────────────────────────
   const logout = useCallback(async (): Promise<void> => {
+    if (contaboAuth) { await contaboRequest({ action: "logout" }).catch(() => {}); setUser(null); router.push("/login"); return; }
     const supabase = createClient();
     if (supabase) {
       await supabase.auth.signOut();
@@ -389,7 +418,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isLoading,
-        isSupabaseConnected: isSupabaseConfigured,
+        isSupabaseConnected: contaboAuth || isSupabaseConfigured,
         login,
         signup,
         logout,

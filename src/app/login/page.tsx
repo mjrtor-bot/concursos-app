@@ -233,8 +233,8 @@ function LoginContent() {
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
             <span>
               {isSupabaseConnected
-                ? "Conexão segura com Supabase Auth"
-                : "Supabase não configurado: login real indisponível"}
+                ? (process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "Autenticação Contabo — homologação" : "Conexão segura com Supabase Auth")
+                : (process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "Autenticação Contabo indisponível" : "Supabase não configurado: login real indisponível")}
             </span>
           </div>
         </div>

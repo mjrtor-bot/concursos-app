@@ -385,6 +385,12 @@ export default function BibliotecaEditaisPage() {
       setFormValues({nome:"",orgao:"",cargo:"",uf:""}); setArquivo(null);
       await carregarMeusEditais();
 
+      if (j.fonte === "contabo") {
+        setUploadId(null);
+        setMensagem(j.message || "PDF recebido. Abra Meus Editais Importados para ver o resultado.");
+        return;
+      }
+
       if (j.deduplicated) {
         if (j.status === "aguardando_revisao") {
           setMensagem(j.message || "Prévia carregada do upload existente.");
