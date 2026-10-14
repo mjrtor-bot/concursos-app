@@ -38,7 +38,69 @@ import { Button } from "@/components/ui/Button";
 type StatusFiltro = "todos" | "nao_iniciado" | "estudando" | "revisando" | "dominado";
 type PesoFiltro = "todos" | "baixo" | "medio" | "alto" | "critico";
 
+// Instalação Contabo (homologação): o verticalizado do alvo é o de /homologacao/edital/[id],
+// que lê e grava no PostgreSQL da Contabo. Esta tela, ligada ao Supabase, só é usada fora desse modo.
+function EditalContabo() {
+  const router = useRouter();
+  const [estado, setEstado] = useState<"carregando" | "sem_alvo" | "erro">("carregando");
+  const [erro, setErro] = useState("");
+
+  useEffect(() => {
+    let ativo = true;
+    fetch("/api/contabo/alvo", { cache: "no-store" })
+      .then(async (r) => {
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j?.error || "Não foi possível carregar o concurso alvo.");
+        return j;
+      })
+      .then((j) => {
+        if (!ativo) return;
+        const id = j?.alvo?.edital_id;
+        if (typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id)) {
+          router.replace(`/homologacao/edital/${id}`);
+        } else {
+          setEstado("sem_alvo");
+        }
+      })
+      .catch((e) => {
+        if (!ativo) return;
+        setErro(e instanceof Error ? e.message : "Falha ao carregar o concurso alvo.");
+        setEstado("erro");
+      });
+    return () => {
+      ativo = false;
+    };
+  }, [router]);
+
+  return (
+    <main className="mx-auto max-w-3xl px-4 py-10 space-y-4">
+      <h1 className="text-xl font-bold text-slate-900 dark:text-white">Edital Verticalizado</h1>
+      {estado === "carregando" && <p className="text-slate-600 dark:text-slate-300">Abrindo o verticalizado do seu concurso alvo...</p>}
+      {estado === "erro" && (
+        <p role="alert" className="text-red-700">
+          {erro}
+        </p>
+      )}
+      {estado === "sem_alvo" && (
+        <div className="space-y-3 rounded-lg border border-slate-200 dark:border-slate-700 p-5">
+          <p className="text-slate-700 dark:text-slate-200">
+            Você ainda não definiu um concurso alvo. Confirme um dos seus editais importados e use Definir Alvo.
+          </p>
+          <Link href="/mentoria/edital/importados" className="inline-block rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
+            Abrir Meus Editais Importados
+          </Link>
+        </div>
+      )}
+    </main>
+  );
+}
+
 export default function MentoriaEditalPage() {
+  if (process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao") return <EditalContabo />;
+  return <MentoriaEditalPageSupabase />;
+}
+
+function MentoriaEditalPageSupabase() {
   const { user } = useAuth();
   const router = useRouter();
   const [alvoOficial, setAlvoOficial] = useState<{ concurso: string; cargo: string; edital: string; fonte: string; ehPrivado?: boolean } | null>(null);
