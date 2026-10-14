@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { Pool } from "pg";
 import { createHash, randomUUID } from "node:crypto";
 import { mkdir, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { PDFParse } from "pdf-parse";
 import { detectarEExtrair, resumirProposta } from "@/lib/editais/detectarEExtrair";
+import { COOKIE_SESSAO, excedeuLimite, getPool, usuarioDaSessao } from "@/lib/contabo-db";
+import { PdfOcupadoError, PdfTempoEsgotadoError, extrairTextoPdf } from "@/lib/contabo-pdf";
 
 // Upload de edital em PDF para a instalação Contabo (sem Supabase e sem OpenAI).
 // Salva o arquivo no storage local, extrai o conteúdo programático com o extrator
@@ -13,8 +13,12 @@ import { detectarEExtrair, resumirProposta } from "@/lib/editais/detectarEExtrai
 
 const MAX_BYTES = 20 * 1024 * 1024;
 const STATUS_ATIVOS = ["processando", "aguardando_revisao", "revisao_sem_conteudo", "confirmado", "aguardando_processamento"];
-const COOKIE_SESSAO = "mentoria_homologacao_session";
 const CABECALHOS = { "Cache-Control": "private, no-store" };
+
+// Cotas por usuário (ajustáveis por variável de ambiente).
+const MAX_EDITAIS = Number(process.env.CONTABO_MAX_EDITAIS) || 30;
+const MAX_TOTAL_BYTES = (Number(process.env.CONTABO_MAX_TOTAL_MB) || 300) * 1024 * 1024;
+const MAX_POR_HORA = Number(process.env.CONTABO_MAX_UPLOADS_HORA) || 10;
 
 function nomeSeguro(nome: string): string {
   const base = nome.replace(/[^a-zA-Z0-9._-]/g, "_").replace(/_+/g, "_");
@@ -44,40 +48,41 @@ function json(corpo: Record<string, unknown>, status: number) {
 export async function contaboUpload(request: Request): Promise<NextResponse> {
   const token = lerCookie(request, COOKIE_SESSAO);
   if (!token) return json({ error: "Não autenticado" }, 401);
-  if (!process.env.CONTABO_DATABASE_URL) return json({ error: "Banco indisponível" }, 503);
+  const db = getPool();
+  if (!db) return json({ error: "Banco indisponível" }, 503);
 
-  let form: FormData;
-  try {
-    form = await request.formData();
-  } catch {
-    return json({ error: "Falha ao ler o upload. Envie um PDF de até 20 MB." }, 400);
-  }
-  const file = form.get("arquivo");
-  if (!(file instanceof File)) return json({ error: "PDF obrigatório" }, 400);
-  if (file.type !== "application/pdf" || !file.name.toLowerCase().endsWith(".pdf")) {
-    return json({ error: "Envie somente arquivo PDF válido." }, 415);
-  }
-  if (file.size <= 0 || file.size > MAX_BYTES) return json({ error: "O PDF deve ter no máximo 20 MB." }, 413);
+  // Recusa cedo corpos muito maiores que o limite, antes de ler o arquivo.
+  const tamanhoDeclarado = Number(request.headers.get("content-length") || 0);
+  if (tamanhoDeclarado > MAX_BYTES + 1024 * 1024) return json({ error: "O PDF deve ter no máximo 20 MB." }, 413);
 
-  const bytes = Buffer.from(await file.arrayBuffer());
-  if (bytes.length < 5 || bytes.subarray(0, 5).toString("latin1") !== "%PDF-") {
-    return json({ error: "O conteúdo enviado não possui assinatura de PDF." }, 415);
-  }
-
-  const nomeArquivo = nomeSeguro(file.name);
-  const hashArquivo = createHash("sha256").update(bytes).digest("hex");
-  const hashSessao = createHash("sha256").update(token).digest("hex");
-  const db = new Pool({ connectionString: process.env.CONTABO_DATABASE_URL, max: 1 });
   let caminhoGravado: string | null = null;
 
   try {
-    const auth = await db.query(
-      "SELECT u.id FROM mentoria_auth.sessions s JOIN mentoria_auth.users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.revoked_at IS NULL AND s.expires_at>now() AND u.disabled_at IS NULL",
-      [hashSessao]
-    );
-    if (!auth.rowCount) return json({ error: "Não autenticado" }, 401);
-    const usuarioId = String(auth.rows[0].id);
+    // Autentica ANTES de ler o corpo: visitantes sem sessão não fazem o servidor processar arquivos.
+    const usuarioId = await usuarioDaSessao(db, token);
+    if (!usuarioId) return json({ error: "Não autenticado" }, 401);
     if (!/^[0-9a-f-]{36}$/i.test(usuarioId)) return json({ error: "Identificador de usuário inválido" }, 500);
+
+    let form: FormData;
+    try {
+      form = await request.formData();
+    } catch {
+      return json({ error: "Falha ao ler o upload. Envie um PDF de até 20 MB." }, 400);
+    }
+    const file = form.get("arquivo");
+    if (!(file instanceof File)) return json({ error: "PDF obrigatório" }, 400);
+    if (file.type !== "application/pdf" || !file.name.toLowerCase().endsWith(".pdf")) {
+      return json({ error: "Envie somente arquivo PDF válido." }, 415);
+    }
+    if (file.size <= 0 || file.size > MAX_BYTES) return json({ error: "O PDF deve ter no máximo 20 MB." }, 413);
+
+    const bytes = Buffer.from(await file.arrayBuffer());
+    if (bytes.length < 5 || bytes.subarray(0, 5).toString("latin1") !== "%PDF-") {
+      return json({ error: "O conteúdo enviado não possui assinatura de PDF." }, 415);
+    }
+
+    const nomeArquivo = nomeSeguro(file.name);
+    const hashArquivo = createHash("sha256").update(bytes).digest("hex");
 
     // Deduplicação: mesmo usuário, mesmo nome e mesmo tamanho de arquivo.
     const existente = await db.query(
@@ -100,20 +105,36 @@ export async function contaboUpload(request: Request): Promise<NextResponse> {
       );
     }
 
+    // Cotas por usuário: quantidade, espaço total e envios na última hora.
+    const uso = await db.query(
+      "SELECT count(*)::int AS total, COALESCE(sum(arquivo_tamanho),0)::bigint AS bytes, count(*) FILTER (WHERE created_at > now() - interval '1 hour')::int AS ultima_hora FROM mentoria_recovery.editais_usuario WHERE usuario_id=$1",
+      [usuarioId]
+    );
+    const total = Number(uso.rows[0].total);
+    const bytesUsados = Number(uso.rows[0].bytes);
+    const ultimaHora = Number(uso.rows[0].ultima_hora);
+    if (total >= MAX_EDITAIS) {
+      return json({ error: `Limite de ${MAX_EDITAIS} editais atingido. Exclua algum edital antes de enviar outro.` }, 409);
+    }
+    if (bytesUsados + file.size > MAX_TOTAL_BYTES) {
+      return json({ error: `Limite de armazenamento de ${Math.round(MAX_TOTAL_BYTES / 1048576)} MB atingido. Exclua algum edital antes de enviar outro.` }, 409);
+    }
+    if (ultimaHora >= MAX_POR_HORA || excedeuLimite("upload:" + usuarioId, MAX_POR_HORA, 3_600_000)) {
+      return json({ error: "Muitos envios em pouco tempo. Tente novamente mais tarde." }, 429);
+    }
+
     // Extração do texto e do conteúdo programático.
     let texto = "";
     let aviso: string | null = null;
     try {
-      const parser = new PDFParse({ data: new Uint8Array(bytes) });
-      try {
-        const resultado = await parser.getText();
-        texto = resultado.text;
-      } finally {
-        await parser.destroy();
-      }
+      const lido = await extrairTextoPdf(new Uint8Array(bytes));
+      texto = lido.texto;
     } catch (err) {
+      if (err instanceof PdfOcupadoError) {
+        return json({ error: "O servidor está processando outros PDFs. Tente novamente em instantes." }, 503);
+      }
       console.error("[contabo-upload] leitura do PDF", err);
-      aviso = "Não foi possível ler o texto do PDF.";
+      aviso = err instanceof PdfTempoEsgotadoError ? "A leitura do PDF excedeu o tempo limite." : "Não foi possível ler o texto do PDF.";
     }
 
     let status = "revisao_sem_conteudo";
@@ -189,7 +210,5 @@ export async function contaboUpload(request: Request): Promise<NextResponse> {
     console.error("[contabo-upload]", err);
     if (caminhoGravado) await unlink(caminhoGravado).catch(() => undefined);
     return json({ error: "Falha ao salvar o edital." }, 500);
-  } finally {
-    await db.end();
   }
 }

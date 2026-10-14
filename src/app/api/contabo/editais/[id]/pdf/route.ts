@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { Pool } from "pg";
+import { COOKIE_SESSAO, getPool, hashToken } from "@/lib/contabo-db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -10,16 +9,16 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (process.env.CONTABO_AUTH_HOMOLOGACAO !== "enabled")
     return NextResponse.json({ error: "Disponível apenas na homologação Contabo" }, { status: 404 });
-  const token = req.cookies.get("mentoria_homologacao_session")?.value;
+  const token = req.cookies.get(COOKIE_SESSAO)?.value;
   if (!token) return NextResponse.json({ error: "Não autenticado" }, { status: 401 });
-  if (!process.env.CONTABO_DATABASE_URL) return NextResponse.json({ error: "Banco indisponível" }, { status: 503 });
+  const db = getPool();
+  if (!db) return NextResponse.json({ error: "Banco indisponível" }, { status: 503 });
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) return NextResponse.json({ error: "ID inválido" }, { status: 400 });
-  const db = new Pool({ connectionString: process.env.CONTABO_DATABASE_URL, max: 1 });
   try {
     const result = await db.query(
       "SELECT e.arquivo_path,e.arquivo_tamanho FROM mentoria_recovery.editais_usuario e JOIN mentoria_auth.users u ON u.id=e.usuario_id JOIN mentoria_auth.sessions s ON s.user_id=u.id WHERE e.id=$1 AND s.token_hash=$2 AND s.revoked_at IS NULL AND s.expires_at>now() AND u.disabled_at IS NULL",
-      [id, createHash("sha256").update(token).digest("hex")]
+      [id, hashToken(token)]
     );
     if (!result.rowCount) return NextResponse.json({ error: "Edital não encontrado" }, { status: 404 });
     const row = result.rows[0];
@@ -41,5 +40,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   } catch (error) {
     console.error("[contabo-pdf]", error);
     return NextResponse.json({ error: "PDF indisponível" }, { status: 503 });
-  } finally { await db.end(); }
+  }
 }

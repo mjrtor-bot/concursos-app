@@ -1,18 +1,16 @@
 import { NextRequest,NextResponse } from "next/server";
-import { Pool } from "pg";
-import { createHash } from "node:crypto";
 import { rm } from "node:fs/promises";
 import path from "node:path";
+import { COOKIE_SESSAO,getPool,usuarioDaSessao } from "@/lib/contabo-db";
 export async function contaboEditais(req:NextRequest){
- const token=req.cookies.get("mentoria_homologacao_session")?.value;
+ const token=req.cookies.get(COOKIE_SESSAO)?.value;
  if(!token)return NextResponse.json({error:"Não autenticado"},{status:401});
- if(!process.env.CONTABO_DATABASE_URL)return NextResponse.json({error:"Banco indisponível"},{status:503});
+ const db=getPool();
+ if(!db)return NextResponse.json({error:"Banco indisponível"},{status:503});
  if(req.method!=="GET"&&req.method!=="DELETE")return NextResponse.json({error:"Método não permitido"},{status:405});
- const db=new Pool({connectionString:process.env.CONTABO_DATABASE_URL,max:2});
  try {
-  const auth=await db.query("SELECT u.id FROM mentoria_auth.sessions s JOIN mentoria_auth.users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.revoked_at IS NULL AND s.expires_at>now() AND u.disabled_at IS NULL",[createHash("sha256").update(token).digest("hex")]);
-  if(!auth.rowCount)return NextResponse.json({error:"Não autenticado"},{status:401});
-  const usuarioId=String(auth.rows[0].id);
+  const usuarioId=await usuarioDaSessao(db,token);
+  if(!usuarioId)return NextResponse.json({error:"Não autenticado"},{status:401});
   if(req.method==="DELETE"){
    const id=req.nextUrl.searchParams.get("id")||"";
    if(!/^[0-9a-f-]{36}$/i.test(id))return NextResponse.json({error:"ID inválido"},{status:400});
@@ -45,5 +43,4 @@ export async function contaboEditais(req:NextRequest){
   });
   return NextResponse.json({editais,fonte:"contabo"});
  }catch(e){console.error("[contaboEditais]",e);return NextResponse.json({error:"Erro ao consultar editais"},{status:500});}
- finally{await db.end();}
 }
