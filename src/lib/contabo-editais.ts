@@ -1,16 +1,43 @@
 import { NextRequest,NextResponse } from "next/server";
 import { Pool } from "pg";
 import { createHash } from "node:crypto";
+import { rm } from "node:fs/promises";
+import path from "node:path";
 export async function contaboEditais(req:NextRequest){
  const token=req.cookies.get("mentoria_homologacao_session")?.value;
  if(!token)return NextResponse.json({error:"Não autenticado"},{status:401});
  if(!process.env.CONTABO_DATABASE_URL)return NextResponse.json({error:"Banco indisponível"},{status:503});
+ if(req.method!=="GET"&&req.method!=="DELETE")return NextResponse.json({error:"Método não permitido"},{status:405});
  const db=new Pool({connectionString:process.env.CONTABO_DATABASE_URL,max:2});
  try {
   const auth=await db.query("SELECT u.id FROM mentoria_auth.sessions s JOIN mentoria_auth.users u ON u.id=s.user_id WHERE s.token_hash=$1 AND s.revoked_at IS NULL AND s.expires_at>now() AND u.disabled_at IS NULL",[createHash("sha256").update(token).digest("hex")]);
   if(!auth.rowCount)return NextResponse.json({error:"Não autenticado"},{status:401});
-  if(req.method!=="GET")return NextResponse.json({error:"Exclusão desativada durante a migração"},{status:405});
-  const result=await db.query("SELECT id,nome,orgao_nome,cargo,uf,status,arquivo_nome,arquivo_tamanho,erro_processamento,estrutura_extraida,created_at,updated_at,confirmado_em,edital_id FROM mentoria_recovery.editais_usuario WHERE usuario_id=$1 ORDER BY created_at DESC",[auth.rows[0].id]);
+  const usuarioId=String(auth.rows[0].id);
+  if(req.method==="DELETE"){
+   const id=req.nextUrl.searchParams.get("id")||"";
+   if(!/^[0-9a-f-]{36}$/i.test(id))return NextResponse.json({error:"ID inválido"},{status:400});
+   const atual=await db.query("SELECT arquivo_path FROM mentoria_recovery.editais_usuario WHERE id=$1 AND usuario_id=$2",[id,usuarioId]);
+   if(!atual.rowCount)return NextResponse.json({error:"Edital não encontrado"},{status:404});
+   const alvo=await db.query("SELECT 1 FROM mentoria_recovery.usuario_edital_alvo WHERE usuario_id=$1 AND edital_usuario_id=$2",[usuarioId,id]);
+   if(alvo.rowCount)return NextResponse.json({error:"Este edital é o seu concurso alvo. Defina outro alvo antes de excluir."},{status:409});
+   try{
+    await db.query("DELETE FROM mentoria_recovery.editais_usuario WHERE id=$1 AND usuario_id=$2",[id,usuarioId]);
+   }catch(e){
+    console.error("[contaboEditais:delete]",e);
+    return NextResponse.json({error:"Não foi possível excluir: o edital possui dados vinculados."},{status:409});
+   }
+   // Remove o PDF do disco depois do registro; falha aqui não desfaz a exclusão.
+   const relativo=String(atual.rows[0].arquivo_path||"");
+   if(relativo){
+    const raiz=path.resolve(process.env.CONTABO_EDITAIS_STORAGE_ROOT||"/opt/mentoria/storage/editais-usuario");
+    const arquivo=path.resolve(raiz,relativo);
+    if(arquivo.startsWith(raiz+path.sep)){
+     await rm(arquivo,{force:true}).catch(e=>console.error("[contaboEditais:rm]",e));
+    }
+   }
+   return NextResponse.json({ok:true});
+  }
+  const result=await db.query("SELECT id,nome,orgao_nome,cargo,uf,status,arquivo_nome,arquivo_tamanho,erro_processamento,estrutura_extraida,created_at,updated_at,confirmado_em,edital_id FROM mentoria_recovery.editais_usuario WHERE usuario_id=$1 ORDER BY created_at DESC",[usuarioId]);
   const editais=result.rows.map(e=>{
    const estrutura=e.estrutura_extraida||{};
    const disciplinas=Array.isArray(estrutura.disciplinas)&&estrutura.disciplinas.length?estrutura.disciplinas:Array.isArray(estrutura.cargos)?estrutura.cargos.flatMap((c:{disciplinas?:unknown[]})=>Array.isArray(c.disciplinas)?c.disciplinas:[]):[];
