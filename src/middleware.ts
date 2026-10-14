@@ -135,7 +135,9 @@ export const config = {
      * - _next/static (arquivos estáticos)
      * - _next/image (otimização de imagens)
      * - favicon.ico
+     * - api/editais/upload (o middleware já ignora /api/, mas ao rodar nele o Next
+     *   limita o corpo da requisição a 10 MB e o upload aceita PDFs de até 20 MB)
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/editais/upload|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
