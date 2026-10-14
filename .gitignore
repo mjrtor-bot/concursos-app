@@ -51,3 +51,6 @@ next-env.d.ts
 Thumbs.db
 .freebuff/
 .vscode/
+
+recovery-contabo/
+scripts/relatorio-integridade-migracao.json
