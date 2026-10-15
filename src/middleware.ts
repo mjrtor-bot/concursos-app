@@ -39,6 +39,25 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next({ request });
   }
 
+  // Instalação Contabo: a sessão é o cookie mentoria_homologacao_session, validado no banco
+  // pelas rotas /api/contabo/*. O middleware roda no edge e não acessa o Postgres, então só
+  // exige a presença do cookie nas rotas privadas. NÃO consulta o Supabase neste modo: o login
+  // do Contabo não cria sessão Supabase e o redirecionamento ao /login bloquearia usuários novos.
+  // A validade real da sessão e as permissões continuam sendo verificadas pelas rotas de API.
+  if (process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao") {
+    const temCookieDeSessao = Boolean(
+      request.cookies.get("mentoria_homologacao_session")?.value
+    );
+    if (!temCookieDeSessao && !matchesPrefix(pathname, PUBLIC_ROUTES)) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.search = "";
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next({ request });
+  }
+
   const supabaseUrl = (process.env.NEXT_PUBLIC_SUPABASE_URL || "")
     .replace(/\/rest\/v1\/?$/, "")
     .replace(/\/+$/, "")
