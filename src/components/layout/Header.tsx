@@ -30,8 +30,8 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
   useEffect(() => {
     // Sincronizar tema com localStorage ou preferência do sistema
     const temaSalvo = localStorage.getItem("theme");
-    const prefereDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const deveSerDark = temaSalvo === "dark" || (!temaSalvo && prefereDark);
+    // Padrao escuro: so fica claro quem escolheu o tema claro no botao.
+    const deveSerDark = temaSalvo !== "light";
 
     if (deveSerDark) {
       document.documentElement.classList.add("dark");

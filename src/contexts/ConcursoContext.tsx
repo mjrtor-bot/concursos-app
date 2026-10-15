@@ -130,6 +130,18 @@ export function ConcursoProvider({ children }: { children: React.ReactNode }) {
   const cargoAtivo=cargosDoConcurso.find(c=>c.id===alvo?.cargo_id)||null;
 
   async function salvar(concursoId:string, cargoId:string, editalId?: string | null){
+    if(process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE==="homologacao"){
+      // Contabo: o alvo e um edital do proprio usuario (id do concurso == id do edital importado).
+      const r=await fetch("/api/contabo/alvo",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({edital_id:concursoId})
+      });
+      const j=await r.json().catch(()=>({} as {error?:string}));
+      if(!r.ok) throw new Error(j.error||"Falha ao salvar alvo");
+      await carregar();
+      return;
+    }
     const res=await fetch("/api/concursos/alvo",{
       method:"PUT",
       headers:{"Content-Type":"application/json"},

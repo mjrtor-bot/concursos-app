@@ -141,6 +141,13 @@ export default function BibliotecaEditaisPage() {
   }, [reconciliarProcessando]);
 
   async function carregar() {
+    if (process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao") {
+      // No Contabo nao existe catalogo oficial no Supabase: evita o 401 e o aviso falso.
+      setEditais([]);
+      setErro("");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setErro("");
     const p = new URLSearchParams();
@@ -166,7 +173,7 @@ export default function BibliotecaEditaisPage() {
       try {
         const [rMeus, rAlvo] = await Promise.all([
           fetch("/api/editais/importados", { cache: "no-store" }),
-          fetch("/api/concursos/alvo", { cache: "no-store" }),
+          fetch(process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "/api/contabo/alvo" : "/api/concursos/alvo", { cache: "no-store" }),
         ]);
 
         if (ignore) return;

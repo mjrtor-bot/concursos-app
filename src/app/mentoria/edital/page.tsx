@@ -149,7 +149,7 @@ function MentoriaEditalPageSupabase() {
       const [p, edital, alvoResp] = await Promise.all([
         MentoriaService.getPerfil(user.id),
         importedId ? Promise.resolve(null) : MentoriaService.getEditalVerticalizado(user.id),
-        fetch("/api/concursos/alvo", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
+        fetch(process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "/api/contabo/alvo" : "/api/concursos/alvo", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
       ]);
       setPerfil(p);
       if (importedId) {
@@ -225,7 +225,7 @@ function MentoriaEditalPageSupabase() {
         const [p, edital, alvoResp] = await Promise.all([
           MentoriaService.getPerfil(user.id),
           importedId ? Promise.resolve(null) : MentoriaService.getEditalVerticalizado(user.id),
-          fetch("/api/concursos/alvo", { cache: "no-store" }).then(r => r.ok ? r.json() : null),
+          fetch(process.env.NEXT_PUBLIC_CONTABO_AUTH_MODE === "homologacao" ? "/api/contabo/alvo" : "/api/concursos/alvo", { cache: "no-store" }).then(r => r.ok ? r.json() : null),
         ]);
         if (ignore) return;
         setPerfil(p);
