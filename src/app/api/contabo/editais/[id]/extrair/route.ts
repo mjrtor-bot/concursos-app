@@ -45,7 +45,7 @@ export async function POST(req:NextRequest,{params}:{params:Promise<{id:string}>
   const marcadores=/\b(CONTE[ÚU]DO(?:S)? PROGRAM[ÁA]TICO(?:S)?|PROGRAMA(?:S)? DE PROVA|ANEXO\s+(?:II|III|IV|V|2|3|4|5))\b/i;
   const indices=linhas.map((x,i)=>marcadores.test(x)?i:-1).filter(i=>i>=0);
   const trechos=indices.slice(0,25).map(i=>({linha:i+1,titulo:linhas[i].slice(0,220),amostra:linhas.slice(i,Math.min(i+35,linhas.length)).join("\n").slice(0,4000)}));
-  const proposta=detectarEExtrair(texto);
+  const proposta=detectarEExtrair(texto,e.cargo);
   const resumo=resumirProposta(proposta);
   const cabecalhos={"Cache-Control":"private, no-store"};
   if(!gravar){

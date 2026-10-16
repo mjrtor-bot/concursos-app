@@ -143,7 +143,7 @@ export async function contaboUpload(request: Request): Promise<NextResponse> {
     if (!aviso && texto.trim().length < 100) {
       aviso = "PDF sem texto selecionável. É necessário OCR.";
     } else if (!aviso) {
-      const proposta = detectarEExtrair(texto);
+      const proposta = detectarEExtrair(texto, String(form.get("cargo") || "").slice(0, 200) || null);
       resumo = resumirProposta(proposta);
       if (proposta.gravavel) {
         status = "aguardando_revisao";
@@ -153,7 +153,7 @@ export async function contaboUpload(request: Request): Promise<NextResponse> {
           extracao_automatica_contabo: { metodo: proposta.metodo, em: new Date().toISOString() },
         };
       } else {
-        aviso = proposta.avisos.join(" ");
+        aviso = proposta.avisos.join(" ").slice(0, 480);
       }
     }
 
